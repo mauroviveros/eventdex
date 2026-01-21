@@ -1,0 +1,26 @@
+---
+import Card from "../components/ui/Card.astro";
+import PixelCard from "../components/ui/PixelCard.astro";
+import Layout from "../layouts/Layout.astro";
+---
+<Layout loggedin={true}>
+  <section class="relative flex flex-col items-center justify-center h-full max-w-5xl mx-auto">
+    <PixelCard>
+      <h3 class="text-xl text-accent">🎟️ Evento activo — 20 y 21 de Enero · 10:00 a 20:00</h3>
+    </PixelCard>
+    <PixelCard class="highlight w-full text-center">
+      <h1 class="font-pixel text-3xl text-accent">PokeEvent 2026</h1>
+      <h2 class="text-3xl text-primary">El punto de encuentro para comprar, vender e intercambiar cartas Pokémon.</h2>
+      <p class="text-xl">Recorré los locales del evento, descubrí cartas únicas y participá de la experiencia interactiva recolectando una medalla en cada gimnasio que visites.</p>
+    </PixelCard>
+    <PixelCard>
+      <h3 class="text-xl text-accent">📍 Centro de convenciones Ciudad Paleta</h3>
+      <span class="text-secondary pl-7">Av. Pokemon 151, Ciudad Paleta</span>
+    </PixelCard>
+
+    <div class="mt-16 flex gap-4">
+      <a href="/congrats" class="pixel-border p-4">Simular scan QR</a>
+      <a href="/profile" class="pixel-border p-4">Ver perfil</a>
+    </div>
+  </section>
+</Layout>
