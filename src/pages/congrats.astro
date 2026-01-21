@@ -12,15 +12,14 @@ import Index from "./index.astro";
   <h2 class="text-center text-primary text-5xl">¡Has conseguido una medalla!</h2>
 
   <div class="flex items-center justify-center pixel-border-sm transition-all w-32 h-32 text-8xl bg-linear-to-br from-medal-gold to-accent medal-glow">
-    <span class="opacity-30">🏔️</span>
+    <!-- <span class="opacity-30">🏔️</span> -->
+    <img src="badges/1.jpeg" alt="" class="size-full opacity-85">
   </div>
 </PixelCard>
 
 <script>
+  import confetti from "canvas-confetti";
   var end = Date.now() + (1 * 1000);
-
-  // go Buckeyes!
-  // var colors = ['#bb0000', '#ffffff'];
 
   (function frame() {
     confetti({
@@ -28,14 +27,12 @@ import Index from "./index.astro";
       angle: 60,
       spread: 55,
       origin: { x: 0 },
-      // colors: colors
     });
     confetti({
       particleCount: 2,
       angle: 120,
       spread: 55,
       origin: { x: 1 },
-      // colors: colors
     });
 
     if (Date.now() < end) {
