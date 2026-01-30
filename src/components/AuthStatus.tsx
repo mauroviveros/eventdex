@@ -17,7 +17,7 @@ export default function AuthStatus() {
 
   return (
     <article className="flex items-center bg-secondary/80 text-secondary-foreground hover:bg-secondary/85 h-full max-w-64">
-      {loading ? <div>Loading...</div> : user ? (
+      {!loading && user && (
         <button type="button" className="px-4 py-2 flex items-center gap-2">
           <img src="placeholder.svg" alt="" className="size-8 border-2 border-accent shrink-0"/>
           <div className="flex-col hidden xl:flex">
@@ -26,7 +26,9 @@ export default function AuthStatus() {
           </div>
           <Icon icon="tabler:chevron-down"/>
         </button>
-      ) : (
+      )}
+
+      {!loading && !user && (
         <form action="/api/auth/signin" method="POST" className="">
           <input type="hidden" name="provider" value="google" className="h-full"/>
           <button type="submit" className="flex items-center gap-2 h-full px-4 py-2 cursor-pointer">
