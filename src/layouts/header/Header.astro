@@ -1,11 +1,9 @@
 ---
-import AuthStatus from "./AuthStatus.astro";
+import AuthStatus from "@components/AuthStatus";
 import Brand from "./Brand.astro";
-interface Props { loggedin?: boolean; }
-const { loggedin = false } = Astro.props;
 ---
 
 <header class="flex items-center border-b h-16 w-full justify-between">
   <Brand/>
-  <AuthStatus loggedin={loggedin}/>
+  <AuthStatus client:load />
 </header>

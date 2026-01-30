@@ -9,6 +9,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/react": "^4.4.2",
     "@fontsource/press-start-2p": "^5.2.7",
     "@fontsource/vt323": "^5.2.7",
     "@supabase/supabase-js": "^2.93.3",
@@ -16,11 +17,16 @@
     "astro": "^5.16.11",
     "astro-icon": "^1.1.5",
     "canvas-confetti": "^1.9.4",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
     "@iconify-json/devicon": "^1.2.57",
     "@iconify-json/tabler": "^1.2.26",
-    "@types/canvas-confetti": "^1.9.0"
+    "@iconify/react": "^6.0.2",
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/react": "^19.2.10",
+    "@types/react-dom": "^19.2.3"
   }
 }
