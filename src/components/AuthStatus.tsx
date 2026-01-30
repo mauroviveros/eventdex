@@ -15,17 +15,23 @@ export default function AuthStatus() {
     });
   }, []);
 
+  // TODO loading state
+  // <div className="flex items-center gap-2 px-4 py-2">
+  //   <div className="animate-pulse w-8 h-8 bg-gray-300 rounded"></div>
+  //   <div className="hidden xl:block animate-pulse w-24 h-6 bg-gray-300 rounded"></div>
+  // </div>
+
   return (
     <article className="flex items-center bg-secondary/80 text-secondary-foreground hover:bg-secondary/85 h-full max-w-64">
       {!loading && user && (
-        <button type="button" className="px-4 py-2 flex items-center gap-2">
-          <img src="placeholder.svg" alt="" className="size-8 border-2 border-accent shrink-0"/>
+        <a href="/profile" type="button" className="px-4 py-2 flex items-center gap-2">
+          <img src={user.user_metadata.avatar_url || 'placeholder.svg'} alt="" className="size-8 border-2 border-accent shrink-0"/>
           <div className="flex-col hidden xl:flex">
             <span className="text-lg leading-5 font-bold truncate w-full text-left">{user.user_metadata.full_name}</span>
             <span className="leading-3 opacity-70 truncate w-full text-left">{user.email}</span>
           </div>
           <Icon icon="tabler:chevron-down"/>
-        </button>
+        </a>
       )}
 
       {!loading && !user && (
