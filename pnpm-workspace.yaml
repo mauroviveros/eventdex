@@ -1,4 +1,5 @@
 packages:
   - "dashboard"
+  - "landing"
   - "events/*"
   - "packages/*"
