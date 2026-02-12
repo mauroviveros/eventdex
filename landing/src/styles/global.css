@@ -1,0 +1,40 @@
+@import '@fontsource/space-grotesk/700.css';
+@import 'tailwindcss';
+
+@theme {
+  --color-background: oklch(0.175 0.009 274.34);
+  --color-foreground: oklch(0.9676 0.007 247.9);
+  --color-primary: oklch(0.6018 0.2095 287.57);
+  --color-primary-foreground: oklch(0.175 0.009 274.34);
+  --color-secondary: oklch(0.2694 0.0148 274.29);
+  --color-secondary-foreground: oklch(0.9676 0.007 247.9);
+
+  /* */
+  --color-card: oklch(0.2067 0.0124 274.22);
+  --color-card-foreground: oklch(0.9676 0.007 247.9);
+  --color-popover: oklch(0.2067 0.0124 274.22);
+  --color-popover-foreground: oklch(0.9676 0.007 247.9);
+
+  /*  */
+  --color-accent: oklch(0.6018 0.2095 287.57);
+  --color-accent-foreground: oklch(0.175 0.009 274.34);
+  --color-destructive: oklch(0.5 0.2 0);
+  --color-destructive-foreground: oklch(0.175 0.009 274.34);
+  --color-muted: oklch(0.2694 0.0148 274.29);
+  --color-muted-foreground: oklch(0.6268 0.0347 256.8);
+
+  /*  */
+  --color-border: oklch(0.2889 0.0164 274.27);
+  --color-input: oklch(0.2889 0.0164 274.27);
+
+  --font-space-grotesk: 'Space Grotesk', sans-serif;
+}
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, hsl(252 87% 67%), hsl(200 95% 60%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}

@@ -1,7 +1,9 @@
 {
-    "conventionalCommits.scopes": [
-      "dashboard",
-      "landing",
-      "events/kanto-fest"
-    ]
+  "[astro]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "always"
+  },
+  "conventionalCommits.scopes": ["dashboard", "landing", "events/kanto-fest"]
 }
