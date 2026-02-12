@@ -1,0 +1,6 @@
+{
+    "conventionalCommits.scopes": [
+      "dashboard",
+      "events/kanto-fest"
+    ]
+}
