@@ -1,33 +1,21 @@
 {
   "name": "nexora",
+  "description": "",
+  "author": "Mauro Daniel Viveros <maurod.viveros@gmail.com> (TRY Ubbe)",
+  "license": "MIT",
+  "private": true,
   "type": "module",
-  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mauroviveros/nexora.git"
+  },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "check-types": "turbo check-types"
   },
-  "dependencies": {
-    "@astrojs/react": "^4.4.2",
-    "@astrojs/vercel": "^9.0.4",
-    "@fontsource/press-start-2p": "^5.2.7",
-    "@fontsource/vt323": "^5.2.7",
-    "@supabase/supabase-js": "^2.93.3",
-    "@tailwindcss/vite": "^4.1.18",
-    "astro": "^5.16.11",
-    "astro-icon": "^1.1.5",
-    "canvas-confetti": "^1.9.4",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "tailwindcss": "^4.1.18"
-  },
+  "packageManager": "pnpm@10.29.1",
   "devDependencies": {
-    "@iconify-json/devicon": "^1.2.57",
-    "@iconify-json/tabler": "^1.2.26",
-    "@iconify/react": "^6.0.2",
-    "@types/canvas-confetti": "^1.9.0",
-    "@types/react": "^19.2.10",
-    "@types/react-dom": "^19.2.3"
+    "turbo": "^2.8.7"
   }
 }
