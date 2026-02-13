@@ -27,11 +27,8 @@ const VARIANT_CLASSES = {
 const classes = [
   'inline-flex items-center justify-center ring-offset-background',
   'cursor-pointer rounded-md transition-colors font-medium whitespace-nowrap',
-  'focus-visible:outline-none',
-  'focus-visible:ring-2',
-  'focus-visible:ring-ring',
-  'focus-visible:ring-offset-2',
-  'disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0',
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+  '[&_svg]:pointer-events-none [&_svg]:shrink-0',
   SIZE_CLASSES[size],
   VARIANT_CLASSES[variant],
   className,
@@ -46,7 +43,10 @@ const classes = [
       target={target}
       tabindex={disabled ? -1 : tabindex}
       aria-disabled={disabled}
-      class:list={[classes]}
+      class:list={[
+        'aria-disabled:pointer-events-none aria-disabled:opacity-50',
+        classes
+      ]}
       {...anchorProps}
     >
       <slot />
@@ -54,7 +54,10 @@ const classes = [
   ) : (
     <button
       type={type}
-      class:list={[classes]}
+      class:list={[
+        'disabled:pointer-events-none disabled:opacity-50',
+        classes
+      ]}
       aria-disabled={disabled}
       disabled={disabled}
       tabindex={disabled ? -1 : tabindex}

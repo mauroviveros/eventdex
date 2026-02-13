@@ -6,7 +6,11 @@ interface Props extends HTMLAttributes<'a'> {
 }
 
 const { href, target, disabled, tabindex, class: className, ...props } = Astro.props as Props;
-const classes = ['hover:text-foreground transition-colors', className];
+const classes = [
+  'hover:text-foreground transition-colors',
+  'aria-disabled:pointer-events-none aria-disabled:opacity-50',
+  className
+];
 ---
 
 <a
