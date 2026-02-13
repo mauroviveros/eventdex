@@ -5,5 +5,10 @@
   "editor.codeActionsOnSave": {
     "source.fixAll": "always"
   },
-  "conventionalCommits.scopes": ["dashboard", "landing", "events/kanto-fest"]
+  "conventionalCommits.scopes": [
+    "dashboard",
+    "landing",
+    "events/kanto-fest",
+    "packages/ui"
+  ]
 }
