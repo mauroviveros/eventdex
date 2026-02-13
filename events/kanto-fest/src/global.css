@@ -1,0 +1,36 @@
+@import "tailwindcss";
+@import "@fontsource/fusion-pixel-8px-monospaced-jp";
+@source '../node_modules/@nexora/ui';
+
+@theme {
+  --color-background: oklch(0.9866 0.0218 95.28);
+  --color-foreground: oklch(0.2486 0.0195 264.13);
+  --color-primary: oklch(0.6125 0.2276 27.27);
+  --color-primary-foreground: oklch(0.9866 0.0218 95.28);
+  --color-secondary: oklch(0.5285 0.2051 262.12);
+  --color-secondary-foreground: oklch(1 0 0);
+
+  --color-card: oklch(0.9666 0.0349 95.42);
+  --color-card-foreground: oklch(0.2486 0.0195 264.13);
+  --color-popover: oklch(0.9666 0.0349 95.42);
+  --color-popover-foreground: oklch(0.2486 0.0195 264.13);
+
+  --color-muted: oklch(0.9109 0.0332 95.42);
+  --color-muted-foreground: oklch(0.4973 0.0233 264.34);
+  --color-accent: oklch(0.8634 0.1714 92.72);
+  --color-accent-foreground: oklch(0.2486 0.0195 264.13);
+
+  --color-border: oklch(0.7787 0.041262 67.1579);
+  --color-input: oklch(0.7787 0.041262 67.1579);
+  --color-ring: oklch(0.6125 0.2276 27.27);
+
+  --font-pixel: "Fusion Pixel 8px Monospaced JP", sans-serif;
+}
+
+@layer utilities {
+  .border-pixel {
+    border: 3px solid var(--color-foreground);
+    box-shadow: 4px 4px 0px var(--color-foreground);
+    border-radius: 0;
+  }
+}

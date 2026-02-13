@@ -17,5 +17,8 @@
   "packageManager": "pnpm@10.29.1",
   "devDependencies": {
     "turbo": "^2.8.7"
+  },
+  "dependencies": {
+    "ui": "link:../../Library/pnpm/global/5/node_modules/@nexora/ui"
   }
 }

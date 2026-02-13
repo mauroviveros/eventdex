@@ -10,6 +10,14 @@
   },
   "packageManager": "pnpm@10.29.1",
   "dependencies": {
-    "astro": "^5.17.1"
+    "@fontsource/fusion-pixel-8px-monospaced-jp": "^5.2.5",
+    "@nexora/ui": "workspace:*",
+    "@tailwindcss/vite": "^4.1.18",
+    "astro": "^5.17.1",
+    "astro-icon": "^1.1.5",
+    "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@iconify-json/pixel": "^1.2.1"
   }
 }

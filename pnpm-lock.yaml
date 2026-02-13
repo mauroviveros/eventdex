@@ -4,9 +4,16 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  ui: link:../../Library/pnpm/global/5/node_modules/@nexora/ui
+
 importers:
 
   .:
+    dependencies:
+      ui:
+        specifier: link:../../Library/pnpm/global/5/node_modules/@nexora/ui
+        version: link:../../Library/pnpm/global/5/node_modules/@nexora/ui
     devDependencies:
       turbo:
         specifier: ^2.8.7
@@ -60,9 +67,28 @@ importers:
 
   events/kanto-fest:
     dependencies:
+      '@fontsource/fusion-pixel-8px-monospaced-jp':
+        specifier: ^5.2.5
+        version: 5.2.5
+      '@nexora/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      '@tailwindcss/vite':
+        specifier: ^4.1.18
+        version: 4.1.18(vite@7.3.1(@types/node@20.19.33)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.97.1))
       astro:
         specifier: ^5.17.1
         version: 5.17.2(@types/node@20.19.33)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.1)(sass@1.97.1)(typescript@5.9.3)
+      astro-icon:
+        specifier: ^1.1.5
+        version: 1.1.5
+      tailwindcss:
+        specifier: ^4.1.18
+        version: 4.1.18
+    devDependencies:
+      '@iconify-json/pixel':
+        specifier: ^1.2.1
+        version: 1.2.1
 
   landing:
     dependencies:
@@ -960,6 +986,9 @@ packages:
   '@fontsource-variable/space-grotesk@5.2.10':
     resolution: {integrity: sha512-yJQO/o35/hAP3CFnpdFTwQku2yzJOae2HIpBmqkOVoxhhXJaQP3g+b6Jrz7u+eI7A5ZdCIf88uMWpBJdFiGr5w==}
 
+  '@fontsource/fusion-pixel-8px-monospaced-jp@5.2.5':
+    resolution: {integrity: sha512-twYCKRXXTNUFcPFIY4GsPZM+kmspZvCh7pxoNXJL9z7+ahUK4MS4VcJ8jWWr1dNc84qiKjW4/cdrGQX0bfPd9g==}
+
   '@fontsource/space-grotesk@5.2.10':
     resolution: {integrity: sha512-XNXEbT74OIITPqw2H6HXwPDp85fy43uxfBwFR5PU+9sLnjuLj12KlhVM9nZVN6q6dlKjkuN8JisW/OBxwxgUew==}
 
@@ -971,6 +1000,9 @@ packages:
 
   '@iconify-json/lucide@1.2.90':
     resolution: {integrity: sha512-dPn1pRhfBa9KR+EVpdyM1Rvw3T36hCKYxd6TxK1ifffiNt0f5yXx8ZVhqnzPH4Vkz87yLMj5xFCXomNrnzd2kQ==}
+
+  '@iconify-json/pixel@1.2.1':
+    resolution: {integrity: sha512-XwzURAMyZ/BJKeygh4PloKo9cUvS8GfcePueApzwrePvmwCwYT8SC581AQLxJHJl2FZjGWmUMVQ2FN3b9/cYyw==}
 
   '@iconify/tools@4.2.0':
     resolution: {integrity: sha512-WRxPva/ipxYkqZd1+CkEAQmd86dQmrwH0vwK89gmp2Kh2WyyVw57XbPng0NehP3x4V1LzLsXUneP1uMfTMZmUA==}
@@ -5280,6 +5312,8 @@ snapshots:
 
   '@fontsource-variable/space-grotesk@5.2.10': {}
 
+  '@fontsource/fusion-pixel-8px-monospaced-jp@5.2.5': {}
+
   '@fontsource/space-grotesk@5.2.10': {}
 
   '@hono/node-server@1.19.9(hono@4.11.9)':
@@ -5287,6 +5321,10 @@ snapshots:
       hono: 4.11.9
 
   '@iconify-json/lucide@1.2.90':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify-json/pixel@1.2.1':
     dependencies:
       '@iconify/types': 2.0.0
 

@@ -1,0 +1,15 @@
+---
+import Brand from '@components/Brand.astro';
+import { Button } from '@nexora/ui';
+import { Icon } from 'astro-icon/components';
+---
+<header class="border-b-4 border-foreground bg-primary py-3 px-4">
+  <div class="mx-auto max-w-3xl flex items-center justify-between">
+    <Brand />
+
+    <Button href="/profile" variant="solid" size="sm" color="accent" class="border-pixel uppercase text-xs font-bold">
+      <Icon name="pixel:user" class="size-3.5 mr-1 font-bold" />
+      Profile
+    </Button>
+  </div>
+</header>
