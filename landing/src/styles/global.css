@@ -1,6 +1,6 @@
 @import '@fontsource/space-grotesk/700.css';
 @import 'tailwindcss';
-@source 'node_modules/@nexora/ui';
+@source '../../node_modules/@nexora/ui';
 
 @theme {
   --color-background: oklch(0.175 0.009 274.34);
@@ -37,5 +37,12 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+
+  .border-gradient {
+    border: 1px solid transparent;
+    background:
+      linear-gradient(hsl(228 15% 10%), hsl(228 15% 10%)) padding-box,
+      linear-gradient(135deg, hsl(252 87% 67% / 0.5), hsl(200 95% 60% / 0.3)) border-box;
   }
 }

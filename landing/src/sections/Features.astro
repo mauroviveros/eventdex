@@ -1,0 +1,24 @@
+---
+import { FEATURES } from '@constants';
+import { Card } from '@nexora/ui';
+import { Icon } from 'astro-icon/components';
+---
+
+<section class="container mx-auto max-w-6xl px-6 py-24 text-center">
+  <p class="text-primary mb-3 text-sm font-semibold tracking-wider uppercase">Características</p>
+  <h2 id="features" class="3xl mb-16 font-bold md:text-4xl">Todo lo que necesitas para organizar eventos inolvidables</h2>
+
+  <article class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    {
+      FEATURES.map(({ title, description, icon }) => (
+        <Card class="border-gradient bg-card/50 hover:bg-card/80 p-6 backdrop-blur-sm transition-colors">
+          <span class="bg-primary/10 mx-auto mb-4 flex size-10 items-center justify-center rounded-lg">
+            <Icon name={icon} class="text-primary size-5" />
+          </span>
+          <h3 class="mb-2 text-lg font-semibold">{title}</h3>
+          <p class="text-muted-foreground text-sm leading-relaxed">{description}</p>
+        </Card>
+      ))
+    }
+  </article>
+</section>
