@@ -1,0 +1,66 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type BaseProps = {
+  size?: 'xs' | 'sm' | 'base' | 'lg';
+  variant?: 'solid' | 'outline' | 'ghost';
+  disabled?: boolean;
+};
+
+type Props = (BaseProps & { href: string } & HTMLAttributes<'a'>) | (BaseProps & { href?: undefined } & HTMLAttributes<'button'>);
+const { size = 'base', variant = 'solid', disabled, tabindex, class: className, ...props } = Astro.props as Props;
+const { type = 'button', ...buttonProps } = props as HTMLAttributes<'button'>;
+const { href, target, ...anchorProps } = props as HTMLAttributes<'a'>;
+
+const SIZE_CLASSES = {
+  xs: '',
+  sm: 'px-3 h-9 [&_svg]:size-4 text-sm gap-2',
+  base: '',
+  lg: 'text-base px-8 h-12 gap-2',
+};
+const VARIANT_CLASSES = {
+  solid: 'bg-primary text-primary-foreground hover:bg-primary/90',
+  outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+  ghost: 'hover:bg-accent hover:text-accent-foreground',
+};
+
+const classes = [
+  'inline-flex items-center justify-center ring-offset-background',
+  'cursor-pointer rounded-md transition-colors font-medium whitespace-nowrap',
+  'focus-visible:outline-none',
+  'focus-visible:ring-2',
+  'focus-visible:ring-ring',
+  'focus-visible:ring-offset-2',
+  'disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0',
+  SIZE_CLASSES[size],
+  VARIANT_CLASSES[variant],
+  className,
+];
+---
+
+{
+  href ? (
+    <a
+      href={href}
+      rel={target === '_blank' && anchorProps.rel ? 'noopener noreferrer' : anchorProps.rel}
+      target={target}
+      tabindex={disabled ? -1 : tabindex}
+      aria-disabled={disabled}
+      class:list={[classes]}
+      {...anchorProps}
+    >
+      <slot />
+    </a>
+  ) : (
+    <button
+      type={type}
+      class:list={[classes]}
+      aria-disabled={disabled}
+      disabled={disabled}
+      tabindex={disabled ? -1 : tabindex}
+      {...buttonProps}
+    >
+      <slot />
+    </button>
+  )
+}

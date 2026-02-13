@@ -1,0 +1,22 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'a'> {
+  disabled?: boolean;
+}
+
+const { href, target, disabled, tabindex, class: className, ...props } = Astro.props as Props;
+const classes = ['hover:text-foreground transition-colors', className];
+---
+
+<a
+  href={href}
+  rel={target === '_blank' && props.rel ? 'noopener noreferrer' : props.rel}
+  target={target}
+  tabindex={disabled ? -1 : tabindex}
+  aria-disabled={disabled}
+  class:list={[classes]}
+  {...props}
+>
+  <slot />
+</a>

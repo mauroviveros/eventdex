@@ -1,5 +1,6 @@
 @import '@fontsource/space-grotesk/700.css';
 @import 'tailwindcss';
+@source 'node_modules/@nexora/ui';
 
 @theme {
   --color-background: oklch(0.175 0.009 274.34);
