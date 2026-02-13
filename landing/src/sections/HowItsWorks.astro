@@ -1,0 +1,22 @@
+---
+import { STEPS_TO_USE } from '@constants';
+import { Icon } from 'astro-icon/components';
+---
+
+<section class="container mx-auto max-w-6xl px-6 py-24 text-center">
+  <p class="text-primary mb-3 text-sm font-semibold tracking-wider uppercase">Cómo funciona</p>
+  <h2 id="features" class="3xl mb-16 font-bold md:text-4xl">En funcionamiento en tres pasos</h2>
+
+  <article class="grid gap-8 md:grid-cols-3">
+    {
+      STEPS_TO_USE.map(({ title, description }, index) => (
+        <div class="relative text-center">
+          <span class="text-primary/10 mb-4 text-6xl font-bold">{index + 1}</span>
+          <h3 class="mb-2 text-xl font-semibold">{title}</h3>
+          <p class="text-muted-foreground text-sm">{description}</p>
+          <Icon name="lucide:chevron-right" class="text-primary/30 absolute top-8 -right-4 hidden size-6 md:block" />
+        </div>
+      ))
+    }
+  </article>
+</section>
