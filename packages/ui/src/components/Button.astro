@@ -1,14 +1,19 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
 
+type ButtonVariant = 'solid' | 'outline' | 'ghost';
+type ButtonColor = 'primary' | 'secondary' | 'accent' | 'destructive' | 'muted';
+type ButtonSize = 'xs' | 'sm' | 'base' | 'lg';
+
 type BaseProps = {
-  size?: 'xs' | 'sm' | 'base' | 'lg';
-  variant?: 'solid' | 'outline' | 'ghost';
+  size?: ButtonSize;
+  variant?: ButtonVariant;
+  color?: ButtonColor;
   disabled?: boolean;
 };
 
 type Props = (BaseProps & { href: string } & HTMLAttributes<'a'>) | (BaseProps & { href?: undefined } & HTMLAttributes<'button'>);
-const { size = 'base', variant = 'solid', disabled, tabindex, class: className, ...props } = Astro.props as Props;
+const { size = 'base', variant = 'solid', color = 'primary', disabled, tabindex, class: className, ...props } = Astro.props as Props;
 const { type = 'button', ...buttonProps } = props as HTMLAttributes<'button'>;
 const { href, target, ...anchorProps } = props as HTMLAttributes<'a'>;
 
@@ -18,11 +23,35 @@ const SIZE_CLASSES = {
   base: '',
   lg: 'text-base px-8 h-12 gap-2',
 };
-const VARIANT_CLASSES = {
-  solid: 'bg-primary text-primary-foreground hover:bg-primary/90',
-  outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
-  ghost: 'hover:bg-accent hover:text-accent-foreground',
+const VARIANT_CLASSES: Record<ButtonVariant, string> = {
+  solid: '',
+  outline: 'border border-input bg-background',
+  ghost: ''
 };
+
+const COLOR_CLASSES: Record<ButtonVariant, Record<ButtonColor, string>> = {
+  solid: {
+    primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
+    secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+    accent: 'bg-accent text-accent-foreground hover:bg-accent/90',
+    destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+    muted: 'bg-muted text-muted-foreground hover:bg-muted/80',
+  },
+  outline: {
+    primary: 'hover:bg-primary hover:text-primary-foreground',
+    secondary: 'hover:bg-secondary hover:text-secondary-foreground',
+    accent: 'hover:bg-accent hover:text-accent-foreground',
+    destructive: 'hover:bg-destructive hover:text-destructive-foreground',
+    muted: 'hover:bg-muted hover:text-muted-foreground',
+  },
+  ghost: {
+    primary: 'hover:bg-primary hover:text-primary-foreground',
+    secondary: 'hover:bg-secondary hover:text-secondary-foreground',
+    accent: 'hover:bg-accent hover:text-accent-foreground',
+    destructive: 'hover:bg-destructive hover:text-destructive-foreground',
+    muted: 'hover:bg-muted hover:text-muted-foreground',
+  },
+}
 
 const classes = [
   'inline-flex items-center justify-center ring-offset-background',
@@ -31,6 +60,7 @@ const classes = [
   '[&_svg]:pointer-events-none [&_svg]:shrink-0',
   SIZE_CLASSES[size],
   VARIANT_CLASSES[variant],
+  COLOR_CLASSES[variant][color],
   className,
 ];
 ---
