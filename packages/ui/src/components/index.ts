@@ -1,3 +1,1 @@
-export { default as Button } from './Button.astro';
-export { default as Card } from './Card.astro';
-export { default as Link } from './Link.astro';
+export { default as PoweredBy } from './PoweredBy.astro';
