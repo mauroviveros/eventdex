@@ -1,8 +1,6 @@
 packages:
-  - dashboard
+  - admin
+  - event/*
+  - events
   - landing
-  - events/*
   - packages/*
-
-overrides:
-  ui: link:../../Library/pnpm/global/5/node_modules/@nexora/ui

@@ -1,8 +1,0 @@
-{
-  "[astro]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "editor.codeActionsOnSave": {
-    "source.fixAll": "always"
-  }
-}
