@@ -1,24 +1,12 @@
 {
-  "name": "nexora",
+  "name": "conventra",
   "description": "",
   "author": "Mauro Daniel Viveros <maurod.viveros@gmail.com> (TRY Ubbe)",
-  "license": "MIT",
   "private": true,
-  "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mauroviveros/nexora.git"
+    "url": "git+https://github.com/mauroviveros/conventra.git"
   },
-  "scripts": {
-    "dev": "turbo dev",
-    "build": "turbo build",
-    "check-types": "turbo check-types"
-  },
-  "packageManager": "pnpm@10.29.1",
-  "devDependencies": {
-    "turbo": "^2.8.7"
-  },
-  "dependencies": {
-    "ui": "link:../../Library/pnpm/global/5/node_modules/@nexora/ui"
-  }
+  "scripts": {},
+  "packageManager": "pnpm@10.32.1"
 }
