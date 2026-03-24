@@ -1,1 +1,52 @@
 @import "tailwindcss";
+
+@theme {
+  --color-background: oklch(0.3019 0.04 123.8);
+  --color-foreground: oklch(0.9312 0.0624 122.59);
+  --color-card: oklch(0.3552 0.043 123.57);
+  --color-card-foreground: oklch(0.9312 0.0624 122.59);
+
+  /* --color-card: */
+  /* --color-card-foreground: */
+  /* --color-popover: */
+  /* --color-popover-foreground: */
+
+  /* --color-primary: */
+  /* --color-primary-foreground: */
+  /* --color-primary-accent: */
+  /* --color-secondary: */
+  /* --color-secondary-foreground: */
+  /* --color-secondary-accent: */
+
+  --color-border: oklch(0.4765 0.0706 124.12);
+  --color-input: oklch(0.4118 0.0517 123.66);
+  --color-ring: oklch(0.8408 0.1725 84.2);
+
+  --font-vt323: var(--fontsource-vt323);
+  --font-press-start-2p: var(--fontsource-press-start-2p);
+}
+
+@layer base {
+  body { @apply bg-background text-foreground font-vt323; }
+  * { @apply border-border outline-ring/50; }
+  button { @apply cursor-pointer; }
+}
+@layer components {
+
+  scanlines {
+    --pixel-shadow: 80 20% 10%;
+    @apply fixed inset-0 pointer-events-none z-40;
+
+    &::after{
+      @apply content-[''] absolute pointer-events-none inset-0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        oklch(0.3019 0.04 123.8 / 0.1) 2px,
+        hsl(var(--pixel-shadow) / 0.1) 2px,
+        hsl(var(--pixel-shadow) / 0.1) 4px
+      );
+    }
+  }
+}
