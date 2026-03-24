@@ -1,11 +1,12 @@
 ---
 import '@/global.css';
 import type { HTMLAttributes } from 'astro/types';
+import { Font } from 'astro:assets';
 interface Props extends HTMLAttributes<'body'> { title: string; }
-const { title, ...props } = Astro.props;
+const { title, class: className, ...props } = Astro.props;
 ---
 
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -13,8 +14,12 @@ const { title, ...props } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+
+    <Font cssVariable="--fontsource-press-start-2p" preload />
+    <Font cssVariable="--fontsource-vt323" preload />
   </head>
-  <body {...props}>
+  <body class:list={[className]} {...props}>
+    <scanlines />
     <slot />
   </body>
 </html>
