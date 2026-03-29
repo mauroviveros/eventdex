@@ -1,4 +1,3 @@
-import { Countdown } from "@/components/countdown";
 import { Card, CardContent } from "@/components/ui/card";
 import { SITE } from "@/constants";
 import { Icon } from "@iconify/react";
@@ -27,8 +26,6 @@ export const Hero = () => (
         </CardContent>
       </Card>
     </div>
-
-    <Countdown />
   </section>
 )
 
