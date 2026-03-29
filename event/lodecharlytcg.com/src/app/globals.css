@@ -40,7 +40,7 @@
   * { @apply border-border outline-ring/50; }
   button { @apply cursor-pointer; }
   scanlines {
-    @apply fixed inset-0 pointer-events-none z-40;
+    @apply fixed inset-0 pointer-events-none z-999;
     @apply after:content-[''] after:absolute after:pointer-events-none after:inset-0;
     &::after{
       background: repeating-linear-gradient(
