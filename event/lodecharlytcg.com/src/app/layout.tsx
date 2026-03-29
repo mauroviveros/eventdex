@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { VT323, Press_Start_2P } from 'next/font/google';
 import { cn } from "@/utils";
 import "./globals.css";
+import { Header } from "./_components/layout/header";
 
 const vt323 = VT323({
   subsets: ['latin'],
@@ -24,6 +25,8 @@ export default function RootLayout({children}: Readonly<{children: React.ReactNo
   return (
     <html lang="es" className={cn("h-full", "antialiased", vt323.variable, pressStart.variable)}>
       <body className="min-h-dvh flex flex-col">
+        <Header />
+
         <scanlines />
         <main className="container mx-auto mt-16 grow">
           {children}
