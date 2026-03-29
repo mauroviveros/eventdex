@@ -1,8 +1,8 @@
 ---
-import '@/global.css';
-import type { HTMLAttributes } from 'astro/types';
-import { Font } from 'astro:assets';
-interface Props extends HTMLAttributes<'body'> { title: string; }
+import "@/global.css";
+import type { HTMLAttributes } from "astro/types";
+import { Font } from "astro:assets";
+interface Props extends HTMLAttributes<"body"> { title: string; }
 const { title, class: className, ...props } = Astro.props;
 ---
 

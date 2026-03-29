@@ -11,6 +11,10 @@
     {
       "name": "button",
       "version": "2.3.2"
+    },
+    {
+      "name": "card",
+      "version": "2.0.1"
     }
   ]
 }
