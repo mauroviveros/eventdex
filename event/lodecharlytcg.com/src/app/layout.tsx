@@ -24,6 +24,7 @@ export default function RootLayout({children}: Readonly<{children: React.ReactNo
   return (
     <html lang="es" className={cn("h-full", "antialiased", vt323.variable, pressStart.variable)}>
       <body className="min-h-dvh flex flex-col">
+        <scanlines />
         <main className="container mx-auto mt-16 grow">
           {children}
         </main>
