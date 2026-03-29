@@ -2,7 +2,7 @@
 import type { HTMLAttributes } from "astro/types";
 import Body from "./Body.astro";
 import Header from "./components/Header.astro";
-interface Props extends HTMLAttributes<'main'> { title: string; }
+interface Props extends HTMLAttributes<"main"> { title: string; }
 const { title, class: className, ...props } = Astro.props;
 ---
 
