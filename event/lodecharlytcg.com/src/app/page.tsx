@@ -1,7 +1,9 @@
 import { Countdown } from "@/components/countdown";
 import { Card, CardContent } from "@/components/ui/card";
 import { SITE } from "@/constants";
+import { createClient } from "@/libs/supabase/server";
 import { Icon } from "@iconify/react";
+import { cookies } from "next/headers";
 
 export const Hero = () => (
   <section className="flex-1 min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center px-2 py-8 gap-8">
@@ -32,7 +34,10 @@ export const Hero = () => (
   </section>
 )
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient((await cookies()));
+  const { data, error } = await supabase.from("events").select();
+
   return (
     <>
       <Hero/>
