@@ -24,9 +24,11 @@
   --color-border: oklch(0.4765 0.0706 124.12);
   --color-input: oklch(0.4118 0.0517 123.66);
   --color-ring: oklch(0.8408 0.1725 84.2);
+}
 
-  --font-vt323: var(--fontsource-vt323);
-  --font-press-start-2p: var(--fontsource-press-start-2p);
+@theme inline {
+  --font-vt323: var(--font-vt323);
+  --font-press-start: var(--font-press-start);
 }
 
 :root {

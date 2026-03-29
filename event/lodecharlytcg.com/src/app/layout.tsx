@@ -23,8 +23,10 @@ export const metadata: Metadata = {
 export default function RootLayout({children}: Readonly<{children: React.ReactNode;}>) {
   return (
     <html lang="es" className={cn("h-full", "antialiased", vt323.variable, pressStart.variable)}>
-      <body className="min-h-full flex flex-col">
-        {children}
+      <body className="min-h-dvh flex flex-col">
+        <main className="container mx-auto mt-16 grow">
+          {children}
+        </main>
       </body>
     </html>
   );
