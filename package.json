@@ -1,11 +1,11 @@
 {
-  "name": "conventra",
+  "name": "eventdex",
   "description": "",
   "author": "Mauro Daniel Viveros <maurod.viveros@gmail.com> (TRY Ubbe)",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mauroviveros/conventra.git"
+    "url": "git+https://github.com/mauroviveros/eventdex.git"
   },
   "scripts": {},
   "packageManager": "pnpm@10.32.1"

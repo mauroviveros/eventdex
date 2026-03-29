@@ -1,5 +1,5 @@
 {
-  "name": "@conventra-event/lo-de-charly-tcg-2026",
+  "name": "@eventdex/lodecharlytcg",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
