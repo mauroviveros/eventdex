@@ -3,6 +3,8 @@ import { VT323, Press_Start_2P } from 'next/font/google';
 import { cn } from "@/utils";
 import "./globals.css";
 import { Header } from "./_components/layout/header";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const vt323 = VT323({
   subsets: ['latin'],
@@ -24,6 +26,8 @@ export const metadata: Metadata = {
 export default function RootLayout({children}: Readonly<{children: React.ReactNode;}>) {
   return (
     <html lang="es" className={cn("h-full", "antialiased", vt323.variable, pressStart.variable)}>
+      <Analytics />
+      <SpeedInsights />
       <body className="min-h-dvh flex flex-col">
         <Header />
 
