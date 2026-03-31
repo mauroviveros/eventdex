@@ -6,7 +6,7 @@ import type { User } from "@supabase/supabase-js"
 import { useCallback, useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { User as UserIcon } from "@nsmr/pixelart-react"
+import { GoogleOriginalIcon } from "@devicon/react";
 
 const Profile = ({ user }: { user: User }) => (
   <>
@@ -66,10 +66,10 @@ export const Account = () => {
 
   return (
     <Button
-      className="rounded-none h-full border-0 w-62.5"
+      className="rounded-none h-full max-w-16 md:max-w-none border-0 w-62.5"
       type="button"
       onClick={!!user ? undefined : () => void handleClick()}
-      variant="default"
+      variant={!!user ? "default" : "outline"}
       asChild={!!user}
     >
       {!!user ? (
@@ -78,8 +78,8 @@ export const Account = () => {
         </Link>
       ) : (
         <>
-          <UserIcon className="size-6" />
-          <span className="text-lg font-bold">Iniciar sesión</span>
+          <GoogleOriginalIcon className="text-2xl" />
+          <span className="text-xl font-bold hidden md:block">Iniciar sesión</span>
         </>
       )}
     </Button>
