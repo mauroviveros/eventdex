@@ -29,14 +29,10 @@ const getTimeLeft = (targetDate: number): CountdownTime => {
 
 export const useCountdown = (targetDate: number) => {
   const [timeLeft, setTimeLeft] = useState<CountdownTime>(ZERO_TIME)
-  const [isReady, setIsReady] = useState(false)
 
   useEffect(() => {
-    setIsReady(false)
-
     const { days, hours, minutes, seconds } = getTimeLeft(targetDate)
     setTimeLeft({ days, hours, minutes, seconds })
-    setIsReady(true)
 
     if (days === 0 && hours === 0 && minutes === 0 && seconds === 0) return
 
@@ -55,5 +51,5 @@ export const useCountdown = (targetDate: number) => {
     timeLeft.minutes === 0 &&
     timeLeft.seconds === 0
 
-  return { ...timeLeft, isComplete, isReady }
+  return { ...timeLeft, isComplete }
 }

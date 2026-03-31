@@ -1,12 +1,12 @@
 "use client"
 
-import { Button } from "./ui/button"
 import { createClient } from "@/libs/supabase/client"
+import { GoogleOriginalIcon } from "@devicon/react"
 import type { User } from "@supabase/supabase-js"
-import { useCallback, useEffect, useRef, useState } from "react"
-import Link from "next/link"
 import Image from "next/image"
-import { GoogleOriginalIcon } from "@devicon/react";
+import Link from "next/link"
+import { useEffect, useState } from "react"
+import { Button } from "./ui/button"
 
 const Profile = ({ user }: { user: User }) => (
   <>
@@ -28,39 +28,21 @@ const Profile = ({ user }: { user: User }) => (
 )
 
 export const Account = () => {
-  const supabaseRef = useRef<ReturnType<typeof createClient> | null>(null)
-  if (!supabaseRef.current) supabaseRef.current = createClient()
-  const supabase = supabaseRef.current
   const [user, setUser] = useState<User | null | undefined>(undefined)
 
   useEffect(() => {
-    let mounted = true
-
-    const syncUser = async () => {
-      const { data } = await supabase.auth.getUser()
-      if (!mounted) return
-      setUser(data.user)
-    }
-
-    void syncUser()
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    const supabase = createClient();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
     })
+    return () => subscription.unsubscribe();
+  }, []);
 
-    return () => {
-      mounted = false
-      subscription.unsubscribe()
-    }
-  }, [supabase])
-
-  const handleClick = useCallback(async () => {
-    if (user) return
+  const signInWithGoogle = async () => {
+    const supabase = createClient();
     const { error } = await supabase.auth.signInWithOAuth({ provider: "google" })
-    if (error) console.error("No se pudo iniciar sesion con Google", error)
-  }, [supabase, user])
+    if (error) console.error("No se pudo iniciar sesion con Google", error);
+  }
 
   if (user === undefined) return null
 
@@ -68,7 +50,7 @@ export const Account = () => {
     <Button
       className="rounded-none h-full max-w-16 md:max-w-none border-0 w-62.5"
       type="button"
-      onClick={!!user ? undefined : () => void handleClick()}
+      onClick={!!user ? undefined : () => signInWithGoogle()}
       variant={!!user ? "default" : "outline"}
       asChild={!!user}
     >
