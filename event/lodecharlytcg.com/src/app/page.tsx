@@ -2,7 +2,7 @@ import { Countdown } from "@/components/countdown";
 import { Card, CardContent } from "@/components/ui/card";
 import { SITE } from "@/constants";
 import { createClient } from "@/libs/supabase/server";
-import { Icon } from "@iconify/react";
+import { Clock } from "@nsmr/pixelart-react";
 import { cookies } from "next/headers";
 
 export const Hero = () => (
@@ -10,7 +10,7 @@ export const Hero = () => (
     <div className="max-w-3xl mx-auto flex flex-col items-center">
       <Card size="sm" className="mx-4">
         <CardContent className="flex items-center gap-2">
-          <Icon icon="pixelarticons:clock" className="text-muted-foreground size-5" />
+          <Clock className="text-muted-foreground size-5" amplitude={10} />
           <span className="text-xl text-accent">{SITE.schedules}</span>
         </CardContent>
       </Card>
