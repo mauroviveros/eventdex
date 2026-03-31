@@ -10,6 +10,9 @@ importers:
 
   event/lodecharlytcg.com:
     dependencies:
+      '@nsmr/pixelart-react':
+        specifier: ^2.0.0
+        version: 2.0.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@supabase/ssr':
         specifier: ^0.9.0
         version: 0.9.0(@supabase/supabase-js@2.100.1)
@@ -50,12 +53,6 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0
     devDependencies:
-      '@iconify-json/pixelarticons':
-        specifier: ^1.2.4
-        version: 1.2.4
-      '@iconify/react':
-        specifier: ^6.0.2
-        version: 6.0.2(react@19.2.4)
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.2.2
@@ -309,17 +306,6 @@ packages:
   '@humanwhocodes/retry@0.4.3':
     resolution: {integrity: sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==}
     engines: {node: '>=18.18'}
-
-  '@iconify-json/pixelarticons@1.2.4':
-    resolution: {integrity: sha512-nADJKEI3mlxDSmJMLqGvNuvNl1TGa+VbFJIwrtj/8vUA4m15qPNiwxMyw8YxW3gVokuO9MNU462B8uK1hb4rqw==}
-
-  '@iconify/react@6.0.2':
-    resolution: {integrity: sha512-SMmC2sactfpJD427WJEDN6PMyznTFMhByK9yLW0gOTtnjzzbsi/Ke/XqsumsavFPwNiXs8jSiYeZTmLCLwO+Fg==}
-    peerDependencies:
-      react: '>=16'
-
-  '@iconify/types@2.0.0':
-    resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
 
   '@img/colour@1.1.0':
     resolution: {integrity: sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ==}
@@ -627,6 +613,12 @@ packages:
   '@nolyfill/is-core-module@1.0.39':
     resolution: {integrity: sha512-nn5ozdjYQpUCZlWGuxcJY/KpxkWQs4DcbMCmKojjyrYDEAGy4Ce19NN4v5MduafTwJlbKc99UA8YhSVqq9yPZA==}
     engines: {node: '>=12.4.0'}
+
+  '@nsmr/pixelart-react@2.0.0':
+    resolution: {integrity: sha512-hD9CeUZp10jemfnBQdN+mAMiIGnzcNDG8DoGcHUAvO6JgN1k7dbWscmY5HBqmWglnHliwcq4cY9ICQzjsaWeqQ==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
 
   '@open-draft/deferred-promise@2.2.0':
     resolution: {integrity: sha512-CecwLWx3rhxVQF6V4bAgPS5t+So2sTbPgAzafKkVizyi7tlwpcFpdFqq+wqF2OwNBmqFuu6tOyouTuxgpMfzmA==}
@@ -4148,17 +4140,6 @@ snapshots:
 
   '@humanwhocodes/retry@0.4.3': {}
 
-  '@iconify-json/pixelarticons@1.2.4':
-    dependencies:
-      '@iconify/types': 2.0.0
-
-  '@iconify/react@6.0.2(react@19.2.4)':
-    dependencies:
-      '@iconify/types': 2.0.0
-      react: 19.2.4
-
-  '@iconify/types@2.0.0': {}
-
   '@img/colour@1.1.0':
     optional: true
 
@@ -4392,6 +4373,11 @@ snapshots:
       fastq: 1.20.1
 
   '@nolyfill/is-core-module@1.0.39': {}
+
+  '@nsmr/pixelart-react@2.0.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+    dependencies:
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
 
   '@open-draft/deferred-promise@2.2.0': {}
 
