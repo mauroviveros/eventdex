@@ -4,7 +4,7 @@ import { SITE } from "@/constants";
 import { Clock } from "@nsmr/pixelart-react";
 
 export const Hero = () => (
-  <section className="flex-1 min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center px-2 py-8 gap-8">
+  <section className="flex-1 min-h-[calc(100dvh-4rem)] flex flex-col items-center justify-center px-2 py-8 gap-8">
     <div className="max-w-3xl mx-auto flex flex-col items-center">
       <Card size="sm" className="mx-4">
         <CardContent className="flex items-center gap-2">
