@@ -15,7 +15,7 @@ export const Hero = async () => {
       schedules:event_schedules(*)
     `)
     .eq('slug', 'lodecharlytcg.com')
-    .single();
+    .single()
 
   const config = (event?.config || {}) as Record<string, string>;
   console.log(new Date())
@@ -46,7 +46,7 @@ export const Hero = async () => {
       </div>
 
       {event?.schedules?.[0]?.start_datetime && (
-        <Countdown start_datetime={event.schedules[0].start_datetime} />
+        <Countdown start_datetime={event.schedules[0].start_datetime} initial={Date.now()} />
       )}
     </section>
   )

@@ -23,8 +23,8 @@ const compareTimes = (a: CountdownTime, b: CountdownTime) => {
   )
 }
 
-const getTimeLeft = (ms: number): CountdownTime => {
-  const diff = ms - Date.now()
+const getTimeLeft = (ms: number, now = Date.now()): CountdownTime => {
+  const diff = ms - now
 
   if (diff <= 0) return ZERO_TIME
 
@@ -36,17 +36,24 @@ const getTimeLeft = (ms: number): CountdownTime => {
   }
 }
 
-export const useCountdown = (ms: number) => {
-  const [timeLeft, setTimeLeft] = useState<CountdownTime>(() => ZERO_TIME)
+export const useCountdown = (ms: number, initial?: number) => {
+  const [timeLeft, setTimeLeft] = useState<CountdownTime>(() => getTimeLeft(ms, initial))
 
   useEffect(() => {
+    const initialClientTimeLeft = getTimeLeft(ms)
+    setTimeLeft((prev) => {
+      if (compareTimes(prev, initialClientTimeLeft)) return prev
+      return initialClientTimeLeft
+    })
+    if (compareTimes(initialClientTimeLeft, ZERO_TIME)) return
+
     const interval = setInterval(() => {
       const currentTimeLeft = getTimeLeft(ms)
 
       setTimeLeft((prev) => {
         if (compareTimes(prev, currentTimeLeft)) return prev
         return currentTimeLeft
-      });
+      })
 
       if (compareTimes(currentTimeLeft, ZERO_TIME)) clearInterval(interval)
     }, 1000)
