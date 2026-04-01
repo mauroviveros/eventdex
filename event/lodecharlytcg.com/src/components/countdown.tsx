@@ -5,9 +5,14 @@ import { Tables } from "@/types"
 import { useMemo } from "react"
 import { Card, CardContent } from "./ui/card"
 
-export const Countdown = ({ start_datetime }: { start_datetime: Tables<"event_schedules">["start_datetime"] }) => {
+type Props = {
+  start_datetime: Tables<"event_schedules">["start_datetime"]
+  initial: number
+}
+
+export const Countdown = ({ start_datetime, initial }: Props) => {
   const targetMS = useMemo(() => new Date(start_datetime).getTime(), [start_datetime])
-  const { days, hours, minutes, seconds } = useCountdown(targetMS)
+  const { days, hours, minutes, seconds } = useCountdown(targetMS, initial)
   const units = useMemo(
     () => [
       { label: "Días", value: days.toString().padStart(2, "0") },
