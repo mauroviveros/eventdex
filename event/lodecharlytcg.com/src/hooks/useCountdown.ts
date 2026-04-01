@@ -14,8 +14,17 @@ const ZERO_TIME: CountdownTime = {
   seconds: 0,
 }
 
-const getTimeLeft = (targetDate: number): CountdownTime => {
-  const diff = targetDate - Date.now()
+const compareTimes = (a: CountdownTime, b: CountdownTime) => {
+  return (
+    a.days === b.days &&
+    a.hours === b.hours &&
+    a.minutes === b.minutes &&
+    a.seconds === b.seconds
+  )
+}
+
+const getTimeLeft = (ms: number): CountdownTime => {
+  const diff = ms - Date.now()
 
   if (diff <= 0) return ZERO_TIME
 
@@ -27,29 +36,24 @@ const getTimeLeft = (targetDate: number): CountdownTime => {
   }
 }
 
-export const useCountdown = (targetDate: number) => {
-  const [timeLeft, setTimeLeft] = useState<CountdownTime>(ZERO_TIME)
+export const useCountdown = (ms: number) => {
+  const [timeLeft, setTimeLeft] = useState<CountdownTime>(() => getTimeLeft(ms))
 
   useEffect(() => {
-    const { days, hours, minutes, seconds } = getTimeLeft(targetDate)
-    setTimeLeft({ days, hours, minutes, seconds })
-
-    if (days === 0 && hours === 0 && minutes === 0 && seconds === 0) return
-
     const interval = setInterval(() => {
-      const { days, hours, minutes, seconds } = getTimeLeft(targetDate)
-      setTimeLeft({ days, hours, minutes, seconds })
-      if (days === 0 && hours === 0 && minutes === 0 && seconds === 0) clearInterval(interval)
+      const currentTimeLeft = getTimeLeft(ms)
+
+      setTimeLeft((prev) => {
+        if (compareTimes(prev, currentTimeLeft)) return prev
+        return currentTimeLeft
+      });
+
+      if (compareTimes(currentTimeLeft, ZERO_TIME)) clearInterval(interval)
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [targetDate])
+  }, [ms])
 
-  const isComplete =
-    timeLeft.days === 0 &&
-    timeLeft.hours === 0 &&
-    timeLeft.minutes === 0 &&
-    timeLeft.seconds === 0
-
+  const isComplete = compareTimes(timeLeft, ZERO_TIME)
   return { ...timeLeft, isComplete }
 }
