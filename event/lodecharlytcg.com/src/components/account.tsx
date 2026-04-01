@@ -35,7 +35,11 @@ export const Account = () => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       const user = session?.user ?? null;
-      setUser((prev) => prev?.id !== user?.id ? user : prev);
+      setUser((prev) => {
+        if (user === null) return null;
+        if (prev?.id === user.id) return prev;
+        return user;
+      });
     })
     return () => subscription.unsubscribe();
   }, [supabase]);
