@@ -1,11 +1,12 @@
 "use client"
 
 import { useCountdown } from "@/hooks/useCountdown"
+import { Tables } from "@/types"
 import { useMemo } from "react"
 import { Card, CardContent } from "./ui/card"
 
-export const Countdown = () => {
-  const targetMS = useMemo(() => new Date(2026, 2, 31, 23, 59, 59, 999).getTime(), [])
+export const Countdown = ({ start_datetime }: { start_datetime: Tables<"event_schedules">["start_datetime"] }) => {
+  const targetMS = useMemo(() => new Date(start_datetime).getTime(), [start_datetime])
   const { days, hours, minutes, seconds } = useCountdown(targetMS)
   const units = useMemo(
     () => [
