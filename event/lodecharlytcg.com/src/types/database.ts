@@ -21,7 +21,6 @@ export type Database = {
           country: string
           created_at: string
           event_id: string
-          id: number
           latitude: number | null
           longitude: number | null
           name: string
@@ -34,7 +33,6 @@ export type Database = {
           country: string
           created_at?: string
           event_id: string
-          id?: number
           latitude?: number | null
           longitude?: number | null
           name: string
@@ -47,7 +45,6 @@ export type Database = {
           country?: string
           created_at?: string
           event_id?: string
-          id?: number
           latitude?: number | null
           longitude?: number | null
           name?: string
@@ -58,13 +55,13 @@ export type Database = {
           {
             foreignKeyName: "event_locations_event_id_fkey"
             columns: ["event_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "events"
             referencedColumns: ["id"]
           },
         ]
       }
-      event_sessions: {
+      event_schedules: {
         Row: {
           created_at: string
           end_datetime: string
