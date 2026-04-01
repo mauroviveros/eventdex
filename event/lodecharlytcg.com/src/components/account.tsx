@@ -2,10 +2,11 @@
 
 import { createClient } from "@/libs/supabase/client"
 import { GoogleOriginalIcon } from "@devicon/react"
+import { Loader } from "@nsmr/pixelart-react"
 import type { User } from "@supabase/supabase-js"
 import Image from "next/image"
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Button } from "./ui/button"
 
 const Profile = ({ user }: { user: User }) => (
@@ -28,41 +29,46 @@ const Profile = ({ user }: { user: User }) => (
 )
 
 export const Account = () => {
+  const supabase = useMemo(() => createClient(), []);
   const [user, setUser] = useState<User | null | undefined>(undefined)
 
   useEffect(() => {
-    const supabase = createClient();
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
+      const user = session?.user ?? null;
+      setUser((prev) => prev?.id !== user?.id ? user : prev);
     })
     return () => subscription.unsubscribe();
-  }, []);
+  }, [supabase]);
 
   const signInWithGoogle = async () => {
-    const supabase = createClient();
     const { error } = await supabase.auth.signInWithOAuth({ provider: "google" })
-    if (error) console.error("No se pudo iniciar sesion con Google", error);
+    if (error) console.error(error);
   }
 
-  if (user === undefined) return null
-
+  const isLoading = user === undefined;
+  const isAuthenticated = !!user;
   return (
     <Button
       className="rounded-none h-full max-w-16 md:max-w-none border-0 w-62.5"
       type="button"
-      onClick={!!user ? undefined : () => signInWithGoogle()}
-      variant={!!user ? "default" : "outline"}
-      asChild={!!user}
+      onClick={!isAuthenticated ? signInWithGoogle : undefined}
+      variant={isAuthenticated ? "default" : "outline"}
+      asChild={isAuthenticated}
+      disabled={isLoading}
     >
-      {!!user ? (
-        <Link href="/perfil">
-          <Profile user={user} />
-        </Link>
+      {isLoading ? (
+        <Loader className="size-6 animate-spin" />
       ) : (
-        <>
-          <GoogleOriginalIcon className="text-2xl" />
-          <span className="text-xl font-bold hidden md:block">Iniciar sesión</span>
-        </>
+        isAuthenticated ? (
+          <Link href="/perfil">
+            <Profile user={user} />
+          </Link>
+        ) : (
+          <>
+            <GoogleOriginalIcon className="text-2xl" />
+            <span className="text-xl font-bold hidden md:block">Iniciar sesión</span>
+          </>
+        )
       )}
     </Button>
   )
