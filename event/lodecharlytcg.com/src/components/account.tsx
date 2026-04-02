@@ -1,12 +1,13 @@
 "use client"
 
+import { signInWithGoogle } from "@/app/api/auth/signin/actions"
 import { createClient } from "@/libs/supabase/client"
 import { GoogleOriginalIcon } from "@devicon/react"
 import { Loader } from "@nsmr/pixelart-react"
 import type { User } from "@supabase/supabase-js"
 import Image from "next/image"
 import Link from "next/link"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, useTransition } from "react"
 import { Button } from "./ui/button"
 
 const Profile = ({ user }: { user: User }) => (
@@ -31,6 +32,7 @@ const Profile = ({ user }: { user: User }) => (
 export const Account = () => {
   const supabase = useMemo(() => createClient(), []);
   const [user, setUser] = useState<User | null | undefined>(undefined)
+  const [isSigningIn, startSignInTransition] = useTransition()
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -44,23 +46,25 @@ export const Account = () => {
     return () => subscription.unsubscribe();
   }, [supabase]);
 
-  const signInWithGoogle = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({ provider: "google" })
-    if (error) console.error(error);
+  const handleSignInWithGoogle = () => {
+    startSignInTransition(async () => {
+      await signInWithGoogle()
+    })
   }
 
   const isLoading = user === undefined;
+  const isActionLoading = !user && isSigningIn;
   const isAuthenticated = !!user;
   return (
     <Button
       className="rounded-none h-full max-w-16 md:max-w-none border-0 w-62.5"
       type="button"
-      onClick={!isAuthenticated ? signInWithGoogle : undefined}
+      onClick={!isAuthenticated ? handleSignInWithGoogle : undefined}
       variant={isAuthenticated ? "default" : "outline"}
       asChild={isAuthenticated}
-      disabled={isLoading}
+      disabled={isLoading || isActionLoading}
     >
-      {isLoading ? (
+      {isLoading || isActionLoading ? (
         <Loader className="size-6 animate-spin" />
       ) : (
         isAuthenticated ? (

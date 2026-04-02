@@ -18,7 +18,6 @@ export const Hero = async () => {
     .single()
 
   const config = (event?.config || {}) as Record<string, string>;
-  console.log(new Date())
 
   return (
     <section className="flex-1 min-h-[calc(100dvh-4rem)] flex flex-col items-center justify-center px-2 py-8 gap-8">
