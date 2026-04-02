@@ -20,6 +20,7 @@
   --color-muted: oklch(0.4032 0.042097 123.2527);
   --color-muted-foreground: oklch(0.7506 0.086 123.44);
 
+  --color-destructive: oklch(0.6356 0.2082 25.38);
   --color-border: oklch(0.4765 0.0706 124.12);
   --color-input: oklch(0.4118 0.0517 123.66);
   --color-ring: oklch(0.8408 0.1725 84.2);

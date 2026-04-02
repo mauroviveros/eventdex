@@ -4,10 +4,10 @@ import { createClient } from "@/libs/supabase/client"
 import { Loader } from "@nsmr/pixelart-react"
 import type { User } from "@supabase/supabase-js"
 import { useEffect, useMemo, useState } from "react"
-import { Profile } from "./profile"
-import { SignIn } from "./signin"
+import Profile from "./profile"
+import SignIn from "./signin"
 
-export const Account = () => {
+export default function Account() {
   const supabase = useMemo(() => createClient(), [])
   const [user, setUser] = useState<User | null | undefined>(undefined)
 

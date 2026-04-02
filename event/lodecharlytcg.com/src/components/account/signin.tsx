@@ -6,7 +6,7 @@ import { Loader } from "@nsmr/pixelart-react"
 import { useTransition } from "react"
 import { Button } from "../ui/button"
 
-export const SignIn = () => {
+export default function SignIn() {
   const [isSigningIn, startSignInTransition] = useTransition()
 
   const handleSignInWithGoogle = () => {

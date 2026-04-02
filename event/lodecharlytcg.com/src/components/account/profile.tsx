@@ -8,9 +8,9 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useMemo } from "react"
 import { Button } from "../ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
 
-export const Profile = ({ user }: { user: User }) => {
+export default function Profile({ user }: { user: User }) {
   const supabase = useMemo(() => createClient(), [])
   const router = useRouter()
 
@@ -42,15 +42,17 @@ export const Profile = ({ user }: { user: User }) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="rounded-none">
-        <DropdownMenuItem variant="default" asChild>
+        <DropdownMenuItem className="text-lg" asChild>
           <Link href="/perfil">
-            <UserIcon />
+            <UserIcon className="size-5" />
             Mi perfil
           </Link>
         </DropdownMenuItem>
 
-        <DropdownMenuItem variant="destructive" onSelect={handleSignOut}>
-          <Logout />
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem variant="destructive" className="text-lg" onSelect={handleSignOut}>
+          <Logout className="size-5" />
           Cerrar sesión
         </DropdownMenuItem>
       </DropdownMenuContent>
