@@ -33,7 +33,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 
         <Header />
 
-        <main className="container mx-auto mt-16 grow">
+        <main className="container mx-auto mt-14 pt-2 grow">
           {children}
         </main>
       </body>
