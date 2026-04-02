@@ -17,7 +17,7 @@ export const SignIn = () => {
   return (
     <Button
       type="button"
-      className="h-full rounded-none border-y-0 max-w-full w-full"
+      className="h-full rounded-none border-y-0 max-w-full w-full gap-0"
       onClick={handleSignInWithGoogle}
       variant="outline"
       disabled={isSigningIn}

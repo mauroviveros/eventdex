@@ -28,7 +28,7 @@ export const Account = () => {
   }, [supabase])
 
   return (
-    <article className="h-16 max-w-20 md:max-w-none w-62.5 flex items-center justify-center">
+    <article className="h-full max-w-20 md:max-w-none w-62.5 flex items-center justify-center">
       {user === undefined && <Loader className="size-6 animate-spin text-foreground/50" />}
       {user === null && <SignIn />}
       {user && <Profile user={user} />}

@@ -22,7 +22,7 @@ export const Profile = ({ user }: { user: User }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="h-14 rounded-none max-w-full" type="button" variant="default">
+        <Button className="h-full rounded-none max-w-full" type="button" variant="default">
           <Image
             src={user.user_metadata.avatar_url}
             alt={user.user_metadata.full_name}
