@@ -1,10 +1,10 @@
+import Account from "@/components/account";
+import "@/globals.css";
 import { cn } from "@/utils";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Press_Start_2P, VT323 } from 'next/font/google';
-import { Header } from "./_components/layout/header";
-import "./globals.css";
 
 const vt323 = VT323({
   subsets: ['latin'],
@@ -31,7 +31,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <SpeedInsights />
         <scanlines />
 
-        <Header />
+        <header className="border-b fixed top-0 left-0 right-0 z-50 bg-background/50 backdrop-blur-sm">
+          <div className="container mx-auto h-14 flex items-center justify-end gap-4">
+            <Account />
+          </div>
+        </header>
 
         <main className="container mx-auto mt-14 px-4 pt-2 grow">
           {children}
