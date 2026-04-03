@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/libs/supabase/client";
 import { formatScheduleLabel } from "@/utils";
 import { Clock } from "@nsmr/pixelart-react";
+import { DateTime } from "luxon";
 import { useMemo } from "react";
 
 export default async function Home() {
@@ -43,7 +44,7 @@ export default async function Home() {
       </div>
 
       {event?.schedules?.[0]?.start_datetime && (
-        <Countdown start_datetime={event.schedules[0].start_datetime} />
+        <Countdown start_datetime={event.schedules[0].start_datetime} initial={DateTime.now().toMillis()} />
       )}
     </section>
   )

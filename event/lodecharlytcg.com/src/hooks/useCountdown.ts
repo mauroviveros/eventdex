@@ -37,10 +37,10 @@ const getTimeLeft = (ms: number, now = Date.now()): CountdownTime => {
 }
 
 export const useCountdown = (ms: number, initial?: number) => {
-  const [timeLeft, setTimeLeft] = useState<CountdownTime>(() => ZERO_TIME)
+  const [timeLeft, setTimeLeft] = useState<CountdownTime>(() => getTimeLeft(ms, initial))
 
   useEffect(() => {
-    const initialClientTimeLeft = getTimeLeft(ms)
+    const initialClientTimeLeft = getTimeLeft(ms, initial)
     setTimeLeft((prev) => {
       if (compareTimes(prev, initialClientTimeLeft)) return prev
       return initialClientTimeLeft
