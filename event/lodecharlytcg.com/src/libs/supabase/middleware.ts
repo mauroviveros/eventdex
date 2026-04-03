@@ -1,7 +1,7 @@
 
 import { Database } from "@/types";
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
-import { type NextRequest, NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse, type NextRequest } from "next/server";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY;
@@ -28,12 +28,15 @@ export const createClient = (request: NextRequest) => {
             request,
           })
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            supabaseResponse.cookies.set(name, value, {
+              ...options,
+              maxAge: 60 * 60 * 24 * 7, // 1 week
+            })
           )
         },
       },
     },
   );
 
-  return supabaseResponse
+  return { supabase, response: supabaseResponse }
 };
