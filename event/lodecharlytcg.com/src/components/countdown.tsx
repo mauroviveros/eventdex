@@ -7,7 +7,7 @@ import { Card, CardContent } from "./ui/card"
 
 type Props = {
   start_datetime: Tables<"event_schedules">["start_datetime"]
-  initial: number
+  initial?: number
 }
 
 export const Countdown = ({ start_datetime, initial }: Props) => {
