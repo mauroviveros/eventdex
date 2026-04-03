@@ -1,5 +1,6 @@
 import { Countdown } from "@/components/countdown";
 import { Card, CardContent } from "@/components/ui/card";
+import { SITE_SLUG } from "@/constants";
 import { createClient } from "@/libs/supabase/client";
 import { formatScheduleLabel } from "@/utils";
 import { Clock } from "@nsmr/pixelart-react";
@@ -11,7 +12,7 @@ export default async function Home() {
   const { data: event } = await supabase
     .from("events")
     .select(`*, location:event_locations(*), schedules:event_schedules(*)`)
-    .eq('slug', 'lodecharlytcg.com')
+    .eq('slug', SITE_SLUG)
     .single()
 
   if (!event || !event.location || !event.schedules || event.schedules.length === 0) return null

@@ -96,6 +96,50 @@ export type Database = {
           },
         ]
       }
+      event_spots: {
+        Row: {
+          avatar_path: string | null
+          created_at: string
+          description: string
+          event_id: string
+          id: string
+          location: string
+          name: string
+          type: Database["public"]["Enums"]["SPOT_TYPE"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_path?: string | null
+          created_at?: string
+          description: string
+          event_id: string
+          id?: string
+          location: string
+          name: string
+          type?: Database["public"]["Enums"]["SPOT_TYPE"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_path?: string | null
+          created_at?: string
+          description?: string
+          event_id?: string
+          id?: string
+          location?: string
+          name?: string
+          type?: Database["public"]["Enums"]["SPOT_TYPE"] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_spots_event_id_fkey1"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
           config: Json
@@ -104,6 +148,7 @@ export type Database = {
           id: string
           slug: string
           status: Database["public"]["Enums"]["event_status"]
+          timezone: string
           updated_at: string | null
         }
         Insert: {
@@ -113,6 +158,7 @@ export type Database = {
           id?: string
           slug: string
           status?: Database["public"]["Enums"]["event_status"]
+          timezone?: string
           updated_at?: string | null
         }
         Update: {
@@ -122,9 +168,39 @@ export type Database = {
           id?: string
           slug?: string
           status?: Database["public"]["Enums"]["event_status"]
+          timezone?: string
           updated_at?: string | null
         }
         Relationships: []
+      }
+      user_spot_history: {
+        Row: {
+          collected_at: string
+          id: number
+          spot_id: string
+          user_id: string
+        }
+        Insert: {
+          collected_at?: string
+          id?: number
+          spot_id: string
+          user_id?: string
+        }
+        Update: {
+          collected_at?: string
+          id?: number
+          spot_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_history_spot_id_fkey"
+            columns: ["spot_id"]
+            isOneToOne: false
+            referencedRelation: "event_spots"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -135,6 +211,7 @@ export type Database = {
     }
     Enums: {
       event_status: "ACTIVE" | "INACTIVE"
+      SPOT_TYPE: "LOCAL" | "ATTRACTION"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -263,6 +340,7 @@ export const Constants = {
   public: {
     Enums: {
       event_status: ["ACTIVE", "INACTIVE"],
+      SPOT_TYPE: ["LOCAL", "ATTRACTION"],
     },
   },
 } as const
