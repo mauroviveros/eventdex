@@ -3,19 +3,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/libs/supabase/client";
 import { formatScheduleLabel } from "@/utils";
 import { Clock } from "@nsmr/pixelart-react";
-import { headers } from "next/headers";
 import { useMemo } from "react";
 
 export default async function Home() {
   const supabase = useMemo(() => createClient(), []);
-  const headerR = await headers()
   const { data: event } = await supabase
     .from("events")
-    .select(`
-      *,
-      location:event_locations(*),
-      schedules:event_schedules(*)
-    `)
+    .select(`*, location:event_locations(*), schedules:event_schedules(*)`)
     .eq('slug', 'lodecharlytcg.com')
     .single()
 
@@ -51,8 +45,6 @@ export default async function Home() {
       {event?.schedules?.[0]?.start_datetime && (
         <Countdown start_datetime={event.schedules[0].start_datetime} />
       )}
-
-      {headerR.get("x-vercel-ip-timezone") ?? 'null'}
     </section>
   )
 }
