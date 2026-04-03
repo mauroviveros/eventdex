@@ -17,6 +17,8 @@ export default async function Home() {
     .eq('slug', 'lodecharlytcg.com')
     .single()
 
+  if (!event || !event.location || !event.schedules || event.schedules.length === 0) return null
+
   const config = (event?.config || {}) as Record<string, string>;
 
   return (
@@ -25,7 +27,7 @@ export default async function Home() {
         <Card size="sm" className="mx-4">
           <CardContent className="flex items-center gap-2">
             <Clock className="text-muted-foreground size-5" />
-            <span className="text-xl text-accent">{formatScheduleLabel(event?.schedules || [])}</span>
+            <span className="text-xl text-accent">{formatScheduleLabel(event?.schedules[0])}</span>
           </CardContent>
         </Card>
 
@@ -45,7 +47,7 @@ export default async function Home() {
       </div>
 
       {event?.schedules?.[0]?.start_datetime && (
-        <Countdown start_datetime={event.schedules[0].start_datetime} initial={Date.now()} />
+        <Countdown start_datetime={event.schedules[0].start_datetime} />
       )}
     </section>
   )
