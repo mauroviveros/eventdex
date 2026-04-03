@@ -18,7 +18,7 @@ export default function SignIn() {
   return (
     <Button
       type="button"
-      className="h-full rounded-none border-y-0 max-w-full w-full"
+      className="relative h-full rounded-none border-y-0 max-w-full w-full"
       onClick={handleSignInWithGoogle}
       variant="outline"
       disabled={isSigningIn}
