@@ -1,14 +1,14 @@
 import { Countdown } from "@/components/countdown";
 import { Card, CardContent } from "@/components/ui/card";
 import { SITE_SLUG } from "@/constants";
-import { createClient } from "@/libs/supabase/client";
+import { createClient } from "@/libs/supabase/server";
 import { formatScheduleLabel } from "@/utils";
 import { Clock } from "@nsmr/pixelart-react";
 import { DateTime } from "luxon";
-import { useMemo } from "react";
+import { cookies } from "next/headers";
 
 export default async function Home() {
-  const supabase = useMemo(() => createClient(), []);
+  const supabase = await createClient(await cookies());
   const { data: event } = await supabase
     .from("events")
     .select(`*, location:event_locations(*), schedules:event_schedules(*)`)
@@ -18,6 +18,8 @@ export default async function Home() {
   if (!event || !event.location || !event.schedules || event.schedules.length === 0) return null
 
   const config = (event?.config || {}) as Record<string, string>;
+  const startDateTime = DateTime.fromISO(event.schedules[0].start_datetime);
+  const hasEventStarted = startDateTime <= DateTime.now();
 
   return (
     <section className="flex-1 min-h-[calc(100dvh-4rem)] flex flex-col items-center justify-center px-2 py-8 gap-8">
@@ -44,7 +46,7 @@ export default async function Home() {
         </Card>
       </div>
 
-      {event?.schedules?.[0]?.start_datetime && (
+      {!hasEventStarted && (
         <Countdown start_datetime={event.schedules[0].start_datetime} initial={DateTime.now().toMillis()} />
       )}
     </section>
