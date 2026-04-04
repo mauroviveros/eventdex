@@ -3,25 +3,16 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Loading() {
   return (
-    <section className="flex min-h-[calc(100dvh-5rem)] items-center justify-center px-4 py-8">
+    <section className="flex min-h-[calc(100dvh-5rem)] items-center justify-center px-1 py-8">
       <Card className="highlight w-full max-w-2xl">
-        <CardContent className="space-y-6 px-6 py-8 text-center">
-          <div className="flex items-center justify-center gap-2">
-            <Skeleton className="h-6 w-24 rounded-full" />
-            <Skeleton className="h-6 w-32 rounded-full" />
+        <CardContent className="space-y-6 px-2 py-8 flex flex-col items-center justify-center">
+          <div className="space-y-2 text-center">
+            <Skeleton className="h-10 w-72 mx-auto" />
           </div>
 
-          <div className="space-y-3">
-            <Skeleton className="mx-auto h-10 w-3/4" />
-            <Skeleton className="mx-auto h-6 w-11/12" />
+          <div className="size-32 flex items-center justify-center pixel-border-sm">
+            <Skeleton className="size-full rounded-none" />
           </div>
-
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Skeleton className="h-24 rounded-xl" />
-            <Skeleton className="h-24 rounded-xl" />
-          </div>
-
-          <Skeleton className="mx-auto h-5 w-2/3" />
         </CardContent>
       </Card>
     </section>
