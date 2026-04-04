@@ -57,13 +57,3 @@ export default async function SpotQR({ params }: { params: Promise<{ id: string 
 
   );
 }
-
-
-// 1ee1e080-fd73-4796-9cbc-183225ce1cba
-// 2d947897-c77e-45e7-aedc-30f729edc5dd
-// 7a9c60fd-1b79-4fcf-9383-7c1dd59caccc
-// 86bed9e3-200e-4c45-ace7-c03262003bb0
-// 8fae90a3-4f67-4ccf-bd6f-ec42db9a91ba
-// <section className="min-h-[calc(100dvh-5rem)] w-full max-w-sm flex flex-col items-center justify-center mx-auto py-4">
-//   <PokemonCard className="" />
-// </section>

@@ -56,7 +56,6 @@ export default async function Perfil() {
         <CardContent className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 justify-items-center">
           {spots?.map(({ avatar_path, name, id }, index) => {
             const avatar_url = supabase.storage.from("spot").getPublicUrl(avatar_path).data.publicUrl;
-            console.log(history?.some(h => !!h.collected_at && h.spot_id === id), id)
             return (
               <div
                 className={cn([
