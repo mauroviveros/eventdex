@@ -98,7 +98,7 @@ export type Database = {
       }
       event_spots: {
         Row: {
-          avatar_path: string | null
+          avatar_path: string
           created_at: string
           description: string
           event_id: string
@@ -109,7 +109,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
-          avatar_path?: string | null
+          avatar_path: string
           created_at?: string
           description: string
           event_id: string
@@ -120,7 +120,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
-          avatar_path?: string | null
+          avatar_path?: string
           created_at?: string
           description?: string
           event_id?: string
