@@ -27,10 +27,10 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
   const header = await headers()
-  const timezone = header.get('x-vercel-ip-timezone') ?? 'UTC'
-  const locale = header.get('accept-language')?.split(',')[0] ?? 'en'
-  Settings.defaultZone = timezone;
-  Settings.defaultLocale = locale;
+  const timezone = header.get('x-vercel-ip-timezone');
+  const locale = 'es-AR'; // header.get('accept-language')?.split(',')[0] ?? 'en'
+  if (timezone) Settings.defaultZone = timezone;
+  if (locale) Settings.defaultLocale = locale;
 
   return (
     <html lang="es" className={cn("h-full", "antialiased", vt323.variable, pressStart.variable)}>
