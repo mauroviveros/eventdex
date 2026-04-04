@@ -57,7 +57,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                 alt="Logo"
                 width={52}
                 height={52}
-                className="object-cover"
+                className="w-13 h-13 object-contain"
               />
               <span className="font-bold text-2xl">Lo de Charly</span>
             </Link>

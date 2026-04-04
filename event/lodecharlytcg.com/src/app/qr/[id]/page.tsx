@@ -1,3 +1,4 @@
+import { CelebrationConfetti } from "@/components/celebration-confetti";
 import { LoginDialog } from "@/components/dialogs/login";
 import { Card, CardContent } from "@/components/ui/card";
 import { SITE_SLUG } from "@/constants";
@@ -24,14 +25,18 @@ export default async function SpotQR({ params }: { params: Promise<{ id: string 
 
   const { data: history, error } = await supabase.from("user_spot_history").select("id").eq("user_id", user.id).eq("spot_id", spot.id).maybeSingle();
   const hasCollected = !!history;
+  let justCollected = false;
+
   if (!hasCollected && !error) {
-    await supabase.from("user_spot_history").insert({ user_id: user.id, spot_id: spot.id, collected_at: new Date().toISOString() })
+    const { error: insertError } = await supabase.from("user_spot_history").insert({ user_id: user.id, spot_id: spot.id, collected_at: new Date().toISOString() });
+    justCollected = !insertError;
   }
 
   const avatar_url = supabase.storage.from("spot").getPublicUrl(spot.avatar_path).data.publicUrl;
 
   return (
     <>
+      <CelebrationConfetti trigger={justCollected} />
       <section className="flex min-h-[calc(100dvh-5rem)] items-center justify-center px-1 py-8"> {/* px-4 pokecard */}
         <Card className="highlight w-full max-w-2xl">
           <CardContent className="space-y-6 px-2 py-8 flex flex-col items-center justify-center">
