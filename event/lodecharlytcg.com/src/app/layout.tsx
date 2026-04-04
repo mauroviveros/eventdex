@@ -7,6 +7,8 @@ import { Settings } from "luxon";
 import type { Metadata } from "next";
 import { Press_Start_2P, VT323 } from 'next/font/google';
 import { headers } from "next/headers";
+import Image from "next/image";
+import Link from "next/link";
 
 const vt323 = VT323({
   subsets: ['latin'],
@@ -48,7 +50,17 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <scanlines />
 
         <header className="border-b fixed top-0 left-0 right-0 z-50 bg-background/50 backdrop-blur-sm">
-          <div className="container mx-auto h-14 flex items-center justify-end gap-4">
+          <div className="container mx-auto h-14 flex items-center justify-between gap-4">
+            <Link href="/" className="flex items-center gap-2 px-2 hover:text-accent transition-colors">
+              <Image
+                src="/logo.png"
+                alt="Logo"
+                width={52}
+                height={52}
+              />
+              <span className="font-bold text-2xl">Lo de Charly</span>
+            </Link>
+
             <Account />
           </div>
         </header>
