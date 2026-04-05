@@ -7,6 +7,19 @@ import { cn, formatScheduleLabel } from "@/utils";
 import { Clock } from "@nsmr/pixelart-react";
 import { DateTime } from "luxon";
 import { cookies } from "next/headers";
+import { Suspense } from "react";
+
+function RankingSkeleton() {
+  return (
+    <Card size="sm" className="my-4">
+      <CardContent className="space-y-3 py-4">
+        <div className="h-6 w-40 animate-pulse rounded bg-muted/40" />
+        <div className="h-24 w-full animate-pulse rounded bg-muted/40" />
+        <div className="h-24 w-full animate-pulse rounded bg-muted/40" />
+      </CardContent>
+    </Card>
+  );
+}
 
 export default async function Home() {
   const supabase = await createClient(await cookies());
@@ -59,7 +72,9 @@ export default async function Home() {
       </section>
       {hasEventStarted && (
         <div className="w-full max-w-3xl mx-auto px-4">
-          <Ranking />
+          <Suspense fallback={<RankingSkeleton />}>
+            <Ranking />
+          </Suspense>
         </div>
       )}
     </>
