@@ -57,22 +57,27 @@ export default async function Perfil() {
           {spots?.map(({ avatar_path, name, id }, index) => {
             const avatar_url = supabase.storage.from("spot").getPublicUrl(avatar_path).data.publicUrl;
             return (
-              <div
-                className={cn([
-                  "flex items-center justify-center pixel-border-sm transition-all w-32 h-32 text-3xl bg-linear-to-br ",
-                  history?.some(h => !!h.collected_at && h.spot_id === id) ? "from-medal-gold to-accent shadow-medal-gold shadow-sm" : "bg-medal-locked grayscale opacity-50"
-                ])}
-                key={index}
-              >
-                <Image
-                  src={avatar_url}
-                  alt={name}
-                  width={128}
-                  height={128}
-                  loading="eager"
-                  decoding="sync"
-                  className="w-full h-full object-cover opacity-85"
-                />
+              <div className="flex flex-col items-center gap-2 w-32" key={index}>
+                <div
+                  className={cn([
+                    "flex items-center justify-center pixel-border-sm transition-all w-32 h-32 text-3xl bg-linear-to-br ",
+                    history?.some(h => !!h.collected_at && h.spot_id === id) ? "from-medal-gold to-accent shadow-medal-gold shadow-sm" : "bg-medal-locked grayscale opacity-50"
+                  ])}
+                >
+                  <Image
+                    src={avatar_url}
+                    alt={name}
+                    width={128}
+                    height={128}
+                    loading="eager"
+                    decoding="sync"
+                    className="w-full h-full object-cover opacity-85"
+                  />
+                </div>
+
+                <p className="font-press-start text-[10px] text-center text-foreground w-full word-break">
+                  {name}
+                </p>
               </div>
             )
           })}
