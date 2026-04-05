@@ -1,5 +1,4 @@
 import { Countdown } from "@/components/countdown";
-import Ranking from "@/components/ranking";
 import { Card, CardContent } from "@/components/ui/card";
 import { SITE_SLUG } from "@/constants";
 import { createClient } from "@/libs/supabase/server";
@@ -7,7 +6,6 @@ import { cn, formatScheduleLabel } from "@/utils";
 import { Clock } from "@nsmr/pixelart-react";
 import { DateTime } from "luxon";
 import { cookies } from "next/headers";
-import { Suspense } from "react";
 
 function RankingSkeleton() {
   return (
@@ -70,13 +68,13 @@ export default async function Home() {
           <Countdown start_datetime={event.schedules[0].start_datetime} initial={DateTime.now().toMillis()} />
         )}
       </section>
-      {hasEventStarted && (
+      {/* {hasEventStarted && (
         <div className="w-full max-w-3xl mx-auto px-4">
           <Suspense fallback={<RankingSkeleton />}>
             <Ranking />
           </Suspense>
         </div>
-      )}
+      )} */}
     </>
   )
 }
