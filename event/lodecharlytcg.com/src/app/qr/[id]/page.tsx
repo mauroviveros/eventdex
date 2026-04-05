@@ -3,6 +3,7 @@ import { LoginDialog } from "@/components/dialogs/login";
 import { Card, CardContent } from "@/components/ui/card";
 import { SITE_SLUG } from "@/constants";
 import { createClient } from "@/libs/supabase/server";
+import { isScheduleActive } from "@/utils";
 import { cookies } from "next/headers";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -19,6 +20,26 @@ export default async function SpotQR({ params }: { params: Promise<{ id: string 
     .maybeSingle();
 
   if (!spot || !spot.event) notFound();
+
+  const { data: schedules } = await supabase
+    .from("event_schedules")
+    .select("start_datetime, end_datetime")
+    .eq("event_id", spot.event.id);
+
+  const hasActiveSchedule = (schedules ?? []).some((schedule) => isScheduleActive(schedule));
+
+  if (!hasActiveSchedule) {
+    return (
+      <section className="flex min-h-[calc(100dvh-5rem)] items-center justify-center px-4 py-8">
+        <Card className="highlight w-full max-w-2xl">
+          <CardContent className="flex flex-col items-center justify-center space-y-4 px-4 py-10 text-center">
+            <h2 className="font-press-start text-2xl text-secondary">El evento finalizo</h2>
+            <p className="max-w-md text-lg text-muted-foreground">¡Gracias por participar!</p>
+          </CardContent>
+        </Card>
+      </section>
+    );
+  }
 
   const isLoggedIn = !!user;
   if (!isLoggedIn) return <LoginDialog open={true} />
