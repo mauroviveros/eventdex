@@ -24,6 +24,10 @@
   --color-border: oklch(0.4765 0.0706 124.12);
   --color-input: oklch(0.4118 0.0517 123.66);
   --color-ring: oklch(0.8408 0.1725 84.2);
+
+  /* medal states */
+  --color-medal-gold  : oklch(0.8309 0.1622 87.87);
+  --color-medal-locked: oklch(0.4371 0.0252 122.44);
 }
 
 @theme inline {
@@ -67,6 +71,32 @@
 
     &.highlight {
       @apply border-4 border-foreground;
+    }
+  }
+
+  .pixel-border-sm {
+    box-shadow:
+      2px 0 0 0 var(--color-border),
+      -2px 0 0 0 var(--color-border),
+      0 2px 0 0 var(--color-border),
+      0 -2px 0 0 var(--color-border),
+      2px 2px 0 0 hsl(var(--pixel-shadow)),
+      4px 4px 0 0 hsl(var(--pixel-shadow) / 0.5);
+  }
+
+  .medal-glow {
+    animation: medal_pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes medal_pulse {
+    0%, 100% {
+      filter:
+        drop-shadow(0 0 8px hsl(45 90% 55%));
+    }
+    50% {
+      filter:
+        drop-shadow(0 0 16px hsl(45 90% 55%))
+        drop-shadow(0 0 24px hsl(45 90% 55% / 0.5));
     }
   }
 }
