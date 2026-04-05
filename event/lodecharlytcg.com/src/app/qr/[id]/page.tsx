@@ -55,6 +55,10 @@ export default async function SpotQR({ params }: { params: Promise<{ id: string 
                 decoding="async"
               />
             </picture>
+
+            <p className="font-press-start text-sm text-center text-foreground max-w-56 word-break">
+              {spot.name}
+            </p>
           </CardContent>
         </Card>
       </section>
