@@ -11,7 +11,7 @@
   "dependencies": {
     "@devicon/react": "^0.0.3",
     "@nsmr/pixelart-react": "^2.0.0",
-    "@supabase/ssr": "^0.9.0",
+    "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.100.1",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
