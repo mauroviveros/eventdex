@@ -1,11 +1,7 @@
 version: 2
 updates:
-  - package-ecosystem: npm
-    directory: /
-    schedule:
-      interval: weekly
-      day: monday
-      time: "12:00"
+  - package-ecosystem: pnpm
+    directory: /event/lodecharlytcg.com
     open-pull-requests-limit: 5
     labels:
       - dependencies
