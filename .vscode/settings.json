@@ -27,6 +27,9 @@
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "explicit"
   },
+  "conventionalCommits.scopes": [
+    "admin"
+  ],
 
 //   "tailwindCSS.validate": true,
 //   "git.autofetch": false,
