@@ -1,4 +1,4 @@
-import Container from "./_components/container"
+import Container from "@/components/container";
 
 export default function DashboardHome() {
   return (

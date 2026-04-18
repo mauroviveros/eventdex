@@ -9,7 +9,7 @@ export default function DashboardLayout({
   return (
     <SidebarProvider>
       <DashboardSidebar />
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col overflow-hidden">
         {children}
       </div>
     </SidebarProvider>
