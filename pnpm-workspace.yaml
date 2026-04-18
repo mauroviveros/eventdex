@@ -1,5 +1,6 @@
 packages:
   - admin
+  - admin2
   - event/*
   - events
   - landing
