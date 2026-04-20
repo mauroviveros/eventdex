@@ -12,7 +12,7 @@
     "@devicon/react": "^0.0.3",
     "@nsmr/pixelart-react": "^2.0.0",
     "@supabase/ssr": "^0.10.2",
-    "@supabase/supabase-js": "^2.103.0",
+    "@supabase/supabase-js": "^2.104.0",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "canvas-confetti": "^1.9.4",
