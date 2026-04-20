@@ -8,8 +8,7 @@ export default function DashboardPage() {
         </hgroup>
       </header>
 
-      <section>
-      </section>
+      <section></section>
     </>
-  )
+  );
 }

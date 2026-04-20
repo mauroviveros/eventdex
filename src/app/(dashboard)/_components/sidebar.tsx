@@ -2,20 +2,18 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarSeparator
 import AccountMenu from "./accountMenu";
 import BrandMenu from "./brandMenu";
 
-
-export default function DashboardSidebar(){
+export default function DashboardSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
         <BrandMenu />
       </SidebarHeader>
       <SidebarSeparator />
-      <SidebarContent>
-      </SidebarContent>
+      <SidebarContent></SidebarContent>
       <SidebarSeparator />
       <SidebarFooter>
         <AccountMenu />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }
