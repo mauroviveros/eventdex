@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-export default function Home() {
+export default function HomePage() {
   return (
     <section className="relative mt-16 pt-32 pb-20 px-6 overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(252_87%_67%/0.12),transparent_60%)]" />
