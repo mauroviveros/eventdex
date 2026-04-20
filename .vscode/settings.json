@@ -1,6 +1,11 @@
 {
-    "conventionalCommits.scopes": [
-        "landing",
-        "dashboard"
-    ]
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit"
+  },
+  "conventionalCommits.scopes": [
+      "landing",
+      "dashboard"
+  ]
 }

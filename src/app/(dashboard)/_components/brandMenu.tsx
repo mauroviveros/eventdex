@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
+import { ChevronsUpDown, GalleryVerticalEnd } from "lucide-react";
 import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { ChevronsUpDown, GalleryVerticalEnd } from "lucide-react";
 
 export default function brandMenu() {
   return (
@@ -25,5 +25,5 @@ export default function brandMenu() {
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

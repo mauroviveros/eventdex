@@ -1,10 +1,8 @@
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function Header() {
   return (
-
-
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         <Button variant="ghost" size="lg" asChild>
@@ -40,5 +38,5 @@ export default function Header() {
         </div>
       </div>
     </header>
-  )
+  );
 }

@@ -1,9 +1,17 @@
-'use client';
+"use client";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { ChevronsUpDown, LogOut } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 
 function User() {
   return (
@@ -16,9 +24,8 @@ function User() {
         <span className="truncate text-xs">maurod.viveros@gmail.com</span>
       </div>
     </>
-  )
+  );
 }
-
 
 export default function AccountMenu() {
   return (
@@ -46,11 +53,9 @@ export default function AccountMenu() {
                 <span>Cerrar sesión</span>
               </DropdownMenuItem>
             </DropdownMenuGroup>
-
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-
-  )
+  );
 }
