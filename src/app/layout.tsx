@@ -12,7 +12,7 @@ type Props = Readonly<{ children: React.ReactNode }>;
 export default function Layout({ children }: Props) {
   return (
     <html lang="es" className={spaceGrotesk.variable}>
-      <body className="bg-background text-foreground font-space-grotesk">
+      <body className="bg-background text-foreground font-space-grotesk min-h-dvh relative">
         <TooltipProvider>{children}</TooltipProvider>
       </body>
     </html>

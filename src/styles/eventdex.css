@@ -43,9 +43,21 @@
 }
 
 @layer utilities {
-  .bg-gradient { background: linear-gradient(135deg, hsl(252 87% 67%), hsl(200 95% 60%)); }
+  .bg-gradient, .text-gradient {
+    background: linear-gradient(135deg, hsl(252 87% 67%), hsl(200 95% 60%));
+  }
+  .text-gradient {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 
-  .bg-gradient {
+
+  .border-gradient {
+    border: 1px solid transparent;
+    background:
+      linear-gradient(hsl(228 15% 10%), hsl(228 15% 10%)) padding-box,
+      linear-gradient(135deg, hsl(252 87% 67% / 0.5), hsl(200 95% 60% / 0.3)) border-box;
 
   }
 }
