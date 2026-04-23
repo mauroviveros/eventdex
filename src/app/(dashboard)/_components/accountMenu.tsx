@@ -48,13 +48,21 @@ export default function AccountMenu() {
             <DropdownMenuSeparator />
 
             <DropdownMenuGroup>
-              <DropdownMenuItem variant="destructive">
+              <DropdownMenuItem
+                variant="destructive"
+                onSelect={(event) => {
+                  event.preventDefault();
+                  const form = document.getElementById("logout-form") as HTMLFormElement | null;
+                  form?.requestSubmit();
+                }}
+              >
                 <LogOut />
                 <span>Cerrar sesión</span>
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
+        <form id="logout-form" method="post" action="/api/auth/signout" className="hidden" />
       </SidebarMenuItem>
     </SidebarMenu>
   );

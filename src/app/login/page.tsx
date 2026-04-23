@@ -24,10 +24,13 @@ export default function LoginPage() {
 
         <Card className="border-gradient bg-card/60 backdrop-blur-xl shadow-2xl shadow-primary/5">
           <CardContent className="space-y-6">
-            <Button variant="outline" size="lg" className="w-full bg-background/50 hover:bg-accent/80">
-              <GoogleOriginalIcon />
-              Continuar con Google
-            </Button>
+            <form method="post" action="/api/auth/signin">
+              <input type="hidden" name="provider" value="google" />
+              <Button type="submit" variant="outline" size="lg" className="w-full bg-background/50 hover:bg-accent/80">
+                <GoogleOriginalIcon />
+                Continuar con Google
+              </Button>
+            </form>
 
             <article className="rounded-xl border border-border/60 bg-background/30 p-5 space-y-3">
               <div className="flex items-start gap-3">
