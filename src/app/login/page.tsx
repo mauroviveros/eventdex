@@ -24,11 +24,11 @@ export default function LoginPage() {
 
         <Card className="border-gradient bg-card/60 backdrop-blur-xl shadow-2xl shadow-primary/5">
           <CardContent className="space-y-6">
-            <form method="post" action="/api/auth/signin">
+              <form method="post" action="/api/auth/admin/signin">
               <input type="hidden" name="provider" value="google" />
               <Button type="submit" variant="outline" size="lg" className="w-full bg-background/50 hover:bg-accent/80">
                 <GoogleOriginalIcon />
-                Continuar con Google
+                Acceder como administrador
               </Button>
             </form>
 
@@ -39,10 +39,10 @@ export default function LoginPage() {
                 </div>
 
                 <div>
-                  <p className="text-sm font-medium text-foreground">¿No tienes una organización?</p>
+                  <p className="text-sm font-medium text-foreground">Acceso restringido</p>
                   <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                    Para acceder al dashboard necesitas una organización asignada. Contacta a nuestro equipo para
-                    configurar tu cuenta.
+                    Este acceso solo funciona si ya eres miembro de una organización. Si todavía no tienes acceso,
+                    contacta al equipo para que te asignen.
                   </p>
                 </div>
               </div>
