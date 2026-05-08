@@ -17,5 +17,9 @@
       "cache": false,
       "persistent": true
     }
-  }
+  },
+  "globalEnv": [
+    "EVENTDEX_ORGANIZATION_ID",
+    "EVENTDEX_EVENT_ID"
+  ]
 }
