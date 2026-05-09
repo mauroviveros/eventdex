@@ -1,13 +1,18 @@
 import { CelebrationConfetti } from "@/components/common/celebration-confetti";
+import { Countdown } from "@/components/countdown";
 import { LoginDialog } from "@/components/dialogs/login";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/libs/supabase/server";
-import { isScheduleActive } from "@/utils";
+import { isScheduleActive, resolveScheduleDateTime } from "@/utils";
+import { ArrowLeft, Home, User as UserIcon } from "@nsmr/pixelart-react";
+import { DateTime } from "luxon";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export default async function SpotQR({ params }: { params: Promise<{ id: string }> }) {
-  if(!process.env.EVENTDEX_EVENT_ID) {
+  if (!process.env.EVENTDEX_EVENT_ID) {
     throw new Error("Missing event id environment variable");
   }
 
@@ -29,16 +34,42 @@ export default async function SpotQR({ params }: { params: Promise<{ id: string 
     .eq("event_id", spot.event.id);
 
   const hasActiveSchedule = (schedules ?? []).some((schedule) => isScheduleActive(schedule));
+  const firstScheduleStart = (schedules ?? [])
+    .map((schedule) => resolveScheduleDateTime(schedule.start_datetime))
+    .sort((left, right) => left.toMillis() - right.toMillis())[0];
+  const eventHasNotStartedYet = !!firstScheduleStart && DateTime.utc() < firstScheduleStart;
 
   if (!hasActiveSchedule) {
     return (
-      <section className="flex min-h-[calc(100dvh-5rem)] items-center justify-center px-4 py-8">
+      <section className="flex flex-col gap-4 min-h-[calc(100dvh-5rem)] items-center justify-center px-4 py-8">
         <Card className="highlight w-full max-w-2xl" variant="pixel">
           <CardContent className="flex flex-col items-center justify-center space-y-4 px-4 py-10 text-center">
-            <h2 className="font-press-start text-2xl text-secondary">El evento finalizo</h2>
-            <p className="max-w-md text-lg text-muted-foreground">¡Gracias por participar!</p>
+            <h2 className="font-press-start text-2xl text-secondary">
+              {eventHasNotStartedYet ? "El evento todavía no comenzó" : "El evento finalizo"}
+            </h2>
+            <p className="max-w-md text-lg text-muted-foreground">
+              {eventHasNotStartedYet ? "Volvé más tarde para participar." : "¡Gracias por participar!"}
+            </p>
+            {eventHasNotStartedYet && (
+              <Countdown start_datetime={(schedules ?? [])[0].start_datetime} initial={DateTime.now().toMillis()} />
+            )}
           </CardContent>
         </Card>
+
+        <div className="flex w-full flex-col gap-3 pt-2 sm:flex-row sm:justify-center">
+          <Button asChild variant="outline" className="w-full sm:w-auto">
+            <Link href="/">
+              <ArrowLeft className="size-5" />
+              Volver al inicio
+            </Link>
+          </Button>
+          <Button asChild className="w-full sm:w-auto">
+            <Link href="/perfil">
+              <UserIcon className="size-5" />
+              Ir al perfil
+            </Link>
+          </Button>
+        </div>
       </section>
     );
   }
@@ -73,7 +104,7 @@ export default async function SpotQR({ params }: { params: Promise<{ id: string 
   return (
     <>
       <CelebrationConfetti trigger={justCollected} />
-      <section className="flex min-h-[calc(100dvh-5rem)] items-center justify-center px-1 py-8"> {/* px-4 pokecard */}
+      <section className="flex min-h-[calc(100dvh-5rem)] items-center justify-center px-1 py-8">
         <Card className="highlight w-full max-w-2xl">
           <CardContent className="space-y-6 px-2 py-8 flex flex-col items-center justify-center">
             {!hasCollected && (
@@ -99,6 +130,21 @@ export default async function SpotQR({ params }: { params: Promise<{ id: string 
             </p>
           </CardContent>
         </Card>
+
+        <div className="flex w-full flex-col gap-3 pt-2 sm:flex-row sm:justify-center">
+          <Button asChild variant="outline" className="w-full sm:w-auto">
+            <Link href="/">
+              <ArrowLeft className="size-5" />
+              Volver al inicio
+            </Link>
+          </Button>
+          <Button asChild className="w-full sm:w-auto">
+            <Link href="/perfil">
+              <UserIcon className="size-5" />
+              Ir al perfil
+            </Link>
+          </Button>
+        </div>
       </section>
     </>
 
