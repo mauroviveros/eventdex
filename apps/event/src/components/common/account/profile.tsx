@@ -1,7 +1,7 @@
 "use client"
 
 import { createClient } from "@/libs/supabase/client"
-import { ChevronDown, Logout, User as UserIcon } from "@nsmr/pixelart-react"
+import { ChevronDown, Logout, User as UserIcon, Trophy } from "@nsmr/pixelart-react"
 import { User } from "@supabase/supabase-js"
 import Image from "next/image"
 import Link from "next/link"
@@ -12,7 +12,7 @@ import { useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenu } from "@/components/ui/dropdown-menu"
 
-export default function Profile({ user }: { user: User }) {
+export default function Profile({ user, isAdmin = false }: { user: User; isAdmin?: boolean }) {
   const supabase = useMemo(() => createClient(), [])
   const router = useRouter()
 
@@ -50,6 +50,18 @@ export default function Profile({ user }: { user: User }) {
             Mi perfil
           </Link>
         </DropdownMenuItem>
+
+        {isAdmin && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="text-lg" asChild>
+              <Link href="/raffle">
+                <Trophy className="size-5" />
+                Sorteo
+              </Link>
+            </DropdownMenuItem>
+          </>
+        )}
 
         <DropdownMenuSeparator />
 
