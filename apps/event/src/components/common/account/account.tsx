@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from "react"
 import Profile from "./profile"
 import SignIn from "./signin"
 
-export default function Account() {
+export default function Account({ isAdmin = false }: { isAdmin?: boolean }) {
   const supabase = useMemo(() => createClient(), [])
   const [user, setUser] = useState<User | null | undefined>(undefined)
 
@@ -31,7 +31,7 @@ export default function Account() {
     <article className="h-full max-w-20 md:max-w-none w-62.5 flex items-center justify-center">
       {user === undefined && <Loader className="size-6 animate-spin text-foreground/50" />}
       {user === null && <SignIn className="relative h-full rounded-none border-y-0 max-w-full w-full [&>span]:hidden md:[&>span]:block" variant="outline" />}
-      {user && <Profile user={user} />}
+      {user && <Profile user={user} isAdmin={isAdmin} />}
     </article>
   )
 }

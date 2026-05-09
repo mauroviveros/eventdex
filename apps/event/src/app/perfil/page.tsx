@@ -1,8 +1,11 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/libs/supabase/server";
 import { cn } from "@/utils";
+import { Trophy } from "@nsmr/pixelart-react";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export default async function Perfil() {
@@ -28,6 +31,15 @@ export default async function Perfil() {
     .select(`*, spot:event_spots(*, event:event_id(id))`)
     .eq("user_id", user.id)
     // .eq("spot.event_id", process.env.EVENTDEX_EVENT_ID)
+
+  const { data: organizationMember } = await supabase
+    .from("organization_members")
+    .select("id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  const isAdmin = !!organizationMember;
+
   return (
     <>
       <Card size="sm" className="highlight m-4">
@@ -49,9 +61,22 @@ export default async function Perfil() {
           </article>
 
           <div className="space-x-2 flex items-center flex-wrap col-span-2 sm:col-span-1 gap-2">
-            <Badge className="uppercase font-bold text-base" variant="pixel">USUARIO</Badge>
+            <Badge className={cn("uppercase font-bold text-base", isAdmin ? "bg-amber-600" : "")} variant="pixel">
+              {isAdmin ? "ADMIN" : "USUARIO"}
+            </Badge>
             <span className="text-lg">Desde: {since}</span>
           </div>
+
+          {isAdmin && (
+            <div className="col-span-2 sm:col-span-1">
+              <Button asChild className="w-full gap-2" size="sm">
+                <Link href="/raffle">
+                  <Trophy className="size-4" />
+                  Ir al Sorteo
+                </Link>
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 
