@@ -7,7 +7,9 @@ import { Clock } from "@nsmr/pixelart-react";
 import { DateTime } from "luxon";
 
 export default function PageUpcoming({ event }: { event: Event }) {
-  const hasEventStarted = false;
+  const startDateTime = DateTime.fromISO(event.schedules[0].start_datetime);
+  const hasEventStarted = startDateTime <= DateTime.now();
+
   return (
     <>
       <section
