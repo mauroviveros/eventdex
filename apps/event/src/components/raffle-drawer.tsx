@@ -2,7 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { CelebrationConfetti } from "@/components/common/celebration-confetti";
 import { Trophy, Copy } from "@nsmr/pixelart-react";
 
 interface UserSpotCount {
@@ -21,7 +22,45 @@ export function   RaffleDrawer({ participants }: RaffleDrawerProps) {
   const [winner, setWinner] = useState<UserSpotCount | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [currentCandidate, setCurrentCandidate] = useState<UserSpotCount | null>(null);
+  const [isPersistedWinner, setIsPersistedWinner] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  // Cargar ganador guardado en localStorage al montar
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("raffle_winner");
+      if (raw) {
+        const parsed = JSON.parse(raw) as UserSpotCount;
+        setWinner(parsed);
+        setIsPersistedWinner(true);
+      }
+    } catch (err) {
+      console.error("Error leyendo ganador guardado:", err);
+    }
+  }, []);
+
+  // Persistir ganador en localStorage cuando cambie
+  useEffect(() => {
+    try {
+      if (winner) {
+        localStorage.setItem("raffle_winner", JSON.stringify(winner));
+      } else {
+        localStorage.removeItem("raffle_winner");
+      }
+    } catch (err) {
+      console.error("Error guardando ganador:", err);
+    }
+  }, [winner]);
+
+  const handleReset = () => {
+    setWinner(null);
+    setCurrentCandidate(null);
+    setIsDrawing(false);
+    setIsPersistedWinner(false);
+    try {
+      localStorage.removeItem("raffle_winner");
+    } catch {}
+  };
 
   const handleCopyEmails = async () => {
     const emailList = participants.map((p) => p.user_email).join("\n");
@@ -62,6 +101,7 @@ export function   RaffleDrawer({ participants }: RaffleDrawerProps) {
 
       if (currentIteration >= totalIterations) {
         setWinner(candidate);
+        setIsPersistedWinner(false);
         setCurrentCandidate(null);
         setIsDrawing(false);
       } else {
@@ -126,7 +166,7 @@ export function   RaffleDrawer({ participants }: RaffleDrawerProps) {
               {winner ? "🎉 ¡GANADOR!" : isDrawing ? "⚡ SORTEANDO..." : "Sorteo"}
             </CardTitle>
           </CardHeader>
-          <CardContent className="flex flex-col items-center justify-center space-y-4 min-h-48">
+          <CardContent className="flex flex-col items-center justify-center space-y-4 min-h-48 flex-1">
             {displayUser ? (
               <>
                 <div className={`text-center space-y-2 transition-all duration-100 ${isDrawing ? "scale-110" : ""}`}>
@@ -139,7 +179,7 @@ export function   RaffleDrawer({ participants }: RaffleDrawerProps) {
                       />
                     </div>
                   )}
-                  <p className={`text-sm ${winner ? "text-muted-foreground" : "text-accent font-bold"}`}>
+                  <p className={`text-lg ${winner ? "text-muted-foreground" : "text-accent font-bold"}`}>
                     {winner ? "Ganador del sorteo" : "Candidato actual"}
                   </p>
                   <h3 className={`font-press-start wrap-break-word transition-all ${
@@ -147,8 +187,8 @@ export function   RaffleDrawer({ participants }: RaffleDrawerProps) {
                   }`}>
                     {displayUser.user_name}
                   </h3>
-                  <p className="text-sm text-muted-foreground">{displayUser.user_email}</p>
-                  <p className="text-xs text-accent font-bold">
+                  <p className="text-lg text-muted-foreground">{displayUser.user_email}</p>
+                  <p className="text-base text-accent font-bold">
                     Spots coleccionados: {displayUser.spot_count}
                   </p>
                 </div>
@@ -165,20 +205,23 @@ export function   RaffleDrawer({ participants }: RaffleDrawerProps) {
 
       <Button
         onClick={handleDraw}
-        disabled={isDrawing || participants.length === 0}
+        disabled={isDrawing || participants.length === 0 || !!winner}
         className="w-full h-12 font-press-start text-lg"
       >
         {isDrawing ? "Sorteando..." : "INICIAR SORTEO"}
       </Button>
 
       {winner && (
-        <Button
-          onClick={() => setWinner(null)}
-          variant="outline"
-          className="w-full font-press-start"
-        >
-          Nuevo sorteo
-        </Button>
+        <>
+          {!isPersistedWinner && <CelebrationConfetti trigger={!!winner && !isPersistedWinner} />}
+          <Button
+            onClick={handleReset}
+            variant="outline"
+            className="w-full font-press-start"
+          >
+            Nuevo sorteo
+          </Button>
+        </>
       )}
     </div>
   );

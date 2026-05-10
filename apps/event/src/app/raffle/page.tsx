@@ -9,28 +9,33 @@ export default async function RafflePage() {
     throw new Error("Missing event id environment variable");
   }
 
+  const service = await createServiceClient();
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   // Verificar si el usuario es admin
   if (!user) return notFound();
 
-  const { data: organizationMember } = await supabase
+  const { data: organizationMember } = await service
     .from("organization_members")
-    .select("id")
-    .eq("user_id", user.id)
-    .maybeSingle();
+    .select("user_id, role")
 
-  if (!organizationMember) return notFound();
+
+  if (organizationMember?.find(({ user_id}) => user_id === user.id) === undefined) {
+    return notFound();
+  }
 
   // Obtener todos los user_spot_history del evento actual con datos del usuario
-  const { data: histories } = await supabase
+  const { data: histories, error } = await service
     .from("user_spot_history")
-    .select(`
+    .select(
+      `
       user_id,
       spot:event_spots(id, event_id)
-    `)
-    .eq("spot.event_id", process.env.EVENTDEX_EVENT_ID);
+    `,
+      { count: "exact" }
+    )
+    .eq("spot.event_id", process.env.EVENTDEX_EVENT_ID)
 
   // Agrupar por usuario y contar spots
   const participantMap = new Map<string, { spot_count: number }>();
@@ -42,9 +47,6 @@ export default async function RafflePage() {
       participantMap.set(history.user_id, current);
     }
   });
-
-  // Obtener datos de todos los usuarios desde auth usando service role
-  const service = await createServiceClient();
 
   // Convertir participantes a array con datos de usuario
   const participants = await Promise.all(
@@ -60,7 +62,9 @@ export default async function RafflePage() {
         };
       })
   )
-    .then((p) => p.filter((p) => p.spot_count > 0))
+    .then((p) => p
+      .filter(({ spot_count }) => spot_count > 0)
+      .filter(({ user_id }) => !organizationMember?.find((orgMember) => orgMember.user_id === user_id) ));
 
 
   return (
