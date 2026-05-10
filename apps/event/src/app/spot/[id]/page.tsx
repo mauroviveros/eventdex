@@ -104,7 +104,7 @@ export default async function SpotQR({ params }: { params: Promise<{ id: string 
   return (
     <>
       <CelebrationConfetti trigger={justCollected} />
-      <section className="flex min-h-[calc(100dvh-5rem)] items-center justify-center px-1 py-8">
+      <section className="flex min-h-[calc(100dvh-5rem)] flex-col items-center justify-center px-1 py-8">
         <Card className="highlight w-full max-w-2xl">
           <CardContent className="space-y-6 px-2 py-8 flex flex-col items-center justify-center">
             {!hasCollected && (
