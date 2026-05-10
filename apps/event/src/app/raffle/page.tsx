@@ -26,20 +26,37 @@ export default async function RafflePage() {
   }
 
   // Obtener todos los user_spot_history del evento actual con datos del usuario
-  const { data: histories, error } = await service
-    .from("user_spot_history")
-    .select(
-      `
-      user_id,
-      spot:event_spots(id, event_id)
-    `,
-      { count: "exact" }
-    )
-    .eq("spot.event_id", process.env.EVENTDEX_EVENT_ID)
+    // Primero traer los spot ids del evento y luego filtrar history por esos spot_id
+    const { data: eventSpots, error: spotsError } = await service
+      .from("event_spots")
+      .select("id")
+      .eq("event_id", process.env.EVENTDEX_EVENT_ID);
+
+    if (spotsError) console.error("Error loading event spots:", spotsError);
+
+    const spotIds = (eventSpots ?? []).map((s: any) => s.id);
+
+    let histories: any[] = [];
+    if (spotIds.length > 0) {
+      const { data, error: historiesError } = await service
+        .from("user_spot_history")
+        .select(
+          `
+        user_id,
+        spot:event_spots(id, event_id)
+      `,
+          { count: "exact" }
+        )
+        .in("spot_id", spotIds as unknown as string[]);
+
+      if (historiesError) console.error("Error loading histories:", historiesError);
+      histories = data ?? [];
+    }
 
   // Agrupar por usuario y contar spots
   const participantMap = new Map<string, { spot_count: number }>();
 
+  console.log(histories);
   (histories ?? []).forEach((history) => {
     if (history.user_id) {
       const current = participantMap.get(history.user_id) || { spot_count: 0 };
