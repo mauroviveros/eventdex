@@ -19,6 +19,7 @@
     }
   },
   "globalEnv": [
+    "SUPABASE_SERVICE_ROLE_KEY",
     "EVENTDEX_ORGANIZATION_ID",
     "EVENTDEX_EVENT_ID"
   ]
