@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getEvent } from "@/server/events";
 import type { Event } from "@/types";
 import { resolveScheduleDateTime } from "@/utils";
-import PageUpcoming from "./_components/status/upcoming";
+import Upcoming from "./_components/upcoming";
 
 // La landing se genera estáticamente y se revalida cada hora (ISR): sus datos
 // (evento, ubicación, horario) cambian rara vez, y la cuenta regresiva es
@@ -75,7 +75,7 @@ export default async function Home() {
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD serializado desde datos propios del evento
         dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd(event)) }}
       />
-      <PageUpcoming event={event} />
+      <Upcoming event={event} />
     </>
   );
 }

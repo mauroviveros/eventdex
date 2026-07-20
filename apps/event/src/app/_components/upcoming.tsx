@@ -6,7 +6,7 @@ import type { Event } from "@/types";
 import { cn } from "@/utils";
 import { formatScheduleLabel, resolveScheduleDateTime } from "@/utils/schedule";
 
-export default function PageUpcoming({ event }: { event: Event }) {
+export default function Upcoming({ event }: { event: Event }) {
   const startDateTime = resolveScheduleDateTime(
     event.schedules[0].start_datetime,
   );
