@@ -41,6 +41,10 @@ export const useCountdown = (ms: number, initial?: number) => {
     getTimeLeft(ms, initial),
   );
 
+  // `initial` se excluye a propósito de las dependencias: es solo el snapshot para
+  // la hidratación SSR. El padre pasa un valor nuevo en cada render (DateTime.now()),
+  // así que incluirlo reiniciaría la cuenta regresiva constantemente.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: ver comentario arriba
   useEffect(() => {
     const initialClientTimeLeft = getTimeLeft(ms, initial);
     setTimeLeft((prev) => {
