@@ -1,14 +1,11 @@
 import { notFound } from "next/navigation";
 import { RaffleDrawer } from "@/components/raffle-drawer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { serverEnv } from "@/config/env.server";
 import { createClient } from "@/libs/supabase/server";
 import { createServiceClient } from "@/libs/supabase/service";
 
 export default async function RafflePage() {
-  if (!process.env.EVENTDEX_EVENT_ID) {
-    throw new Error("Missing event id environment variable");
-  }
-
   const service = await createServiceClient();
   const supabase = await createClient();
   const {
@@ -33,7 +30,7 @@ export default async function RafflePage() {
   const { data: eventSpots, error: spotsError } = await service
     .from("event_spots")
     .select("id")
-    .eq("event_id", process.env.EVENTDEX_EVENT_ID);
+    .eq("event_id", serverEnv.EVENTDEX_EVENT_ID);
 
   if (spotsError) console.error("Error loading event spots:", spotsError);
 
