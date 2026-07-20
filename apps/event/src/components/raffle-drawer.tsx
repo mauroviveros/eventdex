@@ -5,14 +5,7 @@ import { useEffect, useState } from "react";
 import { CelebrationConfetti } from "@/components/common/celebration-confetti";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-interface UserSpotCount {
-  user_id: string;
-  user_email: string;
-  user_name: string;
-  user_avatar: string;
-  spot_count: number;
-}
+import type { RaffleParticipant as UserSpotCount } from "@/types";
 
 interface RaffleDrawerProps {
   participants: UserSpotCount[];

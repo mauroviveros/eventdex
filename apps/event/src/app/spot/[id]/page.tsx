@@ -8,8 +8,9 @@ import { Countdown } from "@/components/countdown";
 import { LoginDialog } from "@/components/dialogs/login";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { serverEnv } from "@/config/env.server";
-import { createClient } from "@/libs/supabase/server";
+import { getCurrentUser } from "@/server/auth";
+import { getEventSchedules } from "@/server/events";
+import { collectMedal, getEventSpot } from "@/server/spots";
 import { isScheduleActive, resolveScheduleDateTime } from "@/utils";
 
 export default async function SpotQR({
@@ -18,28 +19,16 @@ export default async function SpotQR({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const { data: spot } = await supabase
-    .from("event_spots")
-    .select(`*, event:event_id(*)`)
-    .eq("id", id)
-    .eq("event.id", serverEnv.EVENTDEX_EVENT_ID)
-    .maybeSingle();
+  const [user, spot] = await Promise.all([getCurrentUser(), getEventSpot(id)]);
 
   if (!spot?.event) notFound();
 
-  const { data: schedules } = await supabase
-    .from("event_schedules")
-    .select("start_datetime, end_datetime")
-    .eq("event_id", spot.event.id);
+  const schedules = await getEventSchedules(spot.event.id);
 
-  const hasActiveSchedule = (schedules ?? []).some((schedule) =>
+  const hasActiveSchedule = schedules.some((schedule) =>
     isScheduleActive(schedule),
   );
-  const firstScheduleStart = (schedules ?? [])
+  const firstScheduleStart = schedules
     .map((schedule) => resolveScheduleDateTime(schedule.start_datetime))
     .sort((left, right) => left.toMillis() - right.toMillis())[0];
   const eventHasNotStartedYet =
@@ -62,7 +51,7 @@ export default async function SpotQR({
             </p>
             {eventHasNotStartedYet && (
               <Countdown
-                start_datetime={(schedules ?? [])[0].start_datetime}
+                start_datetime={schedules[0].start_datetime}
                 initial={DateTime.now().toMillis()}
               />
             )}
@@ -87,34 +76,13 @@ export default async function SpotQR({
     );
   }
 
-  const isLoggedIn = !!user;
-  if (!isLoggedIn) return <LoginDialog open={true} />;
+  if (!user) return <LoginDialog open={true} />;
 
-  const { data: history, error } = await supabase
-    .from("user_spot_history")
-    .select("id")
-    .eq("user_id", user.id)
-    .eq("spot_id", spot.id)
-    .maybeSingle();
-
-  const hasCollected = !!history;
-  let justCollected = false;
-
-  if (!hasCollected && !error) {
-    const { error: insertError } = await supabase
-      .from("user_spot_history")
-      .insert({
-        user_id: user.id,
-        spot_id: spot.id,
-        collected_at: new Date().toISOString(),
-      });
-
-    justCollected = !insertError;
-  }
-
-  const avatar_url = supabase.storage
-    .from("spot")
-    .getPublicUrl(spot.avatar_path).data.publicUrl;
+  const { alreadyCollected, justCollected } = await collectMedal(
+    user.id,
+    spot.id,
+  );
+  const avatar_url = spot.avatar_url;
 
   return (
     <>
@@ -122,7 +90,7 @@ export default async function SpotQR({
       <section className="flex min-h-[calc(100dvh-5rem)] flex-col items-center justify-center px-1 py-8">
         <Card className="highlight w-full max-w-2xl">
           <CardContent className="space-y-6 px-2 py-8 flex flex-col items-center justify-center">
-            {!hasCollected && (
+            {!alreadyCollected && (
               <div className="space-y-2 text-center">
                 <h2 className="font-press-start text-2xl text-secondary">
                   ¡Medalla obtenida!

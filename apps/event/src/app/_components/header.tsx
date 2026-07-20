@@ -1,23 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import Account from "@/components/common/account";
-import { createClient } from "@/libs/supabase/server";
+import { getCurrentUser, isOrganizer } from "@/server/auth";
 
 export default async function Header() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  let isAdmin = false;
-  if (user) {
-    const { data: organizationMember } = await supabase
-      .from("organization_members")
-      .select("id")
-      .eq("user_id", user.id)
-      .maybeSingle();
-    isAdmin = !!organizationMember;
-  }
+  const user = await getCurrentUser();
+  const isAdmin = user ? await isOrganizer(user.id) : false;
 
   return (
     <header className="border-b fixed top-0 left-0 right-0 z-50 bg-background/50 backdrop-blur-sm">
