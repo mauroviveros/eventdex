@@ -2,6 +2,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Press_Start_2P, VT323 } from "next/font/google";
+import { siteUrl } from "@/config/site";
 import { cn } from "@/utils";
 import Header from "./_components/header";
 import "./globals.css";
@@ -17,14 +18,6 @@ const pressStart = Press_Start_2P({
   weight: "400",
   variable: "--font-press-start",
 });
-
-// Base para resolver URLs relativas (Open Graph, canonical) a absolutas.
-// En Vercel toma el dominio del deployment; NEXT_PUBLIC_SITE_URL lo sobreescribe.
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : "http://localhost:3000");
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
