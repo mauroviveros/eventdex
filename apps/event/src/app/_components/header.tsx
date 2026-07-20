@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import Account from "@/components/common/account";
+import Account from "@/components/account";
 
 // Componente estático: la sesión y el rol de admin se resuelven en el cliente
 // (dentro de <Account/>), para no forzar render dinámico y habilitar ISR/static

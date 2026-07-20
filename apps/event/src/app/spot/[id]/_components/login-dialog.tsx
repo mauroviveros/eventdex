@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import SignIn from "@/components/common/account/signin";
+import SignIn from "@/components/account/signin";
 import {
   Dialog,
   DialogContent,

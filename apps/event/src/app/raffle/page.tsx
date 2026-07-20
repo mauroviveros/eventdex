@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
-import { RaffleDrawer } from "@/components/raffle-drawer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getCurrentUser, isOrganizer } from "@/server/auth";
 import { getRaffleParticipants } from "@/server/raffle";
+import { RafflePanel } from "./_components/raffle-panel";
 
 export default async function RafflePage() {
   const user = await getCurrentUser();
@@ -35,7 +35,7 @@ export default async function RafflePage() {
           </CardContent>
         </Card>
 
-        <RaffleDrawer participants={participants} />
+        <RafflePanel participants={participants} />
       </div>
     </div>
   );
