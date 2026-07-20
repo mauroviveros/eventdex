@@ -1,5 +1,5 @@
-import { DateTime, Settings } from "luxon";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { DateTime } from "luxon";
+import { describe, expect, it } from "vitest";
 import {
   formatScheduleLabel,
   isScheduleActive,
@@ -50,25 +50,24 @@ describe("isScheduleActive", () => {
 });
 
 describe("formatScheduleLabel", () => {
-  const previousZone = Settings.defaultZone;
+  const schedule = {
+    start_datetime: "2025-04-06T20:00:00",
+    end_datetime: "2025-04-07T01:00:00",
+  };
 
-  beforeAll(() => {
-    // El label es sensible al locale y a la zona horaria (en prod se toma la del
-    // visitante); los fijamos para una aserción determinística e independiente de
-    // la zona horaria de la máquina que corre los tests.
-    Settings.defaultLocale = "es-AR";
-    Settings.defaultZone = "utc";
+  it("formatea día, rango horario y zona en la zona del evento", () => {
+    expect(formatScheduleLabel(schedule, "UTC")).toBe(
+      "Domingo 6 de abril · 20:00hs a 01:00hs (UTC)",
+    );
   });
 
-  afterAll(() => {
-    Settings.defaultZone = previousZone;
-  });
-
-  it("formatea día capitalizado y rango horario", () => {
-    const label = formatScheduleLabel({
-      start_datetime: "2025-04-06T20:00:00",
-      end_datetime: "2025-04-07T01:00:00",
-    });
-    expect(label).toBe("Domingo 6 de abril · 20:00hs a 01:00hs");
+  it("desplaza las horas y refleja la zona horaria recibida", () => {
+    // 20:00 UTC → 17:00 en Argentina (UTC-3).
+    const label = formatScheduleLabel(
+      schedule,
+      "America/Argentina/Buenos_Aires",
+    );
+    expect(label).toContain("17:00hs");
+    expect(label).toContain("GMT-3");
   });
 });

@@ -7,9 +7,10 @@ import { createClient } from "@/libs/supabase/client";
 import Profile from "./profile";
 import SignIn from "./signin";
 
-export default function Account({ isAdmin = false }: { isAdmin?: boolean }) {
+export default function Account() {
   const supabase = useMemo(() => createClient(), []);
   const [user, setUser] = useState<User | null | undefined>(undefined);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const {
@@ -26,6 +27,30 @@ export default function Account({ isAdmin = false }: { isAdmin?: boolean }) {
 
     return () => subscription.unsubscribe();
   }, [supabase]);
+
+  // El rol de admin se resuelve en el cliente (antes lo pasaba el Header server).
+  // Es solo para mostrar/ocultar el acceso al sorteo; la ruta /raffle igual está
+  // protegida server-side. RLS permite al usuario leer su propia membresía.
+  useEffect(() => {
+    if (!user) {
+      setIsAdmin(false);
+      return;
+    }
+
+    let active = true;
+    supabase
+      .from("organization_members")
+      .select("id")
+      .eq("user_id", user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (active) setIsAdmin(Boolean(data));
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [supabase, user]);
 
   return (
     <article className="h-full max-w-20 md:max-w-none w-62.5 flex items-center justify-center">

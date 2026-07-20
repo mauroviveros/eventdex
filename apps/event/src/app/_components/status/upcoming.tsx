@@ -4,10 +4,12 @@ import { Countdown } from "@/components/countdown";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Event } from "@/types";
 import { cn } from "@/utils";
-import { formatScheduleLabel } from "@/utils/schedule";
+import { formatScheduleLabel, resolveScheduleDateTime } from "@/utils/schedule";
 
 export default function PageUpcoming({ event }: { event: Event }) {
-  const startDateTime = DateTime.fromISO(event.schedules[0].start_datetime);
+  const startDateTime = resolveScheduleDateTime(
+    event.schedules[0].start_datetime,
+  );
   const hasEventStarted = startDateTime <= DateTime.now();
 
   return (
@@ -24,7 +26,7 @@ export default function PageUpcoming({ event }: { event: Event }) {
           <CardContent className="flex items-center gap-2">
             <Clock className="text-muted-foreground size-5" />
             <span className="text-xl text-accent">
-              {formatScheduleLabel(event.schedules[0])}
+              {formatScheduleLabel(event.schedules[0], event.timezone)}
             </span>
           </CardContent>
         </Card>

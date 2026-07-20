@@ -1,12 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import Account from "@/components/common/account";
-import { getCurrentUser, isOrganizer } from "@/server/auth";
 
-export default async function Header() {
-  const user = await getCurrentUser();
-  const isAdmin = user ? await isOrganizer(user.id) : false;
-
+// Componente estático: la sesión y el rol de admin se resuelven en el cliente
+// (dentro de <Account/>), para no forzar render dinámico y habilitar ISR/static
+// en las rutas que lo permiten (p. ej. la landing).
+export default function Header() {
   return (
     <header className="border-b fixed top-0 left-0 right-0 z-50 bg-background/50 backdrop-blur-sm">
       <div className="container mx-auto h-14 flex items-center justify-between gap-4">
@@ -24,7 +23,7 @@ export default async function Header() {
           <span className="font-bold text-2xl">Lo de Charly</span>
         </Link>
 
-        <Account isAdmin={isAdmin} />
+        <Account />
       </div>
     </header>
   );

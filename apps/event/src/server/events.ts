@@ -1,10 +1,15 @@
 import { serverEnv } from "@/config/env.server";
+import { createPublicClient } from "@/libs/supabase/public";
 import { createClient } from "@/libs/supabase/server";
 import type { Event } from "@/types";
 
-/** Evento configurado para este deployment, con su ubicación y horarios. */
+/**
+ * Evento configurado para este deployment, con su ubicación y horarios.
+ * Usa el cliente público (sin cookies) porque son datos públicos: así el fetch
+ * es cacheable y sirve tanto al render de la landing como a `generateMetadata`.
+ */
 export async function getEvent(): Promise<Event> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("events")
     .select("*, location:event_locations(*), schedules:event_schedules(*)")

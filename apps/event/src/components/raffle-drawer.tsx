@@ -1,6 +1,7 @@
 "use client";
 
 import { Copy, Trophy } from "@nsmr/pixelart-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { CelebrationConfetti } from "@/components/common/celebration-confetti";
 import { Button } from "@/components/ui/button";
@@ -178,9 +179,11 @@ export function RaffleDrawer({ participants }: RaffleDrawerProps) {
               >
                 {displayUser.user_avatar && (
                   <div className="w-20 h-20 mx-auto rounded-lg overflow-hidden bg-muted mb-2">
-                    <img
+                    <Image
                       src={displayUser.user_avatar}
                       alt={displayUser.user_name}
+                      width={80}
+                      height={80}
                       className="w-full h-full object-cover"
                     />
                   </div>
