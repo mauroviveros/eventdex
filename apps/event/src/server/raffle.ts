@@ -11,7 +11,7 @@ import { getOrganizerUserIds } from "./auth";
  * de RLS) y resuelve sus perfiles vía la Admin API.
  */
 export async function getRaffleParticipants(): Promise<RaffleParticipant[]> {
-  const service = await createServiceClient();
+  const service = createServiceClient();
 
   // 1. Spots que pertenecen al evento actual.
   const { data: eventSpots } = await service

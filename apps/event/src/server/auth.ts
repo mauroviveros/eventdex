@@ -32,7 +32,7 @@ export async function isOrganizer(userId: string): Promise<boolean> {
  * los organizadores del sorteo.
  */
 export async function getOrganizerUserIds(): Promise<string[]> {
-  const service = await createServiceClient();
+  const service = createServiceClient();
   const { data } = await service.from("organization_members").select("user_id");
   return (data ?? [])
     .map((member) => member.user_id)
