@@ -5,40 +5,25 @@ import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { serverEnv } from "@/config/env.server";
-import { createClient } from "@/libs/supabase/server";
+import { getCurrentUser, isOrganizer } from "@/server/auth";
+import { getEventSpots, getUserMedalHistory } from "@/server/spots";
 import { cn } from "@/utils";
 
 export default async function Perfil() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const { data: spots } = await supabase
-    .from("event_spots")
-    .select(`*, event:event_id(*)`)
-    .eq("event_id", serverEnv.EVENTDEX_EVENT_ID);
-
+  const user = await getCurrentUser();
   if (!user) return notFound();
+
+  const [spots, history, isAdmin] = await Promise.all([
+    getEventSpots(),
+    getUserMedalHistory(user.id),
+    isOrganizer(user.id),
+  ]);
 
   const since = new Date(user.created_at).toLocaleDateString("es-AR", {
     month: "2-digit",
     day: "2-digit",
     year: "numeric",
   });
-
-  const { data: history } = await supabase
-    .from("user_spot_history")
-    .select(`*, spot:event_spots(*, event:event_id(id))`)
-    .eq("user_id", user.id);
-
-  const { data: organizationMember } = await supabase
-    .from("organization_members")
-    .select("id")
-    .eq("user_id", user.id)
-    .maybeSingle();
-
-  const isAdmin = !!organizationMember;
 
   return (
     <>
@@ -97,19 +82,16 @@ export default async function Perfil() {
           </CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 justify-items-center">
-          {spots?.map(({ avatar_path, name, id }, index) => {
-            const avatar_url = supabase.storage
-              .from("spot")
-              .getPublicUrl(avatar_path).data.publicUrl;
+          {spots.map(({ avatar_url, name, id }) => {
+            const collected = history.some(
+              (h) => !!h.collected_at && h.spot_id === id,
+            );
             return (
-              <div
-                className="flex flex-col items-center gap-2 w-32"
-                key={index}
-              >
+              <div className="flex flex-col items-center gap-2 w-32" key={id}>
                 <div
                   className={cn([
                     "flex items-center justify-center pixel-border-sm transition-all w-32 h-32 text-3xl bg-linear-to-br ",
-                    history?.some((h) => !!h.collected_at && h.spot_id === id)
+                    collected
                       ? "from-medal-gold to-accent shadow-medal-gold shadow-sm"
                       : "bg-medal-locked grayscale opacity-50",
                   ])}
