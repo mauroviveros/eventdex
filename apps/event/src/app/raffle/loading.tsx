@@ -7,11 +7,19 @@ export default function RaffleLoading() {
       <div className="max-w-5xl mx-auto space-y-4">
         <Card>
           <CardHeader>
-            <CardTitle className="font-press-start text-3xl text-center">Sorteo del Evento</CardTitle>
+            <CardTitle className="font-press-start text-3xl text-center">
+              Sorteo del Evento
+            </CardTitle>
           </CardHeader>
           <CardContent className="text-center space-y-2">
-            <div className="text-lg">Total de participantes: <Skeleton className="inline-block w-12 h-6" /></div>
-            <div className="text-lg">Total de spots coleccionados: <Skeleton className="inline-block w-12 h-6" /></div>
+            <div className="text-lg">
+              Total de participantes:{" "}
+              <Skeleton className="inline-block w-12 h-6" />
+            </div>
+            <div className="text-lg">
+              Total de spots coleccionados:{" "}
+              <Skeleton className="inline-block w-12 h-6" />
+            </div>
           </CardContent>
         </Card>
 
@@ -20,12 +28,17 @@ export default function RaffleLoading() {
             {/* Panel de participantes */}
             <Card size="sm">
               <CardHeader>
-                <CardTitle className="font-press-start text-lg">Participantes</CardTitle>
+                <CardTitle className="font-press-start text-lg">
+                  Participantes
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2 max-h-96">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <div key={i} className="flex items-center justify-between p-2 rounded bg-muted">
+                    <div
+                      key={i}
+                      className="flex items-center justify-between p-2 rounded bg-muted"
+                    >
                       <Skeleton className="w-32 h-4" />
                       <Skeleton className="w-12 h-6 rounded" />
                     </div>
@@ -37,7 +50,9 @@ export default function RaffleLoading() {
             {/* Panel de ganador */}
             <Card size="sm">
               <CardHeader>
-                <CardTitle className="font-press-start text-lg">Sorteo</CardTitle>
+                <CardTitle className="font-press-start text-lg">
+                  Sorteo
+                </CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col items-center justify-center space-y-4 min-h-48">
                 <div className="flex flex-col items-center justify-center gap-2 h-full w-full">

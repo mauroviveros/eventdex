@@ -40,14 +40,20 @@
 }
 
 @layer base {
-  body { @apply bg-background text-foreground font-vt323; }
-  * { @apply border-border outline-ring/50; }
-  button { @apply cursor-pointer; }
+  body {
+    @apply bg-background text-foreground font-vt323;
+  }
+  * {
+    @apply border-border outline-ring/50;
+  }
+  button {
+    @apply cursor-pointer;
+  }
 
   .scanlines {
     @apply fixed inset-0 pointer-events-none z-999;
     @apply after:content-[''] after:absolute after:pointer-events-none after:inset-0;
-    &::after{
+    &::after {
       background: repeating-linear-gradient(
         0deg,
         transparent,
@@ -90,13 +96,12 @@
   }
 
   @keyframes medal_pulse {
-    0%, 100% {
-      filter:
-        drop-shadow(0 0 8px hsl(45 90% 55%));
+    0%,
+    100% {
+      filter: drop-shadow(0 0 8px hsl(45 90% 55%));
     }
     50% {
-      filter:
-        drop-shadow(0 0 16px hsl(45 90% 55%))
+      filter: drop-shadow(0 0 16px hsl(45 90% 55%))
         drop-shadow(0 0 24px hsl(45 90% 55% / 0.5));
     }
   }

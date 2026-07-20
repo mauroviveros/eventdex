@@ -1,3 +1,8 @@
+import { ArrowLeft, User as UserIcon } from "@nsmr/pixelart-react";
+import { DateTime } from "luxon";
+import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 import { CelebrationConfetti } from "@/components/common/celebration-confetti";
 import { Countdown } from "@/components/countdown";
 import { LoginDialog } from "@/components/dialogs/login";
@@ -5,20 +10,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/libs/supabase/server";
 import { isScheduleActive, resolveScheduleDateTime } from "@/utils";
-import { ArrowLeft, Home, User as UserIcon } from "@nsmr/pixelart-react";
-import { DateTime } from "luxon";
-import Image from "next/image";
-import Link from "next/link";
-import { notFound } from "next/navigation";
 
-export default async function SpotQR({ params }: { params: Promise<{ id: string }> }) {
+export default async function SpotQR({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   if (!process.env.EVENTDEX_EVENT_ID) {
     throw new Error("Missing event id environment variable");
   }
 
   const { id } = await params;
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   const { data: spot } = await supabase
     .from("event_spots")
     .select(`*, event:event_id(*)`)
@@ -26,18 +32,21 @@ export default async function SpotQR({ params }: { params: Promise<{ id: string 
     .eq("event.id", process.env.EVENTDEX_EVENT_ID)
     .maybeSingle();
 
-  if (!spot || !spot.event) notFound();
+  if (!spot?.event) notFound();
 
   const { data: schedules } = await supabase
     .from("event_schedules")
     .select("start_datetime, end_datetime")
     .eq("event_id", spot.event.id);
 
-  const hasActiveSchedule = (schedules ?? []).some((schedule) => isScheduleActive(schedule));
+  const hasActiveSchedule = (schedules ?? []).some((schedule) =>
+    isScheduleActive(schedule),
+  );
   const firstScheduleStart = (schedules ?? [])
     .map((schedule) => resolveScheduleDateTime(schedule.start_datetime))
     .sort((left, right) => left.toMillis() - right.toMillis())[0];
-  const eventHasNotStartedYet = !!firstScheduleStart && DateTime.utc() < firstScheduleStart;
+  const eventHasNotStartedYet =
+    !!firstScheduleStart && DateTime.utc() < firstScheduleStart;
 
   if (!hasActiveSchedule) {
     return (
@@ -45,13 +54,20 @@ export default async function SpotQR({ params }: { params: Promise<{ id: string 
         <Card className="highlight w-full max-w-2xl" variant="pixel">
           <CardContent className="flex flex-col items-center justify-center space-y-4 px-4 py-10 text-center">
             <h2 className="font-press-start text-2xl text-secondary">
-              {eventHasNotStartedYet ? "El evento todavía no comenzó" : "El evento finalizo"}
+              {eventHasNotStartedYet
+                ? "El evento todavía no comenzó"
+                : "El evento finalizo"}
             </h2>
             <p className="max-w-md text-lg text-muted-foreground">
-              {eventHasNotStartedYet ? "Volvé más tarde para participar." : "¡Gracias por participar!"}
+              {eventHasNotStartedYet
+                ? "Volvé más tarde para participar."
+                : "¡Gracias por participar!"}
             </p>
             {eventHasNotStartedYet && (
-              <Countdown start_datetime={(schedules ?? [])[0].start_datetime} initial={DateTime.now().toMillis()} />
+              <Countdown
+                start_datetime={(schedules ?? [])[0].start_datetime}
+                initial={DateTime.now().toMillis()}
+              />
             )}
           </CardContent>
         </Card>
@@ -75,7 +91,7 @@ export default async function SpotQR({ params }: { params: Promise<{ id: string 
   }
 
   const isLoggedIn = !!user;
-  if (!isLoggedIn) return <LoginDialog open={true} />
+  if (!isLoggedIn) return <LoginDialog open={true} />;
 
   const { data: history, error } = await supabase
     .from("user_spot_history")
@@ -93,13 +109,15 @@ export default async function SpotQR({ params }: { params: Promise<{ id: string 
       .insert({
         user_id: user.id,
         spot_id: spot.id,
-        collected_at: new Date().toISOString()
+        collected_at: new Date().toISOString(),
       });
 
     justCollected = !insertError;
   }
 
-  const avatar_url = supabase.storage.from("spot").getPublicUrl(spot.avatar_path).data.publicUrl;
+  const avatar_url = supabase.storage
+    .from("spot")
+    .getPublicUrl(spot.avatar_path).data.publicUrl;
 
   return (
     <>
@@ -109,7 +127,9 @@ export default async function SpotQR({ params }: { params: Promise<{ id: string 
           <CardContent className="space-y-6 px-2 py-8 flex flex-col items-center justify-center">
             {!hasCollected && (
               <div className="space-y-2 text-center">
-                <h2 className="font-press-start text-2xl text-secondary">¡Medalla obtenida!</h2>
+                <h2 className="font-press-start text-2xl text-secondary">
+                  ¡Medalla obtenida!
+                </h2>
               </div>
             )}
 
@@ -147,6 +167,5 @@ export default async function SpotQR({ params }: { params: Promise<{ id: string 
         </div>
       </section>
     </>
-
   );
 }

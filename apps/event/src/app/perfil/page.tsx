@@ -1,36 +1,40 @@
+import { Trophy } from "@nsmr/pixelart-react";
+import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/libs/supabase/server";
 import { cn } from "@/utils";
-import { Trophy } from "@nsmr/pixelart-react";
-import Image from "next/image";
-import Link from "next/link";
-import { notFound } from "next/navigation";
 
 export default async function Perfil() {
-  if(!process.env.EVENTDEX_EVENT_ID) {
+  if (!process.env.EVENTDEX_EVENT_ID) {
     throw new Error("Missing event id environment variable");
   }
 
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   const { data: spots } = await supabase
     .from("event_spots")
     .select(`*, event:event_id(*)`)
-    .eq("event_id", process.env.EVENTDEX_EVENT_ID)
+    .eq("event_id", process.env.EVENTDEX_EVENT_ID);
 
+  if (!user) return notFound();
 
-  if (!user) return notFound()
-
-  const since = new Date(user.created_at)
-    .toLocaleDateString('es-AR', { month: "2-digit", day: "2-digit", year: "numeric" });
+  const since = new Date(user.created_at).toLocaleDateString("es-AR", {
+    month: "2-digit",
+    day: "2-digit",
+    year: "numeric",
+  });
 
   const { data: history } = await supabase
     .from("user_spot_history")
     .select(`*, spot:event_spots(*, event:event_id(id))`)
-    .eq("user_id", user.id)
-    // .eq("spot.event_id", process.env.EVENTDEX_EVENT_ID)
+    .eq("user_id", user.id);
+  // .eq("spot.event_id", process.env.EVENTDEX_EVENT_ID)
 
   const { data: organizationMember } = await supabase
     .from("organization_members")
@@ -56,12 +60,22 @@ export default async function Perfil() {
           </Card>
 
           <article className="min-w-0">
-            <h2 className="font-press-start text-lg text-balance text-foreground">{user.user_metadata.full_name}</h2>
-            <p className="text-xl text-pretty text-muted-foreground truncate">{user.email}</p>
+            <h2 className="font-press-start text-lg text-balance text-foreground">
+              {user.user_metadata.full_name}
+            </h2>
+            <p className="text-xl text-pretty text-muted-foreground truncate">
+              {user.email}
+            </p>
           </article>
 
           <div className="space-x-2 flex items-center flex-wrap col-span-2 sm:col-span-1 gap-2">
-            <Badge className={cn("uppercase font-bold text-base", isAdmin ? "bg-amber-600" : "")} variant="pixel">
+            <Badge
+              className={cn(
+                "uppercase font-bold text-base",
+                isAdmin ? "bg-amber-600" : "",
+              )}
+              variant="pixel"
+            >
               {isAdmin ? "ADMIN" : "USUARIO"}
             </Badge>
             <span className="text-lg">Desde: {since}</span>
@@ -82,17 +96,26 @@ export default async function Perfil() {
 
       <Card size="sm" className="my-4">
         <CardHeader>
-          <CardTitle className="font-press-start text-secondary text-xl! text-center">Medallas obtenidas</CardTitle>
+          <CardTitle className="font-press-start text-secondary text-xl! text-center">
+            Medallas obtenidas
+          </CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 justify-items-center">
           {spots?.map(({ avatar_path, name, id }, index) => {
-            const avatar_url = supabase.storage.from("spot").getPublicUrl(avatar_path).data.publicUrl;
+            const avatar_url = supabase.storage
+              .from("spot")
+              .getPublicUrl(avatar_path).data.publicUrl;
             return (
-              <div className="flex flex-col items-center gap-2 w-32" key={index}>
+              <div
+                className="flex flex-col items-center gap-2 w-32"
+                key={index}
+              >
                 <div
                   className={cn([
                     "flex items-center justify-center pixel-border-sm transition-all w-32 h-32 text-3xl bg-linear-to-br ",
-                    history?.some(h => !!h.collected_at && h.spot_id === id) ? "from-medal-gold to-accent shadow-medal-gold shadow-sm" : "bg-medal-locked grayscale opacity-50"
+                    history?.some((h) => !!h.collected_at && h.spot_id === id)
+                      ? "from-medal-gold to-accent shadow-medal-gold shadow-sm"
+                      : "bg-medal-locked grayscale opacity-50",
                   ])}
                 >
                   <Image
@@ -110,10 +133,10 @@ export default async function Perfil() {
                   {name}
                 </p>
               </div>
-            )
+            );
           })}
         </CardContent>
       </Card>
     </>
-  )
+  );
 }

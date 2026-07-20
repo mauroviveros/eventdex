@@ -1,10 +1,14 @@
-'use client'
+"use client";
 
 import { usePathname } from "next/navigation";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import SignIn from "@/components/common/account/signin";
-// import SignIn from "../account/signin";
-// import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export const LoginDialog = ({ open = false }: { open?: boolean }) => {
   const pathname = usePathname();
@@ -13,7 +17,9 @@ export const LoginDialog = ({ open = false }: { open?: boolean }) => {
     <Dialog open={open}>
       <DialogContent showCloseButton={false}>
         <DialogHeader>
-          <DialogTitle className="font-press-start text-xs text-foreground text-center">¡ENCONTRASTE UNA MEDALLA!</DialogTitle>
+          <DialogTitle className="font-press-start text-xs text-foreground text-center">
+            ¡ENCONTRASTE UNA MEDALLA!
+          </DialogTitle>
           <DialogDescription className="text-lg text-center text-muted-foreground mt-2">
             Para reclamar la medalla necesitás iniciar sesión.
           </DialogDescription>
@@ -24,5 +30,5 @@ export const LoginDialog = ({ open = false }: { open?: boolean }) => {
         </div>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};

@@ -1,30 +1,49 @@
-"use client"
+"use client";
 
-import { createClient } from "@/libs/supabase/client"
-import { ChevronDown, Logout, User as UserIcon, Trophy } from "@nsmr/pixelart-react"
-import { User } from "@supabase/supabase-js"
-import Image from "next/image"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useMemo } from "react"
+import {
+  ChevronDown,
+  Logout,
+  Trophy,
+  User as UserIcon,
+} from "@nsmr/pixelart-react";
+import type { User } from "@supabase/supabase-js";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useMemo } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { createClient } from "@/libs/supabase/client";
 
-
-import { Button } from "@/components/ui/button"
-import { DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenu } from "@/components/ui/dropdown-menu"
-
-export default function Profile({ user, isAdmin = false }: { user: User; isAdmin?: boolean }) {
-  const supabase = useMemo(() => createClient(), [])
-  const router = useRouter()
+export default function Profile({
+  user,
+  isAdmin = false,
+}: {
+  user: User;
+  isAdmin?: boolean;
+}) {
+  const supabase = useMemo(() => createClient(), []);
+  const router = useRouter();
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    router.refresh()
-  }
+    await supabase.auth.signOut();
+    router.refresh();
+  };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="h-full rounded-none max-w-full" type="button" variant="default">
+        <Button
+          className="h-full rounded-none max-w-full"
+          type="button"
+          variant="default"
+        >
           <Image
             src={user.user_metadata.avatar_url}
             alt={user.user_metadata.full_name}
@@ -36,8 +55,12 @@ export default function Profile({ user, isAdmin = false }: { user: User; isAdmin
           />
 
           <div className="hidden md:flex flex-col min-w-0 text-left">
-            <span className="text-xl leading-5 font-bold truncate">{user.user_metadata.full_name}</span>
-            <span className="text-lg leading-3 opacity-70 truncate">{user.email}</span>
+            <span className="text-xl leading-5 font-bold truncate">
+              {user.user_metadata.full_name}
+            </span>
+            <span className="text-lg leading-3 opacity-70 truncate">
+              {user.email}
+            </span>
           </div>
 
           <ChevronDown />
@@ -65,11 +88,15 @@ export default function Profile({ user, isAdmin = false }: { user: User; isAdmin
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem variant="destructive" className="text-lg" onSelect={handleSignOut}>
+        <DropdownMenuItem
+          variant="destructive"
+          className="text-lg"
+          onSelect={handleSignOut}
+        >
           <Logout className="size-5" />
           Cerrar sesión
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

@@ -1,21 +1,22 @@
-"use client"
+"use client";
 
-import { signInWithGoogle } from "@/app/api/auth/signin/actions"
-import { Button, buttonVariants } from "@/components/ui/button"
-import { GoogleOriginalIcon } from "@devicon/react"
-import { Loader } from "@nsmr/pixelart-react"
-import { VariantProps } from "class-variance-authority"
-import { useTransition } from "react"
+import { GoogleOriginalIcon } from "@devicon/react";
+import { Loader } from "@nsmr/pixelart-react";
+import type { VariantProps } from "class-variance-authority";
+import { useTransition } from "react";
+import { signInWithGoogle } from "@/app/api/auth/signin/actions";
+import { Button, type buttonVariants } from "@/components/ui/button";
 
-type Props = { next?: string } & React.ComponentProps<"button"> & VariantProps<typeof buttonVariants>
+type Props = { next?: string } & React.ComponentProps<"button"> &
+  VariantProps<typeof buttonVariants>;
 export default function SignIn({ variant, size, className, next }: Props) {
-  const [isSigningIn, startSignInTransition] = useTransition()
+  const [isSigningIn, startSignInTransition] = useTransition();
 
   const handleSignInWithGoogle = () => {
     startSignInTransition(async () => {
-      await signInWithGoogle(next)
-    })
-  }
+      await signInWithGoogle(next);
+    });
+  };
 
   return (
     <Button
@@ -31,5 +32,5 @@ export default function SignIn({ variant, size, className, next }: Props) {
 
       {isSigningIn && <Loader className="size-6 animate-spin absolute" />}
     </Button>
-  )
+  );
 }
