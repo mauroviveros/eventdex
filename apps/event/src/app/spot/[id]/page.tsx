@@ -8,6 +8,7 @@ import { Countdown } from "@/components/countdown";
 import { LoginDialog } from "@/components/dialogs/login";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { serverEnv } from "@/config/env.server";
 import { createClient } from "@/libs/supabase/server";
 import { isScheduleActive, resolveScheduleDateTime } from "@/utils";
 
@@ -16,10 +17,6 @@ export default async function SpotQR({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  if (!process.env.EVENTDEX_EVENT_ID) {
-    throw new Error("Missing event id environment variable");
-  }
-
   const { id } = await params;
   const supabase = await createClient();
   const {
@@ -29,7 +26,7 @@ export default async function SpotQR({
     .from("event_spots")
     .select(`*, event:event_id(*)`)
     .eq("id", id)
-    .eq("event.id", process.env.EVENTDEX_EVENT_ID)
+    .eq("event.id", serverEnv.EVENTDEX_EVENT_ID)
     .maybeSingle();
 
   if (!spot?.event) notFound();

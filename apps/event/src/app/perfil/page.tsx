@@ -5,14 +5,11 @@ import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { serverEnv } from "@/config/env.server";
 import { createClient } from "@/libs/supabase/server";
 import { cn } from "@/utils";
 
 export default async function Perfil() {
-  if (!process.env.EVENTDEX_EVENT_ID) {
-    throw new Error("Missing event id environment variable");
-  }
-
   const supabase = await createClient();
   const {
     data: { user },
@@ -20,7 +17,7 @@ export default async function Perfil() {
   const { data: spots } = await supabase
     .from("event_spots")
     .select(`*, event:event_id(*)`)
-    .eq("event_id", process.env.EVENTDEX_EVENT_ID);
+    .eq("event_id", serverEnv.EVENTDEX_EVENT_ID);
 
   if (!user) return notFound();
 
@@ -34,7 +31,6 @@ export default async function Perfil() {
     .from("user_spot_history")
     .select(`*, spot:event_spots(*, event:event_id(id))`)
     .eq("user_id", user.id);
-  // .eq("spot.event_id", process.env.EVENTDEX_EVENT_ID)
 
   const { data: organizationMember } = await supabase
     .from("organization_members")
