@@ -1,18 +1,21 @@
-"use client"
+"use client";
 
-import { useCountdown } from "@/hooks/useCountdown"
-import { Tables } from "@/types"
-import { useMemo } from "react"
-import { Card, CardContent } from "./ui/card"
+import { useMemo } from "react";
+import { useCountdown } from "@/hooks/useCountdown";
+import type { Tables } from "@/types";
+import { Card, CardContent } from "./ui/card";
 
 type Props = {
-  start_datetime: Tables<"event_schedules">["start_datetime"]
-  initial?: number
-}
+  start_datetime: Tables<"event_schedules">["start_datetime"];
+  initial?: number;
+};
 
 export const Countdown = ({ start_datetime, initial }: Props) => {
-  const targetMS = useMemo(() => new Date(start_datetime).getTime(), [start_datetime])
-  const { days, hours, minutes, seconds } = useCountdown(targetMS, initial)
+  const targetMS = useMemo(
+    () => new Date(start_datetime).getTime(),
+    [start_datetime],
+  );
+  const { days, hours, minutes, seconds } = useCountdown(targetMS, initial);
   const units = useMemo(
     () => [
       { label: "Días", value: days.toString().padStart(2, "0") },
@@ -21,7 +24,7 @@ export const Countdown = ({ start_datetime, initial }: Props) => {
       { label: "Segundos", value: seconds.toString().padStart(2, "0") },
     ],
     [days, hours, minutes, seconds],
-  )
+  );
 
   return (
     <article className="space-y-2">
@@ -38,5 +41,5 @@ export const Countdown = ({ start_datetime, initial }: Props) => {
         ))}
       </div>
     </article>
-  )
-}
+  );
+};

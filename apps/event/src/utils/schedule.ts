@@ -1,14 +1,20 @@
-import { Tables } from "@/types";
 import { DateTime } from "luxon";
+import type { Tables } from "@/types";
 
-type EventSchedule = Pick<Tables<"event_schedules">, "start_datetime" | "end_datetime">
+type EventSchedule = Pick<
+  Tables<"event_schedules">,
+  "start_datetime" | "end_datetime"
+>;
 
 export function resolveScheduleDateTime(value: string) {
   const hasTimezone = /(?:Z|[+-]\d{2}(?::?\d{2})?)$/i.test(value);
   return DateTime.fromISO(hasTimezone ? value : `${value}Z`);
 }
 
-export function isScheduleActive(schedule: EventSchedule, now = DateTime.utc()) {
+export function isScheduleActive(
+  schedule: EventSchedule,
+  now = DateTime.utc(),
+) {
   const start = resolveScheduleDateTime(schedule.start_datetime);
   const end = resolveScheduleDateTime(schedule.end_datetime);
 
@@ -16,8 +22,8 @@ export function isScheduleActive(schedule: EventSchedule, now = DateTime.utc()) 
 }
 
 export function formatScheduleLabel(schedule: EventSchedule) {
-  const start = resolveScheduleDateTime(schedule.start_datetime)
-  const end = resolveScheduleDateTime(schedule.end_datetime)
+  const start = resolveScheduleDateTime(schedule.start_datetime);
+  const end = resolveScheduleDateTime(schedule.end_datetime);
 
   // Día (ej: Domingo 5 de Abril)
   const day = start.toFormat("cccc d 'de' LLLL");

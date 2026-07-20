@@ -1,37 +1,37 @@
-'use client'
+"use client";
 
-import confetti from 'canvas-confetti'
-import { useEffect } from 'react'
+import confetti from "canvas-confetti";
+import { useEffect } from "react";
 
 interface CelebrationConfettiProps {
   /** Whether to trigger celebration when component mounts */
-  trigger?: boolean
+  trigger?: boolean;
 }
 
-export function CelebrationConfetti({ trigger = true }: CelebrationConfettiProps) {
+export function CelebrationConfetti({
+  trigger = true,
+}: CelebrationConfettiProps) {
   useEffect(() => {
-    if (!trigger) return
+    if (!trigger) return;
 
     // Slight delay to ensure DOM is ready
     const timer = setTimeout(() => {
-      launchCelebration()
-    }, 300)
+      launchCelebration();
+    }, 300);
 
-    return () => clearTimeout(timer)
-  }, [trigger])
+    return () => clearTimeout(timer);
+  }, [trigger]);
 
-  return null
+  return null;
 }
 
 function launchCelebration() {
-  const duration = 3000
-  const animationEnd = Date.now() + duration
   const defaults = {
     startVelocity: 30,
     spread: 360,
     ticks: 60,
     zIndex: 0,
-  }
+  };
 
   // Confetti burst 1 - Center
   confetti({
@@ -39,7 +39,7 @@ function launchCelebration() {
     particleCount: 80,
     spread: 100,
     origin: { x: 0.5, y: 0.5 },
-  })
+  });
 
   // Confetti burst 2 - Left side
   setTimeout(() => {
@@ -49,8 +49,8 @@ function launchCelebration() {
       angle: 60,
       spread: 55,
       origin: { x: 0, y: 0.5 },
-    })
-  }, 100)
+    });
+  }, 100);
 
   // Confetti burst 3 - Right side
   setTimeout(() => {
@@ -60,8 +60,8 @@ function launchCelebration() {
       angle: 120,
       spread: 55,
       origin: { x: 1, y: 0.5 },
-    })
-  }, 200)
+    });
+  }, 200);
 
   // Confetti burst 4 - Top center
   setTimeout(() => {
@@ -70,8 +70,8 @@ function launchCelebration() {
       particleCount: 100,
       spread: 360,
       origin: { x: 0.5, y: 0 },
-    })
-  }, 300)
+    });
+  }, 300);
 
   // Rain-like confetti - slow descending
   setTimeout(() => {
@@ -83,8 +83,8 @@ function launchCelebration() {
       decay: 0.95,
       gravity: 0.8,
       origin: { x: 0.5, y: 0 },
-    })
-  }, 500)
+    });
+  }, 500);
 
   // Final burst - fireworks style
   setTimeout(() => {
@@ -96,8 +96,8 @@ function launchCelebration() {
           spread: 360,
           origin: { x: 0.5, y: 0.5 },
           startVelocity: 40 + i * 5,
-        })
-      }, i * 150)
+        });
+      }, i * 150);
     }
-  }, 1000)
+  }, 1000);
 }
