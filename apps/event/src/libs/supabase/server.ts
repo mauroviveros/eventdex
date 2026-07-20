@@ -1,29 +1,7 @@
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
 import { env } from "@/config/env";
-import type { Database } from "@/types";
+import { createServerSupabase } from "./factory";
 
-export async function createClient() {
-  const cookieStore = await cookies();
-
-  return createServerClient<Database>(
-    env.SUPABASE_URL,
-    env.SUPABASE_PUBLISHABLE_KEY,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, options);
-            });
-          } catch {
-            // Server Components can read cookies but cannot persist updates.
-          }
-        },
-      },
-    },
-  );
+/** Cliente Supabase para Server Components: usa la publishable key y respeta RLS. */
+export function createClient() {
+  return createServerSupabase(env.SUPABASE_PUBLISHABLE_KEY);
 }
