@@ -5,8 +5,6 @@ import { Press_Start_2P, VT323 } from "next/font/google";
 import { cn } from "@/utils";
 import Header from "./_components/header";
 import "./globals.css";
-import { Settings } from "luxon";
-import { headers } from "next/headers";
 
 const vt323 = VT323({
   subsets: ["latin"],
@@ -20,7 +18,16 @@ const pressStart = Press_Start_2P({
   variable: "--font-press-start",
 });
 
+// Base para resolver URLs relativas (Open Graph, canonical) a absolutas.
+// En Vercel toma el dominio del deployment; NEXT_PUBLIC_SITE_URL lo sobreescribe.
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : "http://localhost:3000");
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Burning Tower Fest | Lo de Charly TCG | Eventdex",
   description:
     "El evento TCG más grande la la Argentina tiene fecha y nueva ubicación para que puedas disfrutar al máximo todo lo que estamos armando !",
@@ -34,15 +41,9 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const header = await headers();
-  const timezone = header.get("x-vercel-ip-timezone");
-  const locale = "es-AR"; // header.get('accept-language')?.split(',')[0] ?? 'en'
-  if (timezone) Settings.defaultZone = timezone;
-  if (locale) Settings.defaultLocale = locale;
-
   return (
     <html
       lang="es"

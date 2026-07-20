@@ -1,6 +1,11 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
+const MEDAL_SKELETON_KEYS = Array.from(
+  { length: 10 },
+  (_, i) => `medal-skeleton-${i}`,
+);
+
 export default function LoadingPerfil() {
   return (
     <>
@@ -26,8 +31,8 @@ export default function LoadingPerfil() {
         </CardHeader>
 
         <CardContent className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 justify-items-center">
-          {Array.from({ length: 10 }).map((_, index) => (
-            <div key={index} className="flex flex-col items-center gap-2 w-32">
+          {MEDAL_SKELETON_KEYS.map((key) => (
+            <div key={key} className="flex flex-col items-center gap-2 w-32">
               <Skeleton className="w-32 h-32" />
               <Skeleton className="h-3 w-24" />
             </div>

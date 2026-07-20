@@ -1,6 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
+const PARTICIPANT_SKELETON_KEYS = Array.from(
+  { length: 5 },
+  (_, i) => `participant-skeleton-${i}`,
+);
+
 export default function RaffleLoading() {
   return (
     <div className="space-y-8 p-4 md:p-8">
@@ -34,9 +39,9 @@ export default function RaffleLoading() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2 max-h-96">
-                  {Array.from({ length: 5 }).map((_, i) => (
+                  {PARTICIPANT_SKELETON_KEYS.map((key) => (
                     <div
-                      key={i}
+                      key={key}
                       className="flex items-center justify-between p-2 rounded bg-muted"
                     >
                       <Skeleton className="w-32 h-4" />
