@@ -3,6 +3,27 @@ import { createServiceClient } from "@/libs/supabase/service";
 import type { RaffleParticipant } from "@/types";
 import { getOrganizerUserIds } from "./auth";
 
+type ServiceClient = ReturnType<typeof createServiceClient>;
+
+/** Arma un RaffleParticipant resolviendo el perfil del usuario vía Admin API. */
+async function buildParticipant(
+  service: ServiceClient,
+  userId: string,
+  spotCount: number,
+): Promise<RaffleParticipant> {
+  const {
+    data: { user },
+  } = await service.auth.admin.getUserById(userId);
+  return {
+    user_id: userId,
+    user_email: user?.email ?? "email desconocido",
+    user_name:
+      user?.user_metadata?.full_name ?? user?.email ?? "Usuario Anónimo",
+    user_avatar: user?.user_metadata?.avatar_url ?? "",
+    spot_count: spotCount,
+  };
+}
+
 /**
  * Participantes del sorteo del evento actual: usuarios que coleccionaron al menos
  * un spot, con su cantidad, excluyendo a los organizadores.
@@ -41,18 +62,26 @@ export async function getRaffleParticipants(): Promise<RaffleParticipant[]> {
   return Promise.all(
     Array.from(spotCountByUser.entries())
       .filter(([userId, count]) => count > 0 && !organizerIds.has(userId))
-      .map(async ([userId, spotCount]) => {
-        const {
-          data: { user },
-        } = await service.auth.admin.getUserById(userId);
-        return {
-          user_id: userId,
-          user_email: user?.email ?? "email desconocido",
-          user_name:
-            user?.user_metadata?.full_name ?? user?.email ?? "Usuario Anónimo",
-          user_avatar: user?.user_metadata?.avatar_url ?? "",
-          spot_count: spotCount,
-        };
-      }),
+      .map(([userId, spotCount]) =>
+        buildParticipant(service, userId, spotCount),
+      ),
   );
+}
+
+/**
+ * Ganador actual del sorteo del evento: el más reciente persistido, o null si
+ * todavía no se sorteó. La tabla es append-only, así que "el actual" es el último.
+ */
+export async function getRaffleWinner(): Promise<RaffleParticipant | null> {
+  const service = createServiceClient();
+  const { data } = await service
+    .from("raffle_winners")
+    .select("user_id, spot_count")
+    .eq("event_id", serverEnv.EVENTDEX_EVENT_ID)
+    .order("drawn_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (!data) return null;
+  return buildParticipant(service, data.user_id, data.spot_count);
 }

@@ -292,6 +292,41 @@ export type Database = {
         };
         Relationships: [];
       };
+      raffle_winners: {
+        Row: {
+          drawn_at: string;
+          drawn_by: string;
+          event_id: string;
+          id: string;
+          spot_count: number;
+          user_id: string;
+        };
+        Insert: {
+          drawn_at?: string;
+          drawn_by: string;
+          event_id: string;
+          id?: string;
+          spot_count?: number;
+          user_id: string;
+        };
+        Update: {
+          drawn_at?: string;
+          drawn_by?: string;
+          event_id?: string;
+          id?: string;
+          spot_count?: number;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "raffle_winners_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       user_spot_history: {
         Row: {
           collected_at: string;

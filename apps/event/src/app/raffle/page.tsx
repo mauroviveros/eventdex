@@ -1,14 +1,17 @@
 import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getCurrentUser, isOrganizer } from "@/server/auth";
-import { getRaffleParticipants } from "@/server/raffle";
+import { getRaffleParticipants, getRaffleWinner } from "@/server/raffle";
 import { RafflePanel } from "./_components/raffle-panel";
 
 export default async function RafflePage() {
   const user = await getCurrentUser();
   if (!user || !(await isOrganizer(user.id))) return notFound();
 
-  const participants = await getRaffleParticipants();
+  const [participants, initialWinner] = await Promise.all([
+    getRaffleParticipants(),
+    getRaffleWinner(),
+  ]);
 
   return (
     <div className="space-y-8 p-4 md:p-8">
@@ -35,7 +38,10 @@ export default async function RafflePage() {
           </CardContent>
         </Card>
 
-        <RafflePanel participants={participants} />
+        <RafflePanel
+          participants={participants}
+          initialWinner={initialWinner}
+        />
       </div>
     </div>
   );
