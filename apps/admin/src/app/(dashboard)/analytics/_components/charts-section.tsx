@@ -1,32 +1,57 @@
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ScansOverTimeChart, ScansPerSpotChart } from "./analytics-charts";
+import { ScansPerHourChart, ScansPerSpotChart } from "./analytics-charts";
+import { DaySelect } from "./day-select";
 
 /** Layout de los dos gráficos, con estados vacíos server-side. */
 export function AnalyticsChartsSection({
-  perDay,
+  eventId,
+  days,
+  selectedDay,
+  perHour,
   perSpot,
 }: {
-  perDay: { day: string; label: string; count: number }[];
+  eventId: string;
+  days: { day: string; label: string }[];
+  selectedDay: string | null;
+  perHour: { hour: number; label: string; count: number }[];
   perSpot: { name: string; count: number }[];
 }) {
+  const selectedLabel = days.find((d) => d.day === selectedDay)?.label;
+
   return (
     <div className="grid gap-4 xl:grid-cols-2">
       <Card>
         <CardHeader>
-          <CardTitle>Escaneos en el tiempo</CardTitle>
-          <CardDescription>Por día calendario del evento.</CardDescription>
+          <CardTitle>Escaneos por hora</CardTitle>
+          <CardDescription>
+            {selectedLabel
+              ? `Horas del ${selectedLabel}, en el timezone del evento.`
+              : "En el timezone del evento."}
+          </CardDescription>
+          {selectedDay && days.length > 1 && (
+            <CardAction>
+              <DaySelect
+                eventId={eventId}
+                days={days}
+                selectedDay={selectedDay}
+              />
+            </CardAction>
+          )}
         </CardHeader>
         <CardContent>
-          {perDay.length === 0 ? (
-            <p className="text-muted-foreground text-sm">Sin escaneos aún.</p>
+          {perHour.length === 0 ? (
+            <p className="text-muted-foreground text-sm">
+              Sin escaneos ni horario programado para graficar.
+            </p>
           ) : (
-            <ScansOverTimeChart data={perDay} />
+            <ScansPerHourChart data={perHour} />
           )}
         </CardContent>
       </Card>

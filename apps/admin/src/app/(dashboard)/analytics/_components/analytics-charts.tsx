@@ -12,10 +12,10 @@ const chartConfig = {
   count: { label: "Escaneos", color: "var(--chart-1)" },
 } satisfies ChartConfig;
 
-export function ScansOverTimeChart({
+export function ScansPerHourChart({
   data,
 }: {
-  data: { day: string; label: string; count: number }[];
+  data: { hour: number; label: string; count: number }[];
 }) {
   return (
     <ChartContainer config={chartConfig} className="h-56 w-full">

@@ -55,6 +55,7 @@ export default async function AnalyticsPage({
     membership.organizationId,
     selected.id,
     selected.timezone,
+    typeof query.day === "string" ? query.day : undefined,
   );
 
   const kpis = [
@@ -90,7 +91,10 @@ export default async function AnalyticsPage({
         </div>
 
         <AnalyticsChartsSection
-          perDay={analytics.perDay}
+          eventId={selected.id}
+          days={analytics.days}
+          selectedDay={analytics.selectedDay}
+          perHour={analytics.perHour}
           perSpot={analytics.perSpot}
         />
 
