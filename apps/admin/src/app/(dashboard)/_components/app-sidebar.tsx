@@ -4,7 +4,6 @@ import {
   CalendarDays,
   ChartColumn,
   LayoutDashboard,
-  MapPin,
   Ticket,
 } from "lucide-react";
 import Link from "next/link";
@@ -29,11 +28,11 @@ const NAV_ITEMS = [
   { title: "Eventos", href: "/events", icon: CalendarDays },
 ] as const;
 
-/** Secciones designadas en el roadmap (PRs 3 y 4), todavía sin ruta. */
-const UPCOMING_ITEMS = [
-  { title: "Spots", icon: MapPin },
-  { title: "Analytics", icon: ChartColumn },
-] as const;
+/**
+ * Secciones designadas en el roadmap, todavía sin ruta. Los spots no van acá:
+ * se administran por evento (Eventos → evento → Spots).
+ */
+const UPCOMING_ITEMS = [{ title: "Analytics", icon: ChartColumn }] as const;
 
 export function AppSidebar({
   organization,
