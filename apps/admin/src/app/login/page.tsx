@@ -11,6 +11,10 @@ import { getCurrentUser } from "@/server/auth";
 import { resolveSafeNextPath } from "@/utils";
 import { signInWithGoogle } from "./actions";
 
+type LoginPageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
 const GoogleIcon = () => (
   <svg viewBox="0 0 24 24" aria-hidden="true" className="size-4">
     <path
@@ -20,7 +24,7 @@ const GoogleIcon = () => (
   </svg>
 );
 
-export default async function LoginPage({ searchParams }: PageProps<"/login">) {
+export default async function LoginPage({ searchParams }: LoginPageProps) {
   const user = await getCurrentUser();
   const params = await searchParams;
   const next = resolveSafeNextPath(
