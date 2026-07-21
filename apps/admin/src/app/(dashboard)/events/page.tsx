@@ -88,7 +88,12 @@ export default async function EventsPage() {
                     </TableCell>
                     <TableCell>{event.city ?? "—"}</TableCell>
                     <TableCell className="text-right tabular-nums">
-                      {event.spotCount}
+                      <Link
+                        href={`/events/${event.id}/spots`}
+                        className="hover:underline"
+                      >
+                        {event.spotCount}
+                      </Link>
                     </TableCell>
                     <TableCell className="text-right tabular-nums">
                       {event.scanCount}

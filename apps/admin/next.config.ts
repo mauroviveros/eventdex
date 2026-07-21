@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: {
+      // El alta de spots sube el avatar (hasta 2MB) vía Server Action.
+      bodySizeLimit: "3mb",
+    },
+  },
   images: {
     remotePatterns: [
       { hostname: "*.googleusercontent.com" },
