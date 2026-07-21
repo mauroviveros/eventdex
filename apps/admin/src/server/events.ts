@@ -1,5 +1,40 @@
+import type { Tables } from "@eventdex/database";
 import { createServiceClient } from "@/libs/supabase/service";
 import { countBy, scheduleRange } from "@/utils";
+
+export type EventDetail = Tables<"events"> & {
+  location: Tables<"event_locations"> | null;
+  schedules: Tables<"event_schedules">[];
+};
+
+/**
+ * Evento puntual de la organización, con ubicación y horarios ordenados.
+ * Null si no existe, está soft-deleted o pertenece a otra organización — el
+ * filtro por `organization_id` es la barrera de autorización (el service
+ * client no pasa por RLS), así que siempre va junto al id.
+ */
+export async function getOrganizationEvent(
+  organizationId: string,
+  eventId: string,
+): Promise<EventDetail | null> {
+  const service = createServiceClient();
+  const { data } = await service
+    .from("events")
+    .select("*, location:event_locations(*), schedules:event_schedules(*)")
+    .eq("id", eventId)
+    .eq("organization_id", organizationId)
+    .is("deleted_at", null)
+    .maybeSingle();
+
+  if (!data) return null;
+
+  return {
+    ...data,
+    schedules: data.schedules.toSorted((a, b) =>
+      a.start_datetime.localeCompare(b.start_datetime),
+    ),
+  };
+}
 
 export type OrganizationEvent = {
   id: string;

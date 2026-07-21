@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { countBy, formatDateRange, scheduleRange } from "./schedule";
+import {
+  countBy,
+  formatDateRange,
+  localToUtcIso,
+  scheduleRange,
+  utcIsoToLocal,
+} from "./schedule";
 
 describe("scheduleRange", () => {
   it("devuelve null sin horarios", () => {
@@ -70,6 +76,27 @@ describe("formatDateRange", () => {
         "Asia/Tokyo",
       ),
     ).toBe("13 sept 2026");
+  });
+});
+
+describe("localToUtcIso / utcIsoToLocal", () => {
+  const tz = "America/Argentina/Buenos_Aires";
+
+  it("interpreta el datetime-local en el timezone del evento", () => {
+    // 10:00 en Buenos Aires (UTC-3) son las 13:00 UTC.
+    expect(localToUtcIso("2027-09-12T10:00", tz)).toBe(
+      "2027-09-12T13:00:00.000Z",
+    );
+  });
+
+  it("devuelve null si el valor no parsea", () => {
+    expect(localToUtcIso("no-es-una-fecha", tz)).toBeNull();
+  });
+
+  it("es inverso de utcIsoToLocal", () => {
+    const local = "2027-09-12T10:00";
+    const utc = localToUtcIso(local, tz);
+    expect(utc && utcIsoToLocal(utc, tz)).toBe(local);
   });
 });
 
