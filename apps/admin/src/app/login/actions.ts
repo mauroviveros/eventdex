@@ -7,7 +7,7 @@ import { createClient } from "@/libs/supabase/server";
 export const signInWithGoogle = async (next?: string) => {
   const supabase = await createClient();
   const origin = (await headers()).get("origin") ?? "http://localhost:3001";
-  const callback = new URL("/auth/callback", origin);
+  const callback = new URL("/api/auth/callback", origin);
   callback.searchParams.set("next", next ?? "/");
 
   const { data, error } = await supabase.auth.signInWithOAuth({
@@ -16,6 +16,8 @@ export const signInWithGoogle = async (next?: string) => {
   });
 
   if (error) return redirect("/login?error=oauth_error");
+
+  console.log("data", data);
   return redirect(data.url);
 };
 
