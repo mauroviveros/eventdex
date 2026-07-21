@@ -1,5 +1,8 @@
+import { Plus } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -21,12 +24,19 @@ export default async function EventsPage() {
 
   return (
     <>
-      <PageHeader title="Eventos" />
+      <PageHeader title="Eventos">
+        <Button asChild size="sm">
+          <Link href="/events/new">
+            <Plus className="size-4" />
+            Nuevo evento
+          </Link>
+        </Button>
+      </PageHeader>
       <main className="flex flex-col gap-4 p-4">
         {events.length === 0 ? (
           <p className="py-12 text-center text-muted-foreground text-sm">
-            Todavía no hay eventos en {membership.organization.name}. La
-            creación de eventos llega en la próxima iteración del dashboard.
+            Todavía no hay eventos en {membership.organization.name}. Creá el
+            primero con “Nuevo evento”.
           </p>
         ) : (
           <div className="overflow-x-auto rounded-lg border">
@@ -46,7 +56,12 @@ export default async function EventsPage() {
                 {events.map((event) => (
                   <TableRow key={event.id}>
                     <TableCell>
-                      <div className="font-medium">{event.title}</div>
+                      <Link
+                        href={`/events/${event.id}`}
+                        className="font-medium hover:underline"
+                      >
+                        {event.title}
+                      </Link>
                       {event.edition && (
                         <div className="text-muted-foreground text-xs">
                           {event.edition}
