@@ -8,6 +8,8 @@ export type EventFormValues = {
   description: string;
   edition: string | null;
   timezone: string;
+  /** URL del deploy público del evento; se guarda en config.siteUrl. */
+  siteUrl: string | null;
   location: {
     name: string;
     address: string;
@@ -60,6 +62,9 @@ export function parseEventForm(formData: FormData): {
     errors.timezone = "Timezone inválido (usá un identificador IANA).";
   }
 
+  const site = parseSiteUrl(text(formData, "site_url"));
+  if (site.error) errors.site_url = site.error;
+
   if (Object.keys(errors).length > 0) return { values: null, errors };
 
   return {
@@ -68,6 +73,7 @@ export function parseEventForm(formData: FormData): {
       description: text(formData, "description"),
       edition: text(formData, "edition") || null,
       timezone,
+      siteUrl: site.url,
       location: {
         name: text(formData, "location_name"),
         address: text(formData, "location_address"),
@@ -78,6 +84,30 @@ export function parseEventForm(formData: FormData): {
     },
     errors,
   };
+}
+
+/**
+ * Normaliza la URL pública del evento (deploy de apps/event). Opcional; si
+ * está, debe ser http(s) absoluta. Sin barra final, para poder concatenar
+ * rutas (`${siteUrl}/spot/${id}`).
+ */
+export function parseSiteUrl(value: string): {
+  url: string | null;
+  error: string | null;
+} {
+  if (!value) return { url: null, error: null };
+  try {
+    const parsed = new URL(value);
+    if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
+      throw new Error("bad protocol");
+    }
+    return { url: value.replace(/\/+$/, ""), error: null };
+  } catch {
+    return {
+      url: null,
+      error: "URL inválida (tiene que ser https://…).",
+    };
+  }
 }
 
 /**

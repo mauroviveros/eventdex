@@ -7,6 +7,17 @@ export type EventDetail = Tables<"events"> & {
   schedules: Tables<"event_schedules">[];
 };
 
+/** URL pública del evento (deploy de apps/event) si está configurada. */
+export function eventSiteUrl(
+  config: Tables<"events">["config"],
+): string | null {
+  if (typeof config !== "object" || config === null || Array.isArray(config)) {
+    return null;
+  }
+  const value = (config as { siteUrl?: unknown }).siteUrl;
+  return typeof value === "string" && value.length > 0 ? value : null;
+}
+
 /**
  * Evento puntual de la organización, con ubicación y horarios ordenados.
  * Null si no existe, está soft-deleted o pertenece a otra organización — el

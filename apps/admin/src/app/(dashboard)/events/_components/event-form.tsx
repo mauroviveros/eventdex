@@ -35,6 +35,7 @@ export type EventFormDefaults = {
   description?: string;
   edition?: string | null;
   timezone?: string;
+  siteUrl?: string | null;
   location?: {
     name?: string;
     address?: string;
@@ -121,6 +122,21 @@ export function EventForm({
               </Select>
               <FieldError message={errors.timezone} />
             </div>
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="site_url">URL pública del evento (opcional)</Label>
+            <Input
+              id="site_url"
+              name="site_url"
+              type="url"
+              defaultValue={defaults?.siteUrl ?? ""}
+              placeholder="https://mievento.com"
+            />
+            <p className="text-muted-foreground text-xs">
+              El deploy de la app del evento. Se usa para armar los links y QR
+              de los spots.
+            </p>
+            <FieldError message={errors.site_url} />
           </div>
         </CardContent>
       </Card>

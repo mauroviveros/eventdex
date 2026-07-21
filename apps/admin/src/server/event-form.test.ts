@@ -3,6 +3,7 @@ import {
   isValidTimeZone,
   parseEventForm,
   parseScheduleForm,
+  parseSiteUrl,
 } from "./event-form";
 
 const validForm = () => {
@@ -51,6 +52,21 @@ describe("parseEventForm", () => {
     form.set("timezone", "America/Springfield");
     const { errors } = parseEventForm(form);
     expect(errors.timezone).toBeDefined();
+  });
+});
+
+describe("parseSiteUrl", () => {
+  it("vacío es válido y queda null", () => {
+    expect(parseSiteUrl("")).toEqual({ url: null, error: null });
+  });
+
+  it("normaliza quitando la barra final", () => {
+    expect(parseSiteUrl("https://evento.com/").url).toBe("https://evento.com");
+  });
+
+  it("rechaza valores que no son URLs http(s)", () => {
+    expect(parseSiteUrl("evento.com").error).toBeTruthy();
+    expect(parseSiteUrl("ftp://evento.com").error).toBeTruthy();
   });
 });
 

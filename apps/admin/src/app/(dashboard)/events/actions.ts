@@ -23,7 +23,7 @@ async function requireOrganizationEvent(eventId: string) {
   const service = createServiceClient();
   const { data: event } = await service
     .from("events")
-    .select("id, timezone")
+    .select("id, timezone, config")
     .eq("id", eventId)
     .eq("organization_id", membership.organizationId)
     .is("deleted_at", null)
@@ -56,7 +56,7 @@ export async function createEvent(
       description: values.description,
       edition: values.edition,
       timezone: values.timezone,
-      config: {},
+      config: values.siteUrl ? { siteUrl: values.siteUrl } : {},
       status: "ACTIVE",
       organization_id: membership.organizationId,
     })
@@ -87,9 +87,17 @@ export async function updateEvent(
   _prev: EventFormState,
   formData: FormData,
 ): Promise<EventFormState> {
-  const { service } = await requireOrganizationEvent(eventId);
+  const { service, event } = await requireOrganizationEvent(eventId);
   const { values, errors } = parseEventForm(formData);
   if (!values) return { errors };
+
+  // config es JSON libre: se preserva lo que haya y solo se pisa siteUrl.
+  const config = {
+    ...(typeof event.config === "object" && event.config !== null
+      ? event.config
+      : {}),
+    siteUrl: values.siteUrl ?? undefined,
+  };
 
   const { error } = await service
     .from("events")
@@ -98,6 +106,7 @@ export async function updateEvent(
       description: values.description,
       edition: values.edition,
       timezone: values.timezone,
+      config,
       updated_at: new Date().toISOString(),
     })
     .eq("id", eventId);
