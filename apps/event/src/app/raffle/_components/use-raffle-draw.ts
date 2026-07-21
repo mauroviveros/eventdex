@@ -1,42 +1,30 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { RaffleParticipant } from "@/types";
 
-const STORAGE_KEY = "raffle_winner";
+interface Options {
+  /** Ganador ya persistido (viene del server); no vuelve a celebrarse. */
+  initialWinner: RaffleParticipant | null;
+  /** Se llama al terminar el sorteo, para persistir el ganador server-side. */
+  onWin: (winner: RaffleParticipant) => void;
+}
 
 /**
- * Lógica del sorteo: mantiene el ganador (persistido en localStorage para
- * sobrevivir recargas), corre la animación de selección ponderada por cantidad
- * de spots, y expone el candidato mostrado en cada frame del sorteo.
+ * Lógica del sorteo: corre la animación de selección ponderada por cantidad de
+ * spots y notifica el ganador para que se persista. El estado inicial viene del
+ * server (fuente de verdad), así que sobrevive recargas y cambios de dispositivo.
  */
-export function useRaffleDraw(participants: RaffleParticipant[]) {
-  const [winner, setWinner] = useState<RaffleParticipant | null>(null);
+export function useRaffleDraw(
+  participants: RaffleParticipant[],
+  { initialWinner, onWin }: Options,
+) {
+  const [winner, setWinner] = useState<RaffleParticipant | null>(initialWinner);
   const [currentCandidate, setCurrentCandidate] =
     useState<RaffleParticipant | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
-  // Distingue un ganador recién sorteado de uno recuperado de localStorage
-  // (este último no vuelve a disparar la celebración).
-  const [isPersistedWinner, setIsPersistedWinner] = useState(false);
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        setWinner(JSON.parse(raw) as RaffleParticipant);
-        setIsPersistedWinner(true);
-      }
-    } catch (err) {
-      console.error("Error leyendo ganador guardado:", err);
-    }
-  }, []);
-
-  useEffect(() => {
-    try {
-      if (winner) localStorage.setItem(STORAGE_KEY, JSON.stringify(winner));
-      else localStorage.removeItem(STORAGE_KEY);
-    } catch (err) {
-      console.error("Error guardando ganador:", err);
-    }
-  }, [winner]);
+  // Un ganador que ya venía persistido no dispara la celebración al cargar.
+  const [isPersistedWinner, setIsPersistedWinner] = useState(
+    initialWinner !== null,
+  );
 
   const draw = () => {
     if (participants.length === 0) return;
@@ -64,6 +52,7 @@ export function useRaffleDraw(participants: RaffleParticipant[]) {
         setIsPersistedWinner(false);
         setCurrentCandidate(null);
         setIsDrawing(false);
+        onWin(candidate);
         return;
       }
 
@@ -76,14 +65,13 @@ export function useRaffleDraw(participants: RaffleParticipant[]) {
     step();
   };
 
+  // Reinicia la vista para volver a sortear. El ganador persistido sigue siendo
+  // el actual hasta que un nuevo sorteo se complete.
   const reset = () => {
     setWinner(null);
     setCurrentCandidate(null);
     setIsDrawing(false);
     setIsPersistedWinner(false);
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch {}
   };
 
   return {
