@@ -45,6 +45,25 @@ export function formatDateRange(
   return `${start.toFormat("d MMM yyyy")} – ${end.toFormat("d MMM yyyy")}`;
 }
 
+/**
+ * Convierte un valor de input `datetime-local` (sin zona) a un ISO UTC,
+ * interpretándolo en el timezone del evento. Null si el valor no parsea.
+ */
+export function localToUtcIso(value: string, zone: string): string | null {
+  const parsed = DateTime.fromISO(value, { zone });
+  return parsed.isValid ? parsed.toUTC().toISO() : null;
+}
+
+/**
+ * Convierte un ISO UTC al formato `datetime-local` (YYYY-MM-DDTHH:mm) en el
+ * timezone del evento, para precargar inputs de edición.
+ */
+export function utcIsoToLocal(iso: string, zone: string): string {
+  return DateTime.fromISO(iso, { zone: "utc" })
+    .setZone(zone)
+    .toFormat("yyyy-MM-dd'T'HH:mm");
+}
+
 /** Cuenta ocurrencias por clave; usado para agregar escaneos por evento. */
 export function countBy<T>(rows: T[], key: (row: T) => string) {
   const counts = new Map<string, number>();
