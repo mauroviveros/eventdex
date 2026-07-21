@@ -16,23 +16,18 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
 
+/** Los spots no van acá: se administran por evento (Eventos → evento → Spots). */
 const NAV_ITEMS = [
   { title: "Dashboard", href: "/", icon: LayoutDashboard },
   { title: "Eventos", href: "/events", icon: CalendarDays },
+  { title: "Analytics", href: "/analytics", icon: ChartColumn },
 ] as const;
-
-/**
- * Secciones designadas en el roadmap, todavía sin ruta. Los spots no van acá:
- * se administran por evento (Eventos → evento → Spots).
- */
-const UPCOMING_ITEMS = [{ title: "Analytics", icon: ChartColumn }] as const;
 
 export function AppSidebar({
   organization,
@@ -83,15 +78,6 @@ export function AppSidebar({
                     <span>{item.title}</span>
                   </Link>
                 </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-            {UPCOMING_ITEMS.map((item) => (
-              <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton disabled tooltip={item.title}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </SidebarMenuButton>
-                <SidebarMenuBadge>pronto</SidebarMenuBadge>
               </SidebarMenuItem>
             ))}
           </SidebarMenu>
