@@ -44,11 +44,19 @@ export async function getUserMedalHistory(userId: string) {
   return data ?? [];
 }
 
+/** Código Postgres de violación de unicidad (unique_violation). */
+const UNIQUE_VIOLATION = "23505";
+
 /**
  * Registra que un usuario coleccionó un spot. Es idempotente: si ya lo tenía, no
  * inserta de nuevo.
  * - `alreadyCollected`: ya lo tenía antes de esta llamada.
  * - `justCollected`: se insertó en esta llamada (dispara la celebración).
+ *
+ * La lectura previa cubre el caso común (re-escaneo del mismo QR). Para la carrera
+ * (dos escaneos casi simultáneos que pasan ambos la lectura), nos apoyamos en el
+ * índice único (user_id, spot_id): el segundo insert falla con 23505 y lo tratamos
+ * como ya coleccionado, evitando filas duplicadas que inflarían el conteo del sorteo.
  */
 export async function collectMedal(userId: string, spotId: string) {
   const supabase = await createClient();
@@ -73,5 +81,13 @@ export async function collectMedal(userId: string, spotId: string) {
       collected_at: new Date().toISOString(),
     });
 
-  return { alreadyCollected: false, justCollected: !insertError };
+  if (insertError) {
+    // Carrera: otro request concurrente ya la insertó → ya coleccionada.
+    return {
+      alreadyCollected: insertError.code === UNIQUE_VIOLATION,
+      justCollected: false,
+    };
+  }
+
+  return { alreadyCollected: false, justCollected: true };
 }
