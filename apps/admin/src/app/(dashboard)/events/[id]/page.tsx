@@ -1,7 +1,10 @@
+import { MapPin } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { getOrganizationEvent } from "@/server/events";
+import { Button } from "@/components/ui/button";
+import { eventSiteUrl, getOrganizationEvent } from "@/server/events";
 import { requireMembership } from "@/server/guard";
 import { PageHeader } from "../../_components/page-header";
 import { EventForm } from "../_components/event-form";
@@ -28,9 +31,17 @@ export default async function EventDetailPage({
   return (
     <>
       <PageHeader title={event.title}>
-        <Badge variant={event.status === "ACTIVE" ? "default" : "secondary"}>
-          {event.status === "ACTIVE" ? "Activo" : "Inactivo"}
-        </Badge>
+        <div className="flex items-center gap-2">
+          <Badge variant={event.status === "ACTIVE" ? "default" : "secondary"}>
+            {event.status === "ACTIVE" ? "Activo" : "Inactivo"}
+          </Badge>
+          <Button asChild size="sm" variant="outline">
+            <Link href={`/events/${event.id}/spots`}>
+              <MapPin className="size-4" />
+              Spots
+            </Link>
+          </Button>
+        </div>
       </PageHeader>
       <main className="flex max-w-2xl flex-col gap-4 p-4">
         <EventForm
@@ -40,6 +51,7 @@ export default async function EventDetailPage({
             description: event.description,
             edition: event.edition,
             timezone: event.timezone,
+            siteUrl: eventSiteUrl(event.config),
             location: event.location,
           }}
           submitLabel="Guardar cambios"
