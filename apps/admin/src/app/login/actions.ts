@@ -16,8 +16,6 @@ export const signInWithGoogle = async (next?: string) => {
   });
 
   if (error) return redirect("/login?error=oauth_error");
-
-  console.log("data", data);
   return redirect(data.url);
 };
 
