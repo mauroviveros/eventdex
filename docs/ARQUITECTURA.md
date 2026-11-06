@@ -150,7 +150,7 @@ carpetas nunca se alcanzan directo (`expo.com/admin` es un 404):
 
 | Entorno | Base | App | Para qué |
 |---------|------|-----|----------|
-| **Local** | Supabase local (`supabase start`, Docker) | `pnpm dev` | Desarrollo y tests, con migraciones y seed |
+| **Local** | Supabase local (`pnpm db:start`, Docker) en los puertos **544xx** (API `54421`, base `54422`, Studio `54423`), corridos para no chocar con otros proyectos en los 543xx por defecto | `pnpm dev` | Desarrollo y tests, con migraciones y seed |
 | **Producción** | Proyecto Supabase de producción | Vercel (`main`) | Usuarios reales |
 
 - Los previews de Vercel **no** tocan la base de producción. **Shortcut**: los
