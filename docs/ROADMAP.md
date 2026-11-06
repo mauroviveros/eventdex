@@ -52,13 +52,13 @@ para escribir la primera rebanada.
 4. ✅ **Limpieza del código viejo.** Tag `v2-legacy` y borrado de `apps/`, `packages/`,
    `supabase/`, `turbo.json` y la config que quede huérfana.
    *Listo cuando* el tag existe en el remoto y el repo solo tiene docs y config.
-5. ▶ **Esqueleto Next.** App Next 16 + Tailwind v4 + Biome + Vitest + `proxy.ts` con
+5. ✅ **Esqueleto Next.** App Next 16 + Tailwind v4 + Biome + Vitest + `proxy.ts` con
    las cuatro superficies respondiendo una página vacía por host. `.env.example`,
    validación de variables y `.claude/launch.json`.
    *Listo cuando* `pnpm dev` levanta, `localhost:3000`, `app.localhost:3000` y
    `expo.localhost:3000` muestran su superficie, y pasan `pnpm lint`,
    `pnpm typecheck` y `pnpm test`.
-6. **Supabase local.** `supabase init`, el esquema `app` vacío, pgTAP habilitado y
+6. ▶ **Supabase local.** `supabase init`, el esquema `app` vacío, pgTAP habilitado y
    un test trivial.
    *Listo cuando* `supabase start` + `supabase test db` pasa en local.
 7. **CI.** El workflow nuevo según [ARQUITECTURA](./ARQUITECTURA.md#ci).
