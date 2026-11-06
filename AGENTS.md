@@ -154,6 +154,7 @@ desde `.claude/skills/`. Se restauran con `npx skills experimental_install`.
 | `next-upgrade` | Al subir de versión de Next |
 | `react-best-practices` | Al escribir o revisar componentes de React |
 | `composition-patterns` | Cuando un componente empieza a juntar props booleanas |
+| `supabase` | Todo lo de Supabase fuera del esquema: auth, `@supabase/ssr`, CLI, Storage |
 | `supabase-postgres-best-practices` | En cada bloque **DB**: esquema, índices, RLS, funciones |
 | `typescript-advanced-types` | Tipos derivados del esquema y de los resultados de las acciones |
 | `tailwind-css-patterns` | Estilos y layout responsive con tokens |
@@ -163,7 +164,6 @@ desde `.claude/skills/`. Se restauran con `npx skills experimental_install`.
 | `vitest` | Tests unitarios y de acciones |
 | `deploy-to-vercel` | Deploys y configuración de dominios |
 | `nodejs-best-practices` | El script de migración (R10) |
-| `astro`, `turborepo`, `nodejs-backend-patterns` | **No aplican al stack nuevo.** Se proponen para desinstalar en F0 · bloque 5 |
 
 ### Del usuario (globales)
 
@@ -180,8 +180,7 @@ Se buscan con `/find-skills` al llegar a la fase y se instalan solo con OK.
 
 | Área | Fase |
 |---|---|
-| Supabase Auth y SSR con Next (sesión, cookies, OAuth) | R1 |
 | Tests de base con pgTAP | F0 · bloque 6 |
-| shadcn/ui | F0 · bloque 9 |
-| Playwright (e2e) | R5 |
+| shadcn/ui → `shadcn-ui/ui@shadcn` | F0 · bloque 9 |
+| Playwright → `currents-dev/playwright-best-practices-skill@playwright-best-practices` | R5 |
 | Generación e impresión de QR | R3 |
