@@ -1,52 +1,22 @@
-# Eventdex v2
+# Eventdex
 
-Plataforma de eventos multi-tenant: cada organización sirve su app pública desde su
-propio dominio, contra un solo deployment.
+Eventos presenciales convertidos en un juego de colección: el visitante escanea los
+QR de los stands, junta medallas y entra en el sorteo del cierre. Multi-tenant: cada
+organización lo publica en su propio dominio.
 
-El diseño completo vive en [`docs/`](./docs) — empezar por
-[00 — Visión](./docs/00-vision.md) y [01 — Arquitectura](./docs/01-arquitectura.md).
-
-## Estructura
-
-```
-eventdex/
-├── apps/
-│   ├── web/          Astro SSR · app pública del evento (multi-tenant por Host)
-│   ├── admin/        Next.js · dashboard de organización
-│   └── landing/      Astro estático · marketing (eventdex.com)
-├── packages/
-│   └── config/       tsconfig, biome y preset de Tailwind compartidos
-├── docs/             Diseño, modelo de datos, RLS, roadmap y SQL
-└── turbo.json        Pipeline de tareas
-```
-
-Los packages `db`, `supabase`, `auth`, `domain` y `ui` llegan en la fase 3
-(ver [06 — Roadmap](./docs/06-roadmap.md)).
-
-## Stack
-
-| Capa | Elección |
-|------|----------|
-| App pública | Astro 5 (SSR, adapter Vercel) + islas React |
-| Dashboard | Next.js 16 App Router + React 19 |
-| Landing | Astro 5 (estático) |
-| Base de datos / Auth | Supabase (Postgres, RLS, OAuth) |
-| Estilos | Tailwind v4 + shadcn/ui |
-| Monorepo | Turborepo + pnpm workspaces |
-| Lint / format | Biome |
-| Tests | Vitest |
-
-## Requisitos
-
-- Node >= 22.12
-- pnpm 11 (`corepack enable`)
+> **En reconstrucción.** Se está rehaciendo desde cero; el código anterior quedó en
+> el tag `v2-legacy`. Por dónde va: [ROADMAP](./docs/ROADMAP.md).
 
 ## Comandos
 
-Todos desde la raíz; turbo los reparte entre las apps.
+Requiere Node 22.12+, pnpm (`corepack enable`) y Docker para Supabase local.
 
 ```bash
 pnpm install
+```
+
+```bash
+pnpm db:start
 ```
 
 ```bash
@@ -54,25 +24,15 @@ pnpm dev
 ```
 
 ```bash
-pnpm build
+pnpm check
 ```
 
-```bash
-pnpm lint && pnpm check-types
-```
+`db:start` levanta Supabase local con migraciones y seed. `check` corre lint, tipos
+y tests. El resto de los comandos está en [AGENTS.md](./AGENTS.md#comandos).
 
-`pnpm format` aplica los fixes de Biome. Para trabajar sobre una sola app:
+## Documentación
 
-```bash
-pnpm --filter @eventdex/web dev
-```
-
-## Convenciones
-
-- **Lint y formato**: Biome en todo el repo. Biome no parsea `.astro`, así que el
-  markup de las apps Astro queda cubierto por `astro check` (que es lo que corre
-  `check-types` ahí).
-- **tsconfig**: las tres apps extienden de `@eventdex/config/tsconfig/*`.
-- **Tokens de diseño**: `@eventdex/config/tailwind.css`. Los tokens `--brand-*`
-  son la indirección que va a pisar `organizations.brand` por tenant.
-- **Commits**: `<type>(<scope>): :gitmoji: <mensaje>`.
+- [AGENTS.md](./AGENTS.md): cómo se trabaja en este repo (personas y agentes).
+- [`docs/`](./docs): [PROYECTO](./docs/PROYECTO.md) · [PRODUCT](./docs/PRODUCT.md) ·
+  [ARQUITECTURA](./docs/ARQUITECTURA.md) · [RUTAS](./docs/RUTAS.md) ·
+  [DESIGN_SYSTEM](./docs/DESIGN_SYSTEM.md) · [ROADMAP](./docs/ROADMAP.md)
