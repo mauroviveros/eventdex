@@ -1,0 +1,1 @@
+-- Local data only. Each slice adds the rows its views need (see docs/ROADMAP.md).
