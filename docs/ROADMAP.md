@@ -61,7 +61,7 @@ para escribir la primera rebanada.
 6. ✅ **Supabase local.** `supabase init`, el esquema `app` vacío, pgTAP habilitado y
    un test trivial.
    *Listo cuando* `supabase start` + `supabase test db` pasa en local.
-7. ▶ **CI.** El workflow nuevo según [ARQUITECTURA](./ARQUITECTURA.md#ci).
+7. ✅ **CI.** El workflow nuevo según [ARQUITECTURA](./ARQUITECTURA.md#ci).
    *Listo cuando* el PR de `chore/fundaciones` a `main` corre verde en GitHub.
 8. **Dirección visual.** `/impeccable` sobre `PRODUCT.md` y `/impeccable document`
    genera `docs/DESIGN.md`, con su symlink `DESIGN.md` en la raíz (se crea recién
