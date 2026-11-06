@@ -1,7 +1,12 @@
 name: CI
 
-# shortcut: corre en cada push de cualquier branch, sumar `pull_request` y limitar push a main en F0 · bloque 7
-on: push
+# Push a main y PRs hacia main: una branch de trabajo se verifica al abrir su PR,
+# no en cada push suelto.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 # Un push nuevo cancela el run anterior de la misma rama: no tiene sentido
 # terminar de verificar un commit que ya quedó viejo.
@@ -9,19 +14,21 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
-  verify:
+  app:
     runs-on: ubuntu-latest
 
     env:
-      # Solo lo que valida src/lib/env.ts. Supabase se suma en F0 · bloque 7.
+      # Solo lo que valida src/lib/env.ts; crece con cada variable que se use.
       NEXT_PUBLIC_ROOT_DOMAIN: eventdex.com
 
     steps:
       - uses: actions/checkout@v7
 
-      # Sin `version:` — la toma de `packageManager` en el package.json de la
-      # raíz. Así pnpm se actualiza en un solo lugar.
+      # Sin `version:` — la toma de `packageManager` en package.json.
       - uses: pnpm/action-setup@v6
 
       - uses: actions/setup-node@v7
@@ -31,14 +38,28 @@ jobs:
           node-version: 22
           cache: pnpm
 
-      # `--frozen-lockfile` falla si el lockfile no coincide con los
-      # package.json. Es lo que agarra el "commiteé la dependencia pero no el
-      # lock", que en local no se nota porque tu node_modules ya la tiene.
+      # `--frozen-lockfile` agarra el "commiteé la dependencia pero no el lock".
       - run: pnpm install --frozen-lockfile
 
-      # Pasos separados y no un `&&`: así la pestaña de Actions te dice cuál
-      # falló sin abrir el log.
+      # Pasos separados y no un `&&`: la pestaña de Actions dice cuál falló.
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
+
+  # Permisos de la base (pgTAP). Corre en paralelo con `app`.
+  db:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      # Solo Postgres, sin el resto del stack: aplica migraciones y seed.
+      - run: pnpm exec supabase db start
+      - run: pnpm db:test

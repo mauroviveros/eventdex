@@ -58,11 +58,11 @@ para escribir la primera rebanada.
    *Listo cuando* `pnpm dev` levanta, `localhost:3000`, `app.localhost:3000` y
    `expo.localhost:3000` muestran su superficie, y pasan `pnpm lint`,
    `pnpm typecheck` y `pnpm test`.
-6. ▶ **Supabase local.** `supabase init`, el esquema `app` vacío, pgTAP habilitado y
+6. ✅ **Supabase local.** `supabase init`, el esquema `app` vacío, pgTAP habilitado y
    un test trivial.
    *Listo cuando* `supabase start` + `supabase test db` pasa en local.
-7. **CI.** El workflow nuevo según [ARQUITECTURA](./ARQUITECTURA.md#ci).
-   *Listo cuando* un push a la branch corre verde en GitHub.
+7. ▶ **CI.** El workflow nuevo según [ARQUITECTURA](./ARQUITECTURA.md#ci).
+   *Listo cuando* el PR de `chore/fundaciones` a `main` corre verde en GitHub.
 8. **Dirección visual.** `/impeccable` sobre `PRODUCT.md` y `/impeccable document`
    genera `docs/DESIGN.md`, con su symlink `DESIGN.md` en la raíz (se crea recién
    ahí para no dejar un link roto). Tokens en el CSS global.
