@@ -1,8 +1,6 @@
 name: CI
 
-# Sin `pull_request` por ahora: estás trabajando directo sobre `refactor/v2`,
-# así que un trigger de PR no correría nunca. Cuando empieces a usar PRs se
-# agrega y se limita el push a `main` para no correr dos veces lo mismo.
+# shortcut: corre en cada push de cualquier branch, sumar `pull_request` y limitar push a main en F0 · bloque 7
 on: push
 
 # Un push nuevo cancela el run anterior de la misma rama: no tiene sentido
@@ -16,14 +14,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      # `apps/web` declara estas dos como REQUERIDAS en su `env.schema`, así que
-      # sin ellas `astro build` falla antes de compilar nada.
-      #
-      # Son valores de relleno y alcanza: con `output: "server"` ninguna página
-      # se ejecuta en build, así que nadie se conecta a Supabase. El build acá
-      # verifica que compile, no que la config sea real.
-      PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
-      PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_ci
+      # Solo lo que valida src/lib/env.ts. Supabase se suma en F0 · bloque 7.
+      NEXT_PUBLIC_ROOT_DOMAIN: eventdex.com
 
     steps:
       - uses: actions/checkout@v7
@@ -47,6 +39,6 @@ jobs:
       # Pasos separados y no un `&&`: así la pestaña de Actions te dice cuál
       # falló sin abrir el log.
       - run: pnpm lint
-      - run: pnpm check-types
+      - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
