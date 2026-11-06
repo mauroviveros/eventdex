@@ -187,14 +187,12 @@ acción con su caso de error y un recorrido de Playwright.
 
 ## CI
 
-GitHub Actions, en cada push y en cada PR a `main`:
+GitHub Actions (`.github/workflows/ci.yml`), en cada PR a `main` y en cada push a
+`main`. Dos jobs en paralelo, los dos con `pnpm install --frozen-lockfile`:
 
-1. `pnpm install --frozen-lockfile`
-2. `pnpm lint`
-3. `pnpm typecheck`
-4. `pnpm test`
-5. `supabase start` + `supabase test db` (permisos)
-6. `pnpm build`
+- **`app`**: `pnpm lint` → `pnpm typecheck` → `pnpm test` → `pnpm build`.
+- **`db`**: `supabase db start` (solo Postgres, con migraciones y seed) →
+  `pnpm db:test` (permisos con pgTAP).
 
 Playwright corre en CI recién cuando haya un recorrido que valga la pena: al
 principio corre en local, antes de cerrar cada rebanada.
