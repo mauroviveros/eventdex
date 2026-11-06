@@ -43,8 +43,8 @@ para escribir la primera rebanada.
 
 1. ✅ **Documentos base.** `PROYECTO`, `PRODUCT`, `ARQUITECTURA` y `RUTAS` aprobados.
    *Listo cuando* están commiteados en `docs/base`.
-2. ▶ **Documentos restantes.** `DESIGN_SYSTEM`, `ROADMAP`, symlinks, `README` corto y
-   borrado de los docs viejos.
+2. ▶ **Documentos restantes.** `DESIGN_SYSTEM`, `ROADMAP`, symlink `PRODUCT.md`,
+   `README` corto y borrado de los docs viejos.
    *Listo cuando* `docs/` tiene solo los documentos nuevos, los symlinks resuelven
    y no hay links rotos.
 3. **`AGENTS.md`.** Reglas para agentes y `CLAUDE.md` como symlink.
@@ -64,7 +64,8 @@ para escribir la primera rebanada.
 7. **CI.** El workflow nuevo según [ARQUITECTURA](./ARQUITECTURA.md#ci).
    *Listo cuando* un push a la branch corre verde en GitHub.
 8. **Dirección visual.** `/impeccable` sobre `PRODUCT.md` y `/impeccable document`
-   genera `docs/DESIGN.md`. Tokens en el CSS global.
+   genera `docs/DESIGN.md`, con su symlink `DESIGN.md` en la raíz (se crea recién
+   ahí para no dejar un link roto). Tokens en el CSS global.
    *Listo cuando* `DESIGN.md` está aprobado y los tokens están en `globals.css`.
 9. **`/dev/componentes`.** Las primitivas base con los tokens, en todos sus
    estados. 404 en producción.
