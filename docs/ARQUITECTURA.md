@@ -1,6 +1,6 @@
 # Eventdex — Arquitectura
 
-`v0.1 · 2026-11-06` · Relacionados: [PROYECTO](./PROYECTO.md) · [RUTAS](./RUTAS.md) · [ROADMAP](./ROADMAP.md) · [AGENTS](../AGENTS.md)
+`v0.2 · 2026-11-06` · Relacionados: [PROYECTO](./PROYECTO.md) · [RUTAS](./RUTAS.md) · [ROADMAP](./ROADMAP.md) · [AGENTS](../AGENTS.md)
 
 > Decide sobre lo técnico. Lo que no está acá no está decidido: se agrega en el
 > mismo cambio que lo introduce.
@@ -47,10 +47,10 @@ algún día la app pública pesa demasiado, se mide primero y recién ahí se re
 ```
 src/
 ├── app/
-│   ├── (publica)/       App del evento, por dominio de la org
-│   ├── (admin)/         Admin de la organización
-│   ├── (plataforma)/    Panel del developer
-│   ├── (landing)/       eventdex.com
+│   ├── publica/[host]/  App del evento, por dominio de la org
+│   ├── admin/           Admin de la organización
+│   │   └── plataforma/  Panel del developer
+│   ├── landing/         eventdex.com
 │   ├── auth/            Callback y salida, compartidos
 │   └── dev/             Rutas solo de desarrollo (/dev/componentes)
 ├── components/
@@ -125,14 +125,17 @@ que se prueba sin mocks.
 
 ## Multi-tenancy
 
-`proxy.ts` lee el `Host` y reescribe la ruta al grupo que corresponde:
+`proxy.ts` lee el `Host` y reescribe la ruta a la carpeta de su superficie
+(`src/lib/surface.ts`, con tests). Son carpetas y no grupos `( )` porque las
+cuatro superficies tienen su propia `/`. Como todo pasa por el proxy, esas
+carpetas nunca se alcanzan directo (`expo.com/admin` es un 404):
 
 | Host | Superficie |
 |------|-----------|
-| `eventdex.com`, `www.eventdex.com` | `(landing)` |
-| `app.eventdex.com` | `(admin)` |
-| `app.eventdex.com/plataforma` | `(plataforma)`, solo para developers |
-| cualquier otro | `(publica)`, con la organización resuelta por `organization_domains` |
+| `eventdex.com`, `www.eventdex.com` | `landing/` |
+| `app.eventdex.com` | `admin/` |
+| `app.eventdex.com/plataforma` | `admin/plataforma/`, solo para developers |
+| cualquier otro | `publica/[host]/`, con la organización resuelta por `organization_domains` |
 
 - El mapeo host → organización es una función SQL. El resultado se cachea, porque
   cambia casi nunca.
