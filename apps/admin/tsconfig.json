@@ -1,8 +1,0 @@
-{
-  "extends": "@eventdex/config/tsconfig/next.json",
-  "compilerOptions": {
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  }
-}
