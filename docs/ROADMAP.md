@@ -1,6 +1,6 @@
 # Eventdex — Roadmap
 
-`v0.1 · 2026-11-06` · Relacionados: [PROYECTO](./PROYECTO.md) · [RUTAS](./RUTAS.md) · [ARQUITECTURA](./ARQUITECTURA.md) · [AGENTS](../AGENTS.md)
+`v0.2 · 2026-11-06` · Relacionados: [PROYECTO](./PROYECTO.md) · [RUTAS](./RUTAS.md) · [ARQUITECTURA](./ARQUITECTURA.md) · [AGENTS](../AGENTS.md)
 
 > Decide qué se hace ahora. Estados: ✅ hecho · ▶ en curso · ⏸ estacionado · sin
 > marca = pendiente.
@@ -43,16 +43,16 @@ para escribir la primera rebanada.
 
 1. ✅ **Documentos base.** `PROYECTO`, `PRODUCT`, `ARQUITECTURA` y `RUTAS` aprobados.
    *Listo cuando* están commiteados en `docs/base`.
-2. ▶ **Documentos restantes.** `DESIGN_SYSTEM`, `ROADMAP`, symlink `PRODUCT.md`,
+2. ✅ **Documentos restantes.** `DESIGN_SYSTEM`, `ROADMAP`, symlink `PRODUCT.md`,
    `README` corto y borrado de los docs viejos.
    *Listo cuando* `docs/` tiene solo los documentos nuevos, los symlinks resuelven
    y no hay links rotos.
-3. **`AGENTS.md`.** Reglas para agentes y `CLAUDE.md` como symlink.
+3. ✅ **`AGENTS.md`.** Reglas para agentes y `CLAUDE.md` como symlink.
    *Listo cuando* está aprobado y commiteado.
-4. **Limpieza del código viejo.** Tag `v2-legacy` y borrado de `apps/`, `packages/`,
+4. ✅ **Limpieza del código viejo.** Tag `v2-legacy` y borrado de `apps/`, `packages/`,
    `supabase/`, `turbo.json` y la config que quede huérfana.
    *Listo cuando* el tag existe en el remoto y el repo solo tiene docs y config.
-5. **Esqueleto Next.** App Next 16 + Tailwind v4 + Biome + Vitest + `proxy.ts` con
+5. ▶ **Esqueleto Next.** App Next 16 + Tailwind v4 + Biome + Vitest + `proxy.ts` con
    las cuatro superficies respondiendo una página vacía por host. `.env.example`,
    validación de variables y `.claude/launch.json`.
    *Listo cuando* `pnpm dev` levanta, `localhost:3000`, `app.localhost:3000` y
