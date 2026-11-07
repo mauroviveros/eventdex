@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { buttonClass } from "@/components/ui/Button";
-import { type Phase, PhaseBadge } from "@/components/visitante/PhaseBadge";
+import { PhaseBadge } from "@/components/visitante/PhaseBadge";
+import type { Phase } from "@/domain/events";
 
 type Props = {
   title: string;

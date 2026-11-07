@@ -1,9 +1,4 @@
-export type Phase =
-  | "borrador"
-  | "proximo"
-  | "en-curso"
-  | "finalizado"
-  | "sin-fecha";
+import type { Phase } from "@/domain/events";
 
 const STYLES: Record<Phase, { label: string; className: string }> = {
   borrador: {
