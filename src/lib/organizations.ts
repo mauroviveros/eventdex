@@ -62,27 +62,12 @@ export async function createOrganization(
   return { ok: true, data: { id: data } };
 }
 
-export async function acceptInvitation(
-  supabase: Pick<Supabase, "rpc">,
-  invitationId: unknown,
-): Promise<ActionResult<{ organizationId: string }>> {
-  const parsed = z.uuid().safeParse(invitationId);
-  if (!parsed.success) return { ok: false, error: MESSAGES.P0002 };
-
-  const { data, error } = await supabase.rpc("accept_invitation", {
-    p_invitation_id: parsed.data,
-  });
-  if (error || !data) return failed(error);
-  return { ok: true, data: { organizationId: data } };
-}
-
 // Postgres error codes raised by the functions and constraints, in the product's voice.
 const MESSAGES = {
   "42501": "No tenés permiso para hacer esto.",
   "23505": "Ya existe una organización con ese slug o con ese dominio.",
   "23514":
     "Algún dato no tiene el formato esperado. Revisalo y probá de nuevo.",
-  P0002: "La invitación no existe, ya se usó, venció o es para otra cuenta.",
 } satisfies Record<string, string>;
 const FALLBACK = "No pudimos guardar. Probá de nuevo en un rato.";
 
