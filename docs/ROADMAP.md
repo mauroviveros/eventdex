@@ -101,7 +101,7 @@ admin.
 4. ✅ **Auditoría.** `/ponytail-audit` o `/code-review` y `/accessibility`.
    *Listo cuando* los hallazgos están resueltos o anotados como pendientes.
 
-## R2 · Eventos
+## R2 · Eventos ✅
 
 Branch `feat/eventos`. La org crea un evento con sede y jornadas, y lo publica.
 
@@ -124,7 +124,7 @@ Branch `feat/eventos`. La org crea un evento con sede y jornadas, y lo publica.
    `/[org]/eventos/[evento]` y `/[org]/sedes`.
    *Listo cuando* en el navegador se crea una sede, se crea un evento con dos
    jornadas y se publica, con los estados de carga, vacío y error vistos.
-4. ▶ **Auditoría.** `/code-review`: resueltos el registro del modo soporte en los
+4. ✅ **Auditoría.** `/code-review`: resueltos el registro del modo soporte en los
    prefetch, la última jornada de un evento publicado (trigger), los contadores con
    búsqueda, el botón Publicar con teclado, el catálogo y repeticiones menores.
    Pendiente: la fase ignora `cancelled` y `archived`; se resuelve cuando exista
@@ -134,7 +134,7 @@ Branch `feat/eventos`. La org crea un evento con sede y jornadas, y lo publica.
 
 Branch `feat/spots-y-qr`. Catálogo, spots del evento y QR imprimibles.
 
-1. **DB.** `spots`, `event_spots` y el `snapshot` al publicar.
+1. ▶ **DB.** `spots`, `event_spots` y el `snapshot` al publicar.
    *Listo cuando* pgTAP prueba que no se repite el código dentro de un evento, que
    no se borra un spot en uso y que el snapshot congela el nombre.
 2. **Backend.** La resolución del nombre efectivo (override → snapshot → catálogo)
