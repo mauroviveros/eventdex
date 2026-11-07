@@ -86,13 +86,13 @@ admin.
    *Listo cuando* los tests pgTAP prueban que un miembro de la org A no ve nada de
    la org B, que solo un developer crea organizaciones y que no se puede quitar al
    último owner.
-2. ▶ **Backend.** Clientes Supabase (servidor y navegador; el de servicio llega
+2. ✅ **Backend.** Clientes Supabase (servidor y navegador; el de servicio llega
    con su primer uso), sesión refrescada en `proxy.ts`,
    `/auth/callback`, `/auth/salir`, y las acciones "crear organización" (con
    invitación al owner y primer dominio) y "aceptar invitación".
    *Listo cuando* los tests de las acciones cubren el caso feliz, el de datos
    inválidos y el de usuario sin permiso.
-3. **Vista.** `/ingresar` del admin, `/` (tus organizaciones),
+3. ▶ **Vista.** `/ingresar` del admin, `/` (tus organizaciones),
    `/plataforma/organizaciones`, `/plataforma/organizaciones/nueva`, `/privacidad`
    y `/terminos`.
    *Listo cuando* en el navegador: el developer crea una org, el owner invitado

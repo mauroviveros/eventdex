@@ -43,8 +43,8 @@ staff y owner.
 
 | Ruta | Vista | Acceso | Rebanada |
 |------|-------|--------|----------|
-| `/ingresar` | Login del equipo | Público | R1 |
-| `/` | Tus organizaciones. Con una sola, redirige a esa | Miembro | R1 |
+| `/ingresar` | Login del equipo con Google. En desarrollo suma un link por mail que llega al visor local | Público | R1 |
+| `/` | Tus organizaciones y las invitaciones pendientes para tu mail, con el botón para aceptarlas. Desde R2, con una sola org redirige a su panel | Usuario con sesión | R1 |
 | `/[org]` | Resumen: evento en curso o próximo, accesos rápidos | Miembro | R2 |
 | `/[org]/eventos` | Lista de eventos, filtrable por fase y estado | Miembro | R2 |
 | `/[org]/eventos/nuevo` | Alta de evento | Miembro | R2 |
