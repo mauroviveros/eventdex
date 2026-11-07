@@ -56,17 +56,22 @@ export default async function OrgEventsPage({
     ...e,
     phase: eventPhase(e.status, e.schedules, now),
   }));
+  // Counts follow the search, so each filter says how many cards it shows.
+  const needle = fold(query);
+  const matching = cards.filter(
+    (c) =>
+      !needle || fold(`${c.title} ${c.venue?.name ?? ""}`).includes(needle),
+  );
   const counts = Object.fromEntries(
     FILTERS.map((f) => [
       f,
-      f === "todos" ? cards.length : cards.filter((c) => c.phase === f).length,
+      f === "todos"
+        ? matching.length
+        : matching.filter((c) => c.phase === f).length,
     ]),
   ) as Record<PhaseFilter, number>;
-  const needle = fold(query);
-  const shown = cards.filter(
-    (c) =>
-      (current === "todos" || c.phase === current) &&
-      (!needle || fold(`${c.title} ${c.venue?.name ?? ""}`).includes(needle)),
+  const shown = matching.filter(
+    (c) => current === "todos" || c.phase === current,
   );
 
   const newEvent = !support && (

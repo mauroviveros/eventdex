@@ -1,8 +1,9 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Field, FormMessage } from "@/components/ui/Field";
+import { useFormFeedback } from "@/components/ui/useFormFeedback";
 import {
   addScheduleAction,
   deleteScheduleAction,
@@ -18,15 +19,7 @@ export function AddScheduleForm({
   timezone,
 }: Ids & { timezone: string }) {
   const [state, action, pending] = useActionState(addScheduleAction, null);
-  const failed = state && !state.ok ? state : null;
-  const fields = failed?.fieldErrors ?? {};
-  const values = failed?.values ?? {};
-  const form = useRef<HTMLFormElement>(null);
-
-  useEffect(() => {
-    if (state && !state.ok)
-      form.current?.querySelector<HTMLElement>("[aria-invalid=true]")?.focus();
-  }, [state]);
+  const { form, failed, fields, values } = useFormFeedback(state);
 
   return (
     <form ref={form} action={action} className="grid gap-6" noValidate>
@@ -107,7 +100,10 @@ export function DeleteScheduleButton({
   );
 }
 
-/** Publishes a draft. Without schedules the button explains why it waits. */
+/**
+ * Publishes a draft. Stays enabled (and focusable) without schedules: the hint
+ * says why, and trying explains it again.
+ */
 export function PublishButton({
   org,
   eventId,
@@ -122,7 +118,6 @@ export function PublishButton({
         type="submit"
         pending={pending}
         pendingLabel="Publicando…"
-        disabled={!ready}
         aria-describedby={ready ? undefined : "publicar-ayuda"}
       >
         Publicar

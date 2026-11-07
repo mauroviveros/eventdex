@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
+import { useFormFeedback } from "@/components/ui/useFormFeedback";
 import { createEventAction } from "@/lib/actions/events";
 
 type Props = {
@@ -13,16 +14,8 @@ type Props = {
 
 export function NewEventForm({ org, venues }: Props) {
   const [state, action, pending] = useActionState(createEventAction, null);
-  const failed = state && !state.ok ? state : null;
-  const fields = failed?.fieldErrors ?? {};
-  const values = failed?.values ?? {};
+  const { form, failed, fields, values } = useFormFeedback(state);
   const [venueId, setVenueId] = useState(values.venueId ?? "");
-  const form = useRef<HTMLFormElement>(null);
-
-  useEffect(() => {
-    if (state && !state.ok)
-      form.current?.querySelector<HTMLElement>("[aria-invalid=true]")?.focus();
-  }, [state]);
 
   // The event shows its times in its venue's zone; without a venue, the org's.
   const timezone =

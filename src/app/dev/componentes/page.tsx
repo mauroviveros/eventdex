@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { AccountMenu } from "@/components/admin/AccountMenu";
+import { AdminShell } from "@/components/admin/AdminShell";
 import { EventCard } from "@/components/admin/EventCard";
 import { EventFilters } from "@/components/admin/EventFilters";
 import { OrgSwitcher } from "@/components/admin/OrgSwitcher";
 import { StatTile } from "@/components/admin/StatTile";
+import { TopBar } from "@/components/admin/TopBar";
 import { Button } from "@/components/ui/Button";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
 import { Celebration } from "@/components/visitante/Celebration";
@@ -220,6 +222,64 @@ export default function ComponentesPage() {
             </div>
             <div className="mt-24 border-t-2 border-lcd-3">
               <AccountMenu email="owner@expo.test" />
+            </div>
+          </div>
+        </Section>
+
+        <Section
+          title="Panel: barra superior"
+          note="Dónde estás a la izquierda y la única acción principal de la pantalla a la derecha. Queda fija al scrollear."
+        >
+          <div className="grid gap-4">
+            <div className="border-2 border-lcd-3">
+              <TopBar title="Sedes" />
+            </div>
+            <div className="border-2 border-lcd-3">
+              <TopBar title="Eventos" actions={<Button>Nuevo evento</Button>} />
+            </div>
+          </div>
+        </Section>
+
+        <Section
+          title="Panel: marco"
+          note="Barra lateral con la organización, las secciones y la cuenta; la página a la derecha. En el celular la barra pasa arriba. En modo soporte suma el aviso bajo la organización; en la plataforma, sin organización, muestra la marca."
+        >
+          <div className="grid gap-6">
+            <div className="h-128 overflow-auto border-2 border-lcd-3">
+              <AdminShell
+                email="owner@expo.test"
+                sections={[
+                  { href: "/dev/componentes", label: "Eventos", exact: true },
+                  { href: "/dev/sedes", label: "Sedes" },
+                ]}
+                org={{
+                  current: {
+                    slug: "expo",
+                    name: "Expo de ejemplo",
+                    role: "owner",
+                  },
+                  all: [{ slug: "expo", name: "Expo de ejemplo" }],
+                }}
+                notice={
+                  <p className="border-b-2 border-lcd-3 bg-lcd-1 px-3 py-2 font-display text-px-1">
+                    Modo soporte · solo lectura
+                  </p>
+                }
+              >
+                <TopBar title="Eventos" />
+                <p className="px-4 py-8 sm:px-6">Contenido de la página.</p>
+              </AdminShell>
+            </div>
+            <div className="h-128 overflow-auto border-2 border-lcd-3">
+              <AdminShell
+                email="dev@eventdex.test"
+                sections={[
+                  { href: "/dev/organizaciones", label: "Organizaciones" },
+                ]}
+              >
+                <TopBar title="Plataforma" />
+                <p className="px-4 py-8 sm:px-6">Contenido de la página.</p>
+              </AdminShell>
             </div>
           </div>
         </Section>

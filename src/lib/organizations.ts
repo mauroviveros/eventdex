@@ -8,6 +8,9 @@ import type { Supabase } from "@/lib/supabase/server";
  * src/lib/actions/organizations.ts wrap these with the session and cache.
  */
 
+// Same rule as the organizations and events slug_format checks.
+export const SLUG = /^[a-z0-9][a-z0-9-]{1,62}$/;
+
 // Same rule as the organization_domains_hostname_format check.
 const HOSTNAME =
   /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+(:[0-9]{2,5})?$/;
@@ -23,7 +26,7 @@ export const createOrganizationSchema = z.object({
     .trim()
     .toLowerCase()
     .regex(
-      /^[a-z0-9][a-z0-9-]{1,62}$/,
+      SLUG,
       "Usá minúsculas, números y guiones, sin espacios. Ej.: expo-ubbe.",
     ),
   hostname: z
