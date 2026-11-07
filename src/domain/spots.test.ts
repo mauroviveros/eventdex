@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { resolveSpot, spotUrl } from "./spots";
+import { Constants } from "@/lib/supabase/database.types";
+import { resolveSpot, SPOT_TYPES, spotUrl } from "./spots";
 
 const catalog = {
   name: "Café Nuevo",
@@ -80,5 +81,12 @@ describe("spotUrl", () => {
     expect(spotUrl("expo.localhost:3000", "abc")).toBe(
       "http://expo.localhost:3000/s/abc",
     );
+  });
+});
+
+describe("SPOT_TYPES", () => {
+  // The domain doesn't import Supabase; this keeps it in step with the enum.
+  it("matches the database's spot_type enum", () => {
+    expect([...SPOT_TYPES]).toEqual([...Constants.public.Enums.spot_type]);
   });
 });

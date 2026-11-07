@@ -6,20 +6,22 @@ import type { Supabase } from "@/lib/supabase/server";
  * a failed read throws, so the segment's error.tsx shows it.
  */
 
-/** The catalog, by name, with how many events use each spot. Archived ones last. */
+/** The catalog, by name, with how many live events use each spot. Archived ones last. */
 export async function listSpots(supabase: Supabase, organizationId: string) {
   const { data, error } = await supabase
     .from("spots")
     .select(
-      "id, name, description, type, logo_path, archived_at, uses:event_spots (count)",
+      "id, name, description, type, logo_path, archived_at, uses:event_spots (id, event:events!inner (id))",
     )
     .eq("organization_id", organizationId)
+    // Dropped events don't count: !inner drops their rows from `uses`.
+    .is("uses.event.deleted_at", null)
     .order("archived_at", { nullsFirst: true })
     .order("name");
   if (error) throw error;
   return data.map(({ uses, ...spot }) => ({
     ...spot,
-    uses: uses[0]?.count ?? 0,
+    uses: uses.length,
   }));
 }
 
@@ -33,10 +35,11 @@ export async function getSpot(
     .from("spots")
     .select(
       `id, name, description, type, logo_path, archived_at,
-       uses:event_spots (id, code, event:events (title, slug, status))`,
+       uses:event_spots (id, code, event:events!inner (title, slug, status))`,
     )
     .eq("organization_id", organizationId)
     .eq("id", id)
+    .is("uses.event.deleted_at", null)
     .maybeSingle();
   if (error) throw error;
   return data;
@@ -56,6 +59,16 @@ export async function listEventSpots(supabase: Supabase, eventId: string) {
     .order("code");
   if (error) throw error;
   return data.flatMap(({ spot, ...es }) =>
-    spot ? [{ ...es, spotId: spot.id, shown: resolveSpot(es, spot) }] : [],
+    spot
+      ? [
+          {
+            ...es,
+            spotId: spot.id,
+            shown: resolveSpot(es, spot),
+            // What it shows with no override: the fallback for the override field.
+            defaultName: resolveSpot({ ...es, name_override: null }, spot).name,
+          },
+        ]
+      : [],
   );
 }

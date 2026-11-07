@@ -4,11 +4,7 @@ import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Field, FormMessage } from "@/components/ui/Field";
 import { useFormFeedback } from "@/components/ui/useFormFeedback";
-import {
-  addScheduleAction,
-  deleteScheduleAction,
-  publishEventAction,
-} from "@/lib/actions/events";
+import { addScheduleAction, publishEventAction } from "@/lib/actions/events";
 
 type Ids = { org: string; eventId: string };
 
@@ -66,36 +62,6 @@ export function AddScheduleForm({
       >
         Agregar jornada
       </Button>
-    </form>
-  );
-}
-
-export function DeleteScheduleButton({
-  org,
-  id,
-  label,
-}: {
-  org: string;
-  id: string;
-  label: string;
-}) {
-  const [state, action, pending] = useActionState(deleteScheduleAction, null);
-  return (
-    <form action={action} className="grid justify-items-end gap-1">
-      <input type="hidden" name="org" value={org} />
-      <input type="hidden" name="id" value={id} />
-      <Button
-        type="submit"
-        variant="secondary"
-        pending={pending}
-        pendingLabel="Quitando…"
-        aria-label={`Quitar ${label}`}
-      >
-        Quitar
-      </Button>
-      {state && !state.ok && (
-        <FormMessage tone="error">{state.error}</FormMessage>
-      )}
     </form>
   );
 }

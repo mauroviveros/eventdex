@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageBody, TopBar } from "@/components/admin/TopBar";
+import { ActionButton } from "@/components/ui/ActionButton";
 import { buttonClass } from "@/components/ui/Button";
 import { PhaseBadge } from "@/components/visitante/PhaseBadge";
 import {
@@ -8,12 +9,9 @@ import {
   formatEventDates,
   formatScheduleTimes,
 } from "@/domain/events";
+import { deleteScheduleAction } from "@/lib/actions/events";
 import { load } from "./load";
-import {
-  AddScheduleForm,
-  DeleteScheduleButton,
-  PublishButton,
-} from "./ScheduleForms";
+import { AddScheduleForm, PublishButton } from "./ScheduleForms";
 
 export async function generateMetadata({
   params,
@@ -146,10 +144,12 @@ export default async function EventoPage({
                         </p>
                       </div>
                       {editable && (
-                        <DeleteScheduleButton
-                          org={org.slug}
-                          id={s.id}
-                          label={label}
+                        <ActionButton
+                          action={deleteScheduleAction}
+                          fields={{ org: org.slug, id: s.id }}
+                          label="Quitar"
+                          pendingLabel="Quitando…"
+                          ariaLabel={`Quitar ${label}`}
                         />
                       )}
                     </li>

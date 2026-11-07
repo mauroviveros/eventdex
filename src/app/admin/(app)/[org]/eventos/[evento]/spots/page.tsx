@@ -2,16 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageBody, TopBar } from "@/components/admin/TopBar";
 import { Sprite } from "@/components/pixel/Sprite";
+import { ActionButton } from "@/components/ui/ActionButton";
 import { buttonClass } from "@/components/ui/Button";
 import { SPOT_TYPE_LABEL } from "@/domain/spots";
+import { removeEventSpotAction } from "@/lib/actions/spots";
 import { listEventSpots, listSpots } from "@/lib/data/spots";
 import { createClient } from "@/lib/supabase/server";
 import { load } from "../load";
-import {
-  AddEventSpotForm,
-  EditEventSpotForm,
-  RemoveEventSpotButton,
-} from "./EventSpotForms";
+import { AddEventSpotForm, EditEventSpotForm } from "./EventSpotForms";
 
 export async function generateMetadata({
   params,
@@ -115,7 +113,9 @@ export default async function EventSpotsPage({
                           <span className="text-sm">
                             {[
                               s.booth,
-                              s.points === 1 ? "1 punto" : `${s.points} puntos`,
+                              s.points === 1
+                                ? "1 punto"
+                                : `${s.points.toLocaleString("es-AR")} puntos`,
                               !s.is_active && "Inactivo",
                             ]
                               .filter(Boolean)
@@ -133,12 +133,18 @@ export default async function EventSpotsPage({
                           <EditEventSpotForm
                             org={org.slug}
                             spot={s}
-                            catalogName={s.shown.name}
+                            catalogName={s.defaultName}
                           />
-                          <RemoveEventSpotButton
-                            org={org.slug}
-                            id={s.id}
-                            label={s.shown.name}
+                          <ActionButton
+                            action={removeEventSpotAction}
+                            fields={{ org: org.slug, id: s.id }}
+                            label="Quitar del evento"
+                            pendingLabel="Quitando…"
+                            ariaLabel={`Quitar ${s.shown.name} del evento`}
+                            confirm={{
+                              message: `Su QR deja de funcionar, también el que ya esté impreso. Si volvés a agregarlo, tiene un QR nuevo. Si el stand no vino, mejor desactivalo.`,
+                              label: `Quitar ${s.code}`,
+                            }}
                           />
                         </div>
                       )}

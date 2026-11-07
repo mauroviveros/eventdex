@@ -81,7 +81,7 @@ export default async function SpotsPage({
                           ? "Sin eventos"
                           : spot.uses === 1
                             ? "En 1 evento"
-                            : `En ${spot.uses} eventos`,
+                            : `En ${spot.uses.toLocaleString("es-AR")} eventos`,
                         spot.archived_at && "Archivado",
                       ]
                         .filter(Boolean)
