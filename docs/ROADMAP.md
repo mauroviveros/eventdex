@@ -116,11 +116,11 @@ Branch `feat/eventos`. La org crea un evento con sede y jornadas, y lo publica.
    *Listo cuando* pgTAP prueba que `anon` solo ve eventos publicados, que las
    jornadas con fin antes del inicio se rechazan y que la fase sale bien en los
    tres casos.
-2. ▶ **Backend.** `src/domain/` (fase y formato de fechas con zona), las lecturas y
+2. ✅ **Backend.** `src/domain/` (fase y formato de fechas con zona), las lecturas y
    las acciones de sede, evento, jornada y publicar.
    *Listo cuando* la lógica de fase tiene tests con eventos pasados, en curso,
    futuros y sin jornadas.
-3. **Vista.** `/[org]` (el dashboard: arma `StatTile`, `EventFilters` y `EventCard`, que ya están en `/dev/componentes`, y pasa el selector de organización al shell), `/[org]/eventos`, `/[org]/eventos/nuevo`,
+3. ▶ **Vista.** `/[org]` (el dashboard: arma `StatTile`, `EventFilters` y `EventCard`, que ya están en `/dev/componentes`, y pasa el selector de organización al shell), `/[org]/eventos`, `/[org]/eventos/nuevo`,
    `/[org]/eventos/[evento]` y `/[org]/sedes`.
    *Listo cuando* en el navegador se crea una sede, se crea un evento con dos
    jornadas y se publica, con los estados de carga, vacío y error vistos.
