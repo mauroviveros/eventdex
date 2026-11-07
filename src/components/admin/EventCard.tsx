@@ -3,45 +3,37 @@ import { buttonClass } from "@/components/ui/Button";
 import { PhaseBadge } from "@/components/visitante/PhaseBadge";
 import type { Phase } from "@/domain/events";
 
-type Props = {
-  title: string;
-  phase: Phase;
-  /** Already formatted in the event's time zone ("sáb 14 de nov" or "Junio 2026"). */
-  dateLabel: string | null;
-  venue: string | null;
+type Stats = {
   stands: number;
   visitors: number;
   claims: number;
   /** Average share of the event's spots each visitor collected, 0–1. */
   completion: number;
   href: string;
-  statsHref: string;
+};
+
+type Props = {
+  title: string;
+  phase: Phase;
+  /** Already formatted in the event's time zone ("sáb, 14 nov"). */
+  dateLabel: string | null;
+  venue: string | null;
+  href: string;
+  /** How it went. Absent until spots (R3) and claims (R5) exist: no invented zeros. */
+  stats?: Stats;
 };
 
 const SEGMENTS = 10;
 
 /** An event in the organization's dashboard: where and when, how it went, and the way in. */
-export function EventCard(props: Props) {
-  const {
-    title,
-    phase,
-    dateLabel,
-    venue,
-    stands,
-    visitors,
-    claims,
-    completion,
-  } = props;
-  const percent = Math.round(Math.min(1, Math.max(0, completion)) * 100);
-  // Any progress lights a segment; only a full 100% lights the last one.
-  const lit =
-    percent === 0
-      ? 0
-      : Math.min(
-          percent < 100 ? SEGMENTS - 1 : SEGMENTS,
-          Math.max(1, Math.round((percent / 100) * SEGMENTS)),
-        );
-
+export function EventCard({
+  title,
+  phase,
+  dateLabel,
+  venue,
+  href,
+  stats,
+}: Props) {
   return (
     <article className="grid content-start gap-5 border-2 border-lcd-3 p-5">
       <header className="grid gap-2">
@@ -54,6 +46,44 @@ export function EventCard(props: Props) {
         </p>
       </header>
 
+      {stats && <EventStats phase={phase} {...stats} />}
+
+      <div className={stats ? "grid grid-cols-2 gap-2" : "grid"}>
+        {stats && (
+          <Link
+            href={stats.href}
+            className={buttonClass("secondary", "no-underline")}
+          >
+            Estadísticas
+          </Link>
+        )}
+        <Link href={href} className={buttonClass("primary", "no-underline")}>
+          Gestionar
+        </Link>
+      </div>
+    </article>
+  );
+}
+
+function EventStats({
+  phase,
+  stands,
+  visitors,
+  claims,
+  completion,
+}: Stats & { phase: Phase }) {
+  const percent = Math.round(Math.min(1, Math.max(0, completion)) * 100);
+  // Any progress lights a segment; only a full 100% lights the last one.
+  const lit =
+    percent === 0
+      ? 0
+      : Math.min(
+          percent < 100 ? SEGMENTS - 1 : SEGMENTS,
+          Math.max(1, Math.round((percent / 100) * SEGMENTS)),
+        );
+
+  return (
+    <>
       {/* One ruled strip of three cells; dashed only while the event is a draft. */}
       <dl
         className={`grid grid-cols-3 border-2 ${
@@ -108,21 +138,6 @@ export function EventCard(props: Props) {
           ))}
         </div>
       </div>
-
-      <div className="grid grid-cols-2 gap-2">
-        <Link
-          href={props.statsHref}
-          className={buttonClass("secondary", "no-underline")}
-        >
-          Estadísticas
-        </Link>
-        <Link
-          href={props.href}
-          className={buttonClass("primary", "no-underline")}
-        >
-          Gestionar
-        </Link>
-      </div>
-    </article>
+    </>
   );
 }

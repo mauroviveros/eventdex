@@ -106,7 +106,7 @@ En `src/components/<dominio>/`. Cada uno documenta sus estados en `/dev/componen
 | **Shell del admin** | Barra lateral (organización arriba, secciones, cuenta abajo) y barra superior con el título y la acción principal. En celular, la barra lateral es un bloque arriba con la cuenta al final de la fila de la marca | sección actual (celda invertida) · sin organización (marca) · varias organizaciones (se despliega) |
 | **Métrica** | Una cifra de la organización o del evento | con valor · en cero |
 | **Filtros de eventos** | Buscador y fases con conteos, todo en la URL | fase actual · sin resultados |
-| **Tarjeta de evento** | Cuándo y dónde, stands/visitantes/medallas, recorrido promedio, Estadísticas y Gestionar | finalizado · en curso · borrador (tira punteada) · recorrido 0 y parcial |
+| **Tarjeta de evento** | Cuándo y dónde, stands/visitantes/medallas, recorrido promedio, Estadísticas y Gestionar. Sin métricas reales todavía (antes de R3 y R5) muestra solo cuándo, dónde y Gestionar: nunca ceros inventados | finalizado · en curso · borrador (tira punteada) · recorrido 0 y parcial · sin métricas |
 
 ## Estados
 

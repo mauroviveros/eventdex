@@ -4,7 +4,13 @@ import { AccountMenu } from "./AccountMenu";
 import { NavLink } from "./NavLink";
 import { OrgSwitcher } from "./OrgSwitcher";
 
-export type Section = { href: string; label: string; exact?: boolean };
+export type Section = {
+  href: string;
+  label: string;
+  exact?: boolean;
+  /** Another path prefix that also makes this section current (its subpages). */
+  also?: string;
+};
 
 type Props = {
   email: string | null;
@@ -65,6 +71,7 @@ export function AdminShell({ email, sections, notice, org, children }: Props) {
               key={section.href}
               href={section.href}
               exact={section.exact}
+              also={section.also}
             >
               {section.label}
             </NavLink>
