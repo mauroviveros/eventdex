@@ -1,9 +1,9 @@
+import type { SpotType } from "@/domain/spots";
+
 /**
  * 12×12 pixel sprites, one per spot type. Each char is a pixel:
  * `.` transparent, `0`–`3` the LCD tone (0 lightest, 3 ink).
  */
-
-export type SpotType = "stand" | "attraction" | "sponsor" | "activity";
 
 export const SPRITES: Record<SpotType, readonly string[]> = {
   // Market stall with a striped awning.

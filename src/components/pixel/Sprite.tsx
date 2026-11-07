@@ -1,4 +1,5 @@
-import { SPRITES, type SpotType } from "./sprites";
+import type { SpotType } from "@/domain/spots";
+import { SPRITES } from "./sprites";
 
 export type SpriteMode = "lleno" | "silueta" | "inactivo" | "revelando";
 
