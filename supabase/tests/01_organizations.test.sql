@@ -3,7 +3,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(26);
+select plan(30);
 
 -- ---------------------------------------------------------------------------
 -- Datos: corre como postgres, antes de asumir ningún rol.
@@ -16,6 +16,10 @@ insert into auth.users (id, email, raw_user_meta_data) values
   ('00000000-0000-0000-0000-0000000000b1', 'owner-b@test.local',  '{"full_name":"Owner B"}'),
   ('00000000-0000-0000-0000-0000000000e1', 'invitee@test.local',  '{"full_name":"Invitada"}'),
   ('00000000-0000-0000-0000-0000000000f1', 'outsider@test.local', '{"full_name":"Ajena"}');
+
+-- Una cuenta sin mail (sign-in anónimo o por teléfono).
+insert into auth.users (id, email) values ('00000000-0000-0000-0000-0000000000f2', 'sin-mail@test.local');
+update auth.users set email = null where id = '00000000-0000-0000-0000-0000000000f2';
 
 insert into public.platform_admins (user_id) values ('00000000-0000-0000-0000-0000000000d1');
 
@@ -142,6 +146,13 @@ select throws_ok(
   'nobody adds themselves to an organization'
 );
 
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000f2","role":"authenticated"}', true);
+select throws_ok(
+  $$ select public.accept_invitation('00000000-0000-0000-0000-00000000c0b1') $$,
+  'P0002', null,
+  'an account without email cannot accept an invitation'
+);
+
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000e1","role":"authenticated"}', true);
 select is(
   public.accept_invitation('00000000-0000-0000-0000-00000000c0b1'),
@@ -182,6 +193,11 @@ select ok(
   exists (select 1 from public.audit_logs where action = 'organization.created'),
   'creating an org leaves an audit row'
 );
+select is(
+  (select diff ->> 'owner_email' from public.audit_logs where action = 'organization.created'),
+  'owner@nueva.test',
+  'the audit row stores the normalized values'
+);
 
 -- ---------------------------------------------------------------------------
 -- Anónimo (la app pública)
@@ -219,6 +235,18 @@ select is(
   (select count(*)::int from public.organization_members where organization_id = '0000000a-0000-0000-0000-000000000000'),
   2,
   'staff A could not remove members'
+);
+
+-- Borrar la cuenta de quien es el único owner: se permite y queda registrado.
+select lives_ok(
+  $$ delete from auth.users where id = '00000000-0000-0000-0000-0000000000b1' $$,
+  'the account of a sole owner can be deleted'
+);
+select ok(
+  exists (select 1 from public.audit_logs
+          where action = 'member.account_deleted'
+            and organization_id = '0000000b-0000-0000-0000-000000000000'),
+  'deleting a sole owner leaves an audit row for the developer'
 );
 
 select * from finish();
