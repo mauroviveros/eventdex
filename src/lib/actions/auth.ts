@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import type { ActionResult } from "@/lib/organizations";
 import { requestOrigin, safeNext } from "@/lib/session";
 import { createClient } from "@/lib/supabase/server";
 
@@ -23,7 +24,7 @@ export async function signInWithGoogle(formData: FormData) {
   redirect(data.url);
 }
 
-export type EmailSignInState = { sent?: string; error?: string } | null;
+export type EmailSignInState = ActionResult<{ email: string }> | null;
 
 /**
  * Development only: sign in with a magic link that lands in the local mail
@@ -35,10 +36,10 @@ export async function signInWithEmail(
   formData: FormData,
 ): Promise<EmailSignInState> {
   if (process.env.NODE_ENV === "production") {
-    return { error: "El ingreso por mail no está disponible." };
+    return { ok: false, error: "El ingreso por mail no está disponible." };
   }
   const email = z.email().safeParse(formData.get("email")?.toString().trim());
-  if (!email.success) return { error: "Revisá el mail." };
+  if (!email.success) return { ok: false, error: "Revisá el mail." };
 
   const next = safeNext(formData.get("next")?.toString());
   const supabase = await createClient();
@@ -48,7 +49,7 @@ export async function signInWithEmail(
   });
   if (error) {
     console.error("email sign-in failed", error);
-    return { error: "No pudimos mandar el mail. Probá de nuevo." };
+    return { ok: false, error: "No pudimos mandar el mail. Probá de nuevo." };
   }
-  return { sent: email.data };
+  return { ok: true, data: { email: email.data } };
 }

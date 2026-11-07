@@ -9,11 +9,11 @@ import { signInWithEmail } from "@/lib/actions/auth";
 export function EmailSignIn({ next }: { next: string }) {
   const [state, action, pending] = useActionState(signInWithEmail, null);
 
-  if (state?.sent) {
+  if (state?.ok) {
     return (
       <p role="status" className="border-t-2 border-dashed border-lcd-2 pt-5">
-        Te mandamos un link a <strong>{state.sent}</strong>. En desarrollo llega
-        al visor de mails local:{" "}
+        Te mandamos un link a <strong>{state.data.email}</strong>. En desarrollo
+        llega al visor de mails local:{" "}
         <a href="http://127.0.0.1:54424" target="_blank" rel="noreferrer">
           127.0.0.1:54424
         </a>
@@ -37,7 +37,7 @@ export function EmailSignIn({ next }: { next: string }) {
         type="email"
         autoComplete="email"
         required
-        error={state?.error}
+        error={state && !state.ok ? state.error : undefined}
       />
       <Button
         type="submit"

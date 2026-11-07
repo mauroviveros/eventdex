@@ -14,6 +14,12 @@ export async function proxy(request: NextRequest) {
   const url = request.nextUrl.clone();
   url.pathname = internalPath(surface, request.nextUrl.pathname);
 
+  // The public path, for guards that send you to /ingresar and back.
+  request.headers.set(
+    "x-public-path",
+    request.nextUrl.pathname + request.nextUrl.search,
+  );
+
   let response = NextResponse.rewrite(url, { request });
 
   const supabase = createServerClient(

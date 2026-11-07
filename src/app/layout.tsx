@@ -12,6 +12,9 @@ const pixel = Jersey_10({
 const read = Atkinson_Hyperlegible_Next({
   subsets: ["latin"],
   variable: "--font-read",
+  // Next has no metrics for this face to tune a fallback; use the system sans as is.
+  adjustFontFallback: false,
+  fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
 });
 
 export const metadata: Metadata = {
