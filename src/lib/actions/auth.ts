@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import type { ActionResult } from "@/lib/organizations";
+import type { ActionResult } from "@/lib/results";
 import { requestOrigin, safeNext } from "@/lib/session";
 import { createClient } from "@/lib/supabase/server";
 

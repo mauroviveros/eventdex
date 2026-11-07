@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { type ActionResult, failed, invalid } from "@/lib/results";
 import type { Supabase } from "@/lib/supabase/server";
 
 /**
@@ -6,10 +7,6 @@ import type { Supabase } from "@/lib/supabase/server";
  * call the database function, translate its errors. The Server Actions in
  * src/lib/actions/organizations.ts wrap these with the session and cache.
  */
-
-export type ActionResult<T> =
-  | { ok: true; data: T }
-  | { ok: false; error: string; fieldErrors?: Record<string, string> };
 
 // Same rule as the organization_domains_hostname_format check.
 const HOSTNAME =
@@ -58,36 +55,9 @@ export async function createOrganization(
     p_hostname: hostname,
     p_owner_email: ownerEmail,
   });
-  if (error || !data) return failed(error);
+  if (error || !data)
+    return failed(error, {
+      "23505": "Ya existe una organización con ese slug o con ese dominio.",
+    });
   return { ok: true, data: { id: data } };
-}
-
-// Postgres error codes raised by the functions and constraints, in the product's voice.
-const MESSAGES = {
-  "42501": "No tenés permiso para hacer esto.",
-  "23505": "Ya existe una organización con ese slug o con ese dominio.",
-  "23514":
-    "Algún dato no tiene el formato esperado. Revisalo y probá de nuevo.",
-} satisfies Record<string, string>;
-const FALLBACK = "No pudimos guardar. Probá de nuevo en un rato.";
-
-function failed(error: { code?: string; message?: string } | null) {
-  const known: Record<string, string | undefined> = MESSAGES;
-  const message = (error?.code && known[error.code]) || FALLBACK;
-  // The technical detail goes to the log, never to the screen.
-  if (message === FALLBACK) console.error("organizations action failed", error);
-  return { ok: false as const, error: message };
-}
-
-function invalid(error: z.ZodError) {
-  const fieldErrors: Record<string, string> = {};
-  for (const issue of error.issues) {
-    const field = String(issue.path[0]);
-    fieldErrors[field] ??= issue.message;
-  }
-  return {
-    ok: false as const,
-    error: "Revisá los datos marcados.",
-    fieldErrors,
-  };
 }
