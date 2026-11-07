@@ -1,6 +1,6 @@
 # Eventdex — Design system
 
-`v0.1 · 2026-11-06` · Relacionados: [PRODUCT](./PRODUCT.md) · [DESIGN](./DESIGN.md) · [RUTAS](./RUTAS.md) · [ARQUITECTURA](./ARQUITECTURA.md)
+`v0.2 · 2026-11-06` · Relacionados: [PRODUCT](./PRODUCT.md) · [DESIGN](./DESIGN.md) · [RUTAS](./RUTAS.md) · [ARQUITECTURA](./ARQUITECTURA.md)
 
 > Decide **cómo se comporta** la interfaz. Los valores visuales (colores, tipos,
 > radios, sombras) viven en [DESIGN](./DESIGN.md), que genera
@@ -13,7 +13,8 @@
 2. **El visitante no espera ni lee.** La medalla aparece antes que cualquier
    explicación. Los textos se escanean de un vistazo.
 3. **La marca de la org vive en la superficie pública; Eventdex, en el resto.** Los
-   componentes son los mismos; cambian los tokens `--brand-*`.
+   componentes son los mismos; cambia la rampa de cuatro tonos (`--ramp-*`), que
+   sale del color de marca.
 4. **Ningún estado queda sin diseñar.** Carga, vacío, error y éxito son parte del
    componente, no un agregado.
 5. **Densidad según la superficie.** Aire y tamaños grandes en la app pública;
@@ -39,32 +40,34 @@ evento.
 
 ## Color
 
-Los valores los define [DESIGN](./DESIGN.md). Los roles son fijos:
+Los valores los define [DESIGN](./DESIGN.md). Hay una sola paleta de cuatro tonos
+(`--ramp-0..3`) y los componentes usan **roles**, nunca tonos sueltos:
 
 | Token | Rol |
 |-------|-----|
-| `--background` / `--foreground` | Fondo y texto base |
-| `--surface` / `--surface-foreground` | Tarjetas y paneles |
-| `--muted` / `--muted-foreground` | Texto secundario y fondos sutiles |
-| `--border` | Bordes y separadores |
-| `--primary` / `--primary-foreground` | Acción principal de Eventdex |
-| `--brand` / `--brand-foreground` | Acción principal en la app pública; lo pisa `organizations.brand` |
-| `--success`, `--warning`, `--danger` (+ `-foreground`) | Estados |
-| `--focus` | Anillo de foco |
+| `--lcd-0` | Fondo |
+| `--lcd-1` | Relleno: segmentos pendientes, fondos de selección, deshabilitado |
+| `--lcd-2` | Secundario: texto de apoyo, reglas tenues, estado apagado |
+| `--lcd-3` | Tinta: texto, reglas de 2 px, acción principal |
+| `--danger` | Error y acciones destructivas. El único color fuera de la rampa |
 
 - **Nada de colores sueltos** en los componentes: solo tokens.
 - **El color nunca es la única señal.** Cada estado lleva texto o ícono.
-- **Marca de la org:** al guardar `brand`, se calcula `--brand-foreground` y se
-  valida el contraste (4.5:1 para texto, 3:1 para elementos de UI). Si no alcanza,
-  se avisa en `/[org]/ajustes` y se usa el color de respaldo.
-- **Modo oscuro:** *pendiente*, lo decide la dirección visual de impeccable.
+- **Marca de la org:** del color de marca se toma solo el tono y la saturación;
+  la luminosidad de cada tono es fija (`src/domain/palette.ts`). Por eso el
+  contraste está garantizado para cualquier marca, sin validar nada al guardar.
+- **Modo oscuro:** sigue al sistema (`prefers-color-scheme`). Los roles se
+  invierten (el fondo pasa a ser el tono más oscuro) y el contraste no cambia.
+- **Logos de los spots:** se pasan a los cuatro tonos por luminosidad, con el
+  mismo mapeo de roles. Un spot sin logo usa el sprite de su tipo.
 
 ## Tipografía
 
-Los valores los define [DESIGN](./DESIGN.md). La escala tiene roles fijos:
-`display` (números grandes: medallas, countdown), `title`, `heading`, `body`,
-`label` y `caption`.
+Los valores los define [DESIGN](./DESIGN.md). Dos voces:
 
+- **Pixelada** (`font-display`): títulos, contadores, puntos y códigos de spot.
+  Solo en los pasos de la escala `text-px-1..4`, nunca por debajo de 20 px.
+- **Legible** (`font-sans`): todo lo que se lee, formularios incluidos.
 - Texto base de 16 px como mínimo en mobile; nada por debajo de 12 px.
 - Números tabulares (`tabular-nums`) en contadores, tablas y puntajes.
 - Largo de línea de 45 a 75 caracteres en los textos corridos.
@@ -73,8 +76,8 @@ Los valores los define [DESIGN](./DESIGN.md). La escala tiene roles fijos:
 
 - Espaciado en la escala de Tailwind. Los saltos fuera de escala se justifican o se
   corrigen.
-- Radios y sombras **solo desde tokens** (`--radius-*`, `--shadow-*`). Nada de
-  `rounded-[13px]`.
+- **Esquinas rectas y sin sombras.** La profundidad la dan las reglas de 2 px y el
+  panel de doble regla (`.panel`). Nada de `rounded-*` ni `shadow-*`.
 
 ## Componentes base
 
@@ -90,7 +93,7 @@ En `src/components/<dominio>/`. Cada uno documenta sus estados en `/dev/componen
 
 | Componente | Qué muestra | Estados |
 |------------|-------------|---------|
-| **Medalla** | Un spot conseguido o pendiente | conseguida · pendiente · recién conseguida (celebración) · spot inactivo |
+| **Medalla** | Un spot conseguido o pendiente: su logo en cuatro tonos, o el sprite de su tipo | conseguida · pendiente (apagada) · nueva (se revela en pasos) · spot inactivo (tramada) |
 | **Progreso** | Medallas conseguidas / total, puntos y si entra al sorteo | sin medallas · en progreso · meta alcanzada · evento finalizado |
 | **Celebración** | La pantalla de `/s/[id]` al reclamar | medalla nueva · ya la tenías · spot inactivo · evento no en curso · no registrado o bloqueado |
 | **Countdown** | Tiempo hasta la próxima jornada | días · horas · en curso · finalizado |

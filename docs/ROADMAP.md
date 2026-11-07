@@ -63,11 +63,11 @@ para escribir la primera rebanada.
    *Listo cuando* `supabase start` + `supabase test db` pasa en local.
 7. ✅ **CI.** El workflow nuevo según [ARQUITECTURA](./ARQUITECTURA.md#ci).
    *Listo cuando* el PR de `chore/fundaciones` a `main` corre verde en GitHub.
-8. **Dirección visual.** `/impeccable` sobre `PRODUCT.md` y `/impeccable document`
+8. ▶ **Dirección visual.** `/impeccable` sobre `PRODUCT.md` y `/impeccable document`
    genera `docs/DESIGN.md`, con su symlink `DESIGN.md` en la raíz (se crea recién
    ahí para no dejar un link roto). Tokens en el CSS global.
    *Listo cuando* `DESIGN.md` está aprobado y los tokens están en `globals.css`.
-9. **`/dev/componentes`.** Las primitivas base con los tokens, en todos sus
+9. ▶ **`/dev/componentes`.** Las primitivas base con los tokens, en todos sus
    estados. 404 en producción.
    *Listo cuando* la ruta muestra Button, Input y Card en claro y en sus estados,
    y en un build de producción devuelve 404.

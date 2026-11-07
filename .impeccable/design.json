@@ -1,0 +1,306 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-06T00:00:00Z",
+  "title": "Design System: Eventdex",
+  "extensions": {
+    "colorMeta": {
+      "ramp-0": {
+        "role": "neutral",
+        "displayName": "Verde arveja pálido",
+        "canonical": "oklch(0.94 0.08 125)",
+        "tonalRamp": [
+          "oklch(0.27 0.05 125)",
+          "oklch(0.5 0.09 125)",
+          "oklch(0.8 0.12 125)",
+          "oklch(0.94 0.08 125)"
+        ]
+      },
+      "ramp-1": {
+        "role": "neutral",
+        "displayName": "Verde relleno",
+        "canonical": "oklch(0.8 0.12 125)",
+        "tonalRamp": [
+          "oklch(0.27 0.05 125)",
+          "oklch(0.5 0.09 125)",
+          "oklch(0.8 0.12 125)",
+          "oklch(0.94 0.08 125)"
+        ]
+      },
+      "ramp-2": {
+        "role": "secondary",
+        "displayName": "Verde secundario",
+        "canonical": "oklch(0.5 0.09 125)",
+        "tonalRamp": [
+          "oklch(0.27 0.05 125)",
+          "oklch(0.5 0.09 125)",
+          "oklch(0.8 0.12 125)",
+          "oklch(0.94 0.08 125)"
+        ]
+      },
+      "ramp-3": {
+        "role": "primary",
+        "displayName": "Tinta de cristal líquido",
+        "canonical": "oklch(0.27 0.05 125)",
+        "tonalRamp": [
+          "oklch(0.27 0.05 125)",
+          "oklch(0.5 0.09 125)",
+          "oklch(0.8 0.12 125)",
+          "oklch(0.94 0.08 125)"
+        ]
+      },
+      "danger": {
+        "role": "tertiary",
+        "displayName": "Peligro",
+        "canonical": "oklch(0.44 0.21 27)",
+        "tonalRamp": [
+          "oklch(0.44 0.21 27)",
+          "oklch(0.7 0.19 27)"
+        ]
+      },
+      "danger-dark": {
+        "role": "tertiary",
+        "displayName": "Peligro (oscuro)",
+        "canonical": "oklch(0.7 0.19 27)",
+        "tonalRamp": [
+          "oklch(0.44 0.21 27)",
+          "oklch(0.7 0.19 27)"
+        ]
+      }
+    },
+    "roles": {
+      "note": "--lcd-0..3 are roles over --ramp-0..3. Light: lcd-n = ramp-n. Dark (prefers-color-scheme or .ramp-scope[data-scheme=dark]): lcd-n = ramp-(3-n), danger = danger-dark.",
+      "lcd-0": "ground",
+      "lcd-1": "fill",
+      "lcd-2": "secondary",
+      "lcd-3": "ink"
+    },
+    "typographyMeta": {
+      "display-xl": {
+        "displayName": "Display XL (text-px-4)",
+        "purpose": "Page title from sm."
+      },
+      "display": {
+        "displayName": "Display (text-px-3)",
+        "purpose": "Mobile page title, section titles from sm, counters, celebration title."
+      },
+      "headline": {
+        "displayName": "Headline (text-px-2)",
+        "purpose": "Mobile section titles, codes."
+      },
+      "label": {
+        "displayName": "Label (text-px-1)",
+        "purpose": "Buttons, field labels, phase badges, spot codes. Smallest pixel size allowed."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Everything read, max-w-prose."
+      },
+      "body-sm": {
+        "displayName": "Body small",
+        "purpose": "Notes, hints, field errors, medal names."
+      }
+    },
+    "shadows": [
+      {
+        "name": "panel-double-rule",
+        "value": "inset 0 0 0 2px var(--lcd-0), inset 0 0 0 4px var(--lcd-3)",
+        "purpose": "Inner rule of the double-ruled .panel (with a 2px ink border). The only box-shadow; not a soft shadow."
+      }
+    ],
+    "motion": [
+      {
+        "name": "develop",
+        "value": "900ms steps(1, end) both",
+        "purpose": "A new medal steps fill -> secondary -> ink at 0/34/67%; logos step faded -> mid -> full filter."
+      },
+      {
+        "name": "blink",
+        "value": "1s steps(1, end) infinite",
+        "purpose": "Live state: the en-curso phase dot and the pending-button blocks (staggered 333ms)."
+      },
+      {
+        "name": "color-change",
+        "value": "100ms",
+        "purpose": "Button background/border on hover."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "animation: none; transition: none",
+        "purpose": "Under prefers-reduced-motion everything is off: new medals show developed, nothing blinks."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      }
+    ],
+    "focusRing": "outline: 2px solid var(--lcd-3); outline-offset: 2px",
+    "logoFilters": {
+      "vars": [
+        "--logo-full",
+        "--logo-mid",
+        "--logo-faded"
+      ],
+      "light": [
+        "#lcd-full",
+        "#lcd-mid",
+        "#lcd-faded"
+      ],
+      "dark": [
+        "#lcd-full-dark",
+        "#lcd-mid-dark",
+        "#lcd-faded-dark"
+      ],
+      "inactiveMask": "conic-gradient checker, mask-size 4px 4px"
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Main action of a screen.",
+      "html": "<button class=\"ds-btn-primary\">Publicar evento</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 2px solid; border-radius: 0; font-family: var(--font-pixel), ui-monospace, monospace; font-size: 20px; line-height: 1; transition: background-color 100ms, border-color 100ms; cursor: pointer; background: var(--lcd-3, oklch(0.27 0.05 125)); border-color: var(--lcd-3, oklch(0.27 0.05 125)); color: var(--lcd-0, oklch(0.94 0.08 125)); } .ds-btn-primary:hover { background: var(--lcd-2, oklch(0.5 0.09 125)); border-color: var(--lcd-2, oklch(0.5 0.09 125)); } .ds-btn-primary:focus-visible { outline: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); outline-offset: 2px; } .ds-btn-primary:active { transform: translateY(2px); }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Non-primary action.",
+      "html": "<button class=\"ds-btn-secondary\">Ver mis medallas</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 2px solid; border-radius: 0; font-family: var(--font-pixel), ui-monospace, monospace; font-size: 20px; line-height: 1; transition: background-color 100ms, border-color 100ms; cursor: pointer; background: var(--lcd-0, oklch(0.94 0.08 125)); border-color: var(--lcd-3, oklch(0.27 0.05 125)); color: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-btn-secondary:hover { background: var(--lcd-1, oklch(0.8 0.12 125)); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); outline-offset: 2px; } .ds-btn-secondary:active { transform: translateY(2px); }"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Destructive action; the only off-ramp color.",
+      "html": "<button class=\"ds-btn-danger\">Anular extracción</button>",
+      "css": ".ds-btn-danger { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 2px solid; border-radius: 0; font-family: var(--font-pixel), ui-monospace, monospace; font-size: 20px; line-height: 1; transition: background-color 100ms, border-color 100ms; cursor: pointer; background: var(--danger, oklch(0.44 0.21 27)); border-color: var(--danger, oklch(0.44 0.21 27)); color: var(--lcd-0, oklch(0.94 0.08 125)); } .ds-btn-danger:hover { background: var(--lcd-3, oklch(0.27 0.05 125)); border-color: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-btn-danger:focus-visible { outline: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); outline-offset: 2px; } .ds-btn-danger:active { transform: translateY(2px); }"
+    },
+    {
+      "name": "Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Labeled input; error in danger with the pixel alert icon.",
+      "html": "<div class=\"ds-field\"><label class=\"ds-field-label\" for=\"ds-f1\">Código del spot</label><input class=\"ds-field-input\" id=\"ds-f1\" value=\"A12\" aria-invalid=\"true\"><p class=\"ds-field-error\"><svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 8 8\" shape-rendering=\"crispEdges\" fill=\"currentColor\"><path fill-rule=\"evenodd\" d=\"M3 0h2v1h1v2h1v2h1v3H0V5h1V3h1V1h1zM3.5 2v3h1V2zm0 4v1h1V6z\"/></svg>Ya hay un spot con el código A12 en este evento. Probá con otro.</p></div>",
+      "css": ".ds-field { display: grid; gap: 6px; max-width: 28rem; } .ds-field-label { font-family: var(--font-pixel), ui-monospace, monospace; font-size: 20px; line-height: 1; } .ds-field-input { min-height: 44px; padding: 0 12px; border: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); border-radius: 0; background: var(--lcd-0, oklch(0.94 0.08 125)); color: var(--lcd-3, oklch(0.27 0.05 125)); font-size: 16px; } .ds-field-input[aria-invalid=true] { border-color: var(--danger, oklch(0.44 0.21 27)); } .ds-field-input:focus-visible { outline: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); outline-offset: 2px; } .ds-field-error { display: flex; gap: 8px; align-items: flex-start; margin: 0; font-size: 14px; color: var(--danger, oklch(0.44 0.21 27)); }"
+    },
+    {
+      "name": "Phase Badge (en curso)",
+      "kind": "chip",
+      "refersTo": "phase-badge-live",
+      "description": "Event phase; live state blinks a block.",
+      "html": "<span class=\"ds-badge\"><span class=\"ds-badge-dot\" aria-hidden=\"true\"></span>En curso</span> <span class=\"ds-badge ds-badge-draft\">Borrador</span>",
+      "css": "@keyframes ds-blink { 50% { opacity: 0; } } .ds-badge { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); background: var(--lcd-3, oklch(0.27 0.05 125)); color: var(--lcd-0, oklch(0.94 0.08 125)); font-family: var(--font-pixel), ui-monospace, monospace; font-size: 20px; line-height: 1; } .ds-badge-dot { width: 8px; height: 8px; background: var(--lcd-0, oklch(0.94 0.08 125)); animation: ds-blink 1s steps(1, end) infinite; } .ds-badge-draft { border-style: dashed; border-color: var(--lcd-2, oklch(0.5 0.09 125)); background: transparent; color: var(--lcd-2, oklch(0.5 0.09 125)); } @media (prefers-reduced-motion: reduce) { .ds-badge-dot { animation: none; } }"
+    },
+    {
+      "name": "Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Double-ruled dialog box (celebration screen).",
+      "html": "<article class=\"ds-panel\"><h3 class=\"ds-panel-title\">¡Medalla nueva!</h3><p class=\"ds-panel-body\">Quedó guardada en tu colección.</p></article>",
+      "css": ".ds-panel { display: grid; gap: 20px; justify-items: center; max-width: 24rem; padding: 32px 24px; text-align: center; border: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); box-shadow: inset 0 0 0 2px var(--lcd-0, oklch(0.94 0.08 125)), inset 0 0 0 4px var(--lcd-3, oklch(0.27 0.05 125)); background: var(--lcd-0, oklch(0.94 0.08 125)); color: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-panel-title { margin: 0; font-family: var(--font-pixel), ui-monospace, monospace; font-size: 30px; line-height: 1; font-weight: 400; } .ds-panel-body { margin: 0; font-size: 16px; }"
+    },
+    {
+      "name": "Medal",
+      "kind": "custom",
+      "refersTo": "medal-tile",
+      "description": "96px tile with the spot logo posterized or its 12x12 sprite; develops in steps when new.",
+      "html": "<figure class=\"ds-medal\"><div class=\"ds-medal-tile\"><svg class=\"ds-sprite\" role=\"img\" aria-label=\"Café de la Esquina: Conseguida\" width=\"72\" height=\"72\" viewBox=\"0 0 12 12\"><rect x=\"1\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"3\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"4\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"5\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"6\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"7\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"8\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"9\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"10\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"1\" y=\"2\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"2\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"3\" y=\"2\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"4\" y=\"2\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"5\" y=\"2\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"6\" y=\"2\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"7\" y=\"2\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"8\" y=\"2\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"9\" y=\"2\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"10\" y=\"2\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"1\" y=\"3\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"3\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"3\" y=\"3\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"4\" y=\"3\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"5\" y=\"3\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"6\" y=\"3\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"7\" y=\"3\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"8\" y=\"3\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"9\" y=\"3\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"10\" y=\"3\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"1\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"3\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"4\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"5\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"6\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"7\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"8\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"9\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"10\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"5\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"9\" y=\"5\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"6\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"4\" y=\"6\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"5\" y=\"6\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"6\" y=\"6\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"7\" y=\"6\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"9\" y=\"6\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"7\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"4\" y=\"7\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"5\" y=\"7\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"6\" y=\"7\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"7\" y=\"7\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"9\" y=\"7\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"8\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"4\" y=\"8\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"5\" y=\"8\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"6\" y=\"8\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"7\" y=\"8\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"9\" y=\"8\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"1\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"3\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"4\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"5\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"6\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"7\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"8\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"9\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"10\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"1\" y=\"10\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"3\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"4\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"5\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"6\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"7\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"8\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"9\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"10\" y=\"10\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"1\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"3\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"4\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"5\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"6\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"7\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"8\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"9\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"10\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/></svg></div><figcaption class=\"ds-medal-cap\"><span class=\"ds-medal-code\">A12</span><span class=\"ds-medal-name\">Café de la Esquina</span><span class=\"ds-medal-status\">Conseguida</span></figcaption></figure>",
+      "css": ".ds-medal { display: grid; justify-items: center; gap: 8px; width: 128px; margin: 0; text-align: center; color: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-medal-tile { display: grid; place-items: center; width: 96px; height: 96px; border: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); } .ds-sprite { shape-rendering: crispEdges; } .ds-sprite [data-t='0'] { fill: var(--lcd-0, oklch(0.94 0.08 125)); } .ds-sprite [data-t='1'] { fill: var(--lcd-1, oklch(0.8 0.12 125)); } .ds-sprite [data-t='2'] { fill: var(--lcd-2, oklch(0.5 0.09 125)); } .ds-sprite [data-t='3'] { fill: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-medal-cap { display: grid; gap: 4px; } .ds-medal-code, .ds-medal-status { font-family: var(--font-pixel), ui-monospace, monospace; font-size: 20px; line-height: 1; } .ds-medal-code { color: var(--lcd-2, oklch(0.5 0.09 125)); } .ds-medal-name { font-size: 14px; line-height: 1.25; }"
+    },
+    {
+      "name": "Progress",
+      "kind": "custom",
+      "description": "Segmented bar, one segment per spot; fill marks the raffle goal.",
+      "html": "<div class=\"ds-progress\" role=\"progressbar\" aria-valuemin=\"0\" aria-valuemax=\"12\" aria-valuenow=\"5\"><span class=\"ds-seg ds-on\"></span><span class=\"ds-seg ds-on\"></span><span class=\"ds-seg ds-on\"></span><span class=\"ds-seg ds-on\"></span><span class=\"ds-seg ds-on\"></span><span class=\"ds-seg ds-goal\"></span><span class=\"ds-seg ds-goal\"></span><span class=\"ds-seg ds-goal\"></span><span class=\"ds-seg\"></span><span class=\"ds-seg\"></span><span class=\"ds-seg\"></span><span class=\"ds-seg\"></span></div>",
+      "css": ".ds-progress { display: flex; gap: 2px; height: 20px; padding: 2px; border: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); } .ds-seg { flex: 1; } .ds-on { background: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-goal { background: var(--lcd-1, oklch(0.8 0.12 125)); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "La consola de bolsillo",
+    "overview": "Eventdex se ve como la pantalla LCD de cuatro tonos de una consola de mano, como la vieja app de eventos. Cuatro tonos de un solo color hacen todo el trabajo: fondo, relleno, secundario y tinta. Cada organización recibe su propia rampa desde el color de su marca (un cambio de paleta, como en los juegos), así que la marca manda y el contraste lo fija la luminosidad, nunca la suerte.\n\nTodo es plano, cuadrado y en grilla de píxeles: líneas de 2 px, esquinas a 90°, paneles con doble filete como las cajas de diálogo de una consola. El movimiento es por pasos, nunca suave: una medalla nueva se \"revela\" pasando por los tonos en cuadros discretos. Rechaza el default de la categoría: tarjetas blancas de SaaS con acento azul y confeti.",
+    "keyCharacteristics": [
+      "Cuatro tonos de un solo matiz, usados como roles; el oscuro invierte la rampa.",
+      "Un solo color fuera de la rampa: el de peligro, siempre con ícono.",
+      "Logos posterizados a los cuatro tonos; sprites de 12×12 cuando no hay logo.",
+      "Jersey 10 en múltiplos de 10 px para títulos, contadores y códigos; Atkinson Hyperlegible Next para leer.",
+      "Esquinas rectas, filetes de 2 px, sin sombras suaves.",
+      "Movimiento en pasos (`steps(1, end)`), apagado con `prefers-reduced-motion`."
+    ],
+    "rules": [
+      {
+        "name": "The Four Tones Rule",
+        "body": "Un componente se pinta solo con `--lcd-0..3`. Nunca con `--ramp-*` directo (rompería el modo oscuro) ni con un color nuevo.",
+        "section": "colors"
+      },
+      {
+        "name": "The Brand Is A Hue Rule",
+        "body": "La marca de una organización aporta matiz y saturación; la luminosidad la pone la rampa. Nunca se usa el hex de la marca tal cual.",
+        "section": "colors"
+      },
+      {
+        "name": "The Danger Wears An Icon Rule",
+        "body": "`danger` es el único color fuera de la rampa y siempre va con el ícono de alerta pixelado (`AlertIcon`, 8×8 en `currentColor`); el color nunca carga el significado solo.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ten Pixel Grid Rule",
+        "body": "Jersey 10 solo en `text-px-1..4` (20, 30, 40 y 60 px), múltiplos de su grilla de 10 px, con interlineado 1, así los bordes quedan nítidos. Nada de texto pixelado debajo de 20 px.",
+        "section": "typography"
+      },
+      {
+        "name": "The Read In Atkinson Rule",
+        "body": "Títulos, contadores y códigos van en Jersey 10; todo lo que hay que leer (oraciones, pistas, errores) va en Atkinson Hyperlegible Next.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Screen Rule",
+        "body": "Una pantalla LCD no tiene sombras. La jerarquía sale de filetes, relleno y tamaño de letra; nunca de `box-shadow` difuso.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Square Corner Rule",
+        "body": "Sin `border-radius`, sin excepciones.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Dashed Means Not Yet Rule",
+        "body": "El borde punteado es el lenguaje de lo que todavía no está; no se usa como decoración.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "**Do** pintar con los roles `--lcd-0..3` y dejar que el esquema los resuelva.",
+      "**Do** derivar la paleta de una organización con `rampFromHex`, y poner la clase `.ramp-scope` en toda capa que defina `--ramp-*`.",
+      "**Do** acompañar `danger` con `AlertIcon`.",
+      "**Do** usar Jersey 10 solo en `text-px-1..4` (20/30/40/60 px).",
+      "**Do** usar bordes de 2 px: sólidos para lo presente, punteados para lo pendiente.",
+      "**Do** animar en pasos (`steps(1, end)`): la revelación de 900 ms y el parpadeo de 1 s para lo que está en vivo.",
+      "**Do** mostrar el sprite de 12×12 del tipo de spot cuando no hay logo."
+    ],
+    "donts": [
+      "**Don't** usar `border-radius` ni sombras suaves.",
+      "**Don't** usar texto pixelado debajo de 20 px ni en tamaños fuera de la grilla de 10 px.",
+      "**Don't** agregar un color fuera de la rampa salvo `danger`, ni usar el hex de la marca tal cual.",
+      "**Don't** mostrar un logo sin pasarlo por los filtros LCD.",
+      "**Don't** interpolar movimiento (easing suave); y todo se apaga con `prefers-reduced-motion`: la medalla nueva aparece revelada y nada parpadea.",
+      "**Don't** volver a tarjetas blancas de SaaS con acento azul y confeti."
+    ]
+  }
+}
