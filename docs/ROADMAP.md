@@ -111,12 +111,12 @@ Branch `feat/eventos`. La org crea un evento con sede y jornadas, y lo publica.
    soporte (`log_support_access`).
    *Listo cuando* el owner invitado cae directo en su org, una cuenta sin org ve
    `/sin-acceso`, un no miembro recibe 404 y el soporte del developer queda auditado.
-1. ▶ **DB.** `venues`, `events`, `event_schedules`, la vista de fase
+1. ✅ **DB.** `venues`, `events`, `event_schedules`, la vista de fase
    (`event_phases`) y `publish_event()`.
    *Listo cuando* pgTAP prueba que `anon` solo ve eventos publicados, que las
    jornadas con fin antes del inicio se rechazan y que la fase sale bien en los
    tres casos.
-2. **Backend.** `src/domain/` (fase y formato de fechas con zona), las lecturas y
+2. ▶ **Backend.** `src/domain/` (fase y formato de fechas con zona), las lecturas y
    las acciones de sede, evento, jornada y publicar.
    *Listo cuando* la lógica de fase tiene tests con eventos pasados, en curso,
    futuros y sin jornadas.

@@ -80,6 +80,10 @@ que se prueba sin mocks.
 - **Lecturas** en `src/lib/data/`, desde Server Components. **Escrituras** con
   Server Actions en `src/lib/actions/`: validan con Zod, llaman a Supabase con la
   sesión del usuario y devuelven `{ ok, error }`, sin tirar excepciones a la vista.
+  El tipo `ActionResult` y la traducción de los códigos de Postgres a mensajes
+  viven en `src/lib/results.ts`. La lógica de cada acción (validar, escribir,
+  traducir errores) va en `src/lib/<área>.ts` con sus tests; la Server Action solo
+  le suma la sesión, la caché y la redirección.
 - **Operaciones atómicas en SQL.** Reclamar una medalla, publicar un evento y sacar
   una extracción del sorteo son funciones Postgres (`rpc`), no varias queries
   desde JS.
