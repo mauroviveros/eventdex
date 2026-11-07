@@ -121,9 +121,9 @@ erDiagram
 | `organization_domains` | Hostnames por org | Tabla y no columna: apex + `www` y cambios de dominio sin downtime. Uno `is_primary` |
 | `organization_members` | Equipo de la org | Solo miembros activos: quitar es borrar (queda en `audit_logs`). Rol `owner` / `staff`. No se puede quitar ni degradar al último owner |
 | `organization_invitations` | Invitaciones por mail | La membresía nace al aceptar (`accept_invitation`), si el mail de la cuenta coincide. Vencen a los 14 días |
-| `venues` | Sedes | Definen la zona horaria que hereda el evento |
-| `events` | Ediciones | `status` editorial (`draft` → `published` → `archived` / `cancelled`), `settings jsonb` |
-| `event_schedules` | Jornadas | `starts_at` / `ends_at` en `timestamptz`; de acá sale la fase |
+| `venues` | Sedes | Definen la zona horaria que hereda el evento. Baja con `deleted_at` |
+| `events` | Ediciones | `status` editorial (`draft` → `published` → `archived` / `cancelled`), `visibility` (`public` / `unlisted`), `settings jsonb`. `slug` único por org. Solo se publica con `publish_event()`, que exige al menos una jornada. La sede tiene que ser de la misma org |
+| `event_schedules` | Jornadas | `starts_at` / `ends_at` en `timestamptz`, fin después del inicio. La fase sale de la vista `event_phases`: de la primera jornada al fin de la última; sin jornadas es `null` (sin fecha) |
 | `spots` | Catálogo de la org | Viven sin evento; se archivan, no se borran |
 | `event_spots` | Spot dentro de un evento | Overrides por edición, `code` corto, `points`, `snapshot` congelado al publicar |
 | `event_registrations` | Visitante ↔ evento | Único por (evento, usuario); ancla de RLS y de bloqueos |
