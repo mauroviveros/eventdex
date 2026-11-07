@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { acceptInvitation, createOrganization } from "./organizations";
+import { createOrganization } from "./organizations";
 
 // Stand-in for the Supabase client: only rpc, returning what the database would.
 function fakeRpc(result: { data: unknown; error: unknown }) {
@@ -80,36 +80,5 @@ describe("createOrganization", () => {
     });
     expect(log).toHaveBeenCalled();
     log.mockRestore();
-  });
-});
-
-describe("acceptInvitation", () => {
-  const id = "2f1c6a8e-4b7d-4c3a-9e2f-8a1b2c3d4e5f";
-
-  it("accepts and returns the organization", async () => {
-    const { client, rpc } = fakeRpc({ data: "org-id", error: null });
-    expect(await acceptInvitation(client, id)).toEqual({
-      ok: true,
-      data: { organizationId: "org-id" },
-    });
-    expect(rpc).toHaveBeenCalledWith("accept_invitation", {
-      p_invitation_id: id,
-    });
-  });
-
-  it("rejects a malformed id without calling the database", async () => {
-    const { client, rpc } = fakeRpc({ data: null, error: null });
-    const result = await acceptInvitation(client, "no-es-uuid");
-    expect(result.ok).toBe(false);
-    expect(rpc).not.toHaveBeenCalled();
-  });
-
-  it("explains an invitation for another account", async () => {
-    const { client } = fakeRpc({ data: null, error: { code: "P0002" } });
-    expect(await acceptInvitation(client, id)).toEqual({
-      ok: false,
-      error:
-        "La invitación no existe, ya se usó, venció o es para otra cuenta.",
-    });
   });
 });

@@ -44,8 +44,9 @@ staff y owner.
 | Ruta | Vista | Acceso | Rebanada |
 |------|-------|--------|----------|
 | `/ingresar` | Login del equipo con Google. En desarrollo suma un link por mail que llega al visor local | Público | R1 |
-| `/` | Tus organizaciones y las invitaciones pendientes para tu mail, con el botón para aceptarlas. Desde R2, con una sola org redirige a su panel | Usuario con sesión | R1 |
-| `/[org]` | Resumen: evento en curso o próximo, accesos rápidos | Miembro | R2 |
+| `/` | Sin pantalla: acepta las invitaciones abiertas para tu mail y te lleva a tu lugar. Developer → `/plataforma/organizaciones`; miembro → `/[org]` de su primera org; nadie más → `/sin-acceso` | Usuario con sesión | R2 · 0 |
+| `/sin-acceso` | Cuenta sin organización ni invitación: lo explica, muestra el mail y deja salir para probar con otra. Sin barra lateral | Usuario con sesión | R2 · 0 |
+| `/[org]` | Panel de la organización: sus eventos (estado vacío en R2 · 0; el dashboard con métricas y tarjetas en R2 · Vista). Un no miembro recibe 404; el developer entra en modo soporte, solo lectura, y queda en la auditoría | Miembro · developer en soporte | R2 |
 | `/[org]/eventos` | Lista de eventos, filtrable por fase y estado | Miembro | R2 |
 | `/[org]/eventos/nuevo` | Alta de evento | Miembro | R2 |
 | `/[org]/eventos/[evento]` | Datos del evento, jornadas, sede y publicación | Miembro | R2 |

@@ -1,6 +1,6 @@
 # Eventdex — Proyecto
 
-`v0.2 · 2026-11-07` · Relacionados: [PRODUCT](./PRODUCT.md) · [ARQUITECTURA](./ARQUITECTURA.md) · [RUTAS](./RUTAS.md) · [ROADMAP](./ROADMAP.md)
+`v0.3 · 2026-11-07` · Relacionados: [PRODUCT](./PRODUCT.md) · [ARQUITECTURA](./ARQUITECTURA.md) · [RUTAS](./RUTAS.md) · [ROADMAP](./ROADMAP.md)
 
 > Contexto general. Si algo de acá choca con un documento más específico, manda el
 > específico y este se corrige en el mismo cambio.
@@ -39,7 +39,12 @@ migración de datos.
 | **Visitante** | Persona que va al evento | Los eventos en los que se registró | Celular, en el predio, con una mano |
 | **Staff** | Miembro operativo de la organización | Su organización | Admin, desde notebook o celular |
 | **Owner** | Dueño de la organización | Su organización, con miembros, marca y dominio | Admin |
-| **Developer** | Vos: soporte, alta de orgs, facturación | Toda la plataforma | Panel de plataforma |
+| **Developer** | Vos: soporte, alta de orgs, facturación | Toda la plataforma | Panel de plataforma; entra a cualquier org en modo soporte (solo lectura, auditado) |
+
+**El admin es por organización.** Un organizador entra y cae en el panel de su
+org; hoy tiene una sola (el modelo admite varias, con un selector). La invitación
+se acepta sola al entrar con el mismo mail. Sin organización no hay acceso al
+panel: la cuenta puede existir igual, porque es la misma que usa el visitante.
 
 **Fuera de esta versión:** el expositor (quien atiende un stand y edita sus datos).
 El modelo no le cierra la puerta, pero no tiene tablas ni pantallas todavía.
