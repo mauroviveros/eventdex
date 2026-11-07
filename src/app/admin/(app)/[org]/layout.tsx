@@ -20,6 +20,7 @@ export default async function OrgLayout({
       exact: true,
       also: `/${slug}/eventos`,
     },
+    { href: `/${slug}/spots`, label: "Spots" },
     { href: `/${slug}/sedes`, label: "Sedes" },
   ];
   if (viewer.isDeveloper) {
