@@ -83,7 +83,8 @@ que se prueba sin mocks.
   El tipo `ActionResult` y la traducción de los códigos de Postgres a mensajes
   viven en `src/lib/results.ts`. La lógica de cada acción (validar, escribir,
   traducir errores) va en `src/lib/<área>.ts` con sus tests; la Server Action solo
-  le suma la sesión, la caché y la redirección.
+  le suma la sesión, la caché y la redirección. Las del panel de la org comparten
+  `runFormWrite` y `FormState` (`src/lib/actions/form.ts`).
 - **Operaciones atómicas en SQL.** Reclamar una medalla, publicar un evento y sacar
   una extracción del sorteo son funciones Postgres (`rpc`), no varias queries
   desde JS.

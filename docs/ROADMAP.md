@@ -134,10 +134,10 @@ Branch `feat/eventos`. La org crea un evento con sede y jornadas, y lo publica.
 
 Branch `feat/spots-y-qr`. Catálogo, spots del evento y QR imprimibles.
 
-1. ▶ **DB.** `spots`, `event_spots` y el `snapshot` al publicar.
+1. ✅ **DB.** `spots`, `event_spots` y el `snapshot` al publicar.
    *Listo cuando* pgTAP prueba que no se repite el código dentro de un evento, que
    no se borra un spot en uso y que el snapshot congela el nombre.
-2. **Backend.** La resolución del nombre efectivo (override → snapshot → catálogo)
+2. ▶ **Backend.** La resolución del nombre efectivo (override → snapshot → catálogo)
    en `src/domain/`, más las acciones del catálogo y de los spots del evento.
    *Listo cuando* la resolución tiene tests con los tres niveles.
 3. **Vista.** `/[org]/spots`, `/[org]/spots/nuevo`, `/[org]/spots/[spot]`,
