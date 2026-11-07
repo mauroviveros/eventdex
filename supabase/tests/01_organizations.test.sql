@@ -3,7 +3,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(25);
+select plan(26);
 
 -- ---------------------------------------------------------------------------
 -- Datos: corre como postgres, antes de asumir ningún rol.
@@ -194,7 +194,16 @@ select results_eq(
   $$ values ('org-a'), ('org-b'), ('org-nueva') $$,
   'anon sees active organizations only'
 );
-select is_empty($$ select 1 from public.organization_members $$, 'anon sees no members');
+select throws_ok(
+  $$ select 1 from public.organization_members $$,
+  '42501', null,
+  'anon has no access to members at all'
+);
+select throws_ok(
+  $$ select 1 from public.profiles $$,
+  '42501', null,
+  'anon has no access to profiles at all'
+);
 
 -- ---------------------------------------------------------------------------
 -- Lo que no tenía que pasar, verificado como postgres

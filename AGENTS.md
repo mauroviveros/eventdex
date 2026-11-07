@@ -105,6 +105,9 @@ los encuentre.
 - **La autorización la hace RLS.** La clave secreta solo en
   `src/lib/supabase/service.ts`, y solo para lo que no tiene usuario. Si una
   pantalla la necesita, falta una política.
+- **Cada tabla nueva otorga sus permisos con `GRANT` explícitos** (solo lo que sus
+  políticas usan). Nada se otorga por defecto: así funciona Supabase en producción
+  desde 2026-10-30, y local quedó igual.
 - Cada migración trae sus tests pgTAP y los tipos regenerados (`pnpm db:types`) en
   el mismo cambio. No se edita una migración ya aplicada en producción.
 - Las URLs impresas (`/s/[id]`) no cambian nunca.
