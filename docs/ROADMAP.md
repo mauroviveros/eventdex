@@ -120,11 +120,15 @@ Branch `feat/eventos`. La org crea un evento con sede y jornadas, y lo publica.
    las acciones de sede, evento, jornada y publicar.
    *Listo cuando* la lógica de fase tiene tests con eventos pasados, en curso,
    futuros y sin jornadas.
-3. ▶ **Vista.** `/[org]` (el dashboard: arma `StatTile`, `EventFilters` y `EventCard`, que ya están en `/dev/componentes`, y pasa el selector de organización al shell), `/[org]/eventos`, `/[org]/eventos/nuevo`,
+3. ✅ **Vista.** `/[org]` (el dashboard: arma `StatTile`, `EventFilters` y `EventCard`, que ya están en `/dev/componentes`, y pasa el selector de organización al shell), `/[org]/eventos`, `/[org]/eventos/nuevo`,
    `/[org]/eventos/[evento]` y `/[org]/sedes`.
    *Listo cuando* en el navegador se crea una sede, se crea un evento con dos
    jornadas y se publica, con los estados de carga, vacío y error vistos.
-4. **Auditoría.**
+4. ▶ **Auditoría.** `/code-review`: resueltos el registro del modo soporte en los
+   prefetch, la última jornada de un evento publicado (trigger), los contadores con
+   búsqueda, el botón Publicar con teclado, el catálogo y repeticiones menores.
+   Pendiente: la fase ignora `cancelled` y `archived`; se resuelve cuando exista
+   cancelar o archivar.
 
 ## R3 · Spots y QR
 
