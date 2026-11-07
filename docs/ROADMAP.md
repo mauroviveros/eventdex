@@ -130,7 +130,7 @@ Branch `feat/eventos`. La org crea un evento con sede y jornadas, y lo publica.
    Pendiente: la fase ignora `cancelled` y `archived`; se resuelve cuando exista
    cancelar o archivar.
 
-## R3 · Spots y QR
+## R3 · Spots y QR ✅
 
 Branch `feat/spots-y-qr`. Catálogo, spots del evento y QR imprimibles.
 
@@ -144,7 +144,7 @@ Branch `feat/spots-y-qr`. Catálogo, spots del evento y QR imprimibles.
    `/[org]/eventos/[evento]/spots` y `/[org]/eventos/[evento]/qr`.
    *Listo cuando* se carga el catálogo, se ponen spots en un evento y la hoja de QR
    se imprime en A4 legible y escaneable con el celular.
-4. ▶ **Auditoría.** `/code-review`: 8 hallazgos resueltos. Entre ellos, un spot
+4. ✅ **Auditoría.** `/code-review`: 8 hallazgos resueltos. Entre ellos, un spot
    agregado mientras se publica ya no queda sin snapshot (el trigger bloquea el
    evento) y quitar un spot del evento pide confirmación porque su QR impreso deja
    de funcionar.
@@ -153,7 +153,7 @@ Branch `feat/spots-y-qr`. Catálogo, spots del evento y QR imprimibles.
 
 Branch `feat/portada-publica`. El evento se ve en el dominio de la org.
 
-1. **DB.** `resolve_organization(host)`, `resolve_active_event(org)` y las lecturas
+1. ▶ **DB.** `resolve_organization(host)`, `resolve_active_event(org)` y las lecturas
    públicas de evento y spots.
    *Listo cuando* pgTAP prueba la resolución con un host desconocido, una org sin
    eventos y una org con un evento en curso y otro próximo.
