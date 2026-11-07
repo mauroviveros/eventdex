@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 import { AlertIcon } from "@/components/pixel/AlertIcon";
 import { Sprite, type SpriteMode } from "@/components/pixel/Sprite";
-import type { SpotType } from "@/components/pixel/sprites";
 import { Button } from "@/components/ui/Button";
+import type { SpotType } from "@/domain/spots";
 import { Logo } from "./Medal";
 
 export type ClaimOutcome =
