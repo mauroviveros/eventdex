@@ -1,11 +1,6 @@
-import { notFound } from "next/navigation";
 import { AdminShell, type Section } from "@/components/admin/AdminShell";
-import {
-  getOrganizationBySlug,
-  listMyOrganizations,
-  logSupportAccess,
-} from "@/lib/data/organizations";
-import { requireViewer } from "@/lib/data/viewer";
+import { logSupportAccess } from "@/lib/data/organizations";
+import { requireOrg } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
 
 /**
@@ -17,20 +12,18 @@ export default async function OrgLayout({
   params,
 }: LayoutProps<"/admin/[org]">) {
   const { org: slug } = await params;
-  const viewer = await requireViewer();
-  const supabase = await createClient();
+  const { viewer, org, mine, role, support } = await requireOrg(slug);
+  if (support) await logSupportAccess(await createClient(), org.id);
 
-  const [org, mine] = await Promise.all([
-    getOrganizationBySlug(supabase, slug),
-    listMyOrganizations(supabase, viewer.id),
-  ]);
-  const membership = mine.find((m) => m.slug === slug);
-  if (!org || (!membership && !viewer.isDeveloper)) notFound();
-
-  const support = !membership;
-  if (support) await logSupportAccess(supabase, org.id);
-
-  const sections: Section[] = [{ href: `/${slug}`, label: "Eventos" }];
+  const sections: Section[] = [
+    {
+      href: `/${slug}`,
+      label: "Eventos",
+      exact: true,
+      also: `/${slug}/eventos`,
+    },
+    { href: `/${slug}/sedes`, label: "Sedes" },
+  ];
   if (viewer.isDeveloper) {
     sections.push({ href: "/plataforma/organizaciones", label: "Plataforma" });
   }
@@ -40,7 +33,7 @@ export default async function OrgLayout({
       email={viewer.email}
       sections={sections}
       org={{
-        current: { slug: org.slug, name: org.name, role: membership?.role },
+        current: { slug: org.slug, name: org.name, role },
         all: mine.map((m) => ({ slug: m.slug, name: m.name })),
       }}
       notice={

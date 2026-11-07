@@ -46,10 +46,10 @@ staff y owner.
 | `/ingresar` | Login del equipo con Google. En desarrollo suma un link por mail que llega al visor local | Público | R1 |
 | `/` | Sin pantalla: acepta las invitaciones abiertas para tu mail y te lleva a tu lugar. Developer → `/plataforma/organizaciones`; miembro → `/[org]` de su primera org; nadie más → `/sin-acceso` | Usuario con sesión | R2 · 0 |
 | `/sin-acceso` | Cuenta sin organización ni invitación: lo explica, muestra el mail y deja salir para probar con otra. Sin barra lateral | Usuario con sesión | R2 · 0 |
-| `/[org]` | Panel de la organización: sus eventos (estado vacío en R2 · 0; el dashboard con métricas y tarjetas en R2 · Vista). Un no miembro recibe 404; el developer entra en modo soporte, solo lectura, y queda en la auditoría | Miembro · developer en soporte | R2 |
-| `/[org]/eventos` | Lista de eventos, filtrable por fase y estado | Miembro | R2 |
-| `/[org]/eventos/nuevo` | Alta de evento | Miembro | R2 |
-| `/[org]/eventos/[evento]` | Datos del evento, jornadas, sede y publicación | Miembro | R2 |
+| `/[org]` | Dashboard de la organización: métricas (eventos, publicados, sedes; stands, visitantes y medallas se suman en R3 y R5), búsqueda y filtro por fase en la URL (`?q=…&fase=…`) y una tarjeta por evento. Un no miembro recibe 404; el developer entra en modo soporte, solo lectura (sin formularios ni botones de alta), y queda en la auditoría | Miembro · developer en soporte | R2 |
+| `/[org]/eventos` | Redirige a `/[org]` con los mismos filtros: la lista de eventos es el dashboard | Miembro | R2 |
+| `/[org]/eventos/nuevo` | Alta de evento: nace como borrador y lleva a su página. En modo soporte, 404 | Miembro | R2 |
+| `/[org]/eventos/[evento]` | Datos del evento, jornadas (agregar y quitar, en la zona del evento) y publicación | Miembro | R2 |
 | `/[org]/eventos/[evento]/spots` | Spots del evento: agregar desde el catálogo, código, puntos, activo/inactivo | Miembro | R3 |
 | `/[org]/eventos/[evento]/qr` | Hoja de QR para imprimir (A4, vista de impresión) | Miembro | R3 |
 | `/[org]/eventos/[evento]/visitantes` | Registrados, medallas por visitante, bloquear | Miembro | R5 |
@@ -58,7 +58,7 @@ staff y owner.
 | `/[org]/spots` | Catálogo de spots de la organización | Miembro | R3 |
 | `/[org]/spots/nuevo` | Alta de spot | Miembro | R3 |
 | `/[org]/spots/[spot]` | Editar o archivar un spot; en qué eventos se usa | Miembro | R3 |
-| `/[org]/sedes` | Sedes: lista, alta y edición en la misma vista | Miembro | R2 |
+| `/[org]/sedes` | Sedes: lista y alta en la misma vista. La edición llega cuando haga falta | Miembro | R2 |
 | `/[org]/equipo` | Miembros, invitaciones y roles | Owner | R7 |
 | `/[org]/ajustes` | Nombre, marca (logo y colores, con vista previa) y dominios | Owner | R7 |
 
