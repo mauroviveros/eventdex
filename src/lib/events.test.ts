@@ -155,6 +155,15 @@ describe("deleteSchedule", () => {
   });
 });
 
+describe("deleteSchedule on a published event", () => {
+  it("explains that the last schedule must stay", async () => {
+    const { client } = fakeClient({ data: null, error: { code: "23514" } });
+    const result = await deleteSchedule(client, EVENT);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error).toMatch(/al menos una jornada/);
+  });
+});
+
 describe("publishEvent", () => {
   it("calls publish_event", async () => {
     const { client, rpc } = fakeClient({ data: null, error: null });
