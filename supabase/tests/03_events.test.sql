@@ -2,7 +2,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(19);
+select plan(21);
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-00000000a001', 'owner-a@test.local'),
@@ -165,6 +165,19 @@ select throws_ok(
   $$ select public.publish_event('0000000b-0000-0000-0000-000000000001') $$,
   '42501', null,
   'a member cannot publish an event of another org'
+);
+
+select throws_ok(
+  $$ delete from public.event_schedules where event_id = '0000000a-0000-0000-0000-000000000003' $$,
+  '23514', null,
+  'the last schedule of a published event cannot be deleted'
+);
+
+select lives_ok(
+  $$ delete from public.event_schedules
+     where event_id = '0000000a-0000-0000-0000-000000000001'
+       and starts_at = (select min(starts_at) from public.event_schedules where event_id = '0000000a-0000-0000-0000-000000000001') $$,
+  'a published event can drop a schedule while another remains'
 );
 
 -- ---------------------------------------------------------------------------
