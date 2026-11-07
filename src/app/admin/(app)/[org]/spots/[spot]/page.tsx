@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageBody, TopBar } from "@/components/admin/TopBar";
 import { Sprite } from "@/components/pixel/Sprite";
+import { ActionButton } from "@/components/ui/ActionButton";
 import { SPOT_TYPE_LABEL } from "@/domain/spots";
-import { updateSpotAction } from "@/lib/actions/spots";
+import { setSpotArchivedAction, updateSpotAction } from "@/lib/actions/spots";
 import { SpotForm } from "../SpotForm";
-import { ArchiveSpotButton } from "./ArchiveSpotButton";
 import { load } from "./load";
 
 export async function generateMetadata({
@@ -119,10 +119,15 @@ export default async function SpotPage({
                     ? "Sigue en los eventos donde ya estaba. Desarchivalo para volver a ofrecerlo."
                     : "Deja de ofrecerse para eventos nuevos y sigue en los que ya lo usan. Los spots no se borran."}
                 </p>
-                <ArchiveSpotButton
-                  org={org.slug}
-                  id={spot.id}
-                  archived={archived}
+                <ActionButton
+                  action={setSpotArchivedAction}
+                  fields={{
+                    org: org.slug,
+                    id: spot.id,
+                    archived: archived ? "0" : "1",
+                  }}
+                  label={archived ? "Desarchivar" : "Archivar"}
+                  pendingLabel={archived ? "Desarchivando…" : "Archivando…"}
                 />
               </section>
             </div>

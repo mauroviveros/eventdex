@@ -9,6 +9,7 @@ import { OrgSwitcher } from "@/components/admin/OrgSwitcher";
 import { QrCode } from "@/components/admin/QrCode";
 import { StatTile } from "@/components/admin/StatTile";
 import { TopBar } from "@/components/admin/TopBar";
+import { ActionButton } from "@/components/ui/ActionButton";
 import { Button } from "@/components/ui/Button";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
 import { Celebration } from "@/components/visitante/Celebration";
@@ -21,6 +22,16 @@ import cafe from "./logos/cafe.svg";
 import ceramica from "./logos/ceramica.svg";
 import { PaletteScope } from "./PaletteScope";
 import { Replay } from "./Replay";
+
+// The catalog's buttons answer like a failed write, so the error state shows.
+async function catalogAction() {
+  "use server";
+  return {
+    ok: false as const,
+    error: "Así se ve un error de la acción.",
+    values: {},
+  };
+}
 
 export const metadata: Metadata = {
   title: "Componentes · Eventdex",
@@ -224,6 +235,31 @@ export default function ComponentesPage() {
             <div className="mt-24 border-t-2 border-lcd-3">
               <AccountMenu email="owner@expo.test" />
             </div>
+          </div>
+        </Section>
+
+        <Section
+          title="Botón de acción"
+          note="Una acción, un botón: campos ocultos, estado pendiente y el error debajo. Lo que no se deshace pide confirmación: el primer clic explica la consecuencia y ofrece un segundo botón explícito."
+        >
+          <div className="flex flex-wrap items-start gap-6">
+            <ActionButton
+              action={catalogAction}
+              fields={{}}
+              label="Archivar"
+              pendingLabel="Archivando…"
+            />
+            <ActionButton
+              action={catalogAction}
+              fields={{}}
+              label="Quitar del evento"
+              pendingLabel="Quitando…"
+              confirm={{
+                message:
+                  "Su QR deja de funcionar, también el que ya esté impreso.",
+                label: "Quitar A12",
+              }}
+            />
           </div>
         </Section>
 

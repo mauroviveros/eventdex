@@ -4,11 +4,7 @@ import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
 import { useFormFeedback } from "@/components/ui/useFormFeedback";
-import {
-  addEventSpotAction,
-  removeEventSpotAction,
-  updateEventSpotAction,
-} from "@/lib/actions/spots";
+import { addEventSpotAction, updateEventSpotAction } from "@/lib/actions/spots";
 
 /** Puts a catalog spot in the event with its code, booth and points. */
 export function AddEventSpotForm({
@@ -186,36 +182,6 @@ export function EditEventSpotForm({
       >
         Guardar
       </Button>
-    </form>
-  );
-}
-
-export function RemoveEventSpotButton({
-  org,
-  id,
-  label,
-}: {
-  org: string;
-  id: string;
-  label: string;
-}) {
-  const [state, action, pending] = useActionState(removeEventSpotAction, null);
-  return (
-    <form action={action} className="grid justify-items-start gap-2">
-      <input type="hidden" name="org" value={org} />
-      <input type="hidden" name="id" value={id} />
-      <Button
-        type="submit"
-        variant="secondary"
-        pending={pending}
-        pendingLabel="Quitando…"
-        aria-label={`Quitar ${label} del evento`}
-      >
-        Quitar del evento
-      </Button>
-      {state && !state.ok && (
-        <FormMessage tone="error">{state.error}</FormMessage>
-      )}
     </form>
   );
 }
