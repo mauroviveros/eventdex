@@ -92,13 +92,13 @@ admin.
    invitación al owner y primer dominio) y "aceptar invitación".
    *Listo cuando* los tests de las acciones cubren el caso feliz, el de datos
    inválidos y el de usuario sin permiso.
-3. ▶ **Vista.** `/ingresar` del admin, `/` (tus organizaciones),
+3. ✅ **Vista.** `/ingresar` del admin, `/` (tus organizaciones),
    `/plataforma/organizaciones`, `/plataforma/organizaciones/nueva`, `/privacidad`
    y `/terminos`.
    *Listo cuando* en el navegador: el developer crea una org, el owner invitado
    entra con Google y ve su organización, y un usuario sin org ve un estado vacío
    que le explica qué pasa.
-4. **Auditoría.** `/ponytail-audit` o `/code-review` y `/accessibility`.
+4. ▶ **Auditoría.** `/ponytail-audit` o `/code-review` y `/accessibility`.
    *Listo cuando* los hallazgos están resueltos o anotados como pendientes.
 
 ## R2 · Eventos
