@@ -8,8 +8,8 @@ import {
   createVenue,
   deleteSchedule,
   publishEvent,
-  SLUG,
 } from "@/lib/events";
+import { SLUG } from "@/lib/organizations";
 import type { ActionResult } from "@/lib/results";
 import { createClient } from "@/lib/supabase/server";
 
