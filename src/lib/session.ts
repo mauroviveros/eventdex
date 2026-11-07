@@ -33,3 +33,14 @@ export function safeNext(next: string | null | undefined, fallback = "/") {
   }
   return next;
 }
+
+/**
+ * The origin the browser actually used (`http://app.localhost:3000`), from the
+ * forwarded headers. Next's request.nextUrl.origin reports the server's own
+ * host, which breaks the per-host redirects of the auth flow.
+ */
+export function requestOrigin(headers: Headers) {
+  const host = headers.get("x-forwarded-host") ?? headers.get("host");
+  const proto = headers.get("x-forwarded-proto") ?? "http";
+  return `${proto}://${host}`;
+}
