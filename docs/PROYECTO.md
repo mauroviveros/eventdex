@@ -1,6 +1,6 @@
 # Eventdex — Proyecto
 
-`v0.1 · 2026-11-06` · Relacionados: [PRODUCT](./PRODUCT.md) · [ARQUITECTURA](./ARQUITECTURA.md) · [RUTAS](./RUTAS.md) · [ROADMAP](./ROADMAP.md)
+`v0.2 · 2026-11-07` · Relacionados: [PRODUCT](./PRODUCT.md) · [ARQUITECTURA](./ARQUITECTURA.md) · [RUTAS](./RUTAS.md) · [ROADMAP](./ROADMAP.md)
 
 > Contexto general. Si algo de acá choca con un documento más específico, manda el
 > específico y este se corrige en el mismo cambio.
@@ -67,6 +67,7 @@ en la interfaz (en la interfaz, en castellano).
 | Organización | Cliente de Eventdex | `organizations` |
 | Dominio | Hostname que sirve la app pública de una org | `organization_domains` |
 | Miembro | Persona del equipo de una org, con rol | `organization_members` |
+| Invitación | Pedido para sumarse a una org, por mail, antes de tener cuenta | `organization_invitations` |
 | Sede | Lugar físico reutilizable entre ediciones | `venues` |
 | Evento | Una edición concreta: "Expo Ubbe 2026" | `events` |
 | Jornada | Bloque horario de un evento | `event_schedules` |
@@ -111,9 +112,10 @@ erDiagram
 |-------|----------|------------------|
 | `profiles` | Espejo de `auth.users` | Se crea por trigger al registrarse |
 | `platform_admins` | Quién es developer | Tabla aparte: el acceso es cross-org |
-| `organizations` | El cliente | `slug`, `brand jsonb` (colores y logo), zona horaria por defecto, `status` |
+| `organizations` | El cliente | `slug`, `brand_color` (hex: de ahí sale la rampa), `logo_path`, zona horaria por defecto, `status`. El owner edita nombre, color, logo y zona; slug y estado, solo el developer |
 | `organization_domains` | Hostnames por org | Tabla y no columna: apex + `www` y cambios de dominio sin downtime. Uno `is_primary` |
-| `organization_members` | Equipo de la org | Rol `owner` / `staff`. No se puede borrar al último owner |
+| `organization_members` | Equipo de la org | Solo miembros activos: quitar es borrar (queda en `audit_logs`). Rol `owner` / `staff`. No se puede quitar ni degradar al último owner |
+| `organization_invitations` | Invitaciones por mail | La membresía nace al aceptar (`accept_invitation`), si el mail de la cuenta coincide. Vencen a los 14 días |
 | `venues` | Sedes | Definen la zona horaria que hereda el evento |
 | `events` | Ediciones | `status` editorial (`draft` → `published` → `archived` / `cancelled`), `settings jsonb` |
 | `event_schedules` | Jornadas | `starts_at` / `ends_at` en `timestamptz`; de acá sale la fase |
