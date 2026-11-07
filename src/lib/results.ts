@@ -1,4 +1,4 @@
-import type { z } from "zod";
+import { z } from "zod";
 
 /** What every action returns: data, or a message in the product's voice. */
 export type ActionResult<T> =
@@ -38,3 +38,12 @@ export function invalid(error: z.ZodError) {
     fieldErrors,
   };
 }
+
+/** An optional text field: trimmed, capped, and null when left empty. */
+export const optionalText = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max, `Puede tener hasta ${max} caracteres.`)
+    .optional()
+    .transform((v) => v || null);

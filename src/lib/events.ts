@@ -1,7 +1,12 @@
 import { z } from "zod";
 import { isTimeZone, localToInstant } from "@/domain/events";
 import { SLUG } from "@/lib/organizations";
-import { type ActionResult, failed, invalid } from "@/lib/results";
+import {
+  type ActionResult,
+  failed,
+  invalid,
+  optionalText,
+} from "@/lib/results";
 import type { Supabase } from "@/lib/supabase/server";
 
 /**
@@ -13,14 +18,6 @@ import type { Supabase } from "@/lib/supabase/server";
 type Client = Pick<Supabase, "from" | "rpc">;
 
 const LOCAL_DATE_TIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
-
-const optionalText = (max: number) =>
-  z
-    .string()
-    .trim()
-    .max(max, `Puede tener hasta ${max} caracteres.`)
-    .optional()
-    .transform((v) => v || null);
 
 const timezone = z
   .string()
