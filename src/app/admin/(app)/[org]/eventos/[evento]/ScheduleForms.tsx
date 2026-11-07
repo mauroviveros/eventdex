@@ -1,0 +1,140 @@
+"use client";
+
+import { useActionState, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/Button";
+import { Field, FormMessage } from "@/components/ui/Field";
+import {
+  addScheduleAction,
+  deleteScheduleAction,
+  publishEventAction,
+} from "@/lib/actions/events";
+
+type Ids = { org: string; eventId: string };
+
+/** Adds a schedule. Times are typed in the event's zone. */
+export function AddScheduleForm({
+  org,
+  eventId,
+  timezone,
+}: Ids & { timezone: string }) {
+  const [state, action, pending] = useActionState(addScheduleAction, null);
+  const failed = state && !state.ok ? state : null;
+  const fields = failed?.fieldErrors ?? {};
+  const values = failed?.values ?? {};
+  const form = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (state && !state.ok)
+      form.current?.querySelector<HTMLElement>("[aria-invalid=true]")?.focus();
+  }, [state]);
+
+  return (
+    <form ref={form} action={action} className="grid gap-6" noValidate>
+      <input type="hidden" name="org" value={org} />
+      <input type="hidden" name="eventId" value={eventId} />
+      {failed && !failed.fieldErrors && (
+        <FormMessage tone="error">{failed.error}</FormMessage>
+      )}
+      {state?.ok && <FormMessage tone="success">Jornada agregada.</FormMessage>}
+      <Field
+        label="Nombre"
+        name="label"
+        defaultValue={values.label}
+        placeholder="Día 1"
+        hint="Opcional."
+        error={fields.label}
+      />
+      <div className="grid gap-6 sm:grid-cols-2">
+        <Field
+          label="Empieza"
+          name="startsAt"
+          type="datetime-local"
+          defaultValue={values.startsAt}
+          required
+          error={fields.startsAt}
+        />
+        <Field
+          label="Termina"
+          name="endsAt"
+          type="datetime-local"
+          defaultValue={values.endsAt}
+          required
+          error={fields.endsAt}
+        />
+      </div>
+      <p className="text-sm text-muted-foreground">
+        Horario de {timezone.replaceAll("_", " ")}.
+      </p>
+      <Button
+        type="submit"
+        pending={pending}
+        pendingLabel="Agregando…"
+        className="justify-self-start"
+      >
+        Agregar jornada
+      </Button>
+    </form>
+  );
+}
+
+export function DeleteScheduleButton({
+  org,
+  id,
+  label,
+}: {
+  org: string;
+  id: string;
+  label: string;
+}) {
+  const [state, action, pending] = useActionState(deleteScheduleAction, null);
+  return (
+    <form action={action} className="grid justify-items-end gap-1">
+      <input type="hidden" name="org" value={org} />
+      <input type="hidden" name="id" value={id} />
+      <Button
+        type="submit"
+        variant="secondary"
+        pending={pending}
+        pendingLabel="Quitando…"
+        aria-label={`Quitar ${label}`}
+      >
+        Quitar
+      </Button>
+      {state && !state.ok && (
+        <FormMessage tone="error">{state.error}</FormMessage>
+      )}
+    </form>
+  );
+}
+
+/** Publishes a draft. Without schedules the button explains why it waits. */
+export function PublishButton({
+  org,
+  eventId,
+  ready,
+}: Ids & { ready: boolean }) {
+  const [state, action, pending] = useActionState(publishEventAction, null);
+  return (
+    <form action={action} className="grid justify-items-start gap-2">
+      <input type="hidden" name="org" value={org} />
+      <input type="hidden" name="eventId" value={eventId} />
+      <Button
+        type="submit"
+        pending={pending}
+        pendingLabel="Publicando…"
+        disabled={!ready}
+        aria-describedby={ready ? undefined : "publicar-ayuda"}
+      >
+        Publicar
+      </Button>
+      {!ready && (
+        <p id="publicar-ayuda" className="text-sm text-muted-foreground">
+          Agregá al menos una jornada para publicar.
+        </p>
+      )}
+      {state && !state.ok && (
+        <FormMessage tone="error">{state.error}</FormMessage>
+      )}
+    </form>
+  );
+}

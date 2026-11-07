@@ -41,7 +41,7 @@ export async function acceptMyInvitations(supabase: Supabase) {
 export async function getOrganizationBySlug(supabase: Supabase, slug: string) {
   const { data, error } = await supabase
     .from("organizations")
-    .select("id, slug, name, status")
+    .select("id, slug, name, status, default_timezone")
     .eq("slug", slug)
     .maybeSingle();
   if (error) throw error;

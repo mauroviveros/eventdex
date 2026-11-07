@@ -1,9 +1,13 @@
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
 import { getSessionUser } from "@/lib/session";
 import { createClient } from "@/lib/supabase/server";
-import { isDeveloper } from "./organizations";
+import {
+  getOrganizationBySlug,
+  isDeveloper,
+  listMyOrganizations,
+} from "./organizations";
 
 /**
  * Who is looking at this request, resolved once per request (layouts, pages
@@ -35,3 +39,20 @@ export async function requireViewer() {
 export async function platformMetadata(title: string) {
   return (await getViewer())?.isDeveloper ? { title } : {};
 }
+
+/**
+ * The organization of an admin page and how the viewer is in it, once per
+ * request (the layout and its pages share it). A member works in it; the
+ * developer who isn't one is in read-only support mode; anyone else gets 404.
+ */
+export const requireOrg = cache(async (slug: string) => {
+  const viewer = await requireViewer();
+  const supabase = await createClient();
+  const [org, mine] = await Promise.all([
+    getOrganizationBySlug(supabase, slug),
+    listMyOrganizations(supabase, viewer.id),
+  ]);
+  const membership = mine.find((m) => m.slug === slug);
+  if (!org || (!membership && !viewer.isDeveloper)) notFound();
+  return { viewer, org, mine, role: membership?.role, support: !membership };
+});
