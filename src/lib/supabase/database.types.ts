@@ -114,6 +114,87 @@ export type Database = {
           },
         ];
       };
+      event_spots: {
+        Row: {
+          booth: string | null;
+          code: string;
+          created_at: string;
+          description_override: string | null;
+          event_id: string;
+          id: string;
+          is_active: boolean;
+          name_override: string | null;
+          organization_id: string;
+          points: number;
+          snapshot: Json | null;
+          sort_order: number;
+          spot_id: string;
+          updated_at: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          booth?: string | null;
+          code: string;
+          created_at?: string;
+          description_override?: string | null;
+          event_id: string;
+          id?: string;
+          is_active?: boolean;
+          name_override?: string | null;
+          organization_id: string;
+          points?: number;
+          snapshot?: Json | null;
+          sort_order?: number;
+          spot_id: string;
+          updated_at?: string | null;
+        };
+        Update: {
+          booth?: string | null;
+          code?: string;
+          created_at?: string;
+          description_override?: string | null;
+          event_id?: string;
+          id?: string;
+          is_active?: boolean;
+          name_override?: string | null;
+          organization_id?: string;
+          points?: number;
+          snapshot?: Json | null;
+          sort_order?: number;
+          spot_id?: string;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "event_spots_event_id_organization_id_fkey";
+            columns: ["event_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "event_phases";
+            referencedColumns: ["event_id", "organization_id"];
+          },
+          {
+            foreignKeyName: "event_spots_event_id_organization_id_fkey";
+            columns: ["event_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "event_spots_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "event_spots_spot_id_organization_id_fkey";
+            columns: ["spot_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "spots";
+            referencedColumns: ["id", "organization_id"];
+          },
+        ];
+      };
       events: {
         Row: {
           cover_path: string | null;
@@ -433,6 +514,51 @@ export type Database = {
         };
         Relationships: [];
       };
+      spots: {
+        Row: {
+          archived_at: string | null;
+          created_at: string;
+          description: string | null;
+          id: string;
+          logo_path: string | null;
+          name: string;
+          organization_id: string;
+          type: Database["public"]["Enums"]["spot_type"];
+          updated_at: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          archived_at?: string | null;
+          created_at?: string;
+          description?: string | null;
+          id?: string;
+          logo_path?: string | null;
+          name: string;
+          organization_id: string;
+          type?: Database["public"]["Enums"]["spot_type"];
+          updated_at?: string | null;
+        };
+        Update: {
+          archived_at?: string | null;
+          created_at?: string;
+          description?: string | null;
+          id?: string;
+          logo_path?: string | null;
+          name?: string;
+          organization_id?: string;
+          type?: Database["public"]["Enums"]["spot_type"];
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "spots_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       venues: {
         Row: {
           address_line: string | null;
@@ -536,6 +662,7 @@ export type Database = {
       event_visibility: "public" | "unlisted";
       organization_role: "owner" | "staff";
       organization_status: "active" | "suspended";
+      spot_type: "stand" | "attraction" | "sponsor" | "activity";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -671,6 +798,7 @@ export const Constants = {
       event_visibility: ["public", "unlisted"],
       organization_role: ["owner", "staff"],
       organization_status: ["active", "suspended"],
+      spot_type: ["stand", "attraction", "sponsor", "activity"],
     },
   },
 } as const;
