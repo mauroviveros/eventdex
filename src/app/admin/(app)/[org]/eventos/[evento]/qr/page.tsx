@@ -61,7 +61,7 @@ export default async function QrSheetPage({
             línea punteada. Cada QR abre la medalla en{" "}
             <strong>{hostname ?? "el dominio de la organización"}</strong>.
             {inactive > 0 &&
-              ` ${inactive === 1 ? "Un spot inactivo no se imprime" : `${inactive} spots inactivos no se imprimen`}.`}
+              ` ${inactive === 1 ? "Un spot inactivo no se imprime" : `${inactive.toLocaleString("es-AR")} spots inactivos no se imprimen`}.`}
           </p>
         </div>
 

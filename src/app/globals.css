@@ -70,6 +70,7 @@
     --lcd-1: var(--ramp-1);
     --lcd-2: var(--ramp-2);
     --lcd-3: var(--ramp-3);
+    --danger: oklch(0.44 0.21 27);
     color-scheme: light;
   }
 }

@@ -140,11 +140,14 @@ Branch `feat/spots-y-qr`. Catálogo, spots del evento y QR imprimibles.
 2. ✅ **Backend.** La resolución del nombre efectivo (override → snapshot → catálogo)
    en `src/domain/`, más las acciones del catálogo y de los spots del evento.
    *Listo cuando* la resolución tiene tests con los tres niveles.
-3. ▶ **Vista.** `/[org]/spots`, `/[org]/spots/nuevo`, `/[org]/spots/[spot]`,
+3. ✅ **Vista.** `/[org]/spots`, `/[org]/spots/nuevo`, `/[org]/spots/[spot]`,
    `/[org]/eventos/[evento]/spots` y `/[org]/eventos/[evento]/qr`.
    *Listo cuando* se carga el catálogo, se ponen spots en un evento y la hoja de QR
    se imprime en A4 legible y escaneable con el celular.
-4. **Auditoría.**
+4. ▶ **Auditoría.** `/code-review`: 8 hallazgos resueltos. Entre ellos, un spot
+   agregado mientras se publica ya no queda sin snapshot (el trigger bloquea el
+   evento) y quitar un spot del evento pide confirmación porque su QR impreso deja
+   de funcionar.
 
 ## R4 · Portada pública
 
