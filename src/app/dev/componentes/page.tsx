@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
-import { AdminHeader } from "@/components/admin/AdminHeader";
+import { AccountMenu } from "@/components/admin/AccountMenu";
+import { EventCard } from "@/components/admin/EventCard";
+import { EventFilters } from "@/components/admin/EventFilters";
+import { OrgSwitcher } from "@/components/admin/OrgSwitcher";
+import { StatTile } from "@/components/admin/StatTile";
 import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
 import { Celebration } from "@/components/visitante/Celebration";
@@ -189,16 +193,111 @@ export default function ComponentesPage() {
         </Section>
 
         <Section
-          title="Header del admin"
-          note="Con y sin acceso a la plataforma. La sección actual se subraya y lleva aria-current."
+          title="Panel: barra lateral"
+          note="La organización arriba (con varias, se despliega para cambiar) y la cuenta abajo, que abre hacia arriba. La sección actual es una celda invertida."
         >
-          <div className="grid gap-4">
-            <div className="border-2 border-dashed border-lcd-2">
-              <AdminHeader email="owner@expo.test" isDeveloper={false} />
+          <div className="grid max-w-64 border-2 border-lcd-3">
+            <div className="border-b-2 border-lcd-3">
+              <OrgSwitcher
+                current={{
+                  slug: "expo",
+                  name: "Expo de ejemplo",
+                  role: "owner",
+                }}
+                all={[
+                  { slug: "expo", name: "Expo de ejemplo" },
+                  { slug: "feria", name: "Feria de ejemplo" },
+                ]}
+              />
             </div>
-            <div className="border-2 border-dashed border-lcd-2">
-              <AdminHeader email="dev@eventdex.test" isDeveloper />
+            <div className="grid gap-1 p-2">
+              <span className="flex min-h-11 items-center bg-lcd-3 px-3 font-display text-px-1 text-lcd-0">
+                Eventos
+              </span>
+              <span className="flex min-h-11 items-center px-3 font-display text-px-1">
+                Spots
+              </span>
             </div>
+            <div className="mt-24 border-t-2 border-lcd-3">
+              <AccountMenu email="owner@expo.test" />
+            </div>
+          </div>
+        </Section>
+
+        <Section
+          title="Panel: métricas y filtros"
+          note="Las cifras de la organización y el buscador con filtros por fase. Los filtros viven en la URL."
+        >
+          <div className="grid gap-6">
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              <StatTile
+                label="Eventos"
+                value={3}
+                caption="en la organización"
+              />
+              <StatTile
+                label="Stands"
+                value={58}
+                caption="en todos los eventos"
+              />
+              <StatTile label="Medallas" value={532} caption="conseguidas" />
+              <StatTile label="Visitantes" value={290} caption="registrados" />
+            </div>
+            <EventFilters
+              basePath="/dev/componentes"
+              current="todos"
+              counts={{
+                todos: 3,
+                "en-curso": 1,
+                proximo: 0,
+                finalizado: 1,
+                borrador: 1,
+              }}
+            />
+          </div>
+        </Section>
+
+        <Section
+          title="Panel: tarjeta de evento"
+          note="Cuándo y dónde, cómo le fue y por dónde se entra. Recorrido promedio: qué parte de los stands visitó cada visitante."
+        >
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <EventCard
+              title="Expo de ejemplo 2026"
+              phase="finalizado"
+              dateLabel="Mayo 2026"
+              venue="Predio Norte"
+              stands={48}
+              visitors={92}
+              claims={178}
+              completion={0.04}
+              href="/dev/componentes"
+              statsHref="/dev/componentes"
+            />
+            <EventCard
+              title="Feria de ejemplo"
+              phase="en-curso"
+              dateLabel="sáb 14 de nov"
+              venue="Pabellón A"
+              stands={10}
+              visitors={198}
+              claims={354}
+              completion={0.53}
+              href="/dev/componentes"
+              statsHref="/dev/componentes"
+            />
+            <EventCard
+              title="Edición de invierno"
+              phase="borrador"
+              dateLabel={null}
+              venue={null}
+              stands={0}
+              visitors={0}
+              claims={0}
+              completion={0}
+              href="/dev/componentes"
+              statsHref="/dev/componentes"
+            />
           </div>
         </Section>
 

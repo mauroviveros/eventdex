@@ -1,6 +1,6 @@
 # Eventdex — Design system
 
-`v0.2 · 2026-11-06` · Relacionados: [PRODUCT](./PRODUCT.md) · [DESIGN](./DESIGN.md) · [RUTAS](./RUTAS.md) · [ARQUITECTURA](./ARQUITECTURA.md)
+`v0.3 · 2026-11-07` · Relacionados: [PRODUCT](./PRODUCT.md) · [DESIGN](./DESIGN.md) · [RUTAS](./RUTAS.md) · [ARQUITECTURA](./ARQUITECTURA.md)
 
 > Decide **cómo se comporta** la interfaz. Los valores visuales (colores, tipos,
 > radios, sombras) viven en [DESIGN](./DESIGN.md), que genera
@@ -103,6 +103,10 @@ En `src/components/<dominio>/`. Cada uno documenta sus estados en `/dev/componen
 | **QR** | Código + nombre + código corto, listo para imprimir | normal · vista de impresión A4 |
 | **Extracción** | Ganador de una tirada del sorteo | sorteando · ganador · anulada |
 | **Selector de organización** | La org activa en el admin | una org · varias |
+| **Shell del admin** | Barra lateral (organización arriba, secciones, cuenta abajo) y barra superior con el título y la acción principal. En celular, la barra lateral es un bloque arriba con la cuenta al final de la fila de la marca | sección actual (celda invertida) · sin organización (marca) · varias organizaciones (se despliega) |
+| **Métrica** | Una cifra de la organización o del evento | con valor · en cero |
+| **Filtros de eventos** | Buscador y fases con conteos, todo en la URL | fase actual · sin resultados |
+| **Tarjeta de evento** | Cuándo y dónde, stands/visitantes/medallas, recorrido promedio, Estadísticas y Gestionar | finalizado · en curso · borrador (tira punteada) · recorrido 0 y parcial |
 
 ## Estados
 
