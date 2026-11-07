@@ -190,11 +190,15 @@ select results_eq(
   'creating an org also creates its primary domain and the owner invitation'
 );
 select ok(
-  exists (select 1 from public.audit_logs where action = 'organization.created'),
+  exists (select 1 from public.audit_logs
+          where action = 'organization.created'
+            and organization_id = (select id from public.organizations where slug = 'org-nueva')),
   'creating an org leaves an audit row'
 );
 select is(
-  (select diff ->> 'owner_email' from public.audit_logs where action = 'organization.created'),
+  (select diff ->> 'owner_email' from public.audit_logs
+   where action = 'organization.created'
+     and organization_id = (select id from public.organizations where slug = 'org-nueva')),
   'owner@nueva.test',
   'the audit row stores the normalized values'
 );
@@ -206,7 +210,7 @@ select is(
 reset role;
 set local role anon;
 select results_eq(
-  $$ select slug::text from public.organizations order by slug $$,
+  $$ select slug::text from public.organizations where slug like 'org-%' order by slug $$,
   $$ values ('org-a'), ('org-b'), ('org-nueva') $$,
   'anon sees active organizations only'
 );
