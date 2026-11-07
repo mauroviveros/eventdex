@@ -74,7 +74,7 @@ para escribir la primera rebanada.
 
 ---
 
-## R1 · Organizaciones y acceso ▶
+## R1 · Organizaciones y acceso ✅
 
 Branch `feat/organizaciones`. El developer da de alta una org y su owner entra al
 admin.
@@ -98,7 +98,7 @@ admin.
    *Listo cuando* en el navegador: el developer crea una org, el owner invitado
    entra con Google y ve su organización, y un usuario sin org ve un estado vacío
    que le explica qué pasa.
-4. ▶ **Auditoría.** `/ponytail-audit` o `/code-review` y `/accessibility`.
+4. ✅ **Auditoría.** `/ponytail-audit` o `/code-review` y `/accessibility`.
    *Listo cuando* los hallazgos están resueltos o anotados como pendientes.
 
 ## R2 · Eventos
