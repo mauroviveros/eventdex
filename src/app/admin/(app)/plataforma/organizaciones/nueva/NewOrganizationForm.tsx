@@ -1,9 +1,10 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState } from "react";
 import { AlertIcon } from "@/components/pixel/AlertIcon";
 import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
+import { useFormFeedback } from "@/components/ui/useFormFeedback";
 import { createOrganizationAction } from "@/lib/actions/organizations";
 
 export function NewOrganizationForm() {
@@ -11,16 +12,7 @@ export function NewOrganizationForm() {
     createOrganizationAction,
     null,
   );
-  const failed = state;
-  const fields = failed?.fieldErrors ?? {};
-  const values = failed?.values ?? {};
-  const form = useRef<HTMLFormElement>(null);
-
-  // After a failed submit, take the focus to the first field to fix.
-  useEffect(() => {
-    if (state)
-      form.current?.querySelector<HTMLElement>("[aria-invalid=true]")?.focus();
-  }, [state]);
+  const { form, failed, fields, values } = useFormFeedback(state);
 
   return (
     <form ref={form} action={action} className="grid gap-6" noValidate>

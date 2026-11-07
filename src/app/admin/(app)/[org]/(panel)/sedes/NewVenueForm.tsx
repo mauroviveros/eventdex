@@ -1,8 +1,9 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
+import { useFormFeedback } from "@/components/ui/useFormFeedback";
 import { createVenueAction } from "@/lib/actions/events";
 
 type Props = {
@@ -12,16 +13,7 @@ type Props = {
 
 export function NewVenueForm({ org, timezones }: Props) {
   const [state, action, pending] = useActionState(createVenueAction, null);
-  const failed = state && !state.ok ? state : null;
-  const fields = failed?.fieldErrors ?? {};
-  const values = failed?.values ?? {};
-  const form = useRef<HTMLFormElement>(null);
-
-  // After a failed submit, take the focus to the first field to fix.
-  useEffect(() => {
-    if (state && !state.ok)
-      form.current?.querySelector<HTMLElement>("[aria-invalid=true]")?.focus();
-  }, [state]);
+  const { form, failed, fields, values } = useFormFeedback(state);
 
   return (
     <form ref={form} action={action} className="grid gap-6" noValidate>
