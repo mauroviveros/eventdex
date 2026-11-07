@@ -1,5 +1,5 @@
 import { Sprite, type SpriteMode } from "@/components/pixel/Sprite";
-import type { SpotType } from "@/components/pixel/sprites";
+import type { SpotType } from "@/domain/spots";
 
 export type MedalState = "conseguida" | "pendiente" | "nueva" | "inactiva";
 
