@@ -297,6 +297,10 @@ export type Database = {
     };
     Functions: {
       accept_invitation: { Args: { p_invitation_id: string }; Returns: string };
+      accept_my_invitations: {
+        Args: Record<PropertyKey, never>;
+        Returns: string[];
+      };
       create_organization: {
         Args: {
           p_hostname: string;
@@ -305,6 +309,10 @@ export type Database = {
           p_slug: string;
         };
         Returns: string;
+      };
+      log_support_access: {
+        Args: { p_organization_id: string };
+        Returns: undefined;
       };
     };
     Enums: {
