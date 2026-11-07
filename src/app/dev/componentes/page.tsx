@@ -7,7 +7,7 @@ import { EventFilters } from "@/components/admin/EventFilters";
 import { OrgSwitcher } from "@/components/admin/OrgSwitcher";
 import { StatTile } from "@/components/admin/StatTile";
 import { Button } from "@/components/ui/Button";
-import { Field } from "@/components/ui/Field";
+import { Field, FormMessage, SelectField } from "@/components/ui/Field";
 import { Celebration } from "@/components/visitante/Celebration";
 import { Countdown } from "@/components/visitante/Countdown";
 import { Medal } from "@/components/visitante/Medal";
@@ -259,7 +259,7 @@ export default function ComponentesPage() {
 
         <Section
           title="Panel: tarjeta de evento"
-          note="Cuándo y dónde, cómo le fue y por dónde se entra. Recorrido promedio: qué parte de los stands visitó cada visitante."
+          note="Cuándo y dónde, cómo le fue y por dónde se entra. Recorrido promedio: qué parte de los stands visitó cada visitante. Sin métricas todavía (antes de R3 y R5), la tarjeta muestra solo la entrada."
         >
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             <EventCard
@@ -267,36 +267,35 @@ export default function ComponentesPage() {
               phase="finalizado"
               dateLabel="Mayo 2026"
               venue="Predio Norte"
-              stands={48}
-              visitors={92}
-              claims={178}
-              completion={0.04}
               href="/dev/componentes"
-              statsHref="/dev/componentes"
+              stats={{
+                stands: 48,
+                visitors: 92,
+                claims: 178,
+                completion: 0.04,
+                href: "/dev/componentes",
+              }}
             />
             <EventCard
               title="Feria de ejemplo"
               phase="en-curso"
               dateLabel="sáb 14 de nov"
               venue="Pabellón A"
-              stands={10}
-              visitors={198}
-              claims={354}
-              completion={0.53}
               href="/dev/componentes"
-              statsHref="/dev/componentes"
+              stats={{
+                stands: 10,
+                visitors: 198,
+                claims: 354,
+                completion: 0.53,
+                href: "/dev/componentes",
+              }}
             />
             <EventCard
               title="Edición de invierno"
               phase="borrador"
               dateLabel={null}
               venue={null}
-              stands={0}
-              visitors={0}
-              claims={0}
-              completion={0}
               href="/dev/componentes"
-              statsHref="/dev/componentes"
             />
           </div>
         </Section>
@@ -341,6 +340,19 @@ export default function ComponentesPage() {
               error="Ya hay un spot con el código A12 en este evento. Probá con otro."
             />
             <Field label="Dominio" defaultValue="expo.com.ar" disabled />
+            <SelectField
+              label="Sede"
+              defaultValue=""
+              hint="Los horarios se muestran en America/Argentina/Buenos Aires."
+            >
+              <option value="">Sin sede por ahora</option>
+              <option value="norte">Predio Norte</option>
+            </SelectField>
+            <Field label="Empieza" type="datetime-local" />
+            <FormMessage tone="success">Sede creada.</FormMessage>
+            <FormMessage tone="error">
+              No pudimos guardar. Probá de nuevo en un rato.
+            </FormMessage>
           </div>
         </Section>
       </main>
