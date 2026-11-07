@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { resolveSpot } from "./spots";
+import { resolveSpot, spotUrl } from "./spots";
 
 const catalog = {
   name: "Café Nuevo",
@@ -68,5 +68,17 @@ describe("resolveSpot", () => {
     );
     expect(resolved.name).toBe("Café Nuevo");
     expect(resolved.type).toBe("stand");
+  });
+});
+
+describe("spotUrl", () => {
+  it("points at /s/[id] on the org's domain, over https", () => {
+    expect(spotUrl("expo.com.ar", "abc")).toBe("https://expo.com.ar/s/abc");
+  });
+
+  it("uses http for local development hosts", () => {
+    expect(spotUrl("expo.localhost:3000", "abc")).toBe(
+      "http://expo.localhost:3000/s/abc",
+    );
   });
 });
