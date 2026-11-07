@@ -127,7 +127,9 @@ que se prueba sin mocks.
 - **Modo soporte:** el developer puede abrir el panel de cualquier org. Es solo
   lectura porque RLS no le da políticas de escritura sobre los datos de las orgs
   (solo dominios, invitaciones y facturación), y cada apertura queda en
-  `audit_logs` (`support.viewed`). Cada tabla nueva decide si el developer la lee.
+  `audit_logs` (`support.viewed`). El registro lo dispara el navegador al abrir el
+  panel, una vez por visita: Next renderiza los layouts al hacer prefetch de un link
+  y eso no es una visita. Cada tabla nueva decide si el developer la lee.
 - Los roles se resuelven en la base (RLS). En el servidor, `proxy.ts` y los
   layouts solo deciden redirecciones; nunca son la única barrera.
 
