@@ -1,13 +1,30 @@
-import { type ComponentProps, useId } from "react";
+import { type ComponentProps, type ReactNode, useId } from "react";
 import { AlertIcon } from "@/components/pixel/AlertIcon";
 
-type Props = ComponentProps<"input"> & {
+type Labels = {
   label: string;
   hint?: string;
   error?: string;
 };
 
-export function Field({ label, hint, error, className = "", ...props }: Props) {
+const CONTROL =
+  "min-h-11 border-2 border-lcd-3 bg-lcd-0 px-3 text-base text-lcd-3 placeholder:text-lcd-2 aria-invalid:border-danger disabled:border-lcd-2 disabled:bg-lcd-1 disabled:text-lcd-2";
+
+/** Label, control and either its error or its hint, wired for screen readers. */
+function FieldFrame({
+  label,
+  hint,
+  error,
+  className,
+  control,
+}: Labels & {
+  className: string;
+  control: (a11y: {
+    id: string;
+    "aria-invalid"?: true;
+    "aria-describedby"?: string;
+  }) => ReactNode;
+}) {
   const id = useId();
   const describedBy = error ? `${id}-error` : hint ? `${id}-hint` : undefined;
   return (
@@ -15,13 +32,11 @@ export function Field({ label, hint, error, className = "", ...props }: Props) {
       <label htmlFor={id} className="font-display text-px-1">
         {label}
       </label>
-      <input
-        id={id}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={describedBy}
-        className="min-h-11 border-2 border-lcd-3 bg-lcd-0 px-3 text-base text-lcd-3 placeholder:text-lcd-2 aria-invalid:border-danger disabled:border-lcd-2 disabled:bg-lcd-1 disabled:text-lcd-2"
-        {...props}
-      />
+      {control({
+        id,
+        "aria-invalid": error ? true : undefined,
+        "aria-describedby": describedBy,
+      })}
       {error ? (
         <p
           id={`${id}-error`}
@@ -40,5 +55,69 @@ export function Field({ label, hint, error, className = "", ...props }: Props) {
         )
       )}
     </div>
+  );
+}
+
+export function Field({
+  label,
+  hint,
+  error,
+  className = "",
+  ...props
+}: ComponentProps<"input"> & Labels) {
+  return (
+    <FieldFrame
+      label={label}
+      hint={hint}
+      error={error}
+      className={className}
+      control={(a11y) => <input className={CONTROL} {...a11y} {...props} />}
+    />
+  );
+}
+
+/** A native select with the same frame as Field. */
+export function SelectField({
+  label,
+  hint,
+  error,
+  className = "",
+  children,
+  ...props
+}: ComponentProps<"select"> & Labels) {
+  return (
+    <FieldFrame
+      label={label}
+      hint={hint}
+      error={error}
+      className={className}
+      control={(a11y) => (
+        <select className={CONTROL} {...a11y} {...props}>
+          {children}
+        </select>
+      )}
+    />
+  );
+}
+
+/** A form's own outcome, above its fields: an error to fix, or what just got saved. */
+export function FormMessage({
+  tone,
+  children,
+}: {
+  tone: "error" | "success";
+  children: ReactNode;
+}) {
+  return tone === "error" ? (
+    <p role="alert" className="flex items-start gap-2 text-danger">
+      <span className="mt-1">
+        <AlertIcon />
+      </span>
+      {children}
+    </p>
+  ) : (
+    <p role="status" className="border-2 border-lcd-3 bg-lcd-1 px-4 py-3">
+      {children}
+    </p>
   );
 }

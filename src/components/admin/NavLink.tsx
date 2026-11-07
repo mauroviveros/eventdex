@@ -12,15 +12,20 @@ export function NavLink({
   href,
   children,
   exact = false,
+  also,
 }: {
   href: string;
   children: ReactNode;
   /** Only the exact path is current (for "/", which prefixes everything). */
   exact?: boolean;
+  /** Another path prefix that also makes it current. */
+  also?: string;
 }) {
   // Internal paths carry the surface prefix (/admin); links don't.
   const path = usePathname().replace(/^\/admin(?=\/|$)/, "") || "/";
-  const current = exact ? path === href : path.startsWith(href);
+  const current =
+    (exact ? path === href : path.startsWith(href)) ||
+    (also !== undefined && path.startsWith(also));
   return (
     <Link
       href={href}

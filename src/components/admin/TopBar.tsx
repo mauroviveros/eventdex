@@ -23,5 +23,7 @@ export function TopBar({
 
 /** Content column under the TopBar. */
 export function PageBody({ children }: { children: ReactNode }) {
-  return <main className="grid gap-8 px-4 py-8 sm:px-6">{children}</main>;
+  return (
+    <main className="grid grid-cols-1 gap-8 px-4 py-8 sm:px-6">{children}</main>
+  );
 }
