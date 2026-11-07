@@ -58,6 +58,148 @@ export type Database = {
           },
         ];
       };
+      event_schedules: {
+        Row: {
+          created_at: string;
+          ends_at: string;
+          event_id: string;
+          id: string;
+          label: string | null;
+          organization_id: string;
+          starts_at: string;
+          updated_at: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          ends_at: string;
+          event_id: string;
+          id?: string;
+          label?: string | null;
+          organization_id: string;
+          starts_at: string;
+          updated_at?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          ends_at?: string;
+          event_id?: string;
+          id?: string;
+          label?: string | null;
+          organization_id?: string;
+          starts_at?: string;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "event_schedules_event_id_organization_id_fkey";
+            columns: ["event_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "event_phases";
+            referencedColumns: ["event_id", "organization_id"];
+          },
+          {
+            foreignKeyName: "event_schedules_event_id_organization_id_fkey";
+            columns: ["event_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "event_schedules_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      events: {
+        Row: {
+          cover_path: string | null;
+          created_at: string;
+          created_by: string | null;
+          deleted_at: string | null;
+          description: string | null;
+          edition_label: string | null;
+          id: string;
+          organization_id: string;
+          published_at: string | null;
+          settings: NonNullable<Json>;
+          slug: string;
+          status: Database["public"]["Enums"]["event_status"];
+          summary: string | null;
+          timezone: string;
+          title: string;
+          updated_at: string | null;
+          venue_id: string | null;
+          visibility: Database["public"]["Enums"]["event_visibility"];
+        };
+        ComputedFields: never;
+        Insert: {
+          cover_path?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          deleted_at?: string | null;
+          description?: string | null;
+          edition_label?: string | null;
+          id?: string;
+          organization_id: string;
+          published_at?: string | null;
+          settings?: NonNullable<Json>;
+          slug: string;
+          status?: Database["public"]["Enums"]["event_status"];
+          summary?: string | null;
+          timezone?: string;
+          title: string;
+          updated_at?: string | null;
+          venue_id?: string | null;
+          visibility?: Database["public"]["Enums"]["event_visibility"];
+        };
+        Update: {
+          cover_path?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          deleted_at?: string | null;
+          description?: string | null;
+          edition_label?: string | null;
+          id?: string;
+          organization_id?: string;
+          published_at?: string | null;
+          settings?: NonNullable<Json>;
+          slug?: string;
+          status?: Database["public"]["Enums"]["event_status"];
+          summary?: string | null;
+          timezone?: string;
+          title?: string;
+          updated_at?: string | null;
+          venue_id?: string | null;
+          visibility?: Database["public"]["Enums"]["event_visibility"];
+        };
+        Relationships: [
+          {
+            foreignKeyName: "events_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "events_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "events_venue_id_organization_id_fkey";
+            columns: ["venue_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "venues";
+            referencedColumns: ["id", "organization_id"];
+          },
+        ];
+      };
       organization_domains: {
         Row: {
           created_at: string;
@@ -291,9 +433,81 @@ export type Database = {
         };
         Relationships: [];
       };
+      venues: {
+        Row: {
+          address_line: string | null;
+          city: string | null;
+          country: string;
+          created_at: string;
+          deleted_at: string | null;
+          id: string;
+          name: string;
+          organization_id: string;
+          postal_code: string | null;
+          state: string | null;
+          timezone: string;
+          updated_at: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          address_line?: string | null;
+          city?: string | null;
+          country?: string;
+          created_at?: string;
+          deleted_at?: string | null;
+          id?: string;
+          name: string;
+          organization_id: string;
+          postal_code?: string | null;
+          state?: string | null;
+          timezone?: string;
+          updated_at?: string | null;
+        };
+        Update: {
+          address_line?: string | null;
+          city?: string | null;
+          country?: string;
+          created_at?: string;
+          deleted_at?: string | null;
+          id?: string;
+          name?: string;
+          organization_id?: string;
+          postal_code?: string | null;
+          state?: string | null;
+          timezone?: string;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "venues_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
-      [_ in never]: never;
+      event_phases: {
+        Row: {
+          ends_at: string | null;
+          event_id: string;
+          organization_id: string;
+          phase: Database["public"]["Enums"]["event_phase"] | null;
+          starts_at: string | null;
+        };
+        ComputedFields: never;
+        Relationships: [
+          {
+            foreignKeyName: "events_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Functions: {
       accept_invitation: { Args: { p_invitation_id: string }; Returns: string };
@@ -314,8 +528,12 @@ export type Database = {
         Args: { p_organization_id: string };
         Returns: undefined;
       };
+      publish_event: { Args: { p_event_id: string }; Returns: undefined };
     };
     Enums: {
+      event_phase: "upcoming" | "live" | "finished";
+      event_status: "draft" | "published" | "archived" | "cancelled";
+      event_visibility: "public" | "unlisted";
       organization_role: "owner" | "staff";
       organization_status: "active" | "suspended";
     };
@@ -448,6 +666,9 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      event_phase: ["upcoming", "live", "finished"],
+      event_status: ["draft", "published", "archived", "cancelled"],
+      event_visibility: ["public", "unlisted"],
       organization_role: ["owner", "staff"],
       organization_status: ["active", "suspended"],
     },
