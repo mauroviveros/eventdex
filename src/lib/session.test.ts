@@ -6,12 +6,18 @@ describe("safeNext", () => {
     expect(safeNext("/s/abc?x=1")).toBe("/s/abc?x=1");
   });
 
-  it.each([null, "", "https://evil.com", "//evil.com", "/\\evil.com", "evil"])(
-    "falls back for %s",
-    (next) => {
-      expect(safeNext(next)).toBe("/");
-    },
-  );
+  it.each([
+    null,
+    "",
+    "https://evil.com",
+    "//evil.com",
+    "/\\evil.com",
+    "/\t/evil.com",
+    "/\n/evil.com",
+    "evil",
+  ])("falls back for %s", (next) => {
+    expect(safeNext(next)).toBe("/");
+  });
 });
 
 describe("requestOrigin", () => {

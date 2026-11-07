@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { NavLink } from "./NavLink";
 
 type Props = { email: string | null; isDeveloper: boolean };
 
@@ -11,19 +12,9 @@ export function AdminHeader({ email, isDeveloper }: Props) {
           <Link href="/" className="font-display text-px-2 no-underline">
             Eventdex
           </Link>
-          <Link
-            href="/"
-            className="flex min-h-11 items-center font-display text-px-1 no-underline hover:underline"
-          >
-            Organizaciones
-          </Link>
+          <NavLink href="/">Organizaciones</NavLink>
           {isDeveloper && (
-            <Link
-              href="/plataforma/organizaciones"
-              className="flex min-h-11 items-center font-display text-px-1 no-underline hover:underline"
-            >
-              Plataforma
-            </Link>
+            <NavLink href="/plataforma/organizaciones">Plataforma</NavLink>
           )}
         </nav>
         <div className="flex items-center gap-4">

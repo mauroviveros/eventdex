@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { platformMetadata } from "@/lib/data/viewer";
 import { env } from "@/lib/env";
 import { NewOrganizationForm } from "./NewOrganizationForm";
 
-export const metadata: Metadata = { title: "Nueva organización · Plataforma" };
+export function generateMetadata(): Promise<Metadata> {
+  return platformMetadata("Nueva organización · Plataforma");
+}
 
 export default function NuevaOrganizacionPage() {
   return (

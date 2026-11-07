@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { buttonClass } from "@/components/ui/Button";
 import { listAllOrganizations } from "@/lib/data/organizations";
+import { platformMetadata } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
 
-export const metadata: Metadata = { title: "Organizaciones · Plataforma" };
+export function generateMetadata(): Promise<Metadata> {
+  return platformMetadata("Organizaciones · Plataforma");
+}
 
 export default async function PlataformaOrganizacionesPage({
   searchParams,
@@ -43,6 +46,9 @@ export default async function PlataformaOrganizacionesPage({
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full min-w-2xl border-collapse text-left">
+            <caption className="sr-only">
+              Organizaciones de la plataforma
+            </caption>
             <thead>
               <tr className="border-b-2 border-lcd-3 font-display text-px-1">
                 <th scope="col" className="py-2 pr-4 font-normal">

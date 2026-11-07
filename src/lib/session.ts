@@ -19,19 +19,17 @@ export async function getSessionUser(
 }
 
 /**
- * `next` from a query string, only if it is a path on this same host.
- * Anything else (another host, `//evil.com`) falls back, so the auth flow
- * can't be used as an open redirect.
+ * `next` from a query string, only if it resolves to a path on this same host.
+ * It is resolved the way the browser will (which drops tabs and newlines, so
+ * "/\t/evil.com" becomes "//evil.com"), and anything that leaves the host
+ * falls back. Keeps the auth flow from being an open redirect.
  */
 export function safeNext(next: string | null | undefined, fallback = "/") {
-  if (
-    !next?.startsWith("/") ||
-    next.startsWith("//") ||
-    next.startsWith("/\\")
-  ) {
-    return fallback;
-  }
-  return next;
+  if (!next?.startsWith("/")) return fallback;
+  const base = "http://same.invalid";
+  const url = new URL(next, base);
+  if (url.origin !== base) return fallback;
+  return url.pathname + url.search + url.hash;
 }
 
 /**

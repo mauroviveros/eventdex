@@ -2,11 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { buttonClass } from "@/components/ui/Button";
 import {
-  isDeveloper,
   listMyInvitations,
   listMyOrganizations,
 } from "@/lib/data/organizations";
-import { getSessionUser } from "@/lib/session";
+import { getViewer } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
 import { AcceptInvitation } from "./AcceptInvitation";
 
@@ -19,15 +18,15 @@ const dateFormat = new Intl.DateTimeFormat("es-AR", {
 });
 
 export default async function OrganizacionesPage() {
-  const supabase = await createClient();
   // The layout already redirected anyone without a session.
-  const user = await getSessionUser(supabase);
+  const user = await getViewer();
   if (!user) return null;
+  const developer = user.isDeveloper;
 
-  const [organizations, invitations, developer] = await Promise.all([
+  const supabase = await createClient();
+  const [organizations, invitations] = await Promise.all([
     listMyOrganizations(supabase, user.id),
     user.email ? listMyInvitations(supabase, user.email) : [],
-    isDeveloper(supabase, user.id),
   ]);
 
   return (

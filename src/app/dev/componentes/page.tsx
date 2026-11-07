@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
+import { AdminHeader } from "@/components/admin/AdminHeader";
 import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
 import { Celebration } from "@/components/visitante/Celebration";
@@ -184,6 +185,20 @@ export default function ComponentesPage() {
               Publicar evento
             </Button>
             <Button disabled>Publicar evento</Button>
+          </div>
+        </Section>
+
+        <Section
+          title="Header del admin"
+          note="Con y sin acceso a la plataforma. La sección actual se subraya y lleva aria-current."
+        >
+          <div className="grid gap-4">
+            <div className="border-2 border-dashed border-lcd-2">
+              <AdminHeader email="owner@expo.test" isDeveloper={false} />
+            </div>
+            <div className="border-2 border-dashed border-lcd-2">
+              <AdminHeader email="dev@eventdex.test" isDeveloper />
+            </div>
           </div>
         </Section>
 

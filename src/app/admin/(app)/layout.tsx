@@ -1,24 +1,24 @@
-import { redirect } from "next/navigation";
 import { AdminHeader } from "@/components/admin/AdminHeader";
-import { isDeveloper } from "@/lib/data/organizations";
-import { getSessionUser } from "@/lib/session";
-import { createClient } from "@/lib/supabase/server";
+import { requireViewer } from "@/lib/data/viewer";
 
 /** Signed-in area of the admin. Who sees what is RLS; this only sends strangers to /ingresar. */
 export default async function AdminAppLayout({
   children,
 }: LayoutProps<"/admin">) {
-  const supabase = await createClient();
-  const user = await getSessionUser(supabase);
-  if (!user) redirect("/ingresar");
+  const viewer = await requireViewer();
 
   return (
     <div className="min-h-dvh">
-      <AdminHeader
-        email={user.email}
-        isDeveloper={await isDeveloper(supabase, user.id)}
-      />
-      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">{children}</main>
+      <a
+        href="#contenido"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-20 focus:bg-lcd-3 focus:px-3 focus:py-2 focus:text-lcd-0"
+      >
+        Ir al contenido
+      </a>
+      <AdminHeader email={viewer.email} isDeveloper={viewer.isDeveloper} />
+      <main id="contenido" className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+        {children}
+      </main>
     </div>
   );
 }

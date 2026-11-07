@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { AlertIcon } from "@/components/pixel/AlertIcon";
 import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
@@ -14,9 +14,16 @@ export function NewOrganizationForm() {
   const failed = state;
   const fields = failed?.fieldErrors ?? {};
   const values = failed?.values ?? {};
+  const form = useRef<HTMLFormElement>(null);
+
+  // After a failed submit, take the focus to the first field to fix.
+  useEffect(() => {
+    if (state)
+      form.current?.querySelector<HTMLElement>("[aria-invalid=true]")?.focus();
+  }, [state]);
 
   return (
-    <form action={action} className="grid gap-6" noValidate>
+    <form ref={form} action={action} className="grid gap-6" noValidate>
       {failed && !failed.fieldErrors && (
         <p role="alert" className="flex items-start gap-2 text-danger">
           <span className="mt-1">
