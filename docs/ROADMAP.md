@@ -79,14 +79,15 @@ para escribir la primera rebanada.
 Branch `feat/organizaciones`. El developer da de alta una org y su owner entra al
 admin.
 
-1. ▶ **DB.** `profiles` (con trigger de alta), `platform_admins`, `organizations`,
+1. ✅ **DB.** `profiles` (con trigger de alta), `platform_admins`, `organizations`,
    `organization_domains`, `organization_members`, `organization_invitations`,
    `audit_logs`, las funciones `create_organization` y `accept_invitation`, y los helpers
    `app.*`.
    *Listo cuando* los tests pgTAP prueban que un miembro de la org A no ve nada de
    la org B, que solo un developer crea organizaciones y que no se puede quitar al
    último owner.
-2. **Backend.** Clientes Supabase (servidor, navegador y servicio), sesión,
+2. ▶ **Backend.** Clientes Supabase (servidor y navegador; el de servicio llega
+   con su primer uso), sesión refrescada en `proxy.ts`,
    `/auth/callback`, `/auth/salir`, y las acciones "crear organización" (con
    invitación al owner y primer dominio) y "aceptar invitación".
    *Listo cuando* los tests de las acciones cubren el caso feliz, el de datos

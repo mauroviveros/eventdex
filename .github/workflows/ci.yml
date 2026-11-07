@@ -24,6 +24,9 @@ jobs:
     env:
       # Solo lo que valida src/lib/env.ts; crece con cada variable que se use.
       NEXT_PUBLIC_ROOT_DOMAIN: eventdex.com
+      # Relleno: el build compila, no se conecta a Supabase.
+      NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_ci
 
     steps:
       - uses: actions/checkout@v7
