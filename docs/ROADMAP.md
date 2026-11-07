@@ -105,6 +105,12 @@ admin.
 
 Branch `feat/eventos`. La org crea un evento con sede y jornadas, y lo publica.
 
+0. ✅ **Acceso por organización.** El admin deja de ser una lista: `/` acepta las
+   invitaciones propias (`accept_my_invitations`) y te lleva a tu org, a la
+   plataforma (developer) o a `/sin-acceso`. `/[org]` con su shell, guard y modo
+   soporte (`log_support_access`).
+   *Listo cuando* el owner invitado cae directo en su org, una cuenta sin org ve
+   `/sin-acceso`, un no miembro recibe 404 y el soporte del developer queda auditado.
 1. **DB.** `venues`, `events`, `event_schedules`, la vista de fase y
    `publish_event()`.
    *Listo cuando* pgTAP prueba que `anon` solo ve eventos publicados, que las
@@ -114,7 +120,7 @@ Branch `feat/eventos`. La org crea un evento con sede y jornadas, y lo publica.
    las acciones de sede, evento, jornada y publicar.
    *Listo cuando* la lógica de fase tiene tests con eventos pasados, en curso,
    futuros y sin jornadas.
-3. **Vista.** `/[org]`, `/[org]/eventos`, `/[org]/eventos/nuevo`,
+3. **Vista.** `/[org]` (el dashboard: arma `StatTile`, `EventFilters` y `EventCard`, que ya están en `/dev/componentes`, y pasa el selector de organización al shell), `/[org]/eventos`, `/[org]/eventos/nuevo`,
    `/[org]/eventos/[evento]` y `/[org]/sedes`.
    *Listo cuando* en el navegador se crea una sede, se crea un evento con dos
    jornadas y se publica, con los estados de carga, vacío y error vistos.

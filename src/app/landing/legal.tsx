@@ -1,8 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-// shortcut: contact address not confirmed by the owner yet, confirm before going live
-export const CONTACT_EMAIL = "hola@eventdex.com";
+export { CONTACT_EMAIL } from "@/lib/contact";
 export const UPDATED = "7 de noviembre de 2026";
 
 /** Shared frame for the legal pages: readable measure, plain structure. */

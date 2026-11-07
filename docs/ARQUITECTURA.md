@@ -120,6 +120,10 @@ que se prueba sin mocks.
 - La URL de callback es siempre `/auth/callback` en el host actual. En Supabase,
   las Redirect URLs llevan cada dominio de organización (se agrega al dar de alta
   el dominio) más el del admin.
+- **Modo soporte:** el developer puede abrir el panel de cualquier org. Es solo
+  lectura porque RLS no le da políticas de escritura sobre los datos de las orgs
+  (solo dominios, invitaciones y facturación), y cada apertura queda en
+  `audit_logs` (`support.viewed`). Cada tabla nueva decide si el developer la lee.
 - Los roles se resuelven en la base (RLS). En el servidor, `proxy.ts` y los
   layouts solo deciden redirecciones; nunca son la única barrera.
 
