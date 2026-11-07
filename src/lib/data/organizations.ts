@@ -83,3 +83,18 @@ export async function listAllOrganizations(supabase: Supabase) {
       .map((i) => i.email),
   }));
 }
+
+/** The org's primary hostname: where its public app (and every QR) points. */
+export async function getPrimaryHostname(
+  supabase: Supabase,
+  organizationId: string,
+) {
+  const { data, error } = await supabase
+    .from("organization_domains")
+    .select("hostname")
+    .eq("organization_id", organizationId)
+    .eq("is_primary", true)
+    .maybeSingle();
+  if (error) throw error;
+  return data?.hostname ?? null;
+}

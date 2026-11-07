@@ -51,13 +51,13 @@ staff y owner.
 | `/[org]/eventos/nuevo` | Alta de evento: nace como borrador y lleva a su página. En modo soporte, 404 | Miembro | R2 |
 | `/[org]/eventos/[evento]` | Datos del evento, jornadas (agregar y quitar, en la zona del evento) y publicación | Miembro | R2 |
 | `/[org]/eventos/[evento]/spots` | Spots del evento: agregar desde el catálogo, código, puntos, activo/inactivo | Miembro | R3 |
-| `/[org]/eventos/[evento]/qr` | Hoja de QR para imprimir (A4, vista de impresión) | Miembro | R3 |
+| `/[org]/eventos/[evento]/qr` | Hoja de QR para imprimir: una tarjeta por spot activo, 3 por fila en A4, para recortar. Impresa sale siempre en tonos claros, sin la barra del panel | Miembro | R3 |
 | `/[org]/eventos/[evento]/visitantes` | Registrados, medallas por visitante, bloquear | Miembro | R5 |
 | `/[org]/eventos/[evento]/sorteo` | Sorteos, elegibles, extraer y anular | Miembro | R6 |
 | `/[org]/eventos/[evento]/sorteo/presentar` | Vista para proyectar la extracción en vivo *(sujeta a la pregunta abierta 3 de PROYECTO)* | Miembro | R6 |
 | `/[org]/spots` | Catálogo de spots de la organización | Miembro | R3 |
 | `/[org]/spots/nuevo` | Alta de spot | Miembro | R3 |
-| `/[org]/spots/[spot]` | Editar o archivar un spot; en qué eventos se usa | Miembro | R3 |
+| `/[org]/spots/[spot]` | Editar o archivar un spot; en qué eventos se usa. `[spot]` es el `id`: un spot no tiene slug, para no pedir uno por cada stand | Miembro | R3 |
 | `/[org]/sedes` | Sedes: lista y alta en la misma vista. La edición llega cuando haga falta | Miembro | R2 |
 | `/[org]/equipo` | Miembros, invitaciones y roles | Owner | R7 |
 | `/[org]/ajustes` | Nombre, marca (logo y colores, con vista previa) y dominios | Owner | R7 |

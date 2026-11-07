@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageBody, TopBar } from "@/components/admin/TopBar";
+import { buttonClass } from "@/components/ui/Button";
 import { PhaseBadge } from "@/components/visitante/PhaseBadge";
 import {
   eventPhase,
@@ -78,6 +79,21 @@ export default async function EventoPage({
           ))}
         </dl>
 
+        <nav aria-label="Del evento" className="flex flex-wrap gap-2">
+          <Link
+            href={`/${org.slug}/eventos/${event.slug}/spots`}
+            className={buttonClass("secondary", "no-underline")}
+          >
+            Spots del evento
+          </Link>
+          <Link
+            href={`/${org.slug}/eventos/${event.slug}/qr`}
+            className={buttonClass("secondary", "no-underline")}
+          >
+            Hoja de QR
+          </Link>
+        </nav>
+
         {draft && editable && (
           <section aria-labelledby="publicar" className="grid gap-3">
             <h2 id="publicar" className="text-px-2">
@@ -95,7 +111,7 @@ export default async function EventoPage({
           </section>
         )}
 
-        <div className="grid gap-10 xl:grid-cols-[1fr_28rem] xl:items-start">
+        <div className="grid grid-cols-1 gap-10 xl:grid-cols-[1fr_28rem] xl:items-start">
           <section
             aria-labelledby="jornadas"
             className="grid content-start gap-4"
