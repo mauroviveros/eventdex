@@ -2,6 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { z } from "zod";
+import { logSupportAccess } from "@/lib/data/organizations";
 import { createOrganization } from "@/lib/organizations";
 import type { ActionResult } from "@/lib/results";
 import { createClient } from "@/lib/supabase/server";
@@ -24,4 +26,10 @@ export async function createOrganizationAction(
   if (!result.ok) return { ...result, values };
   revalidatePath("/admin/plataforma/organizaciones");
   redirect("/plataforma/organizaciones?creada=1");
+}
+
+/** Developer opened an organization in support mode: one audit row per visit. */
+export async function logSupportVisitAction(organizationId: string) {
+  const id = z.uuid().parse(organizationId);
+  await logSupportAccess(await createClient(), id);
 }

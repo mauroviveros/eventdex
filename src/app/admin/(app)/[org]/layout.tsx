@@ -1,7 +1,6 @@
 import { AdminShell, type Section } from "@/components/admin/AdminShell";
-import { logSupportAccess } from "@/lib/data/organizations";
 import { requireOrg } from "@/lib/data/viewer";
-import { createClient } from "@/lib/supabase/server";
+import { SupportVisit } from "./SupportVisit";
 
 /**
  * An organization's panel. Its members see it; the developer enters in
@@ -13,7 +12,6 @@ export default async function OrgLayout({
 }: LayoutProps<"/admin/[org]">) {
   const { org: slug } = await params;
   const { viewer, org, mine, role, support } = await requireOrg(slug);
-  if (support) await logSupportAccess(await createClient(), org.id);
 
   const sections: Section[] = [
     {
@@ -38,12 +36,15 @@ export default async function OrgLayout({
       }}
       notice={
         support && (
-          <p
-            role="status"
-            className="border-b-2 border-lcd-3 bg-lcd-1 px-3 py-2 font-display text-px-1"
-          >
-            Modo soporte · solo lectura
-          </p>
+          <>
+            <SupportVisit organizationId={org.id} />
+            <p
+              role="status"
+              className="border-b-2 border-lcd-3 bg-lcd-1 px-3 py-2 font-display text-px-1"
+            >
+              Modo soporte · solo lectura
+            </p>
+          </>
         )
       }
     >
