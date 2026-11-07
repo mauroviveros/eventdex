@@ -74,13 +74,14 @@ para escribir la primera rebanada.
 
 ---
 
-## R1 · Organizaciones y acceso
+## R1 · Organizaciones y acceso ▶
 
 Branch `feat/organizaciones`. El developer da de alta una org y su owner entra al
 admin.
 
-1. **DB.** `profiles` (con trigger de alta), `platform_admins`, `organizations`,
-   `organization_domains`, `organization_members`, `audit_logs` y los helpers
+1. ▶ **DB.** `profiles` (con trigger de alta), `platform_admins`, `organizations`,
+   `organization_domains`, `organization_members`, `organization_invitations`,
+   `audit_logs`, las funciones `create_organization` y `accept_invitation`, y los helpers
    `app.*`.
    *Listo cuando* los tests pgTAP prueban que un miembro de la org A no ve nada de
    la org B, que solo un developer crea organizaciones y que no se puede quitar al
