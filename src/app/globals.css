@@ -58,6 +58,22 @@
   }
 }
 
+/* Paper is light: printed pages (the QR sheet) always use the light roles, so a
+ * QR never comes out inverted and the ground isn't inked. Same specificity as
+ * the dark rules above, and later, so it wins. */
+@media print {
+  :root,
+  .ramp-scope,
+  .ramp-scope[data-scheme="dark"],
+  .ramp-scope:not([data-scheme="light"]) {
+    --lcd-0: var(--ramp-0);
+    --lcd-1: var(--ramp-1);
+    --lcd-2: var(--ramp-2);
+    --lcd-3: var(--ramp-3);
+    color-scheme: light;
+  }
+}
+
 @theme inline {
   --color-lcd-0: var(--lcd-0);
   --color-lcd-1: var(--lcd-1);

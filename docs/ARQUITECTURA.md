@@ -20,7 +20,7 @@
 | Componentes | **shadcn/ui** como base, adaptados al design system | Son código propio, no una dependencia |
 | Validación | **Zod** | Un esquema por acción, en el borde del servidor |
 | Fechas | **`Intl` nativo** + `@date-fns/tz` si hace falta aritmética con zonas | Formatear con zona no necesita una librería |
-| QR | **`qrcode`** (genera SVG en el servidor) | Impresión nítida a cualquier tamaño |
+| QR | **`uqr`** (`encode()` → matriz; el SVG lo dibuja `QrCode` en el servidor) | Sin dependencias; impresión nítida a cualquier tamaño, sin JS en el navegador. Elegida en R3 sobre `qrcode`, que pesa más para lo mismo |
 | Paquetes | **pnpm**, un solo `package.json` | Sin Turborepo ni packages internos |
 | Hosting | **Vercel** | Dominios custom por organización contra un deployment |
 

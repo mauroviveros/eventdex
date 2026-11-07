@@ -33,7 +33,7 @@ type Props = {
  */
 export function AdminShell({ email, sections, notice, org, children }: Props) {
   return (
-    <div className="min-h-dvh lg:grid lg:grid-cols-[16rem_1fr]">
+    <div className="min-h-dvh lg:grid lg:grid-cols-[16rem_1fr] print:block">
       <a
         href="#contenido"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-30 focus:bg-lcd-3 focus:px-3 focus:py-2 focus:text-lcd-0"
@@ -41,7 +41,7 @@ export function AdminShell({ email, sections, notice, org, children }: Props) {
         Ir al contenido
       </a>
 
-      <aside className="flex flex-col border-b-2 border-lcd-3 lg:sticky lg:top-0 lg:h-dvh lg:border-r-2 lg:border-b-0">
+      <aside className="flex flex-col print:hidden border-b-2 border-lcd-3 lg:sticky lg:top-0 lg:h-dvh lg:border-r-2 lg:border-b-0">
         <div className="flex items-center border-b-2 border-lcd-3">
           <div className="min-w-0 flex-1">
             {org ? (

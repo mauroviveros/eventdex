@@ -6,6 +6,7 @@ import { AdminShell } from "@/components/admin/AdminShell";
 import { EventCard } from "@/components/admin/EventCard";
 import { EventFilters } from "@/components/admin/EventFilters";
 import { OrgSwitcher } from "@/components/admin/OrgSwitcher";
+import { QrCode } from "@/components/admin/QrCode";
 import { StatTile } from "@/components/admin/StatTile";
 import { TopBar } from "@/components/admin/TopBar";
 import { Button } from "@/components/ui/Button";
@@ -223,6 +224,24 @@ export default function ComponentesPage() {
             <div className="mt-24 border-t-2 border-lcd-3">
               <AccountMenu email="owner@expo.test" />
             </div>
+          </div>
+        </Section>
+
+        <Section
+          title="Panel: QR de un spot"
+          note="Un solo path SVG en el color de tinta, con su zona de silencio. Se imprime nítido a cualquier tamaño; en papel siempre sale oscuro sobre claro."
+        >
+          <div className="flex flex-wrap items-end gap-6">
+            <QrCode
+              value="https://expo.com.ar/s/00000000-0000-4000-8000-000000000000"
+              label="QR de ejemplo"
+              className="w-40"
+            />
+            <QrCode
+              value="https://expo.com.ar/s/00000000-0000-4000-8000-000000000000"
+              label="QR de ejemplo, chico"
+              className="w-24"
+            />
           </div>
         </Section>
 

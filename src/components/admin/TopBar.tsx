@@ -12,7 +12,7 @@ export function TopBar({
   actions?: ReactNode;
 }) {
   return (
-    <header className="sticky top-0 z-10 border-b-2 border-lcd-3 bg-lcd-0">
+    <header className="sticky top-0 z-10 border-b-2 border-lcd-3 bg-lcd-0 print:hidden">
       <div className="flex min-h-16 flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-2 sm:px-6">
         <p className="font-display text-px-2">{title}</p>
         {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
@@ -24,6 +24,8 @@ export function TopBar({
 /** Content column under the TopBar. */
 export function PageBody({ children }: { children: ReactNode }) {
   return (
-    <main className="grid grid-cols-1 gap-8 px-4 py-8 sm:px-6">{children}</main>
+    <main className="grid grid-cols-1 gap-8 px-4 py-8 sm:px-6 print:p-0">
+      {children}
+    </main>
   );
 }
