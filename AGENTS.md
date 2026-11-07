@@ -186,4 +186,4 @@ Se buscan con `/find-skills` al llegar a la fase y se instalan solo con OK.
 | Tests de base con pgTAP | F0 · bloque 6 |
 | shadcn/ui → `shadcn-ui/ui@shadcn` | F0 · bloque 9 |
 | Playwright → `currents-dev/playwright-best-practices-skill@playwright-best-practices` | R5 |
-| Generación e impresión de QR | R3 |
+| Generación e impresión de QR | R3 · buscada: no hay una skill útil; se usa `uqr` (ver ARQUITECTURA) |

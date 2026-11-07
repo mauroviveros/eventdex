@@ -92,7 +92,19 @@ export function SelectField({
       error={error}
       className={className}
       control={(a11y) => (
-        <select className={CONTROL} {...a11y} {...props}>
+        // React applies a select's defaultValue only on mount, and a form
+        // reset goes back to it: remount when it changes (values kept after
+        // a failed submit).
+        <select
+          key={
+            props.defaultValue === undefined
+              ? undefined
+              : String(props.defaultValue)
+          }
+          className={CONTROL}
+          {...a11y}
+          {...props}
+        >
           {children}
         </select>
       )}

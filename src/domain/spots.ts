@@ -63,3 +63,19 @@ export function resolveSpot(
     type: snap.type ?? catalog.type,
   };
 }
+
+export const SPOT_TYPE_LABEL: Record<SpotType, string> = {
+  stand: "Stand",
+  attraction: "Atracción",
+  sponsor: "Sponsor",
+  activity: "Actividad",
+};
+
+/**
+ * What a spot's QR encodes: /s/[id] on the org's primary domain. Printed, so it
+ * never changes. Local hosts (*.localhost) are served over http.
+ */
+export function spotUrl(hostname: string, eventSpotId: string) {
+  const local = /(^|\.)localhost(:\d+)?$/.test(hostname);
+  return `${local ? "http" : "https"}://${hostname}/s/${eventSpotId}`;
+}
