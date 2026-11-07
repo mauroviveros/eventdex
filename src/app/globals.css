@@ -1,3 +1,258 @@
 @import "tailwindcss";
 
-/* Design tokens arrive with docs/DESIGN.md (F0 · block 8). Until then, no colors here. */
+/*
+ * Four-tone LCD world.
+ * --ramp-0..3 is the palette, lightest to darkest: an organization swaps it for
+ * the ramp of its brand hue (src/domain/palette.ts). Default = ramp(EVENTDEX_HUE).
+ * --lcd-0..3 are roles, not colors: 0 ground, 1 fill, 2 secondary, 3 ink.
+ * Light maps roles to the ramp in order; dark reverses it. Contrast between
+ * roles is the same both ways (tested in palette.test.ts).
+ * Set on every scope that sets --ramp-*, so the roles resolve against it.
+ */
+:root,
+.ramp-scope {
+  --lcd-0: var(--ramp-0);
+  --lcd-1: var(--ramp-1);
+  --lcd-2: var(--ramp-2);
+  --lcd-3: var(--ramp-3);
+  /* The one color outside the ramp: it only ever means "something is wrong". */
+  --danger: oklch(0.44 0.21 27);
+  color-scheme: light;
+  --logo-full: url(#lcd-full);
+  --logo-mid: url(#lcd-mid);
+  --logo-faded: url(#lcd-faded);
+}
+
+:root {
+  --ramp-0: oklch(0.94 0.08 125);
+  --ramp-1: oklch(0.8 0.12 125);
+  --ramp-2: oklch(0.5 0.09 125);
+  --ramp-3: oklch(0.27 0.05 125);
+}
+
+/* Forced dark (the catalog's mode switch); otherwise dark follows the system. */
+.ramp-scope[data-scheme="dark"] {
+  --lcd-0: var(--ramp-3);
+  --lcd-1: var(--ramp-2);
+  --lcd-2: var(--ramp-1);
+  --lcd-3: var(--ramp-0);
+  --danger: oklch(0.7 0.19 27);
+  color-scheme: dark;
+  --logo-full: url(#lcd-full-dark);
+  --logo-mid: url(#lcd-mid-dark);
+  --logo-faded: url(#lcd-faded-dark);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root,
+  .ramp-scope:not([data-scheme="light"]) {
+    --lcd-0: var(--ramp-3);
+    --lcd-1: var(--ramp-2);
+    --lcd-2: var(--ramp-1);
+    --lcd-3: var(--ramp-0);
+    --danger: oklch(0.7 0.19 27);
+    color-scheme: dark;
+    --logo-full: url(#lcd-full-dark);
+    --logo-mid: url(#lcd-mid-dark);
+    --logo-faded: url(#lcd-faded-dark);
+  }
+}
+
+@theme inline {
+  --color-lcd-0: var(--lcd-0);
+  --color-lcd-1: var(--lcd-1);
+  --color-lcd-2: var(--lcd-2);
+  --color-lcd-3: var(--lcd-3);
+
+  --color-background: var(--lcd-0);
+  --color-foreground: var(--lcd-3);
+  --color-muted-foreground: var(--lcd-2);
+  --color-fill: var(--lcd-1);
+  --color-rule: var(--lcd-3);
+  --color-primary: var(--lcd-3);
+  --color-primary-foreground: var(--lcd-0);
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--lcd-0);
+
+  --color-ramp-0: var(--ramp-0);
+  --color-ramp-1: var(--ramp-1);
+  --color-ramp-2: var(--ramp-2);
+  --color-ramp-3: var(--ramp-3);
+
+  --font-display: var(--font-pixel), ui-monospace, monospace;
+  --font-sans: var(--font-read), ui-sans-serif, system-ui, sans-serif;
+
+  /* Pixel type sizes: multiples of Jersey 10's 10 px grid, so edges stay crisp. */
+  --text-px-1: 1.25rem;
+  --text-px-1--line-height: 1;
+  --text-px-2: 1.875rem;
+  --text-px-2--line-height: 1;
+  --text-px-3: 2.5rem;
+  --text-px-3--line-height: 1;
+  --text-px-4: 3.75rem;
+  --text-px-4--line-height: 1;
+
+  /* Square world: no radii, no soft shadows. */
+  --radius-none: 0;
+
+  --animate-blink: blink 1s steps(1, end) infinite;
+}
+
+@layer base {
+  html {
+    background: var(--lcd-0);
+    color: var(--lcd-3);
+    font-family: var(--font-sans);
+    scrollbar-color: var(--lcd-2) var(--lcd-0);
+    accent-color: var(--lcd-3);
+    caret-color: var(--lcd-3);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection {
+    background: var(--lcd-3);
+    color: var(--lcd-0);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--lcd-3);
+    outline-offset: 2px;
+  }
+
+  a {
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 2px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+}
+
+/* Pixel sprites: one <rect> per pixel, tone in data-t. */
+@layer components {
+  .sprite {
+    shape-rendering: crispEdges;
+  }
+  .sprite [data-t="0"] {
+    fill: var(--lcd-0);
+  }
+  .sprite [data-t="1"] {
+    fill: var(--lcd-1);
+  }
+  .sprite [data-t="2"] {
+    fill: var(--lcd-2);
+  }
+  .sprite [data-t="3"] {
+    fill: var(--lcd-3);
+  }
+  .sprite[data-mode="silueta"] rect,
+  .sprite[data-mode="inactivo"] rect {
+    fill: var(--lcd-1);
+  }
+
+  /* Signature move: a claimed medal develops through the tones in steps. */
+  .sprite[data-mode="revelando"] [data-t="0"] {
+    animation: develop-0 900ms steps(1, end) both;
+  }
+  .sprite[data-mode="revelando"] [data-t="2"] {
+    animation: develop-2 900ms steps(1, end) both;
+  }
+  .sprite[data-mode="revelando"] [data-t="3"] {
+    animation: develop-3 900ms steps(1, end) both;
+  }
+
+  /* Spot logos, posterized to the ramp by the filters in LcdFilters.tsx. */
+  .logo[data-mode="lleno"] {
+    filter: var(--logo-full);
+  }
+  .logo[data-mode="silueta"],
+  .logo[data-mode="inactivo"] {
+    filter: var(--logo-faded);
+  }
+  /* Inactive is dithered like the inactive sprite: the ground shows through. */
+  .logo[data-mode="inactivo"] {
+    mask-image: conic-gradient(
+      #000 25%,
+      transparent 0 50%,
+      #000 0 75%,
+      transparent 0
+    );
+    mask-size: 4px 4px;
+  }
+  .logo[data-mode="revelando"] {
+    animation: develop-logo 900ms steps(1, end) both;
+  }
+
+  /* Double-ruled panel, like a handheld dialog box. */
+  .panel {
+    border: 2px solid var(--lcd-3);
+    box-shadow:
+      inset 0 0 0 2px var(--lcd-0),
+      inset 0 0 0 4px var(--lcd-3);
+    background: var(--lcd-0);
+  }
+}
+
+@keyframes develop-3 {
+  0% {
+    fill: var(--lcd-1);
+  }
+  34% {
+    fill: var(--lcd-2);
+  }
+  67%,
+  100% {
+    fill: var(--lcd-3);
+  }
+}
+@keyframes develop-2 {
+  0% {
+    fill: var(--lcd-1);
+  }
+  50%,
+  100% {
+    fill: var(--lcd-2);
+  }
+}
+@keyframes develop-0 {
+  0% {
+    fill: var(--lcd-1);
+  }
+  67%,
+  100% {
+    fill: var(--lcd-0);
+  }
+}
+@keyframes develop-logo {
+  0% {
+    filter: var(--logo-faded);
+  }
+  34% {
+    filter: var(--logo-mid);
+  }
+  67%,
+  100% {
+    filter: var(--logo-full);
+  }
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Reduced motion: a new medal shows fully developed, nothing blinks. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    /* biome-ignore lint/complexity/noImportantStyles: must beat component animations */
+    animation: none !important;
+    /* biome-ignore lint/complexity/noImportantStyles: must beat component animations */
+    transition: none !important;
+  }
+}
