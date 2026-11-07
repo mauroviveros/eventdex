@@ -655,6 +655,21 @@ export type Database = {
         Returns: undefined;
       };
       publish_event: { Args: { p_event_id: string }; Returns: undefined };
+      resolve_active_event: {
+        Args: { p_organization_id: string };
+        Returns: string;
+      };
+      resolve_organization: {
+        Args: { p_host: string };
+        Returns: {
+          brand_color: string;
+          default_timezone: string;
+          id: string;
+          logo_path: string;
+          name: string;
+          slug: string;
+        }[];
+      };
     };
     Enums: {
       event_phase: "upcoming" | "live" | "finished";
