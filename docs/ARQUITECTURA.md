@@ -148,7 +148,8 @@ carpetas nunca se alcanzan directo (`expo.com/admin` es un 404):
 | `app.eventdex.com/plataforma` | `admin/plataforma/`, solo para developers |
 | cualquier otro | `publica/[host]/`, con la organización resuelta por `organization_domains` |
 
-- El mapeo host → organización es una función SQL. El resultado se cachea, porque
+- El mapeo host → organización es una función SQL (`resolve_organization`, una sola
+  consulta; un host desconocido o una org suspendida no devuelven nada). El resultado se cachea, porque
   cambia casi nunca.
 - **En local** se usan subdominios de `localhost`, que los navegadores resuelven
   solos: `localhost:3000` es la landing, `app.localhost:3000` el admin y

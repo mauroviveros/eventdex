@@ -135,14 +135,13 @@ select is(
   'the snapshot also keeps the type'
 );
 
--- Otra org: no ve nada de A.
+-- Otra org: no ve el catálogo de A.
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000005b1","role":"authenticated"}', true);
 
 select is(
-  (select count(*)::int from public.spots where organization_id = '0000000a-0000-0000-0000-0000000005e1')
-  + (select count(*)::int from public.event_spots where organization_id = '0000000a-0000-0000-0000-0000000005e1'),
+  (select count(*)::int from public.spots where organization_id = '0000000a-0000-0000-0000-0000000005e1'),
   0,
-  'another org sees neither the catalog nor the event spots'
+  'another org does not see the catalog (published event spots are public, see 05)'
 );
 
 -- ---------------------------------------------------------------------------
@@ -167,15 +166,15 @@ select is(
 );
 
 -- ---------------------------------------------------------------------------
--- anon: nada todavía (las lecturas públicas llegan en R4).
+-- anon: los spots de eventos publicados (R4); el resto, en 05_public.
 -- ---------------------------------------------------------------------------
 
 set local role anon;
 
-select throws_ok(
-  $$ select 1 from public.event_spots $$,
-  '42501', null,
-  'anon has no access to event spots yet'
+select is(
+  (select count(*)::int from public.event_spots where organization_id = '0000000a-0000-0000-0000-0000000005e1'),
+  2,
+  'anon reads the spots of published events'
 );
 
 reset role;

@@ -28,7 +28,7 @@ el visitante.
 
 | Ruta | Vista | Acceso | Rebanada |
 |------|-------|--------|----------|
-| `/` | Portada del evento activo: fase, countdown, jornadas, sede y spots. Si no hay evento, un estado vacío con la marca de la org | Público | R4 |
+| `/` | Portada del evento activo: fase, countdown, jornadas, sede y spots. Activo es, entre los publicados y públicos, el que está en curso; si no hay, el próximo; si no, el último que terminó (`resolve_active_event`). Si no hay evento, un estado vacío con la marca de la org | Público | R4 |
 | `/eventos/[slug]` | Un evento puntual (pasado o próximo), con la misma vista que la portada | Público | R4 |
 | `/s/[id]` | **Destino del QR.** Reclama la medalla y la celebra. Sin sesión, pasa por `/ingresar` y vuelve | Visitante | R5 |
 | `/mis-medallas` | Progreso: medallas conseguidas y faltantes, puntos y si entra al sorteo | Visitante | R5 |
