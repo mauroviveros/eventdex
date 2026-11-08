@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { AlertIcon } from "@/components/pixel/AlertIcon";
 import { Button } from "@/components/ui/Button";
+import { EmailSignIn } from "@/components/ui/EmailSignIn";
 import { signInWithGoogle } from "@/lib/actions/auth";
 import { getSessionUser, safeNext } from "@/lib/session";
 import { createClient } from "@/lib/supabase/server";
-import { EmailSignIn } from "./EmailSignIn";
 
 export const metadata: Metadata = {
   title: "Ingresar · Eventdex",

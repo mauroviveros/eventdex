@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import Link from "next/link";
-import type { CSSProperties } from "react";
+import { type CSSProperties, Suspense } from "react";
 import { LcdFilters } from "@/components/pixel/LcdFilters";
 import { Monogram } from "@/components/ui/Monogram";
+import { SignInLink, VisitorMenu } from "@/components/visitante/VisitorMenu";
 import { EVENTDEX_HUE, ramp, rampFromHex } from "@/domain/palette";
+import { getVisitorAccount } from "@/lib/data/viewer";
 import { requireHostOrganization } from "./organization";
 
 export async function generateMetadata({
@@ -38,17 +41,30 @@ export default async function PublicaLayout({
     >
       <LcdFilters ramp={tones} />
       <header className="border-b-2 border-lcd-3">
-        <div className="mx-auto flex min-h-16 max-w-3xl items-center px-4 sm:px-6">
+        <div className="mx-auto flex min-h-16 max-w-3xl items-center justify-between gap-4 px-4 sm:px-6">
           <Link
             href="/"
-            className="flex min-h-11 items-center gap-3 font-display text-px-2 no-underline"
+            className="flex min-h-11 min-w-0 items-center gap-3 font-display text-px-2 no-underline"
           >
             <Monogram text={org.name} />
-            {org.name}
+            <span className="truncate">{org.name}</span>
           </Link>
+          <Suspense fallback={<span className="min-h-11" />}>
+            <Account />
+          </Suspense>
         </div>
       </header>
       {children}
     </div>
   );
+}
+
+/** Who is signed in on this domain, or the way in. Streams after the header. */
+async function Account() {
+  const account = await getVisitorAccount();
+  if (account) return <VisitorMenu account={account} />;
+  const path = (await headers()).get("x-public-path") ?? "/";
+  // On the sign-in page itself the link would point back to it.
+  if (path.startsWith("/ingresar")) return null;
+  return <SignInLink next={path} />;
 }

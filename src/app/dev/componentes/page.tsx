@@ -22,6 +22,7 @@ import {
 import { Medal } from "@/components/visitante/Medal";
 import { PhaseBadge } from "@/components/visitante/PhaseBadge";
 import { Progress } from "@/components/visitante/Progress";
+import { SignInLink, VisitorMenu } from "@/components/visitante/VisitorMenu";
 import banco from "./logos/banco.svg";
 import cafe from "./logos/cafe.svg";
 import ceramica from "./logos/ceramica.svg";
@@ -39,6 +40,13 @@ async function catalogAction() {
 }
 
 // Synthetic events, only for the catalog. Fixed "now": sat 14 nov 2026, 12:00 in Buenos Aires.
+const SAMPLE_CLAIM = "2026-11-14T18:32:00Z";
+const CELEBRATION = {
+  headingLevel: 3 as const,
+  timeZone: "America/Argentina/Buenos_Aires",
+  eventHref: "#",
+};
+
 const SAMPLE_NOW = new Date("2026-11-14T15:00:00Z");
 const day = (id: string, starts: string, ends: string, label?: string) => ({
   id,
@@ -167,54 +175,88 @@ export default function ComponentesPage() {
         </Section>
 
         <Section
+          title="Cuenta del visitante"
+          note="Fin de la cabecera del dominio de la org. Con sesión: foto (o iniciales), nombre y mail; en el celular solo la foto, y el nombre pasa al menú. Sin sesión: Ingresar, que vuelve a la página actual."
+        >
+          <div className="flex flex-wrap items-start gap-8 pb-40">
+            <VisitorMenu
+              account={{
+                name: "Mauro Viveros",
+                email: "mauro@ejemplo.com",
+                avatarUrl: null,
+              }}
+            />
+            <VisitorMenu
+              account={{
+                name: "visitante@ejemplo.com",
+                email: "visitante@ejemplo.com",
+                avatarUrl: null,
+              }}
+            />
+            <SignInLink next="/" />
+          </div>
+        </Section>
+
+        <Section
           title="Progreso"
-          note="Un segmento por spot. Los de color relleno marcan la meta del sorteo."
+          note="Un segmento por spot. Sin meta (R5: alcanza con una medalla) habla de completar la colección; con meta, los segmentos de color relleno marcan la del sorteo."
         >
           <div className="grid gap-10 md:grid-cols-2">
-            <Progress claimed={0} total={12} goal={8} />
+            <Progress claimed={0} total={12} />
+            <Progress claimed={5} total={12} />
+            <Progress claimed={12} total={12} />
+            <Progress claimed={7} total={12} finished />
             <Progress claimed={5} total={12} goal={8} />
             <Progress claimed={9} total={12} goal={8} />
-            <Progress claimed={7} total={12} goal={8} finished />
           </div>
         </Section>
 
         <Section
           title="Celebración"
-          note="La pantalla de /s/[id] después de escanear, en sus cinco resultados. Ahí el título es el h1."
+          note="La pantalla de /s/[id] después de escanear, en sus cinco resultados (fuera de fase, antes y después). Ahí el título es el h1."
         >
           <div className="grid items-start justify-items-center gap-6 md:grid-cols-2 xl:grid-cols-3">
             <Replay className="w-full max-w-sm">
               <Celebration
-                headingLevel={3}
+                {...CELEBRATION}
                 spot={CAFE}
-                outcome={{ kind: "nueva" }}
-                progress={<Progress claimed={6} total={12} goal={8} />}
+                outcome={{ kind: "nueva", claimedAt: SAMPLE_CLAIM }}
+                progress={<Progress claimed={6} total={12} />}
               />
             </Replay>
             <Celebration
-              headingLevel={3}
+              {...CELEBRATION}
               spot={RUEDA}
-              outcome={{
-                kind: "repetida",
-                claimedAt: "sáb 14 de nov a las 15:32",
-              }}
-              progress={<Progress claimed={6} total={12} goal={8} />}
+              outcome={{ kind: "repetida", claimedAt: SAMPLE_CLAIM }}
+              progress={<Progress claimed={6} total={12} />}
             />
             <Celebration
-              headingLevel={3}
+              {...CELEBRATION}
               spot={BANCO}
               outcome={{ kind: "inactivo" }}
             />
             <Celebration
-              headingLevel={3}
+              {...CELEBRATION}
               spot={CERAMICA}
               outcome={{
                 kind: "fuera-de-fase",
-                startsAt: "sáb 14 de nov a las 14:00",
+                startsAt: "2026-11-14T17:00:00Z",
+                endsAt: "2026-11-16T01:00:00Z",
+                ended: false,
               }}
             />
             <Celebration
-              headingLevel={3}
+              {...CELEBRATION}
+              spot={CERAMICA}
+              outcome={{
+                kind: "fuera-de-fase",
+                startsAt: "2026-11-14T17:00:00Z",
+                endsAt: "2026-11-16T01:00:00Z",
+                ended: true,
+              }}
+            />
+            <Celebration
+              {...CELEBRATION}
               spot={CAFE}
               outcome={{ kind: "bloqueado" }}
             />
