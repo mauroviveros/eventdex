@@ -56,3 +56,27 @@ export const requireOrg = cache(async (slug: string) => {
   if (!org || (!membership && !viewer.isDeveloper)) notFound();
   return { viewer, org, mine, role: membership?.role, support: !membership };
 });
+
+/**
+ * The signed-in visitor as the public header shows them: name, mail and
+ * photo from their profile. Null without a session. No developer check: the
+ * public app never needs it.
+ */
+export const getVisitorAccount = cache(async () => {
+  const supabase = await createClient();
+  const user = await getSessionUser(supabase);
+  if (!user) return null;
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("email, full_name, display_name, avatar_url")
+    .eq("id", user.id)
+    .maybeSingle();
+  if (error) throw error;
+  const email = data?.email ?? user.email ?? "";
+  return {
+    id: user.id,
+    email,
+    name: data?.display_name || data?.full_name || email,
+    avatarUrl: data?.avatar_url ?? null,
+  };
+});
