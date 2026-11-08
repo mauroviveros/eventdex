@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Chevron } from "@/components/pixel/Chevron";
-import { Monogram } from "./Monogram";
+import { Monogram } from "@/components/ui/Monogram";
 
 type Org = { slug: string; name: string; role?: "owner" | "staff" };
 

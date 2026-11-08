@@ -1,13 +1,13 @@
 "use server";
 
-import { revalidatePath, updateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { logSupportAccess } from "@/lib/data/organizations";
-import { ORGANIZATIONS_TAG } from "@/lib/data/public";
 import { createOrganization } from "@/lib/organizations";
 import type { ActionResult } from "@/lib/results";
 import { createClient } from "@/lib/supabase/server";
+import { invalidateOrganizations } from "./invalidate";
 
 export type CreateOrganizationState =
   | (Extract<ActionResult<never>, { ok: false }> & {
@@ -27,7 +27,7 @@ export async function createOrganizationAction(
   if (!result.ok) return { ...result, values };
   revalidatePath("/admin/plataforma/organizaciones");
   // Its domain resolves right away on the public app.
-  updateTag(ORGANIZATIONS_TAG);
+  invalidateOrganizations();
   redirect("/plataforma/organizaciones?creada=1");
 }
 
