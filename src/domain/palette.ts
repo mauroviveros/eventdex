@@ -47,6 +47,25 @@ export const DANGER = {
   dark: "oklch(0.7 0.19 27)",
 } as const;
 
+/**
+ * The public app's marquee accents, from the old app's poster: red for the
+ * event's title, yellow for the date and the venue. Text on the ground only,
+ * never on a filled cell. Fixed hues, not the brand. The red sits near DANGER
+ * on purpose (the user chose the v1 look); danger keeps its meaning by always
+ * wearing the alert icon, which a title never does.
+ */
+export const ACCENT = {
+  red: { light: "oklch(0.47 0.19 25)", dark: "oklch(0.7 0.19 25)" },
+  yellow: { light: "oklch(0.5 0.11 85)", dark: "oklch(0.86 0.15 95)" },
+} as const;
+
+/**
+ * Scanline strength per scheme (black over the ground, --scanline in
+ * globals.css): 8 % in dark like the old app, 3 % in light so secondary text
+ * and the accents stay AA on the striped rows.
+ */
+export const SCANLINE = { light: 0.03, dark: 0.08 } as const;
+
 /** Euclidean distance in OKLab between two `oklch(l c h)` strings. */
 export function distance(x: string, y: string): number {
   const [l1, a1, b1] = toOklab(x);

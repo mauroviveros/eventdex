@@ -17,6 +17,9 @@
   --lcd-3: var(--ramp-3);
   /* The one color outside the ramp: it only ever means "something is wrong". */
   --danger: oklch(0.44 0.21 27);
+  --accent-red: oklch(0.47 0.19 25);
+  --accent-yellow: oklch(0.5 0.11 85);
+  --scanline: rgb(0 0 0 / 0.03);
   color-scheme: light;
   --logo-full: url(#lcd-full);
   --logo-mid: url(#lcd-mid);
@@ -37,6 +40,9 @@
   --lcd-2: var(--ramp-1);
   --lcd-3: var(--ramp-0);
   --danger: oklch(0.7 0.19 27);
+  --accent-red: oklch(0.7 0.19 25);
+  --accent-yellow: oklch(0.86 0.15 95);
+  --scanline: rgb(0 0 0 / 0.08);
   color-scheme: dark;
   --logo-full: url(#lcd-full-dark);
   --logo-mid: url(#lcd-mid-dark);
@@ -51,6 +57,9 @@
     --lcd-2: var(--ramp-1);
     --lcd-3: var(--ramp-0);
     --danger: oklch(0.7 0.19 27);
+    --accent-red: oklch(0.7 0.19 25);
+    --accent-yellow: oklch(0.86 0.15 95);
+    --scanline: rgb(0 0 0 / 0.08);
     color-scheme: dark;
     --logo-full: url(#lcd-full-dark);
     --logo-mid: url(#lcd-mid-dark);
@@ -71,6 +80,9 @@
     --lcd-2: var(--ramp-2);
     --lcd-3: var(--ramp-3);
     --danger: oklch(0.44 0.21 27);
+    --accent-red: oklch(0.47 0.19 25);
+    --accent-yellow: oklch(0.5 0.11 85);
+    --scanline: rgb(0 0 0 / 0.03);
     color-scheme: light;
   }
 }
@@ -89,6 +101,9 @@
   --color-primary: var(--lcd-3);
   --color-primary-foreground: var(--lcd-0);
   --color-danger: var(--danger);
+  /* Marquee accents of the public app (ACCENT in src/domain/palette.ts). */
+  --color-accent-red: var(--accent-red);
+  --color-accent-yellow: var(--accent-yellow);
   --color-danger-foreground: var(--lcd-0);
 
   --color-ramp-0: var(--ramp-0);
@@ -211,6 +226,29 @@
       inset 0 0 0 2px var(--lcd-0),
       inset 0 0 0 4px var(--lcd-3);
     background: var(--lcd-0);
+  }
+
+  /* Scanlines over the whole screen, like the old app's LCD: a 2 px shadow
+   * line every 4 px. A shadow, not a tone: black darkens the ground in both
+   * schemes and under any brand (the ramp's ink would brighten it in dark).
+   * 8 % in dark like the old app; 3 % in light keeps secondary text and the
+   * accents AA on the striped rows for every hue (SCANLINE, palette.test.ts). A texture, not a fifth color. Never on paper. */
+  .scanlines::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent 0 2px,
+      var(--scanline) 2px 4px
+    );
+  }
+  @media print {
+    .scanlines::after {
+      display: none;
+    }
   }
 }
 
