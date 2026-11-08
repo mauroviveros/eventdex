@@ -36,7 +36,7 @@ el visitante.
 | `/ingresar` | Login con Google y la marca de la org; vuelve a `next` (el QR escaneado) | Público | R5 |
 | `/robots.txt`, `/sitemap.xml` | SEO por dominio. `/s/*` queda fuera del índice | — | R4 |
 
-## Admin · `app.eventdex.com`
+## Admin · `eventdex-admin.vercel.app`
 
 `app.localhost:3000` en local. Desktop para preparar y mobile para operar. Usuarios:
 staff y owner.
@@ -62,7 +62,7 @@ staff y owner.
 | `/[org]/equipo` | Miembros, invitaciones y roles | Owner | R7 |
 | `/[org]/ajustes` | Nombre, marca (logo y colores, con vista previa) y dominios | Owner | R7 |
 
-## Plataforma · `app.eventdex.com/plataforma`
+## Plataforma · `eventdex-admin.vercel.app/plataforma`
 
 Mismo host que el admin. Desktop. Usuario: el developer. Cualquier otro rol recibe
 un 404, no un 403: la ruta no existe para él.
@@ -76,7 +76,7 @@ un 404, no un 403: la ruta no existe para él.
 | `/plataforma/facturacion` | Facturas manuales: alta, marcar pagada, anular | Developer | R8 |
 | `/plataforma/auditoria` | Registro de acciones sensibles, filtrable | Developer | R8 |
 
-## Landing · `eventdex.com`
+## Landing · `eventdex.vercel.app`
 
 `localhost:3000` en local. Usuario: un posible cliente.
 

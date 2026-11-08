@@ -147,9 +147,9 @@ carpetas nunca se alcanzan directo (`expo.com/admin` es un 404):
 
 | Host | Superficie |
 |------|-----------|
-| `eventdex.com`, `www.eventdex.com` | `landing/` |
-| `app.eventdex.com` | `admin/` |
-| `app.eventdex.com/plataforma` | `admin/plataforma/`, solo para developers |
+| `NEXT_PUBLIC_ROOT_DOMAIN` (y `www.`) | `landing/` |
+| `NEXT_PUBLIC_ADMIN_HOST`, o `app.` + el dominio raíz | `admin/` |
+| el host del admin + `/plataforma` | `admin/plataforma/`, solo para developers |
 | cualquier otro | `publica/[host]/`, con la organización resuelta por `organization_domains` |
 
 - El mapeo host → organización es una función SQL (`resolve_organization`, una sola
@@ -188,7 +188,8 @@ carpetas nunca se alcanzan directo (`expo.com/admin` es un 404):
 | `NEXT_PUBLIC_SUPABASE_URL` | Todos | URL del proyecto |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Todos | Respeta RLS |
 | `SUPABASE_SECRET_KEY` | Servidor | Se saltea RLS. Solo en `lib/supabase/service.ts` |
-| `NEXT_PUBLIC_ROOT_DOMAIN` | Todos | `eventdex.com` en prod, `localhost:3000` en local |
+| `NEXT_PUBLIC_ROOT_DOMAIN` | Todos | `eventdex.vercel.app` en prod, `localhost:3000` en local |
+| `NEXT_PUBLIC_ADMIN_HOST` | Producción | `eventdex-admin.vercel.app`. Opcional: sin ella, `app.` + el dominio raíz |
 
 - `.env.example` documenta todas, sin valores reales. `.env.local` no se commitea.
 - Las variables se validan al arrancar con Zod: si falta una, falla el arranque y
@@ -225,8 +226,10 @@ pueda levantar Supabase completo (auth y Mailpit) y la app.
 ## Hosting
 
 - **Vercel**, un proyecto, con `main` como producción.
-- Dominios: `eventdex.com` (landing), `app.eventdex.com` (admin y plataforma) y
-  uno o más por organización.
+- Dominios: `eventdex.vercel.app` (landing), `eventdex-admin.vercel.app` (admin y
+  plataforma) y uno o más por organización. Un `*.vercel.app` no admite subdominios,
+  por eso el admin va aparte. Al comprar un dominio propio solo cambian las dos
+  variables.
 - Las imágenes (logos, portadas, avatares de spots) van en **Supabase Storage**, en
   buckets con políticas por organización.
 
