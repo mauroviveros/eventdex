@@ -71,11 +71,29 @@ export const SPOT_TYPE_LABEL: Record<SpotType, string> = {
   activity: "Actividad",
 };
 
-/**
- * What a spot's QR encodes: /s/[id] on the org's primary domain. Printed, so it
- * never changes. Local hosts (*.localhost) are served over http.
- */
-export function spotUrl(hostname: string, eventSpotId: string) {
+/** An org's public origin. Local hosts (*.localhost) are served over http. */
+export function publicOrigin(hostname: string) {
   const local = /(^|\.)localhost(:\d+)?$/.test(hostname);
-  return `${local ? "http" : "https"}://${hostname}/s/${eventSpotId}`;
+  return `${local ? "http" : "https"}://${hostname}`;
+}
+
+/** What a spot's QR encodes: /s/[id] on the org's primary domain. Printed, so it never changes. */
+export function spotUrl(hostname: string, eventSpotId: string) {
+  return `${publicOrigin(hostname)}/s/${eventSpotId}`;
+}
+
+/**
+ * What a spot of a published event shows to the public: its override, then its
+ * snapshot. Published spots always carry one, so the private catalog is never
+ * needed; a spot whose snapshot can't be read is left out (null).
+ */
+export function resolvePublishedSpot(eventSpot: EventSpotFields) {
+  const snap = frozen(eventSpot.snapshot);
+  if (!snap.name || !snap.type) return null;
+  return resolveSpot(eventSpot, {
+    name: snap.name,
+    description: snap.description ?? null,
+    logo_path: snap.logo_path ?? null,
+    type: snap.type,
+  });
 }
