@@ -134,7 +134,7 @@ formato:
 | `pnpm format` | Biome: aplica los arreglos |
 | `pnpm typecheck` | `tsc --noEmit` |
 | `pnpm test` | Vitest |
-| `pnpm test:e2e` | Playwright |
+| `pnpm test:e2e` | Playwright, contra Supabase local y `pnpm dev` (lo reusa si ya corre) |
 | `pnpm check` | `lint` + `typecheck` + `test` |
 | `pnpm db:start` / `db:stop` | Levanta o baja Supabase local (Docker) |
 | `pnpm db:reset` | Recrea la base local con migraciones y seed |
@@ -165,6 +165,7 @@ desde `.claude/skills/`. Se restauran con `npx skills experimental_install`.
 | `accessibility` | Auditoría de cada rebanada con vista |
 | `seo` | R4 (portada pública) y R9 (landing) |
 | `vitest` | Tests unitarios y de acciones |
+| `playwright-best-practices` | Recorridos e2e de cada rebanada (`e2e/`) |
 | `deploy-to-vercel` | Deploys y configuración de dominios |
 | `nodejs-best-practices` | El script de migración (R10) |
 
@@ -185,5 +186,4 @@ Se buscan con `/find-skills` al llegar a la fase y se instalan solo con OK.
 |---|---|
 | Tests de base con pgTAP | F0 · bloque 6 |
 | shadcn/ui → `shadcn-ui/ui@shadcn` | F0 · bloque 9 |
-| Playwright → `currents-dev/playwright-best-practices-skill@playwright-best-practices` | R5 |
 | Generación e impresión de QR | R3 · buscada: no hay una skill útil; se usa `uqr` (ver ARQUITECTURA) |
