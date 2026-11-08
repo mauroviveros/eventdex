@@ -1,5 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
-import { createOrganization } from "./organizations";
+import { fakeClient } from "./fake-supabase";
+import {
+  addDomain,
+  createOrganization,
+  removeDomain,
+  updateSettings,
+  uploadLogo,
+} from "./organizations";
 
 // Stand-in for the Supabase client: only rpc, returning what the database would.
 function fakeRpc(result: { data: unknown; error: unknown }) {
@@ -80,5 +87,121 @@ describe("createOrganization", () => {
     });
     expect(log).toHaveBeenCalled();
     log.mockRestore();
+  });
+});
+
+const ORG = "0000000a-0000-4000-8000-000000000001";
+
+describe("updateSettings", () => {
+  const input = {
+    organizationId: ORG,
+    name: "Expo",
+    brandColor: "#808080",
+    defaultTimezone: "America/Argentina/Buenos_Aires",
+  };
+
+  it("accepts any valid color: the ramp guarantees the contrast", async () => {
+    const { client, calls } = fakeClient({ data: [{ id: ORG }], error: null });
+    expect(await updateSettings(client, input)).toEqual({
+      ok: true,
+      data: null,
+    });
+    expect(calls.find((c) => c.method === "update")?.args[0]).toMatchObject({
+      brand_color: "#808080",
+    });
+  });
+
+  it("rejects an invalid color or time zone with a message per field", async () => {
+    const { client } = fakeClient();
+    const result = await updateSettings(client, {
+      ...input,
+      brandColor: "verde",
+      defaultTimezone: "Marte/Olympus",
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok)
+      expect(Object.keys(result.fieldErrors ?? {}).sort()).toEqual([
+        "brandColor",
+        "defaultTimezone",
+      ]);
+  });
+});
+
+describe("uploadLogo", () => {
+  const png = () => new File(["x"], "logo.png", { type: "image/png" });
+
+  function withStorage(
+    results: { data: unknown; error: unknown }[],
+    uploadError: unknown = null,
+  ) {
+    const { client } = fakeClient(...results);
+    const upload = vi.fn(async (_path: string) => ({ error: uploadError }));
+    const remove = vi.fn(async () => ({ error: null }));
+    return {
+      client: {
+        ...(client as object),
+        storage: { from: () => ({ upload, remove }) },
+      } as never,
+      upload,
+      remove,
+    };
+  }
+
+  it("uploads under the org folder and deletes the previous file", async () => {
+    const { client, upload, remove } = withStorage([
+      { data: { logo_path: `${ORG}/old.png` }, error: null },
+      { data: [{ id: ORG }], error: null },
+    ]);
+    expect(
+      await uploadLogo(client, { organizationId: ORG, logo: png() }),
+    ).toEqual({ ok: true, data: null });
+    expect(upload.mock.calls[0]?.[0]).toMatch(new RegExp(`^${ORG}/.+\\.png$`));
+    expect(remove).toHaveBeenCalledWith([`${ORG}/old.png`]);
+  });
+
+  it("deletes the new file if the org can't point to it", async () => {
+    const { client, upload, remove } = withStorage([
+      { data: { logo_path: null }, error: null },
+      { data: [], error: null },
+    ]);
+    const result = await uploadLogo(client, {
+      organizationId: ORG,
+      logo: png(),
+    });
+    expect(result.ok).toBe(false);
+    expect(remove).toHaveBeenCalledWith([upload.mock.calls[0]?.[0]]);
+  });
+
+  it.each([
+    ["an SVG", new File(["x"], "a.svg", { type: "image/svg+xml" })],
+    [
+      "a file over 1 MB",
+      new File([new Uint8Array(1024 * 1024 + 1)], "a.png", {
+        type: "image/png",
+      }),
+    ],
+    ["no file", null],
+  ])("rejects %s before uploading", async (_label, logo) => {
+    const { client, upload } = withStorage([]);
+    const result = await uploadLogo(client, { organizationId: ORG, logo });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.fieldErrors?.logo).toBeTruthy();
+    expect(upload).not.toHaveBeenCalled();
+  });
+});
+
+describe("domains", () => {
+  it("explains a hostname another org already has", async () => {
+    const { client } = fakeClient({ data: null, error: { code: "23505" } });
+    expect(
+      await addDomain(client, { organizationId: ORG, hostname: "Expo.com.ar" }),
+    ).toEqual({ ok: false, error: "Ese dominio ya está en uso." });
+  });
+
+  it("does not remove the primary one", async () => {
+    const { client, calls } = fakeClient({ data: [], error: null });
+    const result = await removeDomain(client, ORG);
+    expect(result.ok).toBe(false);
+    expect(calls).toContainEqual({ method: "eq", args: ["is_primary", false] });
   });
 });

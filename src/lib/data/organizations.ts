@@ -98,3 +98,57 @@ export async function getPrimaryHostname(
   if (error) throw error;
   return data?.hostname ?? null;
 }
+
+/** What the settings page edits: the org and its domains, primary first. */
+export async function getOrganizationSettings(
+  supabase: Supabase,
+  organizationId: string,
+) {
+  const { data, error } = await supabase
+    .from("organizations")
+    .select(
+      `id, name, brand_color, logo_path, default_timezone,
+       domains:organization_domains (id, hostname, is_primary)`,
+    )
+    .eq("id", organizationId)
+    .order("is_primary", {
+      referencedTable: "organization_domains",
+      ascending: false,
+    })
+    .order("hostname", { referencedTable: "organization_domains" })
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
+/** The team and its open invitations. Accepted ones are already members. */
+export async function listTeam(
+  supabase: Supabase,
+  organizationId: string,
+  now = new Date(),
+) {
+  const [members, invitations] = await Promise.all([
+    supabase
+      .from("organization_members")
+      .select(
+        "id, role, user_id, profile:profiles (email, full_name, display_name, avatar_url)",
+      )
+      .eq("organization_id", organizationId)
+      .order("created_at"),
+    supabase
+      .from("organization_invitations")
+      .select("id, email, role, expires_at")
+      .eq("organization_id", organizationId)
+      .is("accepted_at", null)
+      .order("created_at"),
+  ]);
+  if (members.error) throw members.error;
+  if (invitations.error) throw invitations.error;
+  return {
+    members: members.data,
+    invitations: invitations.data.map((i) => ({
+      ...i,
+      expired: new Date(i.expires_at) < now,
+    })),
+  };
+}
