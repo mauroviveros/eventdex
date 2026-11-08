@@ -28,7 +28,7 @@ function FieldFrame({
   const id = useId();
   const describedBy = error ? `${id}-error` : hint ? `${id}-hint` : undefined;
   return (
-    <div className={`grid gap-1.5 ${className}`}>
+    <div className={`grid content-start gap-1.5 ${className}`}>
       <label htmlFor={id} className="font-display text-px-1">
         {label}
       </label>
