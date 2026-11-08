@@ -195,7 +195,7 @@ Branch `feat/medallas`. El visitante escanea y colecciona.
    suma más, y QR ajeno o roto = 404; estable en 5 repeticiones. Encontró que el
    `loading.tsx` de `/s/[id]` convertía el 404 en 200 (resuelto con un Suspense).
 
-## R6 · Sorteo ▶
+## R6 · Sorteo ✅
 
 Branch `feat/sorteo`. Al cierre, se sortea entre los que participaron.
 
@@ -209,7 +209,10 @@ Branch `feat/sorteo`. Al cierre, se sortea entre los que participaron.
    proyectar: la del panel alcanza.
    *Listo cuando* se hace un sorteo completo en el navegador y el ganador se ve en
    la app pública.
-4. **Auditoría.**
+4. ✅ **Auditoría.** Más un recorrido de Playwright del sorteo completo. `/code-review`: 10
+   hallazgos (7 resueltos; quedan el link a ganadores si se anularon todas las extracciones,
+   los uuid visibles para quien tiene sesión y una consulta de elegibles por sorteo).
+   Lighthouse accesibilidad: 100 en el panel y en `/sorteo`.
 
 ## R7 · Equipo y marca
 
