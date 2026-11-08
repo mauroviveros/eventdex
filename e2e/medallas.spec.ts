@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { magicLink } from "./support/mailpit";
+import { signInByMail } from "./support/mailpit";
 import { seedLiveEvent } from "./support/seed";
 
 type Seed = Awaited<ReturnType<typeof seedLiveEvent>>;
@@ -12,17 +12,6 @@ test.beforeAll(async () => {
 test.afterAll(async () => {
   await seed?.cleanup();
 });
-
-/** Signs in on the page's current /ingresar with the dev mail link. */
-async function signInByMail(
-  page: import("@playwright/test").Page,
-  email: string,
-) {
-  await page.getByLabel("Mail").fill(email);
-  await page.getByRole("button", { name: "Mandarme el link" }).click();
-  await expect(page.getByRole("status")).toContainText(email);
-  await page.goto(await magicLink(email));
-}
 
 test("a visitor scans a QR, signs in, collects, and staff can block them", async ({
   page,

@@ -1,4 +1,4 @@
-import { expect } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
 
 const MAILPIT = "http://127.0.0.1:54424/api/v1";
 
@@ -23,4 +23,12 @@ export async function magicLink(email: string) {
     )
     .not.toBe("");
   return link;
+}
+
+/** Signs in on the page's current /ingresar with the dev mail link. */
+export async function signInByMail(page: Page, email: string) {
+  await page.getByLabel("Mail").fill(email);
+  await page.getByRole("button", { name: "Mandarme el link" }).click();
+  await expect(page.getByRole("status")).toContainText(email);
+  await page.goto(await magicLink(email));
 }
