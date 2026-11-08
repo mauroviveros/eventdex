@@ -3,6 +3,10 @@ import { listPublicEvents } from "@/lib/data/public";
 import { createPublicClient } from "@/lib/supabase/public";
 import { requireHostOrganization } from "../organization";
 
+// Next treats a `sitemap.xml` folder as a metadata route and prerenders it
+// with a placeholder host; the sitemap depends on the request's host.
+export const dynamic = "force-dynamic";
+
 const escapeXml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
