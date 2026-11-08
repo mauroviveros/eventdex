@@ -49,7 +49,8 @@ Los valores los define [DESIGN](./DESIGN.md). Hay una sola paleta de cuatro tono
 | `--lcd-1` | Relleno: segmentos pendientes, fondos de selección, deshabilitado |
 | `--lcd-2` | Secundario: texto de apoyo, reglas tenues, estado apagado |
 | `--lcd-3` | Tinta: texto, reglas de 2 px, acción principal |
-| `--danger` | Error y acciones destructivas. El único color fuera de la rampa |
+| `--danger` | Error y acciones destructivas. Siempre con su ícono de alerta |
+| `--accent-red`, `--accent-yellow` | Solo en la app pública, como texto sobre el fondo: título del evento (rojo), fecha y sede (amarillo). Ver [DESIGN](./DESIGN.md) |
 
 - **Nada de colores sueltos** en los componentes: solo tokens.
 - **El color nunca es la única señal.** Cada estado lleva texto o ícono.
