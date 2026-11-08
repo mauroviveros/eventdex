@@ -7,11 +7,15 @@ export type Surface =
  * Decides which surface serves a request from its Host header.
  * `rootDomain` includes the port in local development (`localhost:3000`).
  */
-export function surfaceFor(host: string, rootDomain: string): Surface {
+export function surfaceFor(
+  host: string,
+  rootDomain: string,
+  adminHost: string,
+): Surface {
   const h = host.toLowerCase();
   const root = rootDomain.toLowerCase();
   if (h === root || h === `www.${root}`) return { kind: "landing" };
-  if (h === `app.${root}`) return { kind: "admin" };
+  if (h === adminHost.toLowerCase()) return { kind: "admin" };
   return { kind: "publica", host: h };
 }
 
