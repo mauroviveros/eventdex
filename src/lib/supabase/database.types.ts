@@ -962,6 +962,14 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      invite_member: {
+        Args: {
+          p_email: string;
+          p_organization_id: string;
+          p_role: Database["public"]["Enums"]["organization_role"];
+        };
+        Returns: string;
+      };
       log_support_access: {
         Args: { p_organization_id: string };
         Returns: undefined;
