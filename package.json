@@ -32,7 +32,7 @@
     "db:new": "supabase migration new",
     "db:test": "supabase test db",
     "db:types": "supabase gen types typescript --local --schema public > src/lib/supabase/database.types.ts && biome format --write src/lib/supabase/database.types.ts",
-    "db:push": "supabase db push"
+    "db:push": "supabase db push --remote"
   },
   "packageManager": "pnpm@11.20.0",
   "dependencies": {
