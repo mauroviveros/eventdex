@@ -33,24 +33,22 @@ export function AddScheduleForm({
         hint="Opcional."
         error={fields.label}
       />
-      <div className="grid gap-6 sm:grid-cols-2">
-        <Field
-          label="Empieza"
-          name="startsAt"
-          type="datetime-local"
-          defaultValue={values.startsAt}
-          required
-          error={fields.startsAt}
-        />
-        <Field
-          label="Termina"
-          name="endsAt"
-          type="datetime-local"
-          defaultValue={values.endsAt}
-          required
-          error={fields.endsAt}
-        />
-      </div>
+      <Field
+        label="Empieza"
+        name="startsAt"
+        type="datetime-local"
+        defaultValue={values.startsAt}
+        required
+        error={fields.startsAt}
+      />
+      <Field
+        label="Termina"
+        name="endsAt"
+        type="datetime-local"
+        defaultValue={values.endsAt}
+        required
+        error={fields.endsAt}
+      />
       <p className="text-sm text-muted-foreground">
         Horario de {timezone.replaceAll("_", " ")}.
       </p>

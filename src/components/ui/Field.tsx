@@ -8,7 +8,7 @@ type Labels = {
 };
 
 const CONTROL =
-  "min-h-11 border-2 border-lcd-3 bg-lcd-0 px-3 text-base text-lcd-3 placeholder:text-lcd-2 aria-invalid:border-danger disabled:border-lcd-2 disabled:bg-lcd-1 disabled:text-lcd-2";
+  "min-h-11 w-full min-w-0 border-2 border-lcd-3 bg-lcd-0 px-3 text-base text-lcd-3 placeholder:text-lcd-2 aria-invalid:border-danger disabled:border-lcd-2 disabled:bg-lcd-1 disabled:text-lcd-2";
 
 /** Label, control and either its error or its hint, wired for screen readers. */
 function FieldFrame({
