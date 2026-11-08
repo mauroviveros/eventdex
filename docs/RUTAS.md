@@ -31,8 +31,8 @@ el visitante.
 | `/` | Portada del evento activo: fase, countdown, jornadas, sede y spots. Activo es, entre los publicados y públicos, el que está en curso; si no hay, el próximo; si no, el último que terminó (`resolve_active_event`). Si no hay evento, un estado vacío con la marca de la org | Público | R4 |
 | `/eventos/[slug]` | Un evento puntual (pasado o próximo), con la misma vista que la portada | Público | R4 |
 | `/s/[id]` | **Destino del QR.** Reclama la medalla al abrirse (es idempotente: recargar responde "ya la tenías") y la celebra con el progreso. Un QR de otra org o de un evento sin publicar es 404, sin pedir login. Sin sesión, pasa por `/ingresar` y vuelve | Visitante | R5 |
-| `/mis-medallas` | La colección del evento en curso; si no hay uno, la del último evento en que el visitante juntó medallas (si no juntó nunca, la del activo): medallas conseguidas y faltantes. Sin meta del sorteo (alcanza con una medalla; R6 decide si suma un mínimo). Se llega desde el menú de la cuenta, en la cabecera de todo el dominio (con sesión, foto, nombre, Mis medallas y Salir; sin sesión, Ingresar) | Visitante | R5 |
-| `/sorteo` | Ganadores publicados del evento | Público | R6 |
+| `/mis-medallas` | La colección del evento en curso; si no hay uno, la del último evento en que el visitante juntó medallas (si no juntó nunca, la del activo): medallas conseguidas y faltantes. Sin meta del sorteo: cada sorteo fija su mínimo, y el visitante no lo ve hasta que se publican los ganadores. Se llega desde el menú de la cuenta, en la cabecera de todo el dominio (con sesión, foto, nombre, Mis medallas y Salir; sin sesión, Ingresar) | Visitante | R5 |
+| `/sorteo` | Ganadores publicados del último evento que los tenga, con nombre e inicial. Se llega desde la portada, cuando el evento activo ya los publicó | Público | R6 |
 | `/ingresar` | Login con Google y la marca de la org; vuelve a `next` (el QR escaneado) | Público | R5 |
 | `/robots.txt`, `/sitemap.xml` | SEO por dominio. `/s/*` queda fuera del índice | — | R4 |
 
@@ -54,7 +54,6 @@ staff y owner.
 | `/[org]/eventos/[evento]/qr` | Hoja de QR para imprimir: una tarjeta por spot activo, 3 por fila en A4, para recortar. Impresa sale siempre en tonos claros, sin la barra del panel | Miembro | R3 |
 | `/[org]/eventos/[evento]/visitantes` | Registrados, medallas por visitante, bloquear | Miembro | R5 |
 | `/[org]/eventos/[evento]/sorteo` | Sorteos, elegibles, extraer y anular | Miembro | R6 |
-| `/[org]/eventos/[evento]/sorteo/presentar` | Vista para proyectar la extracción en vivo *(sujeta a la pregunta abierta 3 de PROYECTO)* | Miembro | R6 |
 | `/[org]/spots` | Catálogo de spots de la organización | Miembro | R3 |
 | `/[org]/spots/nuevo` | Alta de spot | Miembro | R3 |
 | `/[org]/spots/[spot]` | Editar o archivar un spot; en qué eventos se usa. `[spot]` es el `id`: un spot no tiene slug, para no pedir uno por cada stand | Miembro | R3 |
