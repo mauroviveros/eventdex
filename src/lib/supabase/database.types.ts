@@ -58,6 +58,66 @@ export type Database = {
           },
         ];
       };
+      event_registrations: {
+        Row: {
+          blocked_at: string | null;
+          created_at: string;
+          event_id: string;
+          id: string;
+          organization_id: string;
+          updated_at: string | null;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          blocked_at?: string | null;
+          created_at?: string;
+          event_id: string;
+          id?: string;
+          organization_id: string;
+          updated_at?: string | null;
+          user_id: string;
+        };
+        Update: {
+          blocked_at?: string | null;
+          created_at?: string;
+          event_id?: string;
+          id?: string;
+          organization_id?: string;
+          updated_at?: string | null;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "event_registrations_event_id_organization_id_fkey";
+            columns: ["event_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "event_phases";
+            referencedColumns: ["event_id", "organization_id"];
+          },
+          {
+            foreignKeyName: "event_registrations_event_id_organization_id_fkey";
+            columns: ["event_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "event_registrations_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "event_registrations_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       event_schedules: {
         Row: {
           created_at: string;
@@ -514,6 +574,59 @@ export type Database = {
         };
         Relationships: [];
       };
+      spot_claims: {
+        Row: {
+          claimed_at: string;
+          event_id: string;
+          event_spot_id: string;
+          id: string;
+          organization_id: string;
+          registration_id: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          claimed_at?: string;
+          event_id: string;
+          event_spot_id: string;
+          id?: string;
+          organization_id: string;
+          registration_id: string;
+          user_id: string;
+        };
+        Update: {
+          claimed_at?: string;
+          event_id?: string;
+          event_spot_id?: string;
+          id?: string;
+          organization_id?: string;
+          registration_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "spot_claims_event_spot_id_event_id_fkey";
+            columns: ["event_spot_id", "event_id"];
+            isOneToOne: false;
+            referencedRelation: "event_spots";
+            referencedColumns: ["id", "event_id"];
+          },
+          {
+            foreignKeyName: "spot_claims_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "spot_claims_registration_id_event_id_user_id_fkey";
+            columns: ["registration_id", "event_id", "user_id"];
+            isOneToOne: false;
+            referencedRelation: "event_registrations";
+            referencedColumns: ["id", "event_id", "user_id"];
+          },
+        ];
+      };
       spots: {
         Row: {
           archived_at: string | null;
@@ -670,6 +783,15 @@ export type Database = {
           isSetofReturn: true;
         };
       };
+      claim_spot: {
+        Args: { p_event_spot_id: string };
+        Returns: {
+          claimed_at: string;
+          ends_at: string;
+          outcome: Database["public"]["Enums"]["claim_outcome"];
+          starts_at: string;
+        }[];
+      };
       create_organization: {
         Args: {
           p_hostname: string;
@@ -701,6 +823,7 @@ export type Database = {
       };
     };
     Enums: {
+      claim_outcome: "new" | "repeat" | "inactive" | "out_of_phase" | "blocked";
       event_phase: "upcoming" | "live" | "finished";
       event_status: "draft" | "published" | "archived" | "cancelled";
       event_visibility: "public" | "unlisted";
@@ -837,6 +960,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      claim_outcome: ["new", "repeat", "inactive", "out_of_phase", "blocked"],
       event_phase: ["upcoming", "live", "finished"],
       event_status: ["draft", "published", "archived", "cancelled"],
       event_visibility: ["public", "unlisted"],
