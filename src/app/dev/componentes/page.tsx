@@ -193,7 +193,7 @@ export default function ComponentesPage() {
                 avatarUrl: null,
               }}
             />
-            <SignInLink next="/" />
+            <SignInLink />
           </div>
         </Section>
 

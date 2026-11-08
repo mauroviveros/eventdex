@@ -130,3 +130,14 @@ describe("writes RLS hides", () => {
     expect(await removeEventSpot(client, SPOT)).toEqual(denied);
   });
 });
+
+describe("removeEventSpot", () => {
+  it("a spot with medals asks to deactivate it instead", async () => {
+    const { client } = fakeClient({ data: null, error: { code: "23503" } });
+    expect(await removeEventSpot(client, SPOT)).toEqual({
+      ok: false,
+      error:
+        "Este spot ya tiene medallas, así que no se puede quitar. Desactivalo para que deje de sumar.",
+    });
+  });
+});

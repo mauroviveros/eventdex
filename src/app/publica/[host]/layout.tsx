@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import Link from "next/link";
 import { type CSSProperties, Suspense } from "react";
 import { LcdFilters } from "@/components/pixel/LcdFilters";
@@ -62,9 +61,5 @@ export default async function PublicaLayout({
 /** Who is signed in on this domain, or the way in. Streams after the header. */
 async function Account() {
   const account = await getVisitorAccount();
-  if (account) return <VisitorMenu account={account} />;
-  const path = (await headers()).get("x-public-path") ?? "/";
-  // On the sign-in page itself the link would point back to it.
-  if (path.startsWith("/ingresar")) return null;
-  return <SignInLink next={path} />;
+  return account ? <VisitorMenu account={account} /> : <SignInLink />;
 }

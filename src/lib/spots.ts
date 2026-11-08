@@ -212,7 +212,13 @@ export async function removeEventSpot(
     .delete()
     .eq("id", parsed.data)
     .select("id");
-  if (error) return failed(error);
+  if (error) {
+    return failed(error, {
+      // spot_claims restricts the delete: medals are history.
+      "23503":
+        "Este spot ya tiene medallas, así que no se puede quitar. Desactivalo para que deje de sumar.",
+    });
+  }
   if (data.length === 0) return failed({ code: "42501" });
   return { ok: true, data: null };
 }
