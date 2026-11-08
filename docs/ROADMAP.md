@@ -153,12 +153,12 @@ Branch `feat/spots-y-qr`. Catálogo, spots del evento y QR imprimibles.
 
 Branch `feat/portada-publica`. El evento se ve en el dominio de la org.
 
-1. ▶ **DB.** `resolve_organization(host)`, `resolve_active_event(org)` y las lecturas
+1. ✅ **DB.** `resolve_organization(host)`, `resolve_active_event(org)` y las lecturas
    públicas de evento y spots.
    *Listo cuando* pgTAP prueba la resolución con un host desconocido, una org sin
    eventos y una org con un evento en curso y otro próximo.
-2. **Backend.** `proxy.ts` resuelve la org con caché; lecturas de la portada;
-   `robots.txt` y `sitemap.xml`.
+2. ▶ **Backend.** El layout de la app pública resuelve la org con caché (el proxy
+   solo enruta); lecturas de la portada; `robots.txt` y `sitemap.xml`.
    *Listo cuando* un host desconocido da 404 y uno conocido resuelve en una sola
    consulta.
 3. **Vista.** `/` y `/eventos/[slug]`, con la marca de la org, el countdown y la
