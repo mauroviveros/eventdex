@@ -95,8 +95,9 @@ En `src/components/<dominio>/`. Cada uno documenta sus estados en `/dev/componen
 | Componente | Qué muestra | Estados |
 |------------|-------------|---------|
 | **Medalla** | Un spot conseguido o pendiente: su logo en cuatro tonos, o el sprite de su tipo | conseguida · pendiente (apagada) · nueva (se revela en pasos) · spot inactivo (tramada) |
-| **Progreso** | Medallas conseguidas / total, puntos y si entra al sorteo | sin medallas · en progreso · meta alcanzada · evento finalizado |
-| **Celebración** | La pantalla de `/s/[id]` al reclamar | medalla nueva · ya la tenías · spot inactivo · evento no en curso · no registrado o bloqueado |
+| **Progreso** | Medallas conseguidas / total. Sin meta habla de completar la colección; con meta (R6, si el sorteo pide un mínimo), del sorteo | sin medallas · en progreso · colección completa · evento finalizado · con meta |
+| **Cuenta del visitante** | Fin de la cabecera del dominio de la org: foto, nombre y mail, con un menú a Mis medallas y Salir | con sesión · sin nombre (solo mail) · celular (solo la foto) · sin sesión (Ingresar) |
+| **Celebración** | La pantalla de `/s/[id]` al reclamar. Las fechas, en la zona del evento | medalla nueva · ya la tenías · spot inactivo · evento no en curso (todavía no arrancó / terminó) · bloqueado |
 | **Countdown** | Tiempo hasta la próxima jornada | días · horas · en curso · finalizado |
 | **Fase** | Badge de próximo / en curso / finalizado / borrador | uno por fase + `sin fecha` |
 | **Tarjeta de evento** | Título, fechas, sede, fase | completa · sin sede · sin jornadas |
