@@ -1001,6 +1001,7 @@ export type Database = {
           slug: string;
         }[];
       };
+      set_primary_domain: { Args: { p_domain_id: string }; Returns: undefined };
       void_raffle_draw: {
         Args: { p_draw_id: string; p_reason: string };
         Returns: {
