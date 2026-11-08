@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  countdownState,
   eventPhase,
   formatEventDates,
   formatScheduleTimes,
@@ -149,5 +150,44 @@ describe("isTimeZone", () => {
   it("accepts IANA zones and rejects the rest", () => {
     expect(isTimeZone(BA)).toBe(true);
     expect(isTimeZone("Mars/Olympus")).toBe(false);
+  });
+});
+
+describe("countdownState", () => {
+  const two = [
+    day("2026-11-14T13:00:00Z", "2026-11-14T21:00:00Z"),
+    day("2026-11-15T13:00:00Z", "2026-11-15T21:00:00Z"),
+  ];
+
+  it("counts down to the first schedule", () => {
+    expect(countdownState(two, BA, new Date("2026-11-12T10:30:00Z"))).toEqual({
+      kind: "faltan",
+      days: 2,
+      hours: 2,
+      minutes: 30,
+    });
+  });
+
+  it("says when the running schedule ends, in the event's zone", () => {
+    expect(countdownState(two, BA, now)).toEqual({
+      kind: "en-curso",
+      endsAt: "18:00",
+    });
+  });
+
+  it("counts down to the next day between two schedules", () => {
+    expect(countdownState(two, BA, new Date("2026-11-15T03:00:00Z"))).toEqual({
+      kind: "faltan",
+      days: 0,
+      hours: 10,
+      minutes: 0,
+    });
+  });
+
+  it("is finished after the last schedule, or without schedules", () => {
+    expect(countdownState(two, BA, new Date("2026-11-16T00:00:00Z"))).toEqual({
+      kind: "finalizado",
+    });
+    expect(countdownState([], BA, now)).toEqual({ kind: "finalizado" });
   });
 });

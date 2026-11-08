@@ -1,7 +1,4 @@
-export type CountdownState =
-  | { kind: "faltan"; days: number; hours: number; minutes: number }
-  | { kind: "en-curso"; endsAt: string }
-  | { kind: "finalizado" };
+import type { CountdownState } from "@/domain/events";
 
 /** Time until the next session, in the event's local time. */
 export function Countdown({ state }: { state: CountdownState }) {
