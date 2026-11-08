@@ -37,6 +37,7 @@ export function Progress({ claimed, total, goal, finished = false }: Props) {
       </p>
       <div
         role="progressbar"
+        aria-label="Medallas juntadas"
         aria-valuemin={0}
         aria-valuemax={total}
         aria-valuenow={claimed}

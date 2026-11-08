@@ -2,11 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Celebration } from "@/components/visitante/Celebration";
 import { Progress } from "@/components/visitante/Progress";
-import { collectionProgress } from "@/domain/claims";
 import { claimSpot } from "@/lib/claims";
-import { getClaimTarget, listMyClaims } from "@/lib/data/claims";
-import { getPublicEvent } from "@/lib/data/public";
-import { requireViewer } from "@/lib/data/viewer";
+import { getClaimTarget, getMyProgress } from "@/lib/data/claims";
+import { requireVisitor } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
 import { requireHostOrganization } from "../../organization";
 
@@ -29,7 +27,7 @@ export default async function ClaimPage({
 
   const target = await getClaimTarget(supabase, org.id, id);
   if (!target) notFound();
-  const viewer = await requireViewer();
+  const visitor = await requireVisitor();
 
   const claim = await claimSpot(supabase, id);
   if (!claim.ok) throw new Error(claim.error);
@@ -39,14 +37,7 @@ export default async function ClaimPage({
 
   let progress = null;
   if (outcome.kind === "nueva" || outcome.kind === "repetida") {
-    const [full, mine] = await Promise.all([
-      getPublicEvent(supabase, org.id, event.slug),
-      listMyClaims(supabase, event.id, viewer.id),
-    ]);
-    const p = collectionProgress(
-      full?.spots ?? [],
-      mine.map((c) => c.event_spot_id),
-    );
+    const p = await getMyProgress(supabase, event.id, visitor.id);
     progress = <Progress claimed={p.medals} total={p.total} />;
   }
 

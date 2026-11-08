@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useRef } from "react";
 import { Chevron } from "@/components/pixel/Chevron";
 import { Monogram } from "@/components/ui/Monogram";
 
@@ -15,8 +19,22 @@ type Account = {
  * phones only the photo shows; the name moves into the menu.
  */
 export function VisitorMenu({ account }: { account: Account }) {
+  const ref = useRef<HTMLDetailsElement>(null);
+  const pathname = usePathname();
+
   return (
-    <details className="group relative">
+    <details
+      // The header outlives navigation: a new page remounts the menu closed.
+      key={pathname}
+      ref={ref}
+      className="group relative"
+      onKeyDown={(e) => {
+        if (e.key === "Escape" && ref.current?.open) {
+          ref.current.open = false;
+          ref.current.querySelector("summary")?.focus();
+        }
+      }}
+    >
       <summary className="flex min-h-11 cursor-pointer list-none items-center gap-3 border-2 border-transparent px-2 py-1 hover:border-lcd-3 group-open:border-lcd-3 group-open:bg-lcd-1 [&::-webkit-details-marker]:hidden">
         <Avatar account={account} />
         <span className="hidden min-w-0 max-w-48 text-left sm:grid">
@@ -79,8 +97,15 @@ function Avatar({ account }: { account: Account }) {
   );
 }
 
-/** Signed out: straight to the sign-in, coming back to this page. */
-export function SignInLink({ next }: { next: string }) {
+/**
+ * Signed out: straight to the sign-in, coming back to this page. Reads the
+ * path on the client, so it follows navigation the server header doesn't see.
+ */
+export function SignInLink() {
+  const pathname = usePathname();
+  const query = useSearchParams().toString();
+  if (pathname.startsWith("/ingresar")) return null;
+  const next = query ? `${pathname}?${query}` : pathname;
   return (
     <Link
       href={`/ingresar?next=${encodeURIComponent(next)}`}
