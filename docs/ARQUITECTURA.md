@@ -231,7 +231,9 @@ pueda levantar Supabase completo (auth y Mailpit) y la app.
   por eso el admin va aparte. Al comprar un dominio propio solo cambian las dos
   variables.
 - Las imágenes (logos, portadas, avatares de spots) van en **Supabase Storage**, en
-  buckets con políticas por organización.
+  buckets con políticas por organización. `org-logos` es público para leer, solo
+  el owner escribe bajo la carpeta `{organization_id}/`, hasta 1 MiB y sin SVG (un
+  SVG servido desde el bucket puede ejecutar scripts).
 
 ## Corte a producción (hecho el 2026-11-08)
 
