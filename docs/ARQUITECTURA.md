@@ -152,8 +152,10 @@ carpetas nunca se alcanzan directo (`expo.com/admin` es un 404):
   consulta; un host desconocido o una org suspendida no devuelven nada). La llama el
   layout de `publica/[host]/`, no el proxy: el proxy solo enruta, la org llega entera
   a las páginas y un host desconocido es un 404 de verdad. El resultado se cachea
-  entre requests e instancias (`unstable_cache`, tag `organizations`, 5 minutos),
-  porque cambia casi nunca; crear una org invalida el tag. Se lee con un cliente
+  entre requests e instancias (`unstable_cache`, tag `organizations`, 1 minuto),
+  porque cambia casi nunca. Toda acción que cambie una org (nombre, marca, estado)
+  o sus dominios llama a `invalidateOrganizations()`; lo que se cambia por SQL se
+  ve en menos de un minuto. Se lee con un cliente
   anónimo sin sesión (`src/lib/supabase/public.ts`), igual para todos.
 - **En local** se usan subdominios de `localhost`, que los navegadores resuelven
   solos: `localhost:3000` es la landing, `app.localhost:3000` el admin y

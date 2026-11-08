@@ -161,11 +161,14 @@ Branch `feat/portada-publica`. El evento se ve en el dominio de la org.
    solo enruta); lecturas de la portada; `robots.txt` y `sitemap.xml`.
    *Listo cuando* un host desconocido da 404 y uno conocido resuelve en una sola
    consulta.
-3. ▶ **Vista.** `/` y `/eventos/[slug]`, con la marca de la org, el countdown y la
+3. ✅ **Vista.** `/` y `/eventos/[slug]`, con la marca de la org, el countdown y la
    lista de spots.
    *Listo cuando* `expo.localhost:3000` muestra el evento cargado en R2 y R3, a
    360 px, con la marca de la org aplicada.
-4. **Auditoría.** Incluye la performance mobile (Lighthouse).
+4. ▶ **Auditoría.** Incluye la performance mobile (Lighthouse). `/code-review`: 6
+   hallazgos (5 resueltos; el logo de las medallas espera a Storage). Lighthouse mobile
+   sobre el build de producción: performance 99, accesibilidad 100, buenas prácticas
+   100, SEO 100.
 
 ## R5 · Medallas
 

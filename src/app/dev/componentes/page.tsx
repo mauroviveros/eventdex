@@ -14,6 +14,11 @@ import { Button } from "@/components/ui/Button";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
 import { Celebration } from "@/components/visitante/Celebration";
 import { Countdown } from "@/components/visitante/Countdown";
+import {
+  Levels,
+  Marquee,
+  type PublicEvent,
+} from "@/components/visitante/EventHome";
 import { Medal } from "@/components/visitante/Medal";
 import { PhaseBadge } from "@/components/visitante/PhaseBadge";
 import { Progress } from "@/components/visitante/Progress";
@@ -32,6 +37,57 @@ async function catalogAction() {
     values: {},
   };
 }
+
+// Synthetic events, only for the catalog. Fixed "now": sat 14 nov 2026, 12:00 in Buenos Aires.
+const SAMPLE_NOW = new Date("2026-11-14T15:00:00Z");
+const day = (id: string, starts: string, ends: string, label?: string) => ({
+  id,
+  label: label ?? null,
+  starts_at: starts,
+  ends_at: ends,
+});
+const sampleEvent = (
+  schedules: PublicEvent["schedules"],
+  venue: PublicEvent["venue"] = {
+    name: "Predio Norte",
+    address_line: "Av. de Ejemplo 1234",
+    city: "Tucumán",
+    state: null,
+  },
+): PublicEvent => ({
+  id: "ejemplo",
+  slug: "expo-de-ejemplo",
+  title: "Expo de ejemplo 2026",
+  edition_label: null,
+  summary: "Tres jornadas de stands, atracciones y talleres.",
+  description: null,
+  cover_path: null,
+  timezone: "America/Argentina/Buenos_Aires",
+  status: "published",
+  visibility: "public",
+  venue,
+  schedules,
+  spots: [],
+});
+const SAMPLE = {
+  upcoming: sampleEvent([
+    day("u1", "2026-11-21T13:00:00Z", "2026-11-21T23:00:00Z"),
+    day("u2", "2026-11-22T13:00:00Z", "2026-11-22T22:00:00Z"),
+  ]),
+  live: sampleEvent([
+    day("l1", "2026-11-13T13:00:00Z", "2026-11-13T23:00:00Z"),
+    day("l2", "2026-11-14T13:00:00Z", "2026-11-14T23:00:00Z"),
+    day("l3", "2026-11-15T13:00:00Z", "2026-11-15T22:00:00Z"),
+  ]),
+  finished: sampleEvent([
+    day("f1", "2026-11-07T13:00:00Z", "2026-11-07T23:00:00Z"),
+    day("f2", "2026-11-08T13:00:00Z", "2026-11-08T22:00:00Z"),
+  ]),
+  single: sampleEvent(
+    [day("s1", "2026-12-05T14:00:00Z", "2026-12-05T21:00:00Z", "Única")],
+    null,
+  ),
+};
 
 export const metadata: Metadata = {
   title: "Componentes · Eventdex",
@@ -178,6 +234,28 @@ export default function ComponentesPage() {
             />
             <Countdown state={{ kind: "en-curso", endsAt: "22:00" }} />
             <Countdown state={{ kind: "finalizado" }} />
+          </div>
+        </Section>
+
+        <Section
+          title="Portada: cartel"
+          note="La apertura de la portada pública: fecha en una pestaña, título en la placa de doble filete, sede en otra pestaña, y la cuenta regresiva. Con una sola jornada, el horario va en la pestaña; sin sede, la pestaña de abajo no está."
+        >
+          <div className="grid gap-12">
+            <Marquee event={SAMPLE.upcoming} now={SAMPLE_NOW} />
+            <Marquee event={SAMPLE.live} now={SAMPLE_NOW} />
+            <Marquee event={SAMPLE.finished} now={SAMPLE_NOW} />
+            <Marquee event={SAMPLE.single} now={SAMPLE_NOW} />
+          </div>
+        </Section>
+
+        <Section
+          title="Portada: jornadas como niveles"
+          note="La jornada de ahora (o la próxima) es una celda rellena de doble filete; las que faltan van punteadas y las terminadas, apagadas."
+        >
+          <div className="grid gap-12">
+            <Levels event={SAMPLE.live} now={SAMPLE_NOW} />
+            <Levels event={SAMPLE.upcoming} now={SAMPLE_NOW} />
           </div>
         </Section>
 
