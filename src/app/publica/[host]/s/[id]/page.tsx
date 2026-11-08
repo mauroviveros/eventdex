@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { Celebration } from "@/components/visitante/Celebration";
 import { Progress } from "@/components/visitante/Progress";
 import { claimSpot } from "@/lib/claims";
@@ -16,7 +17,8 @@ export const metadata: Metadata = {
 /**
  * Where a printed QR lands. Opening it claims the medal: claim_spot() is
  * idempotent, so a reload only answers "ya la tenías". A QR of another org or
- * of an unpublished event is a 404, before asking anyone to sign in.
+ * of an unpublished event is a real 404, before asking anyone to sign in: both
+ * checks run before the response starts, and only the claim streams.
  */
 export default async function ClaimPage({
   params,
@@ -29,27 +31,57 @@ export default async function ClaimPage({
   if (!target) notFound();
   const visitor = await requireVisitor();
 
-  const claim = await claimSpot(supabase, id);
+  return (
+    <main className="mx-auto grid w-full max-w-3xl justify-items-center px-4 py-10 sm:px-6">
+      <Suspense fallback={<Claiming />}>
+        <Claim target={target} visitorId={visitor.id} />
+      </Suspense>
+    </main>
+  );
+}
+
+type Target = NonNullable<Awaited<ReturnType<typeof getClaimTarget>>>;
+
+async function Claim({
+  target: { event, spot },
+  visitorId,
+}: {
+  target: Target;
+  visitorId: string;
+}) {
+  const supabase = await createClient();
+  const claim = await claimSpot(supabase, spot.id);
   if (!claim.ok) throw new Error(claim.error);
   if (!claim.data) notFound();
   const outcome = claim.data;
-  const { event, spot } = target;
 
   let progress = null;
   if (outcome.kind === "nueva" || outcome.kind === "repetida") {
-    const p = await getMyProgress(supabase, event.id, visitor.id);
+    const p = await getMyProgress(supabase, event.id, visitorId);
     progress = <Progress claimed={p.medals} total={p.total} />;
   }
 
   return (
-    <main className="mx-auto grid w-full max-w-3xl justify-items-center px-4 py-10 sm:px-6">
-      <Celebration
-        spot={{ name: spot.name, code: spot.code, type: spot.type }}
-        outcome={outcome}
-        timeZone={event.timezone}
-        eventHref={`/eventos/${event.slug}`}
-        progress={progress}
-      />
-    </main>
+    <Celebration
+      spot={{ name: spot.name, code: spot.code, type: spot.type }}
+      outcome={outcome}
+      timeZone={event.timezone}
+      eventHref={`/eventos/${event.slug}`}
+      progress={progress}
+    />
+  );
+}
+
+/** While the medal is claimed: the celebration's panel, still empty. */
+function Claiming() {
+  return (
+    <div
+      role="status"
+      aria-busy
+      className="panel grid w-full max-w-sm justify-items-center gap-5 px-6 py-8 text-center"
+    >
+      <div className="size-40 border-2 border-dashed border-lcd-2" />
+      <p className="font-display text-px-2">Sumando la medalla…</p>
+    </div>
   );
 }
