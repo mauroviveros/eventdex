@@ -222,13 +222,13 @@ Branch `feat/equipo-y-marca`.
    de la invitación sale de sus fechas, auditoría de equipo y dominios, y el bucket
    `org-logos` con el logo atado a su org.
    *Listo cuando* pgTAP prueba que solo el owner invita y edita la marca.
-2. **Backend.** Las acciones de invitar, cambiar rol, quitar, guardar marca y
-   dominios. El color no se valida por contraste: la rampa lo garantiza (ver
-   [DESIGN_SYSTEM](./DESIGN_SYSTEM.md)).
-   *Listo cuando* un color o un logo inválido se rechaza con un mensaje claro y
-   cada cambio de marca o dominio se ve en la portada sin esperar la caché.
+2. ✅ **Backend.** Las acciones de invitar, revocar, cambiar rol, quitar, guardar
+   marca, subir o quitar el logo y dominios. El color no se valida por contraste:
+   la rampa lo garantiza (ver [DESIGN_SYSTEM](./DESIGN_SYSTEM.md)).
+   *Listo cuando* un color o un logo inválido se rechaza con un mensaje claro.
 3. **Vista.** `/[org]/equipo` y `/[org]/ajustes` con vista previa de la marca.
-   *Listo cuando* el owner cambia el color y el logo y se ven en la portada pública.
+   *Listo cuando* el owner cambia el color y el logo y se ven en la portada pública
+   sin esperar la caché.
 4. **Auditoría.**
 
 ## R8 · Plataforma
