@@ -88,6 +88,10 @@ que se prueba sin mocks.
 - **Operaciones atómicas en SQL.** Reclamar una medalla, publicar un evento y sacar
   una extracción del sorteo son funciones Postgres (`rpc`), no varias queries
   desde JS.
+- **Reclamar al abrir el QR.** `claim_spot()` es idempotente, así que `/s/[id]`
+  reclama al renderizar, sin botón ni Server Action de por medio: volver a abrir
+  el link solo responde "ya la tenías". Antes comprueba que el QR sea de la org
+  del dominio (`getClaimTarget`); si no, es un 404 y no una medalla.
 
 ### Convenciones del esquema
 
