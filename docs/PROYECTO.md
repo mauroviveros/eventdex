@@ -143,14 +143,14 @@ erDiagram
 
 ## Preguntas abiertas
 
-1. **Login del visitante**: ¿alcanza con Google o hace falta un link mágico por mail?
-   No todos los visitantes tienen o quieren usar Google.
+1. ~~**Login del visitante**~~: decidido en R5, solo Google. El link por mail queda
+   para desarrollo local; otro método se suma si hace falta.
 2. **Escaneo**: ¿cámara dentro de la app, la cámara nativa del celular abriendo la
    URL del QR, o las dos?
 3. **Sorteo en vivo**: ¿se proyecta en pantalla durante el evento? Si es así, hace
    falta una vista de presentación.
-4. **Meta de medallas**: ¿para entrar al sorteo hay que juntar un mínimo, o alcanza
-   con una?
+4. ~~**Meta de medallas**~~: decidido en R5, alcanza con una. Si R6 necesita un
+   mínimo, se configura por evento.
 5. **Duplicar evento**: ¿copia spots, sede y jornadas, o solo spots?
 6. **Facturación**: ¿se factura por evento o por período a la organización?
 7. **Migración**: ¿qué se migra de la v1 (solo visitantes y medallas, o también

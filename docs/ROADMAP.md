@@ -182,7 +182,7 @@ Branch `feat/medallas`. El visitante escanea y colecciona.
 2. ✅ **Backend.** Login del visitante en el dominio de la org con retorno al QR, la
    acción de reclamar y el progreso en `src/domain/`.
    *Listo cuando* los tests cubren los cinco resultados de la celebración.
-3. **Vista.** `/ingresar`, `/s/[id]`, `/mis-medallas` y
+3. ▶ **Vista.** `/ingresar`, `/s/[id]`, `/mis-medallas` y
    `/[org]/eventos/[evento]/visitantes`.
    *Listo cuando* con el celular real: se escanea un QR impreso, se inicia sesión,
    aparece la medalla, y el staff ve al visitante en el admin.
