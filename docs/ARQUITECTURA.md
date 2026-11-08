@@ -149,8 +149,12 @@ carpetas nunca se alcanzan directo (`expo.com/admin` es un 404):
 | cualquier otro | `publica/[host]/`, con la organización resuelta por `organization_domains` |
 
 - El mapeo host → organización es una función SQL (`resolve_organization`, una sola
-  consulta; un host desconocido o una org suspendida no devuelven nada). El resultado se cachea, porque
-  cambia casi nunca.
+  consulta; un host desconocido o una org suspendida no devuelven nada). La llama el
+  layout de `publica/[host]/`, no el proxy: el proxy solo enruta, la org llega entera
+  a las páginas y un host desconocido es un 404 de verdad. El resultado se cachea
+  entre requests e instancias (`unstable_cache`, tag `organizations`, 5 minutos),
+  porque cambia casi nunca; crear una org invalida el tag. Se lee con un cliente
+  anónimo sin sesión (`src/lib/supabase/public.ts`), igual para todos.
 - **En local** se usan subdominios de `localhost`, que los navegadores resuelven
   solos: `localhost:3000` es la landing, `app.localhost:3000` el admin y
   `expo.localhost:3000` una organización de seed. No hay que tocar `/etc/hosts`.
