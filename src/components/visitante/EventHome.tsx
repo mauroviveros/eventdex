@@ -29,7 +29,7 @@ export function EventHome({ event, now }: Props) {
       <Marquee event={event} now={now} />
       {event.hasWinners && (
         <Link
-          href="/sorteo"
+          href={`/sorteo?evento=${event.slug}`}
           className={buttonClass("primary", "justify-self-center no-underline")}
         >
           Ver ganadores del sorteo

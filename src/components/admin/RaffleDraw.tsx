@@ -16,7 +16,7 @@ export function RaffleDraw({ draw, timezone, children }: Props) {
     <li className="grid gap-3 border-t-2 border-lcd-2 py-4 first:border-t-0">
       <div className="grid gap-1">
         <p
-          className={`font-display text-px-2 break-words ${voided ? "text-muted-foreground line-through" : ""}`}
+          className={`font-display text-px-2 wrap-anywhere ${voided ? "text-muted-foreground line-through" : ""}`}
         >
           {draw.name}
         </p>

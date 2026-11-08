@@ -154,18 +154,20 @@ function Raffle({
         </div>
       )}
 
-      {raffle.draws.length > 0 && (
-        // The winner is announced to screen readers as soon as it comes out.
-        <ul aria-live="polite" className="grid">
-          {raffle.draws.map((draw) => (
-            <RaffleDraw key={draw.id} draw={draw} timezone={timezone}>
-              {!readOnly && draw.voided_at === null && (
-                <VoidDrawForm org={org} drawId={draw.id} name={draw.name} />
-              )}
-            </RaffleDraw>
-          ))}
-        </ul>
-      )}
+      {/* Always mounted: a live region added along with its content stays silent. */}
+      <div aria-live="polite">
+        {raffle.draws.length > 0 && (
+          <ul className="grid">
+            {raffle.draws.map((draw) => (
+              <RaffleDraw key={draw.id} draw={draw} timezone={timezone}>
+                {!readOnly && draw.voided_at === null && (
+                  <VoidDrawForm org={org} drawId={draw.id} name={draw.name} />
+                )}
+              </RaffleDraw>
+            ))}
+          </ul>
+        )}
+      </div>
     </section>
   );
 }

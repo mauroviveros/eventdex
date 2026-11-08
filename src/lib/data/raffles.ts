@@ -47,17 +47,19 @@ export async function listEventRaffles(supabase: Supabase, eventId: string) {
 export type EventRaffle = Awaited<ReturnType<typeof listEventRaffles>>[number];
 
 /**
- * The published winners of the org's latest event that has any, or null. Takes
- * the public client: through a session, a member's RLS would add voided draws.
+ * The published winners of one event, or by default of the org's latest public
+ * event that has any; null if none. Takes the public client: through a session,
+ * a member's RLS would add voided draws.
  */
 export async function getPublishedWinners(
   supabase: Supabase,
   organizationId: string,
+  eventSlug?: string,
 ) {
   const { data, error } = await supabase
     .from("raffles")
     .select(
-      `id, title, event_id, event:events (title),
+      `id, title, event_id, event:events (slug, title, visibility),
        winners:raffle_draws (id, winner_name)`,
     )
     .eq("organization_id", organizationId)
@@ -67,7 +69,13 @@ export async function getPublishedWinners(
   if (error) throw error;
 
   // An event taken down comes back null; every draw voided, without winners.
-  const shown = data.filter((r) => r.event && r.winners.length > 0);
+  const shown = data.filter(
+    (r) =>
+      r.winners.length > 0 &&
+      (eventSlug
+        ? r.event?.slug === eventSlug
+        : r.event?.visibility === "public"),
+  );
   const latest = shown[0];
   if (!latest?.event) return null;
   return {
