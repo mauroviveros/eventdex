@@ -1,9 +1,10 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { logSupportAccess } from "@/lib/data/organizations";
+import { ORGANIZATIONS_TAG } from "@/lib/data/public";
 import { createOrganization } from "@/lib/organizations";
 import type { ActionResult } from "@/lib/results";
 import { createClient } from "@/lib/supabase/server";
@@ -25,6 +26,8 @@ export async function createOrganizationAction(
   // React resets the form after the action: send the values back so nothing typed is lost.
   if (!result.ok) return { ...result, values };
   revalidatePath("/admin/plataforma/organizaciones");
+  // Its domain resolves right away on the public app.
+  updateTag(ORGANIZATIONS_TAG);
   redirect("/plataforma/organizaciones?creada=1");
 }
 

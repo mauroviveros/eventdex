@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { Constants } from "@/lib/supabase/database.types";
-import { resolveSpot, SPOT_TYPES, spotUrl } from "./spots";
+import {
+  publicOrigin,
+  resolvePublishedSpot,
+  resolveSpot,
+  SPOT_TYPES,
+  spotUrl,
+} from "./spots";
 
 const catalog = {
   name: "Café Nuevo",
@@ -88,5 +94,35 @@ describe("SPOT_TYPES", () => {
   // The domain doesn't import Supabase; this keeps it in step with the enum.
   it("matches the database's spot_type enum", () => {
     expect([...SPOT_TYPES]).toEqual([...Constants.public.Enums.spot_type]);
+  });
+});
+
+describe("publicOrigin", () => {
+  it("is https in production and http on local hosts", () => {
+    expect(publicOrigin("expo.com.ar")).toBe("https://expo.com.ar");
+    expect(publicOrigin("expo.localhost:3000")).toBe(
+      "http://expo.localhost:3000",
+    );
+    // A real domain that merely contains "localhost" is not local.
+    expect(publicOrigin("notlocalhost.com")).toBe("https://notlocalhost.com");
+  });
+});
+
+describe("resolvePublishedSpot", () => {
+  it("shows the snapshot, or the edition's override", () => {
+    expect(resolvePublishedSpot({ ...none, snapshot })?.name).toBe(
+      "Café de la Esquina",
+    );
+    expect(
+      resolvePublishedSpot({
+        ...none,
+        name_override: "Café · Hall",
+        snapshot,
+      })?.name,
+    ).toBe("Café · Hall");
+  });
+
+  it("leaves out a spot without a readable snapshot", () => {
+    expect(resolvePublishedSpot({ ...none, snapshot: null })).toBeNull();
   });
 });
