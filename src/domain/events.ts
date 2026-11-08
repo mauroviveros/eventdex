@@ -128,3 +128,48 @@ export function localToInstant(local: string, timeZone: string) {
   guess = target - (wallClock(guess, timeZone) - guess);
   return new Date(guess);
 }
+
+/** What the countdown shows: time to the next schedule, the one running now, or done. */
+export type CountdownState =
+  | { kind: "faltan"; days: number; hours: number; minutes: number }
+  | { kind: "en-curso"; endsAt: string }
+  | { kind: "finalizado" };
+
+/**
+ * The countdown for an event's schedules. During a schedule it ends at that
+ * schedule's end (in the event's zone); between schedules or before the first
+ * it counts down to the next start; after the last, finalizado.
+ */
+export function countdownState(
+  schedules: readonly Schedule[],
+  timeZone: string,
+  now = new Date(),
+): CountdownState {
+  const t = now.getTime();
+  const sorted = [...schedules].sort(
+    (a, b) => Date.parse(a.starts_at) - Date.parse(b.starts_at),
+  );
+  const running = sorted.find(
+    (s) => Date.parse(s.starts_at) <= t && t <= Date.parse(s.ends_at),
+  );
+  if (running) {
+    return {
+      kind: "en-curso",
+      endsAt: new Intl.DateTimeFormat("es-AR", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23",
+        timeZone,
+      }).format(new Date(running.ends_at)),
+    };
+  }
+  const next = sorted.find((s) => Date.parse(s.starts_at) > t);
+  if (!next) return { kind: "finalizado" };
+  const minutes = Math.ceil((Date.parse(next.starts_at) - t) / 60_000);
+  return {
+    kind: "faltan",
+    days: Math.floor(minutes / 1440),
+    hours: Math.floor((minutes % 1440) / 60),
+    minutes: minutes % 60,
+  };
+}
