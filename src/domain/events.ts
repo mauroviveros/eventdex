@@ -64,6 +64,19 @@ export function formatEventDates(
   }).formatRange(range.start, range.end);
 }
 
+/** "sáb, 14 nov, 15:32": one instant, in the event's time zone. */
+export function formatMoment(iso: string, timeZone: string) {
+  return new Intl.DateTimeFormat("es-AR", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+    timeZone,
+  }).format(new Date(iso));
+}
+
 /** "10:00 – 18:00" in the event's time zone. */
 export function formatScheduleTimes(schedule: Schedule, timeZone: string) {
   return new Intl.DateTimeFormat("es-AR", {
