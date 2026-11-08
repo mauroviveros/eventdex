@@ -179,7 +179,7 @@ Branch `feat/medallas`. El visitante escanea y colecciona.
    *Listo cuando* pgTAP prueba que no se reclama sin pasar por `claim_spot()`, que
    escanear dos veces no duplica, que un bloqueado no reclama y que no se reclama
    fuera de fase.
-2. **Backend.** Login del visitante en el dominio de la org con retorno al QR, la
+2. ✅ **Backend.** Login del visitante en el dominio de la org con retorno al QR, la
    acción de reclamar y el progreso en `src/domain/`.
    *Listo cuando* los tests cubren los cinco resultados de la celebración.
 3. **Vista.** `/ingresar`, `/s/[id]`, `/mis-medallas` y
