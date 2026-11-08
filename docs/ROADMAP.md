@@ -203,7 +203,7 @@ Branch `feat/sorteo`. Al cierre, se sortea entre los que participaron.
    el servidor, registrado).
    *Listo cuando* pgTAP prueba que solo salen elegibles, que no sale dos veces el
    mismo ganador y que anular no borra.
-2. **Backend.** Las acciones de crear sorteo, extraer, anular y publicar ganadores.
+2. ✅ **Backend.** Las acciones de crear sorteo, extraer, anular y publicar ganadores.
    *Listo cuando* los tests cubren un sorteo sin elegibles y uno con anulación.
 3. **Vista.** `/[org]/eventos/[evento]/sorteo`, `/sorteo/presentar` (si se confirma)
    y `/sorteo` público.
