@@ -3,7 +3,7 @@ import { type ClaimResult, toClaimResult } from "@/domain/claims";
 import { type ActionResult, failed } from "@/lib/results";
 import type { Supabase } from "@/lib/supabase/server";
 
-type Client = Pick<Supabase, "rpc">;
+type Client = Pick<Supabase, "rpc" | "from">;
 
 /**
  * Claims the medal of a QR for the signed-in visitor. claim_spot() does the
@@ -25,4 +25,26 @@ export async function claimSpot(
     return failed(error, { "42501": "Iniciá sesión para sumar la medalla." });
   }
   return { ok: true, data: toClaimResult(row) };
+}
+
+/**
+ * Blocks or unblocks a visitor in one event. RLS lets only the org's team do
+ * it; a blocked visitor keeps their medals but claims no more.
+ */
+export async function setRegistrationBlocked(
+  supabase: Client,
+  id: unknown,
+  blocked: boolean,
+): Promise<ActionResult<null>> {
+  const parsed = z.uuid().safeParse(id);
+  if (!parsed.success) return failed({ code: "42501" });
+
+  const { data, error } = await supabase
+    .from("event_registrations")
+    .update({ blocked_at: blocked ? new Date().toISOString() : null })
+    .eq("id", parsed.data)
+    .select("id");
+  if (error) return failed(error);
+  if (data.length === 0) return failed({ code: "42501" });
+  return { ok: true, data: null };
 }

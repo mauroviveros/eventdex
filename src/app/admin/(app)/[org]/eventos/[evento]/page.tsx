@@ -90,6 +90,12 @@ export default async function EventoPage({
           >
             Hoja de QR
           </Link>
+          <Link
+            href={`/${org.slug}/eventos/${event.slug}/visitantes`}
+            className={buttonClass("secondary", "no-underline")}
+          >
+            Visitantes
+          </Link>
         </nav>
 
         {draft && editable && (

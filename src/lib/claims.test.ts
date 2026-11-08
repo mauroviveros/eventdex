@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { claimSpot } from "./claims";
+import { claimSpot, setRegistrationBlocked } from "./claims";
 import { fakeClient } from "./fake-supabase";
 
 const QR = "0000000a-0000-4000-8000-000000000001";
@@ -106,5 +106,31 @@ describe("claimSpot: failures", () => {
   it("a row without its required field is a bug, not a medal", async () => {
     const { client } = fakeClient(row("new"));
     await expect(claimSpot(client, QR)).rejects.toThrow(/claimed_at/);
+  });
+});
+
+describe("setRegistrationBlocked", () => {
+  it("stamps the block, and clears it to unblock", async () => {
+    const block = fakeClient({ data: [{ id: QR }], error: null });
+    expect(await setRegistrationBlocked(block.client, QR, true)).toEqual({
+      ok: true,
+      data: null,
+    });
+    const set = block.calls.find((c) => c.method === "update")?.args[0];
+    expect(set).toMatchObject({ blocked_at: expect.any(String) });
+
+    const unblock = fakeClient({ data: [{ id: QR }], error: null });
+    await setRegistrationBlocked(unblock.client, QR, false);
+    expect(unblock.calls.find((c) => c.method === "update")?.args[0]).toEqual({
+      blocked_at: null,
+    });
+  });
+
+  it("a registration RLS hides is a permission error", async () => {
+    const { client } = fakeClient({ data: [], error: null });
+    expect(await setRegistrationBlocked(client, QR, true)).toEqual({
+      ok: false,
+      error: "No tenés permiso para hacer esto.",
+    });
   });
 });
