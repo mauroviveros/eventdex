@@ -1,5 +1,5 @@
 import { expect, type Page, test } from "@playwright/test";
-import { magicLink } from "./support/mailpit";
+import { signInByMail } from "./support/mailpit";
 import { seedLiveEvent } from "./support/seed";
 
 let seed: Awaited<ReturnType<typeof seedLiveEvent>>;
@@ -11,13 +11,6 @@ test.beforeAll(async () => {
 test.afterAll(async () => {
   await seed?.cleanup();
 });
-
-async function signInByMail(page: Page, email: string) {
-  await page.getByLabel("Mail").fill(email);
-  await page.getByRole("button", { name: "Mandarme el link" }).click();
-  await expect(page.getByRole("status")).toContainText(email);
-  await page.goto(await magicLink(email));
-}
 
 async function createRaffle(staff: Page, title: string) {
   await staff.getByLabel("Premio").fill(title);
@@ -104,7 +97,9 @@ test("staff draws, voids and publishes; the visitor sees the winner", async ({
   await test.step("the app links to the winners, never the voided or unpublished", async () => {
     await page.goto(seed.origin);
     await page.getByRole("link", { name: "Ver ganadores del sorteo" }).click();
-    await expect(page).toHaveURL(`${seed.origin}/sorteo`);
+    await expect(page).toHaveURL(
+      `${seed.origin}/sorteo?evento=${seed.event.slug}`,
+    );
     await expect(page.getByRole("heading", { name: "Remera" })).toBeVisible();
     await expect(page.getByText("Visitante", { exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Bicicleta" })).toHaveCount(

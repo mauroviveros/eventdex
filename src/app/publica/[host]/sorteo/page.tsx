@@ -9,12 +9,18 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
-/** The published winners of the org's latest raffle event. */
+/** The winners of `?evento=slug`, or of the org's latest raffle event. */
 export default async function GanadoresPage({
   params,
+  searchParams,
 }: PageProps<"/publica/[host]/sorteo">) {
-  const { org } = await requireHostOrganization((await params).host);
-  const winners = await getPublishedWinners(createPublicClient(), org.id);
+  const [{ host }, { evento }] = await Promise.all([params, searchParams]);
+  const { org } = await requireHostOrganization(host);
+  const winners = await getPublishedWinners(
+    createPublicClient(),
+    org.id,
+    typeof evento === "string" ? evento : undefined,
+  );
 
   return (
     <main className="mx-auto grid w-full max-w-3xl gap-10 px-4 py-8 sm:px-6">
