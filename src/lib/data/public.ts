@@ -44,7 +44,8 @@ const EVENT_COLUMNS = `id, slug, title, edition_label, summary, description, cov
   venue:venues (name, address_line, city, state),
   schedules:event_schedules (id, label, starts_at, ends_at),
   spots:event_spots (id, code, booth, points, is_active, sort_order,
-                     name_override, description_override, snapshot)`;
+                     name_override, description_override, snapshot),
+  raffles (winners_published_at)`;
 
 /**
  * A published event of the org by slug, with its schedules in order and its
@@ -97,9 +98,11 @@ const eventQuery = (supabase: Supabase) =>
 type EventRow = QueryData<ReturnType<typeof eventQuery>>[number];
 
 /** Keeps the active spots and resolves what each shows from its snapshot. */
-function toPublicEvent({ spots, ...event }: EventRow) {
+function toPublicEvent({ spots, raffles, ...event }: EventRow) {
   return {
     ...event,
+    // Checked here: a signed-in member also reads the unpublished ones.
+    hasWinners: raffles.some((r) => r.winners_published_at),
     spots: spots.flatMap((s) => {
       const shown = s.is_active ? resolvePublishedSpot(s) : null;
       return shown

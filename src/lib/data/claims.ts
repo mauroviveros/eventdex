@@ -57,6 +57,16 @@ export async function listMyClaims(
   return data;
 }
 
+type Profile = {
+  full_name: string | null;
+  display_name: string | null;
+  email: string | null;
+};
+
+/** How the staff sees a visitor. */
+export const visitorName = (profile: Profile | null) =>
+  profile?.display_name || profile?.full_name || profile?.email || "Visitante";
+
 /**
  * Who registered in an event (their first valid scan), newest first, with how
  * many medals each has. Only the org's team and the developer read this.
@@ -76,11 +86,7 @@ export async function listEventVisitors(supabase: Supabase, eventId: string) {
   return data.map(({ claims, profile, ...r }) => ({
     ...r,
     // The embed goes through profiles RLS: never assume it came back.
-    name:
-      profile?.display_name ||
-      profile?.full_name ||
-      profile?.email ||
-      "Visitante",
+    name: visitorName(profile),
     email: profile?.email ?? "",
     medals: claims[0]?.count ?? 0,
   }));

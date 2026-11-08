@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { buttonClass } from "@/components/ui/Button";
 import { Countdown } from "@/components/visitante/Countdown";
 import { Medal } from "@/components/visitante/Medal";
 import {
@@ -25,6 +27,14 @@ export function EventHome({ event, now }: Props) {
   return (
     <main className="mx-auto grid w-full max-w-3xl gap-12 px-4 py-8 sm:px-6">
       <Marquee event={event} now={now} />
+      {event.hasWinners && (
+        <Link
+          href="/sorteo"
+          className={buttonClass("primary", "justify-self-center no-underline")}
+        >
+          Ver ganadores del sorteo
+        </Link>
+      )}
       {event.schedules.length > 1 && <Levels event={event} now={now} />}
       <Medals event={event} />
     </main>

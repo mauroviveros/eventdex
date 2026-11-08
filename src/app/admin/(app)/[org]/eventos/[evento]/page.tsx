@@ -96,6 +96,12 @@ export default async function EventoPage({
           >
             Visitantes
           </Link>
+          <Link
+            href={`/${org.slug}/eventos/${event.slug}/sorteo`}
+            className={buttonClass("secondary", "no-underline")}
+          >
+            Sorteo
+          </Link>
         </nav>
 
         {draft && editable && (

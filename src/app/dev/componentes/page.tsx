@@ -7,6 +7,7 @@ import { EventCard } from "@/components/admin/EventCard";
 import { EventFilters } from "@/components/admin/EventFilters";
 import { OrgSwitcher } from "@/components/admin/OrgSwitcher";
 import { QrCode } from "@/components/admin/QrCode";
+import { RaffleDraw } from "@/components/admin/RaffleDraw";
 import { StatTile } from "@/components/admin/StatTile";
 import { TopBar } from "@/components/admin/TopBar";
 import { ActionButton } from "@/components/ui/ActionButton";
@@ -48,6 +49,18 @@ const CELEBRATION = {
 };
 
 const SAMPLE_NOW = new Date("2026-11-14T15:00:00Z");
+const SAMPLE_TIMEZONE = "America/Argentina/Buenos_Aires";
+const SAMPLE_DRAW = {
+  id: "ganadora",
+  draw_number: 2,
+  name: "Ana García",
+  email: "ana@example.com",
+  winner_name: "Ana G.",
+  eligible_count: 348,
+  drawn_at: "2026-11-14T22:05:00Z",
+  voided_at: null as string | null,
+  void_reason: null as string | null,
+};
 const day = (id: string, starts: string, ends: string, label?: string) => ({
   id,
   label: label ?? null,
@@ -76,6 +89,7 @@ const sampleEvent = (
   venue,
   schedules,
   spots: [],
+  hasWinners: false,
 });
 const SAMPLE = {
   upcoming: sampleEvent([
@@ -381,6 +395,31 @@ export default function ComponentesPage() {
               }}
             />
           </div>
+        </Section>
+
+        <Section
+          title="Panel: extracción del sorteo"
+          note="Ganador para cantar en el escenario, sorteando (el botón) y anulada, que queda registrada con su motivo."
+        >
+          <Button variant="primary" pending pendingLabel="Sorteando…">
+            Sacar ganador
+          </Button>
+          <ul className="grid max-w-prose">
+            <RaffleDraw draw={SAMPLE_DRAW} timezone={SAMPLE_TIMEZONE}>
+              <Button className="w-fit">Anular</Button>
+            </RaffleDraw>
+            <RaffleDraw
+              draw={{
+                ...SAMPLE_DRAW,
+                id: "anulada",
+                draw_number: 1,
+                name: "Beto Ruiz",
+                voided_at: SAMPLE_DRAW.drawn_at,
+                void_reason: "No se presentó",
+              }}
+              timezone={SAMPLE_TIMEZONE}
+            />
+          </ul>
         </Section>
 
         <Section
