@@ -216,8 +216,11 @@ GitHub Actions (`.github/workflows/ci.yml`), en cada PR a `main` y en cada push 
 - **`db`**: `supabase db start` (solo Postgres, con migraciones y seed) →
   `pnpm db:test` (permisos con pgTAP).
 
-Playwright corre en CI recién cuando haya un recorrido que valga la pena: al
-principio corre en local, antes de cerrar cada rebanada.
+Playwright corre en local, antes de cerrar cada rebanada (`pnpm test:e2e`, con
+`pnpm db:start`). Cada recorrido siembra su propia org en un host nuevo
+(`e2e-<id>.localhost:3000`) con la clave secreta local, entra con el link por mail
+de desarrollo (leído de Mailpit) y la borra al terminar. Pasa a CI cuando el job
+pueda levantar Supabase completo (auth y Mailpit) y la app.
 
 ## Hosting
 

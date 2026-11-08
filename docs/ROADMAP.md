@@ -186,10 +186,13 @@ Branch `feat/medallas`. El visitante escanea y colecciona.
    `/[org]/eventos/[evento]/visitantes`.
    *Listo cuando* con el celular real: se escanea un QR impreso, se inicia sesión,
    aparece la medalla, y el staff ve al visitante en el admin.
-4. ▶ **Auditoría.** Más un recorrido de Playwright del escaneo completo. `/code-review`: 10
+4. ✅ **Auditoría.** Más un recorrido de Playwright del escaneo completo. `/code-review`: 10
    hallazgos (9 resueltos; la paginación de visitantes queda como atajo). Lighthouse
    accesibilidad: 100 en `/ingresar` y la página del evento; `/dev/componentes` pedía nombre
-   en la barra de progreso (resuelto). Falta Playwright (instalar con OK).
+   en la barra de progreso (resuelto). Playwright (`e2e/medallas.spec.ts`): escanear sin
+   sesión → ingresar → medalla nueva → repetida → mis medallas → el staff bloquea → no
+   suma más, y QR ajeno o roto = 404; estable en 5 repeticiones. Encontró que el
+   `loading.tsx` de `/s/[id]` convertía el 404 en 200 (resuelto con un Suspense).
 
 ## R6 · Sorteo
 
