@@ -195,11 +195,11 @@ Branch `feat/medallas`. El visitante escanea y colecciona.
    suma más, y QR ajeno o roto = 404; estable en 5 repeticiones. Encontró que el
    `loading.tsx` de `/s/[id]` convertía el 404 en 200 (resuelto con un Suspense).
 
-## R6 · Sorteo
+## R6 · Sorteo ▶
 
 Branch `feat/sorteo`. Al cierre, se sortea entre los que participaron.
 
-1. **DB.** `raffles`, `raffle_draws`, la elegibilidad y `draw_raffle()` (aleatorio en
+1. ✅ **DB.** `raffles`, `raffle_draws`, la elegibilidad y `draw_raffle()` (aleatorio en
    el servidor, registrado).
    *Listo cuando* pgTAP prueba que solo salen elegibles, que no sale dos veces el
    mismo ganador y que anular no borra.
