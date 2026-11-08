@@ -60,7 +60,7 @@ El modelo no le cierra la puerta, pero no tiene tablas ni pantallas todavía.
 | 5 | **Sorteo** | Staff / Owner | Elegibles, extracción, anulación, ganadores |
 | 6 | **Plataforma** | Developer | Organizaciones, dominios, facturación manual, auditoría |
 | 7 | **Landing** | Público | Marketing de eventdex.com |
-| 8 | **Migración** | Developer | Importar datos de v1 y v2 al esquema nuevo |
+| 8 | **Migración** | Developer | Importar los datos de la v1 al esquema nuevo |
 
 ## Glosario
 

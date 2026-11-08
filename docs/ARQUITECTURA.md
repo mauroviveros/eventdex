@@ -178,8 +178,8 @@ carpetas nunca se alcanzan directo (`expo.com/admin` es un 404):
 - Los previews de Vercel **no** tocan la base de producción. **Shortcut**: los
   previews se usan solo para revisar UI con login deshabilitado; si hace falta
   probar con datos, se suma un proyecto de staging.
-- Las migraciones llegan a producción con `supabase db push` desde `main`, a mano,
-  después de que pasan en local.
+- Las migraciones llegan a producción con `pnpm db:push` desde `main`, a mano,
+  después de que pasan en local (`--dry-run` muestra qué aplicaría).
 
 ## Claves y variables
 
@@ -230,17 +230,35 @@ pueda levantar Supabase completo (auth y Mailpit) y la app.
 - Las imágenes (logos, portadas, avatares de spots) van en **Supabase Storage**, en
   buckets con políticas por organización.
 
+## Corte a producción (una sola vez)
+
+El proyecto de Supabase de producción es el de la v1: el plan gratis no da para uno
+más. La v2 nunca llegó a producción. El esquema nuevo convive con la v1 así, y se
+ensayó entero con una copia real (permisos iguales a un proyecto limpio, pgTAP y un
+usuario de la v1 reclamando una medalla):
+
+1. Backup con `supabase db dump`, fuera del repo: tiene datos personales.
+2. `supabase link` y `pnpm db:push --dry-run`, que no aplica nada.
+3. `scripts/migrate/01_move_v1_aside.sql` en el SQL Editor: `public` pasa a llamarse
+   `v1`, sin perder filas, y queda una `public` vacía. Desde acá la app v1 no funciona.
+4. `pnpm db:push`.
+5. `scripts/migrate/02_backfill_profiles.sql`: un perfil por cada usuario de la v1;
+   el trigger de altas solo ve los nuevos.
+6. Alta del developer en `platform_admins`.
+
+Si algo sale mal, `scripts/migrate/01_rollback.sql` borra lo nuevo y devuelve la v1.
+
 ## Migración de datos (al final)
 
 Es la última rebanada del [ROADMAP](./ROADMAP.md). La estrategia:
 
-1. Dump de solo lectura de las bases v1 y v2.
-2. Un script en `scripts/migrate/` (Node, con la clave de servicio) que lee los
-   dumps, transforma al esquema nuevo e inserta de forma idempotente (se puede
-   correr dos veces sin duplicar).
+1. La fuente es el esquema `v1` del mismo proyecto, cerrado a la API. Los usuarios
+   ya están en `auth.users` con sus ids: no se migran.
+2. Un script en `scripts/migrate/` (Node, con la clave de servicio) que lee `v1`,
+   transforma al esquema nuevo e inserta de forma idempotente (se puede correr dos
+   veces sin duplicar).
 3. Primero contra la base local, después contra producción.
-4. El código de la v2 queda en el tag `v2-legacy` como referencia de los esquemas
-   viejos.
+4. El código de la v2, que no llegó a producción, queda en el tag `v2-legacy`.
 
 ## Preguntas abiertas
 
@@ -251,5 +269,5 @@ Es la última rebanada del [ROADMAP](./ROADMAP.md). La estrategia:
 3. **Staging**: ¿hace falta desde el principio o se suma cuando un preview lo pida?
 4. **Imágenes**: ¿alcanza con el transformador de imágenes de Supabase, o se usa
    `next/image` con Vercel?
-5. **Migración**: ¿los usuarios de la v1 y la v2 están en proyectos Supabase
-   distintos? Si es así, sus `auth.users` también se migran (con los mismos ids).
+5. ~~**Migración**~~: decidido, los usuarios de la v1 quedan en el mismo proyecto y
+   conservan sus ids. La v2 no llegó a producción.
