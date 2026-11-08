@@ -157,11 +157,11 @@ Branch `feat/portada-publica`. El evento se ve en el dominio de la org.
    públicas de evento y spots.
    *Listo cuando* pgTAP prueba la resolución con un host desconocido, una org sin
    eventos y una org con un evento en curso y otro próximo.
-2. ▶ **Backend.** El layout de la app pública resuelve la org con caché (el proxy
+2. ✅ **Backend.** El layout de la app pública resuelve la org con caché (el proxy
    solo enruta); lecturas de la portada; `robots.txt` y `sitemap.xml`.
    *Listo cuando* un host desconocido da 404 y uno conocido resuelve en una sola
    consulta.
-3. **Vista.** `/` y `/eventos/[slug]`, con la marca de la org, el countdown y la
+3. ▶ **Vista.** `/` y `/eventos/[slug]`, con la marca de la org, el countdown y la
    lista de spots.
    *Listo cuando* `expo.localhost:3000` muestra el evento cargado en R2 y R3, a
    360 px, con la marca de la org aplicada.
