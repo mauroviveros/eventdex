@@ -147,8 +147,8 @@ erDiagram
    para desarrollo local; otro método se suma si hace falta.
 2. **Escaneo**: ¿cámara dentro de la app, la cámara nativa del celular abriendo la
    URL del QR, o las dos?
-3. **Sorteo en vivo**: ¿se proyecta en pantalla durante el evento? Si es así, hace
-   falta una vista de presentación.
+3. ~~**Sorteo en vivo**~~: decidido en R6, sin vista de presentación; si se proyecta,
+   se muestra la página del panel.
 4. ~~**Meta de medallas**~~: decidido en R5, alcanza con una; en R6, cada sorteo
    puede pedir un mínimo mayor (`min_claims`).
 5. **Duplicar evento**: ¿copia spots, sede y jornadas, o solo spots?
