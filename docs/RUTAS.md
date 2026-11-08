@@ -32,7 +32,7 @@ el visitante.
 | `/eventos/[slug]` | Un evento puntual (pasado o próximo), con la misma vista que la portada | Público | R4 |
 | `/s/[id]` | **Destino del QR.** Reclama la medalla al abrirse (es idempotente: recargar responde "ya la tenías") y la celebra con el progreso. Un QR de otra org o de un evento sin publicar es 404, sin pedir login. Sin sesión, pasa por `/ingresar` y vuelve | Visitante | R5 |
 | `/mis-medallas` | La colección del evento en curso; si no hay uno, la del último evento en que el visitante juntó medallas (si no juntó nunca, la del activo): medallas conseguidas y faltantes. Sin meta del sorteo: cada sorteo fija su mínimo, y el visitante no lo ve hasta que se publican los ganadores. Se llega desde el menú de la cuenta, en la cabecera de todo el dominio (con sesión, foto, nombre, Mis medallas y Salir; sin sesión, Ingresar) | Visitante | R5 |
-| `/sorteo` | Ganadores publicados del último evento que los tenga, con nombre e inicial. Se llega desde la portada, cuando el evento activo ya los publicó | Público | R6 |
+| `/sorteo` | Ganadores publicados, con nombre e inicial: los de `?evento=slug` o, sin parámetro, los del último evento público que los tenga. Se llega desde la página del evento, cuando ya los publicó | Público | R6 |
 | `/ingresar` | Login con Google y la marca de la org; vuelve a `next` (el QR escaneado) | Público | R5 |
 | `/robots.txt`, `/sitemap.xml` | SEO por dominio. `/s/*` queda fuera del índice | — | R4 |
 
