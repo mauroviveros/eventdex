@@ -2,7 +2,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(22);
+select plan(24);
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000008a1', 'visitante@claims.local'),
@@ -199,6 +199,12 @@ select is(
   'the org team reads every medal of its events'
 );
 
+select results_eq(
+  $$ select email::text from public.profiles where email like '%@claims.local' order by email $$,
+  $$ values ('bloqueado@claims.local'), ('otra@claims.local'), ('owner@claims.local'), ('visitante@claims.local') $$,
+  'the team reads the profiles of who registered in its events, and no one else'
+);
+
 update public.event_registrations set blocked_at = now()
 where user_id = '00000000-0000-0000-0000-0000000008a1';
 
@@ -223,6 +229,12 @@ select is_empty(
   'another org team reads no registrations'
 );
 
+select results_eq(
+  $$ select email::text from public.profiles where email like '%@claims.local' $$,
+  $$ values ('ajeno@claims.local') $$,
+  'nor the profiles of another org visitors'
+);
+
 reset role;
 
 -- ---------------------------------------------------------------------------
@@ -233,17 +245,19 @@ set local role authenticated;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000008d1","role":"authenticated"}', true);
 
 select is(
-  (select count(*)::int from public.spot_claims),
+  (select count(*)::int from public.spot_claims where organization_id = '00000000-0000-0000-0000-000000000801'),
   2,
   'the developer reads every medal (support mode)'
 );
 
-update public.event_registrations set blocked_at = null;
+update public.event_registrations set blocked_at = null
+where organization_id = '00000000-0000-0000-0000-000000000801';
 
 reset role;
 
 select is(
-  (select count(*)::int from public.event_registrations where blocked_at is not null),
+  (select count(*)::int from public.event_registrations
+   where blocked_at is not null and organization_id = '00000000-0000-0000-0000-000000000801'),
   2,
   'but blocks or unblocks no one'
 );
