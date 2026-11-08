@@ -62,7 +62,8 @@ create table public.raffle_draws (
   unique (raffle_id, winner_user_id),
   constraint raffle_draws_void_has_reason check (
     (voided_at is null and void_reason is null)
-    or (voided_at is not null and char_length(trim(void_reason)) between 1 and 300)
+    -- is not null explícito: un check con resultado null pasa.
+    or (voided_at is not null and void_reason is not null and char_length(trim(void_reason)) between 1 and 300)
   )
 );
 
@@ -156,17 +157,16 @@ begin
       using errcode = 'check_violation';
   end if;
 
-  select count(*) into v_eligible from public.raffle_eligible(p_raffle_id);
+  -- Una sola lectura: el ganador y el total salen del mismo grupo.
+  select e.user_id, count(*) over () into v_winner, v_eligible
+  from public.raffle_eligible(p_raffle_id) e
+  order by gen_random_uuid()
+  limit 1;
 
-  if v_eligible = 0 then
+  if not found then
     raise exception 'No hay participantes para este sorteo'
       using errcode = 'check_violation';
   end if;
-
-  select user_id into v_winner
-  from public.raffle_eligible(p_raffle_id)
-  order by gen_random_uuid()
-  limit 1;
 
   insert into public.raffle_draws (
     raffle_id, organization_id, draw_number, winner_user_id, winner_name, eligible_count, drawn_by

@@ -2,7 +2,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(35);
+select plan(36);
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000009a1', 'dos@raffles.local'),
@@ -236,6 +236,12 @@ select throws_ok(
   $$ select public.void_raffle_draw(
        (select id from public.raffle_draws where raffle_id = '00000000-0000-0000-0000-0000000009f2'), '   ') $$,
   '23514', null, 'voiding needs a reason'
+);
+
+select throws_ok(
+  $$ select public.void_raffle_draw(
+       (select id from public.raffle_draws where raffle_id = '00000000-0000-0000-0000-0000000009f2'), null) $$,
+  '23514', null, 'a null reason does not slip through the check'
 );
 
 select is(
