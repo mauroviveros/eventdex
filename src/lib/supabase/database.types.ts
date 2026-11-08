@@ -574,6 +574,144 @@ export type Database = {
         };
         Relationships: [];
       };
+      raffle_draws: {
+        Row: {
+          draw_number: number;
+          drawn_at: string;
+          drawn_by: string | null;
+          eligible_count: number;
+          id: string;
+          organization_id: string;
+          raffle_id: string;
+          void_reason: string | null;
+          voided_at: string | null;
+          voided_by: string | null;
+          winner_name: string;
+          winner_user_id: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          draw_number: number;
+          drawn_at?: string;
+          drawn_by?: string | null;
+          eligible_count: number;
+          id?: string;
+          organization_id: string;
+          raffle_id: string;
+          void_reason?: string | null;
+          voided_at?: string | null;
+          voided_by?: string | null;
+          winner_name: string;
+          winner_user_id?: string | null;
+        };
+        Update: {
+          draw_number?: number;
+          drawn_at?: string;
+          drawn_by?: string | null;
+          eligible_count?: number;
+          id?: string;
+          organization_id?: string;
+          raffle_id?: string;
+          void_reason?: string | null;
+          voided_at?: string | null;
+          voided_by?: string | null;
+          winner_name?: string;
+          winner_user_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "raffle_draws_drawn_by_fkey";
+            columns: ["drawn_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "raffle_draws_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "raffle_draws_raffle_id_organization_id_fkey";
+            columns: ["raffle_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "raffles";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "raffle_draws_voided_by_fkey";
+            columns: ["voided_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "raffle_draws_winner_user_id_fkey";
+            columns: ["winner_user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      raffles: {
+        Row: {
+          created_at: string;
+          event_id: string;
+          id: string;
+          min_claims: number;
+          organization_id: string;
+          title: string;
+          updated_at: string | null;
+          winners_published_at: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          event_id: string;
+          id?: string;
+          min_claims?: number;
+          organization_id: string;
+          title: string;
+          updated_at?: string | null;
+          winners_published_at?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          event_id?: string;
+          id?: string;
+          min_claims?: number;
+          organization_id?: string;
+          title?: string;
+          updated_at?: string | null;
+          winners_published_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "raffles_event_id_organization_id_fkey";
+            columns: ["event_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "event_phases";
+            referencedColumns: ["event_id", "organization_id"];
+          },
+          {
+            foreignKeyName: "raffles_event_id_organization_id_fkey";
+            columns: ["event_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "raffles_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       spot_claims: {
         Row: {
           claimed_at: string;
@@ -801,11 +939,45 @@ export type Database = {
         };
         Returns: string;
       };
+      draw_raffle: {
+        Args: { p_raffle_id: string };
+        Returns: {
+          draw_number: number;
+          drawn_at: string;
+          drawn_by: string | null;
+          eligible_count: number;
+          id: string;
+          organization_id: string;
+          raffle_id: string;
+          void_reason: string | null;
+          voided_at: string | null;
+          voided_by: string | null;
+          winner_name: string;
+          winner_user_id: string | null;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "raffle_draws";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
       log_support_access: {
         Args: { p_organization_id: string };
         Returns: undefined;
       };
       publish_event: { Args: { p_event_id: string }; Returns: undefined };
+      publish_raffle_winners: {
+        Args: { p_raffle_id: string };
+        Returns: undefined;
+      };
+      raffle_eligible: {
+        Args: { p_raffle_id: string };
+        Returns: {
+          claims: number;
+          user_id: string;
+        }[];
+      };
       resolve_active_event: {
         Args: { p_organization_id: string };
         Returns: string;
@@ -820,6 +992,29 @@ export type Database = {
           name: string;
           slug: string;
         }[];
+      };
+      void_raffle_draw: {
+        Args: { p_draw_id: string; p_reason: string };
+        Returns: {
+          draw_number: number;
+          drawn_at: string;
+          drawn_by: string | null;
+          eligible_count: number;
+          id: string;
+          organization_id: string;
+          raffle_id: string;
+          void_reason: string | null;
+          voided_at: string | null;
+          voided_by: string | null;
+          winner_name: string;
+          winner_user_id: string | null;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "raffle_draws";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
       };
     };
     Enums: {
