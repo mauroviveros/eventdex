@@ -170,7 +170,7 @@ Branch `feat/portada-publica`. El evento se ve en el dominio de la org.
    sobre el build de producción: performance 99, accesibilidad 100, buenas prácticas
    100, SEO 100.
 
-## R5 · Medallas ▶
+## R5 · Medallas ✅
 
 Branch `feat/medallas`. El visitante escanea y colecciona.
 
@@ -182,10 +182,11 @@ Branch `feat/medallas`. El visitante escanea y colecciona.
 2. ✅ **Backend.** Login del visitante en el dominio de la org con retorno al QR, la
    acción de reclamar y el progreso en `src/domain/`.
    *Listo cuando* los tests cubren los cinco resultados de la celebración.
-3. ▶ **Vista.** `/ingresar`, `/s/[id]`, `/mis-medallas` y
+3. ✅ **Vista.** `/ingresar`, `/s/[id]`, `/mis-medallas` y
    `/[org]/eventos/[evento]/visitantes`.
    *Listo cuando* con el celular real: se escanea un QR impreso, se inicia sesión,
-   aparece la medalla, y el staff ve al visitante en el admin.
+   aparece la medalla, y el staff ve al visitante en el admin. Probado en producción
+   (2026-11-08) con la org de pruebas `eventdex-demo.vercel.app`.
 4. ✅ **Auditoría.** Más un recorrido de Playwright del escaneo completo. `/code-review`: 10
    hallazgos (9 resueltos; la paginación de visitantes queda como atajo). Lighthouse
    accesibilidad: 100 en `/ingresar` y la página del evento; `/dev/componentes` pedía nombre

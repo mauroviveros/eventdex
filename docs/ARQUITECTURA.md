@@ -233,7 +233,7 @@ pueda levantar Supabase completo (auth y Mailpit) y la app.
 - Las imágenes (logos, portadas, avatares de spots) van en **Supabase Storage**, en
   buckets con políticas por organización.
 
-## Corte a producción (una sola vez)
+## Corte a producción (hecho el 2026-11-08)
 
 El proyecto de Supabase de producción es el de la v1: el plan gratis no da para uno
 más. La v2 nunca llegó a producción. El esquema nuevo convive con la v1 así, y se
