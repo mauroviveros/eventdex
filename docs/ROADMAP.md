@@ -218,11 +218,15 @@ Branch `feat/sorteo`. Al cierre, se sortea entre los que participaron.
 
 Branch `feat/equipo-y-marca`.
 
-1. **DB.** Las invitaciones con estado, `brand` validado y el bucket de logos.
+1. ✅ **DB.** `invite_member()` (una invitación vencida se reemplaza), el estado
+   de la invitación sale de sus fechas, auditoría de equipo y dominios, y el bucket
+   `org-logos` con el logo atado a su org.
    *Listo cuando* pgTAP prueba que solo el owner invita y edita la marca.
-2. **Backend.** Las acciones de invitar, cambiar rol, quitar, guardar marca (con
-   validación de contraste) y dominios.
-   *Listo cuando* un color de marca sin contraste se rechaza con un mensaje claro.
+2. **Backend.** Las acciones de invitar, cambiar rol, quitar, guardar marca y
+   dominios. El color no se valida por contraste: la rampa lo garantiza (ver
+   [DESIGN_SYSTEM](./DESIGN_SYSTEM.md)).
+   *Listo cuando* un color o un logo inválido se rechaza con un mensaje claro y
+   cada cambio de marca o dominio se ve en la portada sin esperar la caché.
 3. **Vista.** `/[org]/equipo` y `/[org]/ajustes` con vista previa de la marca.
    *Listo cuando* el owner cambia el color y el logo y se ven en la portada pública.
 4. **Auditoría.**
