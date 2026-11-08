@@ -1,11 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
+  ACCENT,
   contrast,
   DANGER,
   distance,
   EVENTDEX_HUE,
   ramp,
   rampFromHex,
+  SCANLINE,
+  toRgb,
 } from "./palette";
 
 const hues = Array.from({ length: 36 }, (_, i) => i * 10);
@@ -41,6 +44,39 @@ describe("danger stays legible and distinct from every ramp", () => {
       expect(distance(DANGER.light, tone)).toBeGreaterThanOrEqual(0.1);
       expect(distance(DANGER.dark, tone)).toBeGreaterThanOrEqual(0.1);
     }
+  });
+});
+
+describe("marquee accents stay legible on every ramp", () => {
+  it.each(hues)("hue %i", (hue) => {
+    const tones = ramp(hue);
+    for (const accent of Object.values(ACCENT)) {
+      // Light: on the ground (ramp-0). Dark: on the inverted ground (ramp-3).
+      expect(contrast(accent.light, tones[0])).toBeGreaterThanOrEqual(4.5);
+      expect(contrast(accent.dark, tones[3])).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+});
+
+describe("text stays AA on the light scanline rows", () => {
+  // Browsers blend the black stripe over the ground in gamma-encoded sRGB.
+  const luminance = (rgb: readonly number[]) =>
+    rgb
+      .map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4))
+      .reduce((sum, c, i) => sum + c * ([0.2126, 0.7152, 0.0722][i] ?? 0), 0);
+  const ratio = (a: readonly number[], b: readonly number[]) => {
+    const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+    return ((hi ?? 0) + 0.05) / ((lo ?? 0) + 0.05);
+  };
+
+  it.each(hues)("hue %i", (hue) => {
+    const [t0, , t2] = ramp(hue);
+    const striped = toRgb(t0).map((c) => c * (1 - SCANLINE.light));
+    expect(ratio(toRgb(t2), striped)).toBeGreaterThanOrEqual(4.5);
+    expect(ratio(toRgb(ACCENT.yellow.light), striped)).toBeGreaterThanOrEqual(
+      4.5,
+    );
+    expect(ratio(toRgb(ACCENT.red.light), striped)).toBeGreaterThanOrEqual(4.5);
   });
 });
 

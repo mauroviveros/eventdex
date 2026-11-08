@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-06T00:00:00Z",
+  "generatedAt": "2026-11-07T00:00:00Z",
   "title": "Design System: Eventdex",
   "extensions": {
     "colorMeta": {
@@ -65,10 +65,46 @@
           "oklch(0.44 0.21 27)",
           "oklch(0.7 0.19 27)"
         ]
+      },
+      "accent-red": {
+        "role": "tertiary",
+        "displayName": "Rojo de marquesina",
+        "canonical": "oklch(0.47 0.19 25)",
+        "tonalRamp": [
+          "oklch(0.47 0.19 25)",
+          "oklch(0.7 0.19 25)"
+        ]
+      },
+      "accent-red-dark": {
+        "role": "tertiary",
+        "displayName": "Rojo de marquesina (oscuro)",
+        "canonical": "oklch(0.7 0.19 25)",
+        "tonalRamp": [
+          "oklch(0.47 0.19 25)",
+          "oklch(0.7 0.19 25)"
+        ]
+      },
+      "accent-yellow": {
+        "role": "tertiary",
+        "displayName": "Amarillo de marquesina",
+        "canonical": "oklch(0.5 0.11 85)",
+        "tonalRamp": [
+          "oklch(0.5 0.11 85)",
+          "oklch(0.86 0.15 95)"
+        ]
+      },
+      "accent-yellow-dark": {
+        "role": "tertiary",
+        "displayName": "Amarillo de marquesina (oscuro)",
+        "canonical": "oklch(0.86 0.15 95)",
+        "tonalRamp": [
+          "oklch(0.5 0.11 85)",
+          "oklch(0.86 0.15 95)"
+        ]
       }
     },
     "roles": {
-      "note": "--lcd-0..3 are roles over --ramp-0..3. Light: lcd-n = ramp-n. Dark (prefers-color-scheme or .ramp-scope[data-scheme=dark]): lcd-n = ramp-(3-n), danger = danger-dark.",
+      "note": "--lcd-0..3 are roles over --ramp-0..3. Light: lcd-n = ramp-n. Dark (prefers-color-scheme or .ramp-scope[data-scheme=dark]): lcd-n = ramp-(3-n), and danger, accent-red, accent-yellow, scanline take their dark values. Print (@media print) always forces the light roles.",
       "lcd-0": "ground",
       "lcd-1": "fill",
       "lcd-2": "secondary",
@@ -77,7 +113,7 @@
     "typographyMeta": {
       "display-xl": {
         "displayName": "Display XL (text-px-4)",
-        "purpose": "Page title from sm."
+        "purpose": "Page title from sm; event title on the marquee plate."
       },
       "display": {
         "displayName": "Display (text-px-3)",
@@ -89,7 +125,7 @@
       },
       "label": {
         "displayName": "Label (text-px-1)",
-        "purpose": "Buttons, field labels, phase badges, spot codes. Smallest pixel size allowed."
+        "purpose": "Buttons, field labels, phase badges, spot codes, marquee tabs, level state. Smallest pixel size allowed."
       },
       "body": {
         "displayName": "Body",
@@ -104,7 +140,7 @@
       {
         "name": "panel-double-rule",
         "value": "inset 0 0 0 2px var(--lcd-0), inset 0 0 0 4px var(--lcd-3)",
-        "purpose": "Inner rule of the double-ruled .panel (with a 2px ink border). The only box-shadow; not a soft shadow."
+        "purpose": "Inner rule of the double-ruled .panel (with a 2px ink border): celebration, the marquee title plate, the level on now (over fill). The only box-shadow; not a soft shadow."
       }
     ],
     "motion": [
@@ -116,7 +152,7 @@
       {
         "name": "blink",
         "value": "1s steps(1, end) infinite",
-        "purpose": "Live state: the en-curso phase dot and the pending-button blocks (staggered 333ms)."
+        "purpose": "Live state: the en-curso phase dot (8px), the level on now (12px block) and the pending-button blocks (6px, staggered 333ms)."
       },
       {
         "name": "color-change",
@@ -145,6 +181,10 @@
       {
         "name": "xl",
         "value": "1280px"
+      },
+      {
+        "name": "print",
+        "value": "@media print: light roles, no scanlines, A4 with 10mm margins"
       }
     ],
     "focusRing": "outline: 2px solid var(--lcd-3); outline-offset: 2px",
@@ -165,7 +205,28 @@
         "#lcd-faded-dark"
       ],
       "inactiveMask": "conic-gradient checker, mask-size 4px 4px"
-    }
+    },
+    "accents": {
+      "source": "ACCENT in src/domain/palette.ts; --accent-red / --accent-yellow; text-accent-red / text-accent-yellow",
+      "scope": "Public visitor app only. Text on the ground (--lcd-0) only; never on fill (--lcd-1) or ink.",
+      "guarantee": "Each >= 4.5:1 on its scheme's ground (ramp-0 light, ramp-3 dark) for all 36 hues (palette.test.ts).",
+      "use": {
+        "red": "Event title on the marquee plate.",
+        "yellow": "Date tab and venue name on the marquee."
+      },
+      "distinctFromDanger": "Red sits near danger on purpose; danger always wears AlertIcon, a title never does."
+    },
+    "textures": [
+      {
+        "name": "scanlines",
+        "value": "repeating-linear-gradient(0deg, transparent 0 2px, var(--scanline) 2px 4px)",
+        "tokens": {
+          "light": "rgb(0 0 0 / 0.03)",
+          "dark": "rgb(0 0 0 / 0.08)"
+        },
+        "purpose": "Fixed ::after overlay over the whole public app (.scanlines), pointer-events none. Texture, not a color; hidden in print. At 3% secondary text stays >= 4.6:1 on striped rows for every hue."
+      }
+    ]
   },
   "components": [
     {
@@ -188,7 +249,7 @@
       "name": "Danger Button",
       "kind": "button",
       "refersTo": "button-danger",
-      "description": "Destructive action; the only off-ramp color.",
+      "description": "Destructive action; danger always wears AlertIcon in messages.",
       "html": "<button class=\"ds-btn-danger\">Anular extracción</button>",
       "css": ".ds-btn-danger { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 2px solid; border-radius: 0; font-family: var(--font-pixel), ui-monospace, monospace; font-size: 20px; line-height: 1; transition: background-color 100ms, border-color 100ms; cursor: pointer; background: var(--danger, oklch(0.44 0.21 27)); border-color: var(--danger, oklch(0.44 0.21 27)); color: var(--lcd-0, oklch(0.94 0.08 125)); } .ds-btn-danger:hover { background: var(--lcd-3, oklch(0.27 0.05 125)); border-color: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-btn-danger:focus-visible { outline: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); outline-offset: 2px; } .ds-btn-danger:active { transform: translateY(2px); }"
     },
@@ -230,23 +291,47 @@
       "description": "Segmented bar, one segment per spot; fill marks the raffle goal.",
       "html": "<div class=\"ds-progress\" role=\"progressbar\" aria-valuemin=\"0\" aria-valuemax=\"12\" aria-valuenow=\"5\"><span class=\"ds-seg ds-on\"></span><span class=\"ds-seg ds-on\"></span><span class=\"ds-seg ds-on\"></span><span class=\"ds-seg ds-on\"></span><span class=\"ds-seg ds-on\"></span><span class=\"ds-seg ds-goal\"></span><span class=\"ds-seg ds-goal\"></span><span class=\"ds-seg ds-goal\"></span><span class=\"ds-seg\"></span><span class=\"ds-seg\"></span><span class=\"ds-seg\"></span><span class=\"ds-seg\"></span></div>",
       "css": ".ds-progress { display: flex; gap: 2px; height: 20px; padding: 2px; border: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); } .ds-seg { flex: 1; } .ds-on { background: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-goal { background: var(--lcd-1, oklch(0.8 0.12 125)); }"
+    },
+    {
+      "name": "Marquee",
+      "kind": "custom",
+      "refersTo": "marquee-title",
+      "description": "Public event marquee: date tab, double-ruled title plate in accent red, venue tab in accent yellow.",
+      "html": "<header class=\"ds-mq\"><p class=\"ds-mq-tab ds-mq-top\">14 y 15 de marzo</p><div class=\"ds-mq-plate\"><h1 class=\"ds-mq-title\">Expo Rural 2027</h1><p class=\"ds-mq-sum\">Dos días de stands, máquinas y comida de campo.</p></div><p class=\"ds-mq-tab ds-mq-bot\"><span class=\"ds-mq-venue\">Predio La Rural</span><span class=\"ds-mq-addr\">Av. Sarmiento 2704 · Palermo</span></p></header>",
+      "css": ".ds-mq { display: grid; justify-items: center; text-align: center; color: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-mq-tab { position: relative; z-index: 1; margin: 0; padding: 8px 16px; border: 2px solid var(--lcd-2, oklch(0.5 0.09 125)); background: var(--lcd-0, oklch(0.94 0.08 125)); } .ds-mq-top { border-bottom: 0; margin-bottom: -2px; font-family: var(--font-pixel), ui-monospace, monospace; line-height: 1; font-weight: 400; font-size: 20px; color: var(--accent-yellow, oklch(0.5 0.11 85)); } .ds-mq-bot { border-top: 0; margin-top: -2px; padding: 12px 16px; display: grid; gap: 4px; } .ds-mq-venue { font-family: var(--font-pixel), ui-monospace, monospace; line-height: 1; font-weight: 400; font-size: 20px; color: var(--accent-yellow, oklch(0.5 0.11 85)); } .ds-mq-addr { font-size: 14px; } .ds-mq-plate { display: grid; gap: 12px; padding: 24px 40px; border: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); box-shadow: inset 0 0 0 2px var(--lcd-0, oklch(0.94 0.08 125)), inset 0 0 0 4px var(--lcd-3, oklch(0.27 0.05 125)); background: var(--lcd-0, oklch(0.94 0.08 125)); } .ds-mq-title { margin: 0; font-family: var(--font-pixel), ui-monospace, monospace; line-height: 1; font-weight: 400; font-size: 60px; color: var(--accent-red, oklch(0.47 0.19 25)); } .ds-mq-sum { margin: 0; max-width: 65ch; font-size: 16px; }"
+    },
+    {
+      "name": "Levels",
+      "kind": "custom",
+      "refersTo": "level-current",
+      "description": "Schedules as game levels: on = filled double-ruled cell with a blinking 12px block; done = solid secondary; to come = dashed.",
+      "html": "<ol class=\"ds-lv\"><li class=\"ds-lv-i ds-lv-done\"><span class=\"ds-lv-h\"><span class=\"ds-lv-n\">Día 1</span><span class=\"ds-lv-s\">Hecha</span></span><span>sáb 14 de marzo · 10 a 20 h</span></li><li class=\"ds-lv-i ds-lv-on\" aria-current=\"step\"><span class=\"ds-lv-h\"><span class=\"ds-lv-n\">Día 2</span><span class=\"ds-lv-s\"><span class=\"ds-lv-b\" aria-hidden=\"true\"></span>Ahora</span></span><span>dom 15 de marzo · 10 a 20 h</span></li><li class=\"ds-lv-i ds-lv-next\"><span class=\"ds-lv-h\"><span class=\"ds-lv-n\">Día 3</span></span><span>lun 16 de marzo · 10 a 18 h</span></li></ol>",
+      "css": "@keyframes ds-blink { 50% { opacity: 0; } } .ds-lv { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; color: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-lv-i { display: grid; gap: 4px; padding: 16px 20px; font-size: 16px; } .ds-lv-h { display: flex; align-items: center; justify-content: space-between; gap: 12px; } .ds-lv-n { font-family: var(--font-pixel), ui-monospace, monospace; line-height: 1; font-weight: 400; font-size: 30px; } .ds-lv-s { display: flex; align-items: center; gap: 8px; font-family: var(--font-pixel), ui-monospace, monospace; line-height: 1; font-weight: 400; font-size: 20px; } .ds-lv-b { width: 12px; height: 12px; background: currentColor; animation: ds-blink 1s steps(1, end) infinite; } .ds-lv-on { border: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); box-shadow: inset 0 0 0 2px var(--lcd-0, oklch(0.94 0.08 125)), inset 0 0 0 4px var(--lcd-3, oklch(0.27 0.05 125)); background: var(--lcd-1, oklch(0.8 0.12 125)); } .ds-lv-done { border: 2px solid var(--lcd-2, oklch(0.5 0.09 125)); color: var(--lcd-2, oklch(0.5 0.09 125)); } .ds-lv-next { border: 2px dashed var(--lcd-2, oklch(0.5 0.09 125)); } @media (prefers-reduced-motion: reduce) { .ds-lv-b { animation: none; } }"
+    },
+    {
+      "name": "Form Message (success)",
+      "kind": "custom",
+      "refersTo": "form-message-success",
+      "description": "A form's own outcome above its fields: success is a filled box; error is danger text with AlertIcon.",
+      "html": "<p class=\"ds-fm\" role=\"status\">Guardamos los cambios del evento.</p>",
+      "css": ".ds-fm { margin: 0; padding: 12px 16px; border: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); background: var(--lcd-1, oklch(0.8 0.12 125)); color: var(--lcd-3, oklch(0.27 0.05 125)); font-size: 16px; max-width: 28rem; }"
     }
   ],
   "narrative": {
     "northStar": "La consola de bolsillo",
-    "overview": "Eventdex se ve como la pantalla LCD de cuatro tonos de una consola de mano, como la vieja app de eventos. Cuatro tonos de un solo color hacen todo el trabajo: fondo, relleno, secundario y tinta. Cada organización recibe su propia rampa desde el color de su marca (un cambio de paleta, como en los juegos), así que la marca manda y el contraste lo fija la luminosidad, nunca la suerte.\n\nTodo es plano, cuadrado y en grilla de píxeles: líneas de 2 px, esquinas a 90°, paneles con doble filete como las cajas de diálogo de una consola. El movimiento es por pasos, nunca suave: una medalla nueva se \"revela\" pasando por los tonos en cuadros discretos. Rechaza el default de la categoría: tarjetas blancas de SaaS con acento azul y confeti.",
+    "overview": "Eventdex se ve como la pantalla LCD de cuatro tonos de una consola de mano, como la vieja app de eventos. Cuatro tonos de un solo color hacen todo el trabajo: fondo, relleno, secundario y tinta. Cada organización recibe su propia rampa desde el color de su marca (un cambio de paleta, como en los juegos), así que la marca manda y el contraste lo fija la luminosidad, nunca la suerte.\n Todo es plano, cuadrado y en grilla de píxeles: líneas de 2 px, esquinas a 90°, paneles con doble filete como las cajas de diálogo de una consola. El movimiento es por pasos, nunca suave: una medalla nueva se \"revela\" pasando por los tonos en cuadros discretos. En la app pública del visitante la pantalla suma lo que tenía el cartel de la vieja app: líneas de barrido sobre todo y dos acentos de marquesina, rojo para el título del evento y amarillo para lo que se lee de un vistazo. Rechaza el default de la categoría: tarjetas blancas de SaaS con acento azul y confeti, y el hero de evento con foto y botón.",
     "keyCharacteristics": [
-      "Cuatro tonos de un solo matiz, usados como roles; el oscuro invierte la rampa.",
-      "Un solo color fuera de la rampa: el de peligro, siempre con ícono.",
+      "Cuatro tonos de un solo matiz, usados como roles; el oscuro invierte la rampa y el papel siempre es claro.",
+      "Fuera de la rampa, solo peligro (siempre con ícono) y, en la app pública, los dos acentos de marquesina (siempre sobre el fondo).",
       "Logos posterizados a los cuatro tonos; sprites de 12×12 cuando no hay logo.",
       "Jersey 10 en múltiplos de 10 px para títulos, contadores y códigos; Atkinson Hyperlegible Next para leer.",
-      "Esquinas rectas, filetes de 2 px, sin sombras suaves.",
+      "Esquinas rectas, filetes de 2 px, sin sombras suaves; líneas de barrido como textura en la app pública.",
       "Movimiento en pasos (`steps(1, end)`), apagado con `prefers-reduced-motion`."
     ],
     "rules": [
       {
         "name": "The Four Tones Rule",
-        "body": "Un componente se pinta solo con `--lcd-0..3`. Nunca con `--ramp-*` directo (rompería el modo oscuro) ni con un color nuevo.",
+        "body": "Un componente se pinta solo con `--lcd-0..3`. Nunca con `--ramp-*` directo (rompería el modo oscuro) ni con un color nuevo. Las únicas excepciones son `danger` y los dos acentos de marquesina, y cada una tiene su regla.",
         "section": "colors"
       },
       {
@@ -256,7 +341,17 @@
       },
       {
         "name": "The Danger Wears An Icon Rule",
-        "body": "`danger` es el único color fuera de la rampa y siempre va con el ícono de alerta pixelado (`AlertIcon`, 8×8 en `currentColor`); el color nunca carga el significado solo.",
+        "body": "`danger` significa \"algo está mal\" y siempre va con el ícono de alerta pixelado (`AlertIcon`, 8×8 en `currentColor`); el color nunca carga el significado solo.",
+        "section": "colors"
+      },
+      {
+        "name": "The Marquee Accent Rule",
+        "body": "Los acentos son de la app pública y van solo como texto sobre el fondo (`--lcd-0`), nunca sobre relleno ni sobre tinta: ahí no tienen contraste garantizado. Rojo solo para el título del evento; amarillo solo para lo que se lee de un vistazo (fecha, sede). Un texto en rojo de marquesina nunca lleva `AlertIcon`.",
+        "section": "colors"
+      },
+      {
+        "name": "The Paper Is Light Rule",
+        "body": "Lo impreso usa siempre los roles claros.",
         "section": "colors"
       },
       {
@@ -275,13 +370,18 @@
         "section": "elevation"
       },
       {
+        "name": "The Texture Not A Color Rule",
+        "body": "Las líneas de barrido son textura de pantalla, no un quinto color: no cargan significado, no se usan para marcar nada y nunca se imprimen.",
+        "section": "elevation"
+      },
+      {
         "name": "The Square Corner Rule",
         "body": "Sin `border-radius`, sin excepciones.",
         "section": "shapes"
       },
       {
         "name": "The Dashed Means Not Yet Rule",
-        "body": "El borde punteado es el lenguaje de lo que todavía no está; no se usa como decoración.",
+        "body": "El borde punteado es el lenguaje de lo que todavía no está (y, impreso, de por dónde cortar); no se usa como decoración.",
         "section": "shapes"
       }
     ],
@@ -289,15 +389,19 @@
       "**Do** pintar con los roles `--lcd-0..3` y dejar que el esquema los resuelva.",
       "**Do** derivar la paleta de una organización con `rampFromHex`, y poner la clase `.ramp-scope` en toda capa que defina `--ramp-*`.",
       "**Do** acompañar `danger` con `AlertIcon`.",
+      "**Do** poner los acentos de marquesina solo como texto sobre `--lcd-0` en la app pública: rojo para el título del evento, amarillo para fecha y sede.",
       "**Do** usar Jersey 10 solo en `text-px-1..4` (20/30/40/60 px).",
       "**Do** usar bordes de 2 px: sólidos para lo presente, punteados para lo pendiente.",
       "**Do** animar en pasos (`steps(1, end)`): la revelación de 900 ms y el parpadeo de 1 s para lo que está en vivo.",
-      "**Do** mostrar el sprite de 12×12 del tipo de spot cuando no hay logo."
+      "**Do** mostrar el sprite de 12×12 del tipo de spot cuando no hay logo.",
+      "**Do** dejar que la impresión vuelva a los roles claros y apague las líneas de barrido."
     ],
     "donts": [
       "**Don't** usar `border-radius` ni sombras suaves.",
       "**Don't** usar texto pixelado debajo de 20 px ni en tamaños fuera de la grilla de 10 px.",
-      "**Don't** agregar un color fuera de la rampa salvo `danger`, ni usar el hex de la marca tal cual.",
+      "**Don't** agregar un color fuera de la rampa más allá de `danger` y los dos acentos de marquesina, ni usar el hex de la marca tal cual.",
+      "**Don't** poner un acento sobre relleno (`--lcd-1`) o tinta, ni usarlo para avisar un error: eso es `danger` con su ícono.",
+      "**Don't** usar las líneas de barrido para marcar nada ni subir su opacidad: son textura.",
       "**Don't** mostrar un logo sin pasarlo por los filtros LCD.",
       "**Don't** interpolar movimiento (easing suave); y todo se apaga con `prefers-reduced-motion`: la medalla nueva aparece revelada y nada parpadea.",
       "**Don't** volver a tarjetas blancas de SaaS con acento azul y confeti."
