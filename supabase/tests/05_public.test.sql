@@ -2,7 +2,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(13);
+select plan(15);
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000007a1', 'visitante@public.local');
@@ -106,6 +106,17 @@ select is(
   public.resolve_active_event('00000000-0000-0000-0000-000000000704'),
   '00000000-0000-0000-0000-000000000732'::uuid,
   'with only finished events, the most recent one'
+);
+
+select results_eq(
+  $$ select slug::text from public.active_event('00000000-0000-0000-0000-000000000701') $$,
+  $$ values ('en-curso') $$,
+  'active_event returns the same event as a row, ready to embed'
+);
+
+select is_empty(
+  $$ select * from public.active_event('00000000-0000-0000-0000-000000000702') $$,
+  'active_event returns nothing for an org without events'
 );
 
 -- ---------------------------------------------------------------------------
