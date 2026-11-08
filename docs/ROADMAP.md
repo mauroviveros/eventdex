@@ -205,8 +205,8 @@ Branch `feat/sorteo`. Al cierre, se sortea entre los que participaron.
    mismo ganador y que anular no borra.
 2. ✅ **Backend.** Las acciones de crear sorteo, extraer, anular y publicar ganadores.
    *Listo cuando* los tests cubren un sorteo sin elegibles y uno con anulación.
-3. **Vista.** `/[org]/eventos/[evento]/sorteo`, `/sorteo/presentar` (si se confirma)
-   y `/sorteo` público.
+3. ✅ **Vista.** `/[org]/eventos/[evento]/sorteo` y `/sorteo` público. Sin vista para
+   proyectar: la del panel alcanza.
    *Listo cuando* se hace un sorteo completo en el navegador y el ganador se ve en
    la app pública.
 4. **Auditoría.**
