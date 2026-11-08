@@ -1,3 +1,4 @@
+import type { QueryData } from "@supabase/supabase-js";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
 import { resolvePublishedSpot } from "@/domain/spots";
@@ -9,7 +10,10 @@ import type { Supabase } from "@/lib/supabase/server";
  * can see; RLS is the barrier. A failed read throws, so error.tsx shows it.
  */
 
-/** Tag for every cached organization lookup; revalidate it when orgs or domains change. */
+/**
+ * Tag for every cached organization lookup. Every action that changes an org
+ * (name, brand, status) or its domains calls invalidateOrganizations().
+ */
 export const ORGANIZATIONS_TAG = "organizations";
 
 // shortcut: unstable_cache (legacy in Next 16), move to "use cache" + cacheTag
@@ -23,7 +27,8 @@ const lookupOrganization = unstable_cache(
     return data;
   },
   ["organization-by-host"],
-  { revalidate: 300, tags: [ORGANIZATIONS_TAG] },
+  // A minute: what changes outside an action (SQL, support) shows up soon.
+  { revalidate: 60, tags: [ORGANIZATIONS_TAG] },
 );
 
 /**
@@ -41,23 +46,21 @@ const EVENT_COLUMNS = `id, slug, title, edition_label, summary, description, cov
   spots:event_spots (id, code, booth, points, is_active, sort_order,
                      name_override, description_override, snapshot)`;
 
-type Selector = { by: "id"; value: string } | { by: "slug"; value: string };
-
 /**
- * A published event of the org with its schedules in order and its active
- * spots, each already showing what the public sees. Null if missing, a draft
- * or dropped.
+ * A published event of the org by slug, with its schedules in order and its
+ * active spots, each already showing what the public sees. Null if missing, a
+ * draft or dropped.
  */
 export async function getPublicEvent(
   supabase: Supabase,
   organizationId: string,
-  which: Selector,
+  slug: string,
 ) {
   const { data, error } = await supabase
     .from("events")
     .select(EVENT_COLUMNS)
     .eq("organization_id", organizationId)
-    .eq(which.by, which.value)
+    .eq("slug", slug)
     .eq("status", "published")
     .is("deleted_at", null)
     .order("starts_at", { referencedTable: "event_schedules" })
@@ -65,9 +68,36 @@ export async function getPublicEvent(
     .order("code", { referencedTable: "event_spots" })
     .maybeSingle();
   if (error) throw error;
-  if (!data) return null;
+  return data && toPublicEvent(data);
+}
 
-  const { spots, ...event } = data;
+/**
+ * The event the org's home shows (live, else next, else last) in one round
+ * trip: active_event returns the row, so the schedules, venue and spots embed
+ * in the same call. Null if the org has none.
+ */
+export async function getActiveEvent(
+  supabase: Supabase,
+  organizationId: string,
+) {
+  const { data, error } = await supabase
+    .rpc("active_event", { p_organization_id: organizationId })
+    .select(EVENT_COLUMNS)
+    .order("starts_at", { referencedTable: "event_schedules" })
+    .order("sort_order", { referencedTable: "event_spots" })
+    .order("code", { referencedTable: "event_spots" })
+    .maybeSingle();
+  if (error) throw error;
+  return data && toPublicEvent(data);
+}
+
+// The row both reads return: the select string decides its shape.
+const eventQuery = (supabase: Supabase) =>
+  supabase.from("events").select(EVENT_COLUMNS);
+type EventRow = QueryData<ReturnType<typeof eventQuery>>[number];
+
+/** Keeps the active spots and resolves what each shows from its snapshot. */
+function toPublicEvent({ spots, ...event }: EventRow) {
   return {
     ...event,
     spots: spots.flatMap((s) => {
@@ -85,18 +115,6 @@ export async function getPublicEvent(
         : [];
     }),
   };
-}
-
-/** The event the org's home shows (live, else next, else last), or null. */
-export async function getActiveEventId(
-  supabase: Supabase,
-  organizationId: string,
-) {
-  const { data, error } = await supabase.rpc("resolve_active_event", {
-    p_organization_id: organizationId,
-  });
-  if (error) throw error;
-  return data;
 }
 
 /** Published public events for the sitemap, newest change first. */

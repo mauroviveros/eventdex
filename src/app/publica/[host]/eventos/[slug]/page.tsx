@@ -1,18 +1,15 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
+import { EventHome } from "@/components/visitante/EventHome";
 import { getPublicEvent } from "@/lib/data/public";
 import { createClient } from "@/lib/supabase/server";
-import { EventHome } from "../../EventHome";
 import { requireHostOrganization } from "../../organization";
 
 // Metadata and page share one read per request.
 const load = cache(async (host: string, slug: string) => {
   const { org } = await requireHostOrganization(host);
-  const event = await getPublicEvent(await createClient(), org.id, {
-    by: "slug",
-    value: slug,
-  });
+  const event = await getPublicEvent(await createClient(), org.id, slug);
   if (!event) notFound();
   return event;
 });
@@ -31,9 +28,5 @@ export default async function PublicEventPage({
 }: PageProps<"/publica/[host]/eventos/[slug]">) {
   const { host, slug } = await params;
   const event = await load(host, slug);
-  return (
-    <>
-      <EventHome event={event} now={new Date()} />
-    </>
-  );
+  return <EventHome event={event} now={new Date()} />;
 }

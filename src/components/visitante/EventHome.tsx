@@ -5,10 +5,10 @@ import {
   formatEventDates,
   formatScheduleTimes,
 } from "@/domain/events";
-import type { getPublicEvent } from "@/lib/data/public";
+import type { getActiveEvent } from "@/lib/data/public";
 
 export type PublicEvent = NonNullable<
-  Awaited<ReturnType<typeof getPublicEvent>>
+  Awaited<ReturnType<typeof getActiveEvent>>
 >;
 
 type Props = { event: PublicEvent; now: Date };
@@ -32,7 +32,7 @@ export function EventHome({ event, now }: Props) {
 }
 
 /** Date on a tab, the title on a double-ruled plate, the venue on a tab, then the countdown. */
-function Marquee({ event, now }: Props) {
+export function Marquee({ event, now }: Props) {
   const only = event.schedules.length === 1 ? event.schedules[0] : null;
   const dates = formatEventDates(event.schedules, event.timezone, now);
   const address = event.venue
@@ -95,7 +95,7 @@ function SectionTitle({ id, children }: { id: string; children: string }) {
  * The schedules as levels: the one running (or next) lights up as a filled,
  * double-ruled cell; the ones done go quiet, the ones to come are dashed.
  */
-function Levels({ event, now }: Props) {
+export function Levels({ event, now }: Props) {
   const t = now.getTime();
   const on =
     event.schedules.find(

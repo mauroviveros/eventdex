@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { Monogram } from "@/components/admin/Monogram";
 import { LcdFilters } from "@/components/pixel/LcdFilters";
+import { Monogram } from "@/components/ui/Monogram";
 import { EVENTDEX_HUE, ramp, rampFromHex } from "@/domain/palette";
 import { requireHostOrganization } from "./organization";
 

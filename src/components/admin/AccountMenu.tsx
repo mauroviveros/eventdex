@@ -1,5 +1,5 @@
 import { Chevron } from "@/components/pixel/Chevron";
-import { Monogram } from "./Monogram";
+import { Monogram } from "@/components/ui/Monogram";
 
 /** Who is signed in: foot of the rail on desktop, end of the brand row on phones. Opens toward the page. */
 export function AccountMenu({
