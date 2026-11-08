@@ -2,7 +2,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(25);
+select plan(28);
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000008d1', 'dev@team.local'),
@@ -25,6 +25,10 @@ insert into public.organization_members (organization_id, user_id, role) values
 
 insert into public.organization_invitations (organization_id, email, role, expires_at) values
   ('0000000a-0000-0000-0000-000000000008', 'vencida@team.local', 'staff', now() - interval '1 day');
+
+insert into public.organization_domains (id, organization_id, hostname, is_primary) values
+  ('00000000-0000-0000-0000-000000000801', '0000000a-0000-0000-0000-000000000008', 'a.team-a.test', true),
+  ('00000000-0000-0000-0000-000000000802', '0000000a-0000-0000-0000-000000000008', 'b.team-a.test', false);
 
 -- ---------------------------------------------------------------------------
 -- Owner de A
@@ -191,6 +195,30 @@ select throws_ok(
   $$ select public.invite_member('0000000a-0000-0000-0000-000000000008', 'x@team.local', 'staff') $$,
   '42501', null,
   'anon cannot invite'
+);
+
+reset role;
+
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000008a2","role":"authenticated"}', true);
+
+select throws_ok(
+  $$ select public.set_primary_domain('00000000-0000-0000-0000-000000000802') $$,
+  '42501', null,
+  'staff cannot change the primary domain'
+);
+
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000008a1","role":"authenticated"}', true);
+
+select lives_ok(
+  $$ select public.set_primary_domain('00000000-0000-0000-0000-000000000802') $$,
+  'the owner changes the primary domain'
+);
+select results_eq(
+  $$ select hostname::text from public.organization_domains
+     where organization_id = '0000000a-0000-0000-0000-000000000008' and is_primary $$,
+  $$ values ('b.team-a.test') $$,
+  'and the org keeps exactly one'
 );
 
 reset role;
