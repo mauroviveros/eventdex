@@ -26,8 +26,11 @@ export const getViewer = cache(async () => {
  * relying on a parent layout's redirect lets a child's notFound() win.
  */
 export async function requireViewer() {
-  const viewer = await getViewer();
-  if (viewer) return viewer;
+  return (await getViewer()) ?? signInAndComeBack();
+}
+
+/** To /ingresar on this host, coming back to the page that asked. */
+async function signInAndComeBack(): Promise<never> {
   const next = (await headers()).get("x-public-path") ?? "/";
   redirect(`/ingresar?next=${encodeURIComponent(next)}`);
 }
@@ -80,3 +83,11 @@ export const getVisitorAccount = cache(async () => {
     avatarUrl: data?.avatar_url ?? null,
   };
 });
+
+/**
+ * The visitor of a public page that needs a session, or a redirect to sign in
+ * and back. Shares getVisitorAccount with the header: one session read.
+ */
+export async function requireVisitor() {
+  return (await getVisitorAccount()) ?? signInAndComeBack();
+}

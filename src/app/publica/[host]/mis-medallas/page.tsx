@@ -5,9 +5,9 @@ import { Medal } from "@/components/visitante/Medal";
 import { Progress } from "@/components/visitante/Progress";
 import { collectionProgress } from "@/domain/claims";
 import { eventPhase } from "@/domain/events";
-import { listMyClaims } from "@/lib/data/claims";
-import { getActiveEvent } from "@/lib/data/public";
-import { requireViewer } from "@/lib/data/viewer";
+import { getLastCollectedEventSlug, listMyClaims } from "@/lib/data/claims";
+import { getActiveEvent, getPublicEvent } from "@/lib/data/public";
+import { requireVisitor } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
 import { requireHostOrganization } from "../organization";
 
@@ -21,10 +21,21 @@ export default async function MisMedallasPage({
   params,
 }: PageProps<"/publica/[host]/mis-medallas">) {
   const { org } = await requireHostOrganization((await params).host);
-  const viewer = await requireViewer();
   const supabase = await createClient();
-  const event = await getActiveEvent(supabase, org.id);
-  const mine = event ? await listMyClaims(supabase, event.id, viewer.id) : [];
+  const [visitor, active] = await Promise.all([
+    requireVisitor(),
+    getActiveEvent(supabase, org.id),
+  ]);
+  // A live event is where the visitor is collecting now. Otherwise the active
+  // one may be next week's: show the last event they collected in instead.
+  let event = active;
+  if (!active || eventPhase(active.status, active.schedules) !== "en-curso") {
+    const slug = await getLastCollectedEventSlug(supabase, org.id, visitor.id);
+    if (slug && slug !== active?.slug) {
+      event = (await getPublicEvent(supabase, org.id, slug)) ?? active;
+    }
+  }
+  const mine = event ? await listMyClaims(supabase, event.id, visitor.id) : [];
   const claimed = new Set(mine.map((c) => c.event_spot_id));
 
   return (
@@ -49,7 +60,7 @@ export default async function MisMedallasPage({
             }
           />
           <Link
-            href="/"
+            href={`/eventos/${event.slug}`}
             className={buttonClass(
               "secondary",
               "justify-self-start no-underline",
