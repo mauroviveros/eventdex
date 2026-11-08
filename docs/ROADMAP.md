@@ -248,10 +248,10 @@ Branch `feat/landing`. Sin DB: es contenido estático.
 
 ## R10 · Migración de datos
 
-Branch `feat/migracion`. Los datos de v1 y v2 al esquema nuevo.
+Branch `feat/migracion`. Los datos de la v1 (esquema `v1` del proyecto de
+producción) al esquema nuevo. La v2 no llegó a producción.
 
-1. **Relevamiento.** El mapeo tabla por tabla, desde los esquemas de `v2-legacy` y
-   de la v1.
+1. **Relevamiento.** El mapeo tabla por tabla desde el esquema `v1`.
    *Listo cuando* el mapeo está aprobado, incluyendo qué se descarta.
 2. **Script.** `scripts/migrate/`, idempotente, con un reporte de cuántas filas
    entran y cuántas se descartan.
