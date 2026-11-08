@@ -3,31 +3,54 @@ import { internalPath, surfaceFor } from "./surface";
 
 describe("surfaceFor", () => {
   const root = "localhost:3000";
+  const admin = "app.localhost:3000";
 
   it("serves the landing on the root domain and www", () => {
-    expect(surfaceFor("localhost:3000", root)).toEqual({ kind: "landing" });
-    expect(surfaceFor("www.localhost:3000", root)).toEqual({ kind: "landing" });
+    expect(surfaceFor("localhost:3000", root, admin)).toEqual({
+      kind: "landing",
+    });
+    expect(surfaceFor("www.localhost:3000", root, admin)).toEqual({
+      kind: "landing",
+    });
   });
 
   it("serves the admin on the app subdomain", () => {
-    expect(surfaceFor("app.localhost:3000", root)).toEqual({ kind: "admin" });
+    expect(surfaceFor("app.localhost:3000", root, admin)).toEqual({
+      kind: "admin",
+    });
+  });
+
+  it("serves the admin on its own host when the root has no subdomains", () => {
+    const root = "eventdex.vercel.app";
+    const admin = "eventdex-admin.vercel.app";
+    expect(surfaceFor("eventdex.vercel.app", root, admin).kind).toBe("landing");
+    expect(surfaceFor("Eventdex-Admin.vercel.app", root, admin).kind).toBe(
+      "admin",
+    );
+    expect(surfaceFor("evento.lodecharlytcg.com", root, admin)).toEqual({
+      kind: "publica",
+      host: "evento.lodecharlytcg.com",
+    });
   });
 
   it("treats any other host as an organization domain", () => {
-    expect(surfaceFor("expo.localhost:3000", root)).toEqual({
+    expect(surfaceFor("expo.localhost:3000", root, admin)).toEqual({
       kind: "publica",
       host: "expo.localhost:3000",
     });
-    expect(surfaceFor("ExpoUbbe.com", "eventdex.com")).toEqual({
+    expect(
+      surfaceFor("ExpoUbbe.com", "eventdex.com", "app.eventdex.com"),
+    ).toEqual({
       kind: "publica",
       host: "expoubbe.com",
     });
   });
 
   it("does not confuse a lookalike domain with the root", () => {
-    expect(surfaceFor("app.eventdex.com.evil.io", "eventdex.com").kind).toBe(
-      "publica",
-    );
+    expect(
+      surfaceFor("app.eventdex.com.evil.io", "eventdex.com", "app.eventdex.com")
+        .kind,
+    ).toBe("publica");
   });
 });
 

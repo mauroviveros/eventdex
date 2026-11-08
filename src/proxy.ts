@@ -1,6 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
-import { env } from "@/lib/env";
+import { ADMIN_HOST, env } from "@/lib/env";
 import { internalPath, surfaceFor } from "@/lib/surface";
 
 /**
@@ -10,7 +10,7 @@ import { internalPath, surfaceFor } from "@/lib/surface";
  */
 export async function proxy(request: NextRequest) {
   const host = request.headers.get("host") ?? env.NEXT_PUBLIC_ROOT_DOMAIN;
-  const surface = surfaceFor(host, env.NEXT_PUBLIC_ROOT_DOMAIN);
+  const surface = surfaceFor(host, env.NEXT_PUBLIC_ROOT_DOMAIN, ADMIN_HOST);
   const url = request.nextUrl.clone();
   url.pathname = internalPath(surface, request.nextUrl.pathname);
 
