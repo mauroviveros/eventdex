@@ -2,7 +2,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(24);
+select plan(25);
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000008a1', 'visitante@claims.local'),
@@ -209,6 +209,13 @@ update public.event_registrations set blocked_at = now()
 where user_id = '00000000-0000-0000-0000-0000000008a1';
 
 reset role;
+
+select results_eq(
+  $$ select action, actor_id from public.audit_logs
+     where organization_id = '00000000-0000-0000-0000-000000000801' and entity_type = 'event_registration' $$,
+  $$ values ('visitor.blocked', '00000000-0000-0000-0000-0000000008b1'::uuid) $$,
+  'blocking a visitor leaves who did it in the audit log'
+);
 
 set local role authenticated;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000008a1","role":"authenticated"}', true);
