@@ -641,6 +641,35 @@ export type Database = {
         Args: Record<PropertyKey, never>;
         Returns: string[];
       };
+      active_event: {
+        Args: { p_organization_id: string };
+        Returns: {
+          cover_path: string | null;
+          created_at: string;
+          created_by: string | null;
+          deleted_at: string | null;
+          description: string | null;
+          edition_label: string | null;
+          id: string;
+          organization_id: string;
+          published_at: string | null;
+          settings: NonNullable<Json>;
+          slug: string;
+          status: Database["public"]["Enums"]["event_status"];
+          summary: string | null;
+          timezone: string;
+          title: string;
+          updated_at: string | null;
+          venue_id: string | null;
+          visibility: Database["public"]["Enums"]["event_visibility"];
+        }[];
+        SetofOptions: {
+          from: "*";
+          to: "events";
+          isOneToOne: false;
+          isSetofReturn: true;
+        };
+      };
       create_organization: {
         Args: {
           p_hostname: string;
