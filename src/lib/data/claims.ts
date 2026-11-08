@@ -55,3 +55,26 @@ export async function listMyClaims(
   if (error) throw error;
   return data;
 }
+
+/**
+ * Who registered in an event (their first valid scan), newest first, with how
+ * many medals each has. Only the org's team and the developer read this.
+ */
+export async function listEventVisitors(supabase: Supabase, eventId: string) {
+  const { data, error } = await supabase
+    .from("event_registrations")
+    .select(
+      `id, created_at, blocked_at,
+       profile:profiles (full_name, display_name, email),
+       claims:spot_claims (count)`,
+    )
+    .eq("event_id", eventId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data.map(({ claims, profile, ...r }) => ({
+    ...r,
+    name: profile.display_name || profile.full_name || profile.email,
+    email: profile.email,
+    medals: claims[0]?.count ?? 0,
+  }));
+}
