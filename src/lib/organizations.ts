@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isTimeZone } from "@/domain/events";
 import { type ActionResult, failed, invalid } from "@/lib/results";
 import type { Supabase } from "@/lib/supabase/server";
 
@@ -15,12 +16,23 @@ export const SLUG = /^[a-z0-9][a-z0-9-]{1,62}$/;
 const HOSTNAME =
   /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+(:[0-9]{2,5})?$/;
 
+const orgName = z
+  .string()
+  .trim()
+  .min(2, "Poné un nombre de al menos 2 letras.")
+  .max(120, "El nombre puede tener hasta 120 caracteres.");
+
+const hostname = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .regex(
+    HOSTNAME,
+    "Escribí solo el dominio, sin https:// ni barras. Ej.: expo.com.ar.",
+  );
+
 export const createOrganizationSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(2, "Poné un nombre de al menos 2 letras.")
-    .max(120, "El nombre puede tener hasta 120 caracteres."),
+  name: orgName,
   slug: z
     .string()
     .trim()
@@ -29,14 +41,7 @@ export const createOrganizationSchema = z.object({
       SLUG,
       "Usá minúsculas, números y guiones, sin espacios. Ej.: expo-ubbe.",
     ),
-  hostname: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .regex(
-      HOSTNAME,
-      "Escribí solo el dominio, sin https:// ni barras. Ej.: expo.com.ar.",
-    ),
+  hostname,
   ownerEmail: z
     .string()
     .trim()
@@ -63,4 +68,175 @@ export async function createOrganization(
       "23505": "Ya existe una organización con ese slug o con ese dominio.",
     });
   return { ok: true, data: { id: data } };
+}
+
+// Same rule as the organizations_brand_color_format check. Any hue is valid:
+// the ramp fixes each tone's lightness, so contrast holds (DESIGN_SYSTEM).
+export const settingsSchema = z.object({
+  organizationId: z.uuid(),
+  name: orgName,
+  brandColor: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .regex(/^#[0-9a-f]{6}$/, "Elegí un color válido."),
+  defaultTimezone: z
+    .string()
+    .trim()
+    .refine(isTimeZone, "Elegí una zona horaria válida."),
+});
+
+export async function updateSettings(
+  supabase: Pick<Supabase, "from">,
+  input: unknown,
+): Promise<ActionResult<null>> {
+  const parsed = settingsSchema.safeParse(input);
+  if (!parsed.success) return invalid(parsed.error);
+  const v = parsed.data;
+  const { data, error } = await supabase
+    .from("organizations")
+    .update({
+      name: v.name,
+      brand_color: v.brandColor,
+      default_timezone: v.defaultTimezone,
+    })
+    .eq("id", v.organizationId)
+    .select("id");
+  if (error) return failed(error);
+  if (data.length === 0) return failed({ code: "42501" });
+  return { ok: true, data: null };
+}
+
+const LOGO_BUCKET = "org-logos";
+
+// Same limits as the bucket; here so the owner gets a message about their file.
+const LOGO_TYPES = {
+  "image/png": "png",
+  "image/jpeg": "jpg",
+  "image/webp": "webp",
+} as const;
+
+export const logoSchema = z.object({
+  organizationId: z.uuid(),
+  logo: z
+    .file("Elegí una imagen.")
+    .max(1024 * 1024, "El logo puede pesar hasta 1 MB.")
+    .mime(
+      Object.keys(LOGO_TYPES) as (keyof typeof LOGO_TYPES)[],
+      "Subí una imagen PNG, JPG o WebP.",
+    ),
+});
+
+type Storage = Pick<Supabase, "from" | "storage">;
+
+async function currentLogo(supabase: Storage, organizationId: string) {
+  return supabase
+    .from("organizations")
+    .select("logo_path")
+    .eq("id", organizationId)
+    .maybeSingle();
+}
+
+/** Points the org at `path` and deletes the previous file. A file that stays behind is only an orphan. */
+async function swapLogo(
+  supabase: Storage,
+  organizationId: string,
+  path: string | null,
+  previous: string | null,
+): Promise<ActionResult<null>> {
+  const { data, error } = await supabase
+    .from("organizations")
+    .update({ logo_path: path })
+    .eq("id", organizationId)
+    .select("id");
+  if (error || data.length === 0) {
+    if (path) await supabase.storage.from(LOGO_BUCKET).remove([path]);
+    return failed(error ?? { code: "42501" });
+  }
+  if (previous) await supabase.storage.from(LOGO_BUCKET).remove([previous]);
+  return { ok: true, data: null };
+}
+
+/** Each upload gets a new name, so a browser or CDN never shows the old logo. */
+export async function uploadLogo(
+  supabase: Storage,
+  input: unknown,
+): Promise<ActionResult<null>> {
+  const parsed = logoSchema.safeParse(input);
+  if (!parsed.success) return invalid(parsed.error);
+  const { organizationId, logo } = parsed.data;
+
+  const { data: org, error } = await currentLogo(supabase, organizationId);
+  if (error) return failed(error);
+  if (!org) return failed({ code: "42501" });
+
+  const extension = LOGO_TYPES[logo.type as keyof typeof LOGO_TYPES];
+  const path = `${organizationId}/${crypto.randomUUID()}.${extension}`;
+  const { error: uploadError } = await supabase.storage
+    .from(LOGO_BUCKET)
+    .upload(path, logo, { contentType: logo.type });
+  if (uploadError) return failed(uploadError);
+
+  return swapLogo(supabase, organizationId, path, org.logo_path);
+}
+
+export async function removeLogo(
+  supabase: Storage,
+  organizationId: string,
+): Promise<ActionResult<null>> {
+  if (!z.uuid().safeParse(organizationId).success)
+    return failed({ code: "42501" });
+  const { data: org, error } = await currentLogo(supabase, organizationId);
+  if (error) return failed(error);
+  if (!org) return failed({ code: "42501" });
+  return swapLogo(supabase, organizationId, null, org.logo_path);
+}
+
+const TAKEN_DOMAIN = { "23505": "Ese dominio ya está en uso." };
+
+export async function addDomain(
+  supabase: Pick<Supabase, "from">,
+  input: unknown,
+): Promise<ActionResult<null>> {
+  const parsed = z
+    .object({ organizationId: z.uuid(), hostname })
+    .safeParse(input);
+  if (!parsed.success) return invalid(parsed.error);
+  const { error } = await supabase.from("organization_domains").insert({
+    organization_id: parsed.data.organizationId,
+    hostname: parsed.data.hostname,
+  });
+  return error ? failed(error, TAKEN_DOMAIN) : { ok: true, data: null };
+}
+
+export async function setPrimaryDomain(
+  supabase: Pick<Supabase, "rpc">,
+  domainId: string,
+): Promise<ActionResult<null>> {
+  if (!z.uuid().safeParse(domainId).success) return failed({ code: "42501" });
+  const { error } = await supabase.rpc("set_primary_domain", {
+    p_domain_id: domainId,
+  });
+  return error ? failed(error) : { ok: true, data: null };
+}
+
+/** The primary domain stays: it is where the QR codes point. */
+export async function removeDomain(
+  supabase: Pick<Supabase, "from">,
+  domainId: string,
+): Promise<ActionResult<null>> {
+  if (!z.uuid().safeParse(domainId).success) return failed({ code: "42501" });
+  const { data, error } = await supabase
+    .from("organization_domains")
+    .delete()
+    .eq("id", domainId)
+    .eq("is_primary", false)
+    .select("id");
+  if (error) return failed(error);
+  if (data.length === 0)
+    return {
+      ok: false,
+      error: "No se puede quitar el dominio principal: elegí otro primero.",
+    };
+  return { ok: true, data: null };
 }
