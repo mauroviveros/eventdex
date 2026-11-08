@@ -3,6 +3,7 @@ import {
   countdownState,
   eventPhase,
   formatEventDates,
+  formatMoment,
   formatScheduleTimes,
   isTimeZone,
   localToInstant,
@@ -110,6 +111,12 @@ describe("formatEventDates", () => {
 
   it("is null without schedules", () => {
     expect(formatEventDates([], BA, now)).toBeNull();
+  });
+});
+
+describe("formatMoment", () => {
+  it("shows an instant in the event's time zone", () => {
+    expect(formatMoment("2026-11-14T18:32:00Z", BA)).toBe("sáb, 14 nov, 15:32");
   });
 });
 

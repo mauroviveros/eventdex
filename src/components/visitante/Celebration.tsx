@@ -1,27 +1,27 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
 import { AlertIcon } from "@/components/pixel/AlertIcon";
 import { Sprite, type SpriteMode } from "@/components/pixel/Sprite";
-import { Button } from "@/components/ui/Button";
+import { buttonClass } from "@/components/ui/Button";
+import type { ClaimResult } from "@/domain/claims";
+import { formatMoment } from "@/domain/events";
 import type { SpotType } from "@/domain/spots";
 import { Logo } from "./Medal";
 
-export type ClaimOutcome =
-  | { kind: "nueva" }
-  | { kind: "repetida"; claimedAt: string }
-  | { kind: "inactivo" }
-  | { kind: "fuera-de-fase"; startsAt: string }
-  | { kind: "bloqueado" };
-
 type Props = {
   spot: { name: string; code: string; type: SpotType; logo?: string };
-  outcome: ClaimOutcome;
+  outcome: ClaimResult;
+  /** Dates show in the event's zone, wherever the visitor is. */
+  timeZone: string;
+  /** The event's page, for the outcomes that send the visitor back to it. */
+  eventHref: string;
   /** Progress block shown under a new or repeated medal. */
   progress?: ReactNode;
   /** 1 on /s/[id]; lower where it sits under other headings (the catalog). */
   headingLevel?: 1 | 2 | 3;
 };
 
-const MODE: Record<ClaimOutcome["kind"], SpriteMode> = {
+const MODE: Record<ClaimResult["kind"], SpriteMode> = {
   nueva: "revelando",
   repetida: "lleno",
   inactivo: "inactivo",
@@ -33,10 +33,16 @@ const MODE: Record<ClaimOutcome["kind"], SpriteMode> = {
 export function Celebration({
   spot,
   outcome,
+  timeZone,
+  eventHref,
   progress,
   headingLevel = 1,
 }: Props) {
-  const copy = COPY[outcome.kind](outcome as never);
+  const copy = copyFor(
+    outcome,
+    (iso) => formatMoment(iso, timeZone),
+    eventHref,
+  );
   const blocked = outcome.kind === "bloqueado";
   const Heading = `h${headingLevel}` as const;
   const mode = MODE[outcome.kind];
@@ -68,49 +74,82 @@ export function Celebration({
             {progress}
           </div>
         )}
-      <Button
-        variant={copy.primary ? "primary" : "secondary"}
-        className="w-full"
+      <Link
+        href={copy.href}
+        className={buttonClass(
+          copy.primary ? "primary" : "secondary",
+          "w-full no-underline",
+        )}
       >
         {copy.action}
-      </Button>
+      </Link>
     </article>
   );
 }
 
-type Copy = { title: string; body: string; action: string; primary: boolean };
-
-const COPY: {
-  [K in ClaimOutcome["kind"]]: (o: Extract<ClaimOutcome, { kind: K }>) => Copy;
-} = {
-  nueva: () => ({
-    title: "¡Medalla nueva!",
-    body: "Quedó guardada en tu colección.",
-    action: "Ver mis medallas",
-    primary: true,
-  }),
-  repetida: (o) => ({
-    title: "Esta ya la tenías",
-    body: `La conseguiste el ${o.claimedAt}. Buscá un stand nuevo para sumar.`,
-    action: "Ver mis medallas",
-    primary: true,
-  }),
-  inactivo: () => ({
-    title: "Este spot no suma",
-    body: "No está activo en este evento. Probá con otro stand.",
-    action: "Ver el mapa de stands",
-    primary: false,
-  }),
-  "fuera-de-fase": (o) => ({
-    title: "Todavía no arrancó",
-    body: `Las medallas se suman durante el evento. Volvé el ${o.startsAt}.`,
-    action: "Ver el evento",
-    primary: false,
-  }),
-  bloqueado: () => ({
-    title: "No podés sumar medallas",
-    body: "Tu registro en este evento está suspendido. Si creés que es un error, hablá con la organización en el predio.",
-    action: "Ir al inicio",
-    primary: false,
-  }),
+type Copy = {
+  title: string;
+  body: string;
+  action: string;
+  href: string;
+  primary: boolean;
 };
+
+const COLLECTION = "/mis-medallas";
+
+function copyFor(
+  o: ClaimResult,
+  moment: (iso: string) => string,
+  eventHref: string,
+): Copy {
+  switch (o.kind) {
+    case "nueva":
+      return {
+        title: "¡Medalla nueva!",
+        body: "Quedó guardada en tu colección.",
+        action: "Ver mis medallas",
+        href: COLLECTION,
+        primary: true,
+      };
+    case "repetida":
+      return {
+        title: "Esta ya la tenías",
+        body: `La conseguiste el ${moment(o.claimedAt)}. Buscá un stand nuevo para sumar.`,
+        action: "Ver mis medallas",
+        href: COLLECTION,
+        primary: true,
+      };
+    case "inactivo":
+      return {
+        title: "Este spot no suma",
+        body: "No está activo en este evento. Probá con otro stand.",
+        action: "Ver los stands",
+        href: `${eventHref}#medallas`,
+        primary: false,
+      };
+    case "fuera-de-fase":
+      return o.ended
+        ? {
+            title: "El evento terminó",
+            body: `Las medallas se sumaban hasta el ${moment(o.endsAt)}. Las que juntaste siguen en tu colección.`,
+            action: "Ver mis medallas",
+            href: COLLECTION,
+            primary: false,
+          }
+        : {
+            title: "Todavía no arrancó",
+            body: `Las medallas se suman durante el evento. Volvé el ${moment(o.startsAt)}.`,
+            action: "Ver el evento",
+            href: eventHref,
+            primary: false,
+          };
+    case "bloqueado":
+      return {
+        title: "No podés sumar medallas",
+        body: "Tu registro en este evento está suspendido. Si creés que es un error, hablá con la organización en el predio.",
+        action: "Ir al inicio",
+        href: "/",
+        primary: false,
+      };
+  }
+}
