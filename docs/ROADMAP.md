@@ -149,7 +149,7 @@ Branch `feat/spots-y-qr`. Catálogo, spots del evento y QR imprimibles.
    evento) y quitar un spot del evento pide confirmación porque su QR impreso deja
    de funcionar.
 
-## R4 · Portada pública
+## R4 · Portada pública ✅
 
 Branch `feat/portada-publica`. El evento se ve en el dominio de la org.
 
@@ -165,16 +165,16 @@ Branch `feat/portada-publica`. El evento se ve en el dominio de la org.
    lista de spots.
    *Listo cuando* `expo.localhost:3000` muestra el evento cargado en R2 y R3, a
    360 px, con la marca de la org aplicada.
-4. ▶ **Auditoría.** Incluye la performance mobile (Lighthouse). `/code-review`: 6
+4. ✅ **Auditoría.** Incluye la performance mobile (Lighthouse). `/code-review`: 6
    hallazgos (5 resueltos; el logo de las medallas espera a Storage). Lighthouse mobile
    sobre el build de producción: performance 99, accesibilidad 100, buenas prácticas
    100, SEO 100.
 
-## R5 · Medallas
+## R5 · Medallas ▶
 
 Branch `feat/medallas`. El visitante escanea y colecciona.
 
-1. **DB.** `event_registrations`, `spot_claims` y `claim_spot()` (registra si hace
+1. ✅ **DB.** `event_registrations`, `spot_claims` y `claim_spot()` (registra si hace
    falta y es idempotente).
    *Listo cuando* pgTAP prueba que no se reclama sin pasar por `claim_spot()`, que
    escanear dos veces no duplica, que un bloqueado no reclama y que no se reclama
