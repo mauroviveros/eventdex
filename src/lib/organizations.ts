@@ -214,34 +214,41 @@ const checkbox = z
   .optional()
   .transform((v) => v === "on");
 
-/** `conflict` names the org that has the domain: nothing changed, ask before moving it. */
+export type DomainConflict = {
+  owner_id: string;
+  owner_name: string;
+  next_primary: string | null;
+};
+
+/** `conflict`: another org has the domain, nothing changed. Ask before moving it. */
 export async function assignDomain(
   supabase: Pick<Supabase, "rpc">,
   input: unknown,
-): Promise<ActionResult<{ conflict: string | null }>> {
+): Promise<ActionResult<{ conflict: DomainConflict | null }>> {
   const parsed = z
     .object({
       organizationId: z.uuid(),
       hostname,
       makePrimary: checkbox,
-      transfer: checkbox,
+      transferFrom: z.uuid().optional(),
     })
     .safeParse(input);
   if (!parsed.success) return invalid(parsed.error);
-  const { organizationId, makePrimary, transfer } = parsed.data;
+  const { organizationId, makePrimary, transferFrom } = parsed.data;
   const { data, error } = await supabase.rpc("assign_domain", {
     p_organization_id: organizationId,
     p_hostname: parsed.data.hostname,
     p_make_primary: makePrimary,
-    p_transfer: transfer,
+    p_transfer_from: transferFrom,
   });
   if (error)
     return failed(error, {
-      "23505": "Esta organización ya tiene ese dominio.",
-      "23514":
+      "42710": "Esta organización ya tiene ese dominio.",
+      "23001":
         "Es el único dominio de su organización: sumale otro antes de moverlo.",
+      "23505": "Otro cambio se cruzó con este. Probá de nuevo.",
     });
-  return { ok: true, data: { conflict: data || null } };
+  return { ok: true, data: { conflict: data[0] ?? null } };
 }
 
 export async function setPrimaryDomain(

@@ -971,9 +971,13 @@ export type Database = {
           p_hostname: string;
           p_make_primary?: boolean;
           p_organization_id: string;
-          p_transfer?: boolean;
+          p_transfer_from?: string;
         };
-        Returns: string;
+        Returns: {
+          next_primary: string;
+          owner_id: string;
+          owner_name: string;
+        }[];
       };
       claim_spot: {
         Args: { p_event_spot_id: string };

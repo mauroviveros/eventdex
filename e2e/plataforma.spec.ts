@@ -114,9 +114,9 @@ test("the developer configures domains and moves one between orgs", async ({
   const field = page.getByRole("textbox", { name: "Dominio", exact: true });
   const domain = (host: string) =>
     page.getByRole("listitem").filter({ hasText: host });
-  const add = async (host: string, button = "Sumar dominio") => {
+  const add = async (host: string) => {
     await field.fill(host);
-    await page.getByRole("button", { name: button, exact: true }).click();
+    await page.getByRole("button", { name: "Sumar dominio" }).click();
     await expect(domain(host)).toBeVisible();
   };
   const moved = `mover-${seed.org.slug}.test`;
@@ -131,8 +131,17 @@ test("the developer configures domains and moves one between orgs", async ({
     await expect(domain(moved)).not.toContainText("Principal");
   });
 
-  await test.step("a domain can be added as primary", async () => {
-    await add(primary, "Sumar y hacer principal");
+  await test.step("a domain added as primary asks first", async () => {
+    await field.fill(primary);
+    await page.getByRole("button", { name: "Sumar y hacer principal" }).click();
+    const confirm = page.getByRole("button", { name: "Sí, hacer principal" });
+    await expect(confirm).toBeFocused();
+
+    await page.getByRole("button", { name: "Cancelar" }).click();
+    await expect(domain(primary)).toHaveCount(0);
+
+    await page.getByRole("button", { name: "Sumar y hacer principal" }).click();
+    await confirm.click();
     await expect(domain(primary)).toContainText("Principal");
   });
 
@@ -151,6 +160,10 @@ test("the developer configures domains and moves one between orgs", async ({
       page.getByText(`${moved} ya es de ${seed.org.name}`),
     ).toBeVisible();
     await expect(page.getByRole("button", { name: "Sí, mover" })).toBeFocused();
+    await expect(domain(moved)).toHaveCount(0);
+
+    await field.press("Enter");
+    await expect(page.getByRole("button", { name: "Sí, mover" })).toBeVisible();
     await expect(domain(moved)).toHaveCount(0);
 
     await page.getByRole("button", { name: "Cancelar" }).click();
