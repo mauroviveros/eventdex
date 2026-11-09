@@ -15,7 +15,7 @@ export async function claimSpot(
   supabase: Client,
   eventSpotId: string,
 ): Promise<ActionResult<ClaimResult | null>> {
-  if (!z.uuid().safeParse(eventSpotId).success) return { ok: true, data: null };
+  if (!z.guid().safeParse(eventSpotId).success) return { ok: true, data: null };
   const { data, error } = await supabase.rpc("claim_spot", {
     p_event_spot_id: eventSpotId,
   });
@@ -36,7 +36,7 @@ export async function setRegistrationBlocked(
   id: unknown,
   blocked: boolean,
 ): Promise<ActionResult<null>> {
-  const parsed = z.uuid().safeParse(id);
+  const parsed = z.guid().safeParse(id);
   if (!parsed.success) return failed({ code: "42501" });
 
   const { data, error } = await supabase

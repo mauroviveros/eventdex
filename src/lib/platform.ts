@@ -22,7 +22,7 @@ function toCents(amount: string) {
 }
 
 export const invoiceSchema = z.object({
-  organizationId: z.uuid("Elegí la organización."),
+  organizationId: z.guid("Elegí la organización."),
   concept: z
     .string()
     .trim()
@@ -60,7 +60,7 @@ export async function createInvoice(
 }
 
 const invoiceStatusSchema = z.object({
-  invoiceId: z.uuid(),
+  invoiceId: z.guid(),
   status: z.enum(["paid", "void"]),
 });
 
@@ -87,7 +87,7 @@ export async function setInvoiceStatus(
 }
 
 const organizationStatusSchema = z.object({
-  organizationId: z.uuid(),
+  organizationId: z.guid(),
   status: z.enum(["active", "suspended"]),
 });
 
@@ -146,7 +146,7 @@ export const AUDIT_LABELS: Record<string, string> = {
 };
 
 const auditFilterSchema = z.object({
-  org: z.uuid().optional().catch(undefined),
+  org: z.guid().optional().catch(undefined),
   area: z
     .enum(Object.keys(AUDIT_AREAS) as [keyof typeof AUDIT_AREAS])
     .optional()

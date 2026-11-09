@@ -33,6 +33,6 @@ export async function createOrganizationAction(
 
 /** Developer opened an organization in support mode: one audit row per visit. */
 export async function logSupportVisitAction(organizationId: string) {
-  const id = z.uuid().parse(organizationId);
+  const id = z.guid().parse(organizationId);
   await logSupportAccess(await createClient(), id);
 }

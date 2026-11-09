@@ -48,13 +48,13 @@ const checkbox = z
   .transform((v) => v === "on");
 
 export const spotSchema = z.object({
-  organizationId: z.uuid(),
+  organizationId: z.guid(),
   ...spotFields,
   logo: optionalLogo,
 });
 export const spotUpdateSchema = z.object({
-  id: z.uuid(),
-  organizationId: z.uuid(),
+  id: z.guid(),
+  organizationId: z.guid(),
   ...spotFields,
   logo: optionalLogo,
   removeLogo: checkbox,
@@ -77,15 +77,15 @@ const points = z.preprocess(
 );
 
 export const eventSpotSchema = z.object({
-  eventId: z.uuid(),
-  spotId: z.uuid("Elegí un spot del catálogo."),
+  eventId: z.guid(),
+  spotId: z.guid("Elegí un spot del catálogo."),
   code,
   booth: optionalText(60),
   points,
 });
 
 export const eventSpotUpdateSchema = z.object({
-  id: z.uuid(),
+  id: z.guid(),
   code,
   nameOverride: optionalText(120),
   descriptionOverride: optionalText(500),
@@ -183,7 +183,7 @@ export async function setSpotArchived(
   id: unknown,
   archived: boolean,
 ): Promise<ActionResult<null>> {
-  const parsed = z.uuid().safeParse(id);
+  const parsed = z.guid().safeParse(id);
   if (!parsed.success) return failed({ code: "42501" });
 
   const { data, error } = await supabase
@@ -258,7 +258,7 @@ export async function removeEventSpot(
   supabase: Client,
   id: unknown,
 ): Promise<ActionResult<null>> {
-  const parsed = z.uuid().safeParse(id);
+  const parsed = z.guid().safeParse(id);
   if (!parsed.success) return failed({ code: "42501" });
 
   const { data, error } = await supabase
