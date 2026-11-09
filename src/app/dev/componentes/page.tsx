@@ -11,6 +11,7 @@ import { QrCode } from "@/components/admin/QrCode";
 import { RaffleDraw } from "@/components/admin/RaffleDraw";
 import { StatTile } from "@/components/admin/StatTile";
 import { TopBar } from "@/components/admin/TopBar";
+import { ConsoleDemo } from "@/components/landing/ConsoleDemo";
 import { ActionButton } from "@/components/ui/ActionButton";
 import { Button } from "@/components/ui/Button";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
@@ -173,6 +174,13 @@ export default function ComponentesPage() {
               </div>
             ))}
           </div>
+        </Section>
+
+        <Section
+          title="Consola de la landing"
+          note="La medalla de un stand, jugable: la cruceta cambia de stand y A escanea. Los stands son de ejemplo."
+        >
+          <ConsoleDemo />
         </Section>
 
         <Section
