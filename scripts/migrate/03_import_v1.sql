@@ -43,7 +43,8 @@ create temp table kept_spots on commit drop as
     e.created_at as event_created_at
   from v1.event_spots s
   join kept_events e on e.id = s.event_id
-  cross join target t;
+  cross join target t
+  where s.deleted_at is null;
 
 -- ---------------------------------------------------------------------------
 -- Equipo: un ADMIN de la v1 podía hacer todo.
@@ -97,7 +98,7 @@ select
   e.created_at,
   e.updated_at
 from kept_events e
-join v1.event_locations l on l.event_id = e.id
+left join v1.event_locations l on l.event_id = e.id
 cross join target t
 on conflict (id) do nothing;
 
@@ -138,7 +139,7 @@ select
   s.event_id,
   s.organization_id,
   s.catalog_id,
-  'A' || lpad(s.position::text, 2, '0'),
+  'A' || case when s.position < 10 then '0' else '' end || s.position,
   s.status = 'ACTIVE',
   s.position - 1,
   s.created_at,
@@ -233,16 +234,16 @@ select * from (values
                        (select count(*) from v1.event_schedules s where s.event_id in (select id from kept)),
                        (select count(*) from public.event_schedules s, org where s.organization_id = org.id)),
   (5, 'catálogo',      (select count(*) from v1.event_spots),
-                       (select count(distinct lower(trim(s.name))) from v1.event_spots s where s.event_id in (select id from kept)),
+                       (select count(distinct lower(trim(s.name))) from v1.event_spots s where s.deleted_at is null and s.event_id in (select id from kept)),
                        (select count(*) from public.spots s, org where s.organization_id = org.id)),
   (6, 'spots',         (select count(*) from v1.event_spots),
-                       (select count(*) from v1.event_spots s where s.event_id in (select id from kept)),
+                       (select count(*) from v1.event_spots s where s.deleted_at is null and s.event_id in (select id from kept)),
                        (select count(*) from public.event_spots s, org where s.organization_id = org.id)),
   (7, 'inscripciones', null,
-                       (select count(distinct (s.event_id, h.user_id)) from v1.user_spot_history h join v1.event_spots s on s.id = h.spot_id where s.event_id in (select id from kept)),
+                       (select count(distinct (s.event_id, h.user_id)) from v1.user_spot_history h join v1.event_spots s on s.id = h.spot_id where s.deleted_at is null and s.event_id in (select id from kept)),
                        (select count(*) from public.event_registrations r, org where r.organization_id = org.id)),
   (8, 'medallas',      (select count(*) from v1.user_spot_history),
-                       (select count(*) from v1.user_spot_history h join v1.event_spots s on s.id = h.spot_id where s.event_id in (select id from kept)),
+                       (select count(*) from v1.user_spot_history h join v1.event_spots s on s.id = h.spot_id where s.deleted_at is null and s.event_id in (select id from kept)),
                        (select count(*) from public.spot_claims c, org where c.organization_id = org.id))
 ) as report (orden, tabla, en_v1, entran, en_destino)
 order by orden;

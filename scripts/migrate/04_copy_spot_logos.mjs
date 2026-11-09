@@ -4,6 +4,7 @@
 //   node --env-file=.env.production.local scripts/migrate/04_copy_spot_logos.mjs
 //
 // La ruta nueva es {organization_id}/{ruta en la v1}, así que de ahí sale la vieja.
+// Las de la v1 traen subcarpeta; las subidas después desde el panel, no.
 
 import { createClient } from "@supabase/supabase-js";
 
@@ -29,8 +30,9 @@ const { data: rows, error } = await supabase
   .eq("organization_id", org.id);
 if (error) throw error;
 
+const fromV1 = (path) => path?.slice(org.id.length + 1).includes("/");
 const paths = [
-  ...new Set(rows.map((r) => r.snapshot?.logo_path).filter(Boolean)),
+  ...new Set(rows.map((r) => r.snapshot?.logo_path).filter(fromV1)),
 ];
 
 const report = { copied: 0, already: 0, failed: [] };
