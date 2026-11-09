@@ -314,6 +314,25 @@ organizaciones. Branch `feat/dominios-developer`.
    esos arreglos. Migración aplicada el 2026-11-09, con las políticas verificadas en
    producción.
 
+## R12 · Skins por organización
+
+La marca de cada org pasa de un color a un look completo, definido en código. El
+primero es Burning Tower Fest. Va antes del evento del 29 de noviembre.
+
+1. ▶ **Logos tal cual.** Branch `feat/logos-originales`. Se ven como se subieron, sin
+   pasar a cuatro tonos; solo la medalla pendiente va en gris.
+   *Listo cuando* header, medalla conseguida y celebración muestran el archivo original
+   en claro y oscuro, y la pendiente se ve gris.
+2. **Banner por evento.** Branch `feat/portada-evento`. Bucket `event-covers`, subida
+   desde el panel y portada pública.
+   *Listo cuando* el staff sube el banner y se ve en la portada; sin banner, todo igual.
+3. **Skin Burning Tower.** Branch `feat/skins`. Mapa `slug → skin` y el look de cartel
+   en toda su app pública.
+   *Listo cuando* todas sus pantallas públicas lo toman, en ambos esquemas, y otra org
+   sigue idéntica.
+4. **Portada Burning Tower.** Misma branch. Banner protagonista y llamas.
+   *Listo cuando* se parece al cartel en celular y escritorio, con todos los estados.
+
 ---
 
 ## ⏸ Estacionado
