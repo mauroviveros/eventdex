@@ -118,7 +118,7 @@ erDiagram
 | `profiles` | Espejo de `auth.users` | Se crea por trigger al registrarse |
 | `platform_admins` | Quién es developer | Tabla aparte: el acceso es cross-org |
 | `organizations` | El cliente | `slug`, `brand_color` (hex: de ahí sale la rampa), `logo_path` (bajo `{id}/` en el bucket `org-logos`), zona horaria por defecto, `status`. El owner edita nombre, color, logo y zona; slug y estado, solo el developer |
-| `organization_domains` | Hostnames por org | Tabla y no columna: apex + `www` y cambios de dominio sin downtime. Uno `is_primary` (`set_primary_domain`), que no se puede quitar porque los QR nuevos apuntan ahí |
+| `organization_domains` | Hostnames por org | Tabla y no columna: apex + `www` y cambios de dominio sin downtime. Uno `is_primary` (`set_primary_domain`), que no se puede quitar porque los QR nuevos apuntan ahí. Los configura solo el developer (`assign_domain` suma y mueve entre orgs) |
 | `organization_members` | Equipo de la org | Solo miembros activos: quitar es borrar (queda en `audit_logs`). Rol `owner` / `staff`. No se puede quitar ni degradar al último owner. Cambiar un rol o quitar a alguien lo registra la base |
 | `organization_invitations` | Invitaciones por mail | La membresía nace al aceptar (`accept_invitation`), si el mail de la cuenta coincide. Vencen a los 14 días. El estado (pendiente, aceptada, vencida) sale de las fechas; revocar es borrar. Una vencida se puede volver a enviar (`invite_member`). No sale ningún mail: quien invita avisa, y la invitación se acepta al entrar con esa cuenta |
 | `venues` | Sedes | Definen la zona horaria que hereda el evento. Baja con `deleted_at` |
