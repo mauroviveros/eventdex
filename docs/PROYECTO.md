@@ -129,7 +129,7 @@ erDiagram
 | `event_registrations` | Visitante ↔ evento | Único por (evento, usuario); ancla de RLS y de bloqueos. Nace en el primer reclamo válido, no al escanear fuera de fase. El equipo bloquea con `blocked_at` (queda en `audit_logs`); el visitante no se desbloquea |
 | `spot_claims` | Medallas | Único por (spot del evento, usuario): escanear dos veces no duplica. Solo las crea `claim_spot()`, que devuelve el resultado de la celebración (bloqueado → ya la tenías → inactivo → fuera de fase → nueva). Un spot con medallas no se saca del evento: se desactiva |
 | `raffles` / `raffle_draws` | Sorteos y extracciones | Cada sorteo pide su mínimo de medallas (`min_claims`, una por defecto). Varias extracciones por sorteo, solo con `draw_raffle()`, entre registrados sin bloquear. Una extracción se anula con motivo, no se borra, y quien salió no vuelve a la tirada de ese sorteo aunque se anule. Lo público es el nombre y la inicial (`winner_name`, congelado al extraer), y solo después de publicar los ganadores |
-| `invoices` | Facturación manual | Por organización, monto en centavos, estado |
+| `invoices` | Facturación manual | Por organización, con concepto libre, monto en centavos y moneda (`ARS` / `USD`). Estado `pending` → `paid` → `void`: no se edita ni se borra, si está mal se anula y se carga otra. Solo el developer la ve y la escribe, y cada paso queda en `audit_logs` |
 | `audit_logs` | Rastro de acciones sensibles | Toda acción cross-org del developer deja registro |
 
 **Lo que se saca respecto de la v2** (cada uno vuelve solo si una rebanada lo pide):
@@ -152,6 +152,7 @@ erDiagram
 4. ~~**Meta de medallas**~~: decidido en R5, alcanza con una; en R6, cada sorteo
    puede pedir un mínimo mayor (`min_claims`).
 5. **Duplicar evento**: ¿copia spots, sede y jornadas, o solo spots?
-6. **Facturación**: ¿se factura por evento o por período a la organización?
+6. ~~**Facturación**~~: decidido en R8, concepto libre por organización; sirve por
+   evento y por período.
 7. **Migración**: ¿qué se migra de la v1 (solo visitantes y medallas, o también
    eventos pasados)? ¿Los usuarios conservan su login?
