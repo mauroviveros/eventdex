@@ -198,7 +198,7 @@ export default function ComponentesPage() {
 
         <Section
           title="Medalla"
-          note="El logo del spot pasado a los cuatro tonos; sin logo, el sprite de su tipo. La nueva se revela de claro a oscuro, en pasos."
+          note="El logo original del spot; sin logo, el sprite de su tipo. Pendiente va en gris y apagada; la nueva pasa de gris a color, en pasos."
         >
           <div className="flex flex-wrap items-start gap-6">
             <Medal {...CAFE} state="conseguida" />
@@ -397,7 +397,7 @@ export default function ComponentesPage() {
 
         <Section
           title="Ajustes: vista previa de la marca"
-          note="La app pública en miniatura, con el color que se está eligiendo. Sin logo, las iniciales; con logo, posterizado a los cuatro tonos."
+          note="La app pública en miniatura, con el color que se está eligiendo. Sin logo, las iniciales; con logo, el archivo tal cual."
         >
           <BrandPreview color="#d6336c" name="Expo de ejemplo" logo={null} />
         </Section>

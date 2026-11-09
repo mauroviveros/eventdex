@@ -21,9 +21,6 @@
   --accent-yellow: oklch(0.5 0.11 85);
   --scanline: rgb(0 0 0 / 0.03);
   color-scheme: light;
-  --logo-full: url(#lcd-full);
-  --logo-mid: url(#lcd-mid);
-  --logo-faded: url(#lcd-faded);
 }
 
 :root {
@@ -44,9 +41,6 @@
   --accent-yellow: oklch(0.86 0.15 95);
   --scanline: rgb(0 0 0 / 0.08);
   color-scheme: dark;
-  --logo-full: url(#lcd-full-dark);
-  --logo-mid: url(#lcd-mid-dark);
-  --logo-faded: url(#lcd-faded-dark);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -61,9 +55,6 @@
     --accent-yellow: oklch(0.86 0.15 95);
     --scanline: rgb(0 0 0 / 0.08);
     color-scheme: dark;
-    --logo-full: url(#lcd-full-dark);
-    --logo-mid: url(#lcd-mid-dark);
-    --logo-faded: url(#lcd-faded-dark);
   }
 }
 
@@ -199,13 +190,10 @@
     animation: develop-3 900ms steps(1, end) both;
   }
 
-  /* Spot logos, posterized to the ramp by the filters in LcdFilters.tsx. */
-  .logo[data-mode="lleno"] {
-    filter: var(--logo-full);
-  }
+  /* Logos stay as their owner made them; a medal still to get is grey and dim. */
   .logo[data-mode="silueta"],
   .logo[data-mode="inactivo"] {
-    filter: var(--logo-faded);
+    filter: grayscale(1) opacity(0.5);
   }
   /* Inactive is dithered like the inactive sprite: the ground shows through. */
   .logo[data-mode="inactivo"] {
@@ -286,14 +274,16 @@
 }
 @keyframes develop-logo {
   0% {
-    filter: var(--logo-faded);
+    filter: grayscale(1) opacity(0.5);
   }
   34% {
-    filter: var(--logo-mid);
+    filter: grayscale(0.66) opacity(0.7);
   }
-  67%,
+  67% {
+    filter: grayscale(0.33) opacity(0.85);
+  }
   100% {
-    filter: var(--logo-full);
+    filter: none;
   }
 }
 @keyframes blink {
