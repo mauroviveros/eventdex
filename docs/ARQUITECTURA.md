@@ -238,6 +238,9 @@ pueda levantar Supabase completo (auth y Mailpit) y la app.
   Action, por eso `serverActions.bodySizeLimit` es de 2 MB. `spot-logos` tiene los
   mismos límites, cualquier miembro de la org sube bajo su carpeta y los archivos
   no se reemplazan ni se borran: el snapshot de un evento publicado puede usarlos.
+  `event-covers` guarda el banner de cada evento (`events.cover_path`): hasta 1,5 MiB,
+  sin SVG, cualquier miembro de la org sube bajo su carpeta, y al cambiarlo se borra
+  el anterior, porque ningún snapshot lo apunta.
 
 ## Corte a producción (hecho el 2026-11-08)
 
