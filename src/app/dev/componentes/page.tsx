@@ -15,6 +15,7 @@ import { ConsoleDemo } from "@/components/landing/ConsoleDemo";
 import { ActionButton } from "@/components/ui/ActionButton";
 import { Button } from "@/components/ui/Button";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
+import { GoogleSignIn } from "@/components/ui/GoogleSignIn";
 import { LogoField } from "@/components/ui/LogoField";
 import { Celebration } from "@/components/visitante/Celebration";
 import { Countdown } from "@/components/visitante/Countdown";
@@ -217,7 +218,7 @@ export default function ComponentesPage() {
 
           <Section
             title="Cuenta del visitante"
-            note="Fin de la cabecera del dominio de la org. Con sesión: foto (o iniciales), nombre y mail; en el celular solo la foto, y el nombre pasa al menú. Sin sesión: Ingresar, que vuelve a la página actual."
+            note="Fin de la cabecera del dominio de la org. Con sesión: foto (o iniciales), nombre y mail; en el celular solo la foto, y el nombre pasa al menú. Sin sesión: Ingresar, que vuelve a la página actual; en producción, el botón que va directo a Google, con su estado de carga."
           >
             <div className="flex flex-wrap items-start gap-8 pb-40">
               <VisitorMenu
@@ -235,6 +236,16 @@ export default function ComponentesPage() {
                 }}
               />
               <SignInLink />
+              <GoogleSignIn next="/" variant="secondary">
+                Ingresar
+              </GoogleSignIn>
+              <Button
+                variant="secondary"
+                pending
+                pendingLabel="Yendo a Google…"
+              >
+                Ingresar
+              </Button>
             </div>
           </Section>
 

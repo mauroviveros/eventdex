@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { AlertIcon } from "@/components/pixel/AlertIcon";
-import { Button } from "@/components/ui/Button";
 import { EmailSignIn } from "@/components/ui/EmailSignIn";
-import { signInWithGoogle } from "@/lib/actions/auth";
+import { GoogleSignIn } from "@/components/ui/GoogleSignIn";
 import { getSessionUser, safeNext } from "@/lib/session";
 import { createClient } from "@/lib/supabase/server";
 import { requireHostOrganization } from "../organization";
@@ -51,12 +50,9 @@ export default async function IngresarPage({
           </p>
         )}
 
-        <form action={signInWithGoogle}>
-          <input type="hidden" name="next" value={next} />
-          <Button type="submit" className="w-full">
-            Ingresar con Google
-          </Button>
-        </form>
+        <GoogleSignIn next={next} className="w-full">
+          Ingresar con Google
+        </GoogleSignIn>
 
         {process.env.NODE_ENV !== "production" && <EmailSignIn next={next} />}
       </div>
