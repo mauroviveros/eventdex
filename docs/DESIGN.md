@@ -497,7 +497,9 @@ secundario a tinta en 900 ms con `steps(1, end)`, en tres cuadros (0, 34 %, 67
 %); el logo hace lo mismo, de gris a color. Nada se interpola.
 
 ### Cartel del evento (app pública)
-La marquesina de la vieja app, en tres piezas apiladas y centradas:
+La marquesina de la vieja app, en tres piezas apiladas y centradas. Si el evento
+tiene banner, va arriba, tal cual se subió, con borde de 2 px en tinta y hasta el
+70 % del alto de la pantalla; lo escrito en la imagen no reemplaza a las piezas:
 - **Pestaña de fecha:** borde de 2 px en secundario sin el lado de abajo, fondo
   `--lcd-0`, 8 × 16 px de padding; la fecha (y el horario si hay una sola
   jornada) en Jersey 10 a 20 px en amarillo de marquesina. Se monta 2 px sobre
