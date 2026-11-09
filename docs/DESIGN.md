@@ -614,7 +614,7 @@ la jornada a 30 px y su fecha y horario en Atkinson:
 - **Por venir:** borde punteado en secundario.
 
 ### Progreso
-Barra segmentada: un segmento por spot, en un marco de 2 px en `--cell-rule`
+Barra segmentada: un segmento por spot, en un marco de 2 px en tinta
 con relleno `--plate`, sombra dura y 2 px de separación. Conseguidos en tinta,
 los que faltan para la meta en relleno, el resto vacío. Encima, el contador en
 Numeral y "de N medallas" a 20 px.
