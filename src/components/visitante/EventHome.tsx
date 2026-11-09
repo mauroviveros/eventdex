@@ -7,6 +7,7 @@ import {
   formatEventDates,
   formatScheduleTimes,
 } from "@/domain/events";
+import { spotLogoUrl } from "@/lib/data/organizations";
 import type { getActiveEvent } from "@/lib/data/public";
 
 export type PublicEvent = NonNullable<
@@ -187,6 +188,7 @@ function Medals({ event }: { event: PublicEvent }) {
                   name={s.name}
                   code={s.code}
                   type={s.type}
+                  logo={spotLogoUrl(s.logoPath)}
                   state="pendiente"
                 />
               </li>

@@ -14,6 +14,7 @@ import { TopBar } from "@/components/admin/TopBar";
 import { ActionButton } from "@/components/ui/ActionButton";
 import { Button } from "@/components/ui/Button";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
+import { LogoField } from "@/components/ui/LogoField";
 import { Celebration } from "@/components/visitante/Celebration";
 import { Countdown } from "@/components/visitante/Countdown";
 import {
@@ -171,6 +172,19 @@ export default function ComponentesPage() {
                 <span className="text-xs">{name}</span>
               </div>
             ))}
+          </div>
+        </Section>
+
+        <Section
+          title="Campo de logo"
+          note="Avisa si el archivo pasa de 1 MB antes de enviar el formulario."
+        >
+          <div className="grid max-w-md gap-6">
+            <LogoField hint="PNG, JPG o WebP, hasta 1 MB." />
+            <LogoField
+              hint="PNG, JPG o WebP, hasta 1 MB."
+              error="Subí una imagen PNG, JPG o WebP."
+            />
           </div>
         </Section>
 

@@ -1,10 +1,11 @@
 "use client";
 
-import { type ChangeEvent, useActionState, useState } from "react";
+import { useActionState, useState } from "react";
 import { BrandPreview } from "@/components/admin/BrandPreview";
 import { ActionButton } from "@/components/ui/ActionButton";
 import { Button } from "@/components/ui/Button";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
+import { LogoField } from "@/components/ui/LogoField";
 import { useFormFeedback } from "@/components/ui/useFormFeedback";
 import {
   addDomainAction,
@@ -100,20 +101,9 @@ export function BrandEditor({
   );
 }
 
-const MAX_LOGO_BYTES = 1024 * 1024;
-const TOO_BIG = "El logo puede pesar hasta 1 MB.";
-
 function LogoForm({ ids, hasLogo }: { ids: Ids; hasLogo: boolean }) {
   const [state, action, pending] = useActionState(uploadLogoAction, null);
   const { form, failed, fields } = useFormFeedback(state);
-  const [tooBig, setTooBig] = useState(false);
-
-  // A file over the Server Action's body limit never reaches the validation.
-  function check(e: ChangeEvent<HTMLInputElement>) {
-    const big = (e.target.files?.[0]?.size ?? 0) > MAX_LOGO_BYTES;
-    setTooBig(big);
-    if (big) e.target.value = "";
-  }
 
   return (
     <div className="grid gap-4 border-t-2 border-lcd-3 pt-6">
@@ -125,14 +115,9 @@ function LogoForm({ ids, hasLogo }: { ids: Ids; hasLogo: boolean }) {
         {state?.ok && (
           <FormMessage tone="success">Logo actualizado.</FormMessage>
         )}
-        <Field
-          label="Logo"
-          name="logo"
-          type="file"
-          accept="image/png,image/jpeg,image/webp"
-          onChange={check}
+        <LogoField
           hint="PNG, JPG o WebP, hasta 1 MB. Se muestra en los cuatro tonos de tu marca."
-          error={tooBig ? TOO_BIG : fields.logo}
+          error={fields.logo}
         />
         <Button
           type="submit"

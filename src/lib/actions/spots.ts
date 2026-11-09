@@ -11,12 +11,22 @@ import {
 } from "@/lib/spots";
 import { type FormState, runFormWrite } from "./form";
 
+/** The file stays out of FormState: on error only the text values go back. */
+function takeLogo(formData: FormData) {
+  const logo = formData.get("logo");
+  formData.delete("logo");
+  return logo;
+}
+
 /** Lands on the catalog, where the new spot shows up. */
 export async function createSpotAction(
   _prev: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  const r = await runFormWrite(formData, createSpot);
+  const logo = takeLogo(formData);
+  const r = await runFormWrite(formData, (supabase, v) =>
+    createSpot(supabase, { ...v, logo }),
+  );
   if (!r.ok) return r.state;
   redirect(`/${r.org}/spots`);
 }
@@ -25,7 +35,10 @@ export async function updateSpotAction(
   _prev: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  const r = await runFormWrite(formData, updateSpot);
+  const logo = takeLogo(formData);
+  const r = await runFormWrite(formData, (supabase, v) =>
+    updateSpot(supabase, { ...v, logo }),
+  );
   return r.ok ? { ok: true } : r.state;
 }
 

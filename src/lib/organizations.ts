@@ -116,16 +116,33 @@ const LOGO_TYPES = {
   "image/webp": "webp",
 } as const;
 
+export const logoFile = z
+  .file("Elegí una imagen.")
+  .max(1024 * 1024, "El logo puede pesar hasta 1 MB.")
+  .mime(
+    Object.keys(LOGO_TYPES) as (keyof typeof LOGO_TYPES)[],
+    "Subí una imagen PNG, JPG o WebP.",
+  );
+
 export const logoSchema = z.object({
   organizationId: z.uuid(),
-  logo: z
-    .file("Elegí una imagen.")
-    .max(1024 * 1024, "El logo puede pesar hasta 1 MB.")
-    .mime(
-      Object.keys(LOGO_TYPES) as (keyof typeof LOGO_TYPES)[],
-      "Subí una imagen PNG, JPG o WebP.",
-    ),
+  logo: logoFile,
 });
+
+/** Each upload gets a new name, so a browser or CDN never shows the old logo. */
+export async function storeLogo(
+  supabase: Pick<Supabase, "storage">,
+  bucket: string,
+  organizationId: string,
+  logo: File,
+) {
+  const extension = LOGO_TYPES[logo.type as keyof typeof LOGO_TYPES];
+  const path = `${organizationId}/${crypto.randomUUID()}.${extension}`;
+  const { error } = await supabase.storage
+    .from(bucket)
+    .upload(path, logo, { contentType: logo.type });
+  return { path, error };
+}
 
 type Storage = Pick<Supabase, "from" | "storage">;
 
@@ -157,7 +174,6 @@ async function swapLogo(
   return { ok: true, data: null };
 }
 
-/** Each upload gets a new name, so a browser or CDN never shows the old logo. */
 export async function uploadLogo(
   supabase: Storage,
   input: unknown,
@@ -170,11 +186,12 @@ export async function uploadLogo(
   if (error) return failed(error);
   if (!org) return failed({ code: "42501" });
 
-  const extension = LOGO_TYPES[logo.type as keyof typeof LOGO_TYPES];
-  const path = `${organizationId}/${crypto.randomUUID()}.${extension}`;
-  const { error: uploadError } = await supabase.storage
-    .from(LOGO_BUCKET)
-    .upload(path, logo, { contentType: logo.type });
+  const { path, error: uploadError } = await storeLogo(
+    supabase,
+    LOGO_BUCKET,
+    organizationId,
+    logo,
+  );
   if (uploadError) return failed(uploadError);
 
   return swapLogo(supabase, organizationId, path, org.logo_path);
