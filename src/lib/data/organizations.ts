@@ -86,15 +86,13 @@ export async function listAllOrganizations(supabase: Supabase) {
 }
 
 /** Where a logo is served from: the bucket is public, so no client is needed. */
-export function logoUrl(path: string) {
-  return `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/org-logos/${path}`;
+export function logoUrl(path: string, bucket = "org-logos") {
+  return `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
 }
 
 /** Same for a spot's logo; undefined so a medal falls back to its sprite. */
 export function spotLogoUrl(path: string | null) {
-  return path
-    ? `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/spot-logos/${path}`
-    : undefined;
+  return path ? logoUrl(path, "spot-logos") : undefined;
 }
 
 /** The org's primary hostname: where its public app (and every QR) points. */

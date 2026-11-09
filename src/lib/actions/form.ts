@@ -23,6 +23,13 @@ type Write = (
   values: Record<string, string>,
 ) => Promise<ActionResult<unknown>>;
 
+/** The file stays out of FormState: on error only the text values go back. */
+export function takeLogo(formData: FormData) {
+  const logo = formData.get("logo");
+  formData.delete("logo");
+  return logo;
+}
+
 /** Runs a write and refreshes the org's admin pages. */
 export async function runFormWrite(
   formData: FormData,
