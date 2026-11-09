@@ -266,8 +266,9 @@ producción y su código queda en el tag `v2-legacy`.
 - **`scripts/migrate/03_import_v1.sql`**: `insert … select` desde `v1`, en una sola
   transacción y con `on conflict do nothing`. SQL y no Node porque `v1` no se expone
   por la API y son unas 2500 filas.
-- **Los logos no se copian por SQL:** un script chico los pasa con la API de Storage
-  y la clave de servicio, del bucket `spot` de la v1 a `spot-logos`.
+- **`scripts/migrate/04_copy_spot_logos.mjs`**: los logos no se copian por SQL. Los
+  pasa con la API de Storage y la clave de servicio, del bucket `spot` de la v1 a
+  `spot-logos`. Va después del 03 y también se puede repetir.
 - Primero contra la base local con una copia del backup, después contra producción.
 
 ### Mapeo desde la v1
