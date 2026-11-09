@@ -58,7 +58,7 @@ export function Celebration({
             <Sprite type={spot.type} scale={10} mode={mode} label={spot.name} />
           ))}
         <Heading
-          className={`flex items-center gap-2 ${headingLevel === 1 ? "text-px-3" : "text-px-2"} ${blocked ? "text-danger" : ""}`}
+          className={`flex items-center gap-2 ${headingLevel === 1 ? "font-wide text-title" : "text-px-2"} ${blocked ? "text-danger" : ""}`}
         >
           {blocked && <AlertIcon size={24} />}
           {copy.title}

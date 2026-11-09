@@ -3,6 +3,7 @@ import Link from "next/link";
 import { type CSSProperties, Suspense } from "react";
 import { Monogram } from "@/components/ui/Monogram";
 import { Logo } from "@/components/visitante/Medal";
+import { MARQUESINA } from "@/components/visitante/marquesina";
 import { SignInLink, VisitorMenu } from "@/components/visitante/VisitorMenu";
 import { EVENTDEX_HUE, ramp, rampFromHex } from "@/domain/palette";
 import { logoUrl } from "@/lib/data/organizations";
@@ -41,7 +42,7 @@ export default async function PublicaLayout({
     <div
       style={style}
       data-skin={skin?.name}
-      className={`ramp-scope min-h-dvh bg-lcd-0 text-lcd-3 ${skin ? skin.fontClass : "scanlines"}`}
+      className={`ramp-scope min-h-dvh bg-lcd-0 text-lcd-3 ${skin ? skin.fontClass : `scanlines ${MARQUESINA}`}`}
     >
       <header className="border-b-2 border-lcd-3">
         <div className="mx-auto flex min-h-16 max-w-3xl items-center justify-between gap-4 px-4 sm:px-6">

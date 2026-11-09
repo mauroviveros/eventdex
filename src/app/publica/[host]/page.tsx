@@ -40,7 +40,9 @@ export default async function PublicaHome({
     <EventHome event={event} now={new Date()} />
   ) : (
     <main className="mx-auto grid w-full max-w-3xl gap-4 px-4 py-12 sm:px-6">
-      <h1 className="text-px-3 sm:text-px-4">Todavía no hay eventos</h1>
+      <h1 className="font-wide text-title sm:text-title-lg">
+        Todavía no hay eventos
+      </h1>
       <p className="max-w-prose">
         Cuando {org.name} publique su próximo evento, lo vas a ver acá con sus
         fechas, su sede y las medallas para juntar.

@@ -20,6 +20,15 @@
   --accent-red: oklch(0.47 0.19 25);
   --accent-yellow: oklch(0.5 0.11 85);
   --scanline: rgb(0 0 0 / 0.03);
+  /* Marquee look: flat everywhere unless .marquesina turns it on. */
+  --plate: var(--lcd-0);
+  --plate-rule: var(--lcd-2);
+  --cell-rule: var(--lcd-3);
+  --plate-cast: transparent;
+  --wide-face: var(--font-pixel), ui-monospace, monospace;
+  --title-size: 2.5rem;
+  --title-size-lg: 3.75rem;
+  --numeral-size: 2.5rem;
   color-scheme: light;
 }
 
@@ -78,7 +87,35 @@
   }
 }
 
+/* The old app's marquee, on the public LCD: raised plates, a hard cast shadow
+ * and Press Start 2P for titles and numerals (on its 8 px grid). The plate's
+ * lift is PLATE_LIFT in palette.ts, where its contrast is tested. Skins don't
+ * carry this class, so they keep the flat defaults above; the :not is for the
+ * catalog, where a skin can wrap it. */
+.marquesina:not([data-skin] *) {
+  --plate: color-mix(in oklch, var(--lcd-0) 96%, white);
+  --plate-rule: var(--ramp-2);
+  --cell-rule: var(--ramp-2);
+  --plate-cast: color-mix(in oklch, var(--lcd-0) 72%, black);
+  --wide-face: var(--font-press), ui-monospace, monospace;
+  --title-size: 1.5rem;
+  --title-size-lg: 2rem;
+  --numeral-size: 2rem;
+}
+
 @theme inline {
+  --color-plate: var(--plate);
+  --color-plate-rule: var(--plate-rule);
+  --color-cell-rule: var(--cell-rule);
+  --shadow-plate: 4px 4px 0 var(--plate-cast);
+  --font-wide: var(--wide-face);
+  --text-title: var(--title-size);
+  --text-title--line-height: 1.25;
+  --text-title-lg: var(--title-size-lg);
+  --text-title-lg--line-height: 1.25;
+  --text-numeral: var(--numeral-size);
+  --text-numeral--line-height: 1;
+
   --color-lcd-0: var(--lcd-0);
   --color-lcd-1: var(--lcd-1);
   --color-lcd-2: var(--lcd-2);
@@ -216,6 +253,20 @@
       inset 0 0 0 2px var(--lcd-0),
       inset 0 0 0 4px var(--lcd-3);
     background: var(--lcd-0);
+  }
+
+  /* On the marquee: mid rim, ink rule inside it, raised off the ground. */
+  .marquesina:not([data-skin] *) .panel {
+    border-color: var(--plate-rule);
+    box-shadow:
+      inset 0 0 0 2px var(--lcd-3),
+      4px 4px 0 var(--plate-cast);
+    background: var(--plate);
+  }
+
+  /* Press Start 2P is one em wide per letter: a long word must break on a phone. */
+  .marquesina .font-wide {
+    overflow-wrap: anywhere;
   }
 
   /* Scanlines over the whole screen, like the old app's LCD: a 2 px shadow

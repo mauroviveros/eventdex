@@ -52,8 +52,8 @@ export const DANGER = {
 
 /**
  * The public app's marquee accents, from the old app's poster: red for the
- * event's title, yellow for the date and the venue. Text on the ground only,
- * never on a filled cell. Fixed hues, not the brand. The red sits near DANGER
+ * event's title, yellow for the date and the venue. Text on the ground or a
+ * plate only, never on a filled cell. Fixed hues, not the brand. The red sits near DANGER
  * on purpose (the user chose the v1 look); danger keeps its meaning by always
  * wearing the alert icon, which a title never does.
  */
@@ -68,6 +68,12 @@ export const ACCENT = {
  * and the accents stay AA on the striped rows.
  */
 export const SCANLINE = { light: 0.03, dark: 0.08 } as const;
+
+/**
+ * How much white lifts the ground into a marquee plate (--plate in globals.css).
+ * 4 % is the most that keeps the dark red and danger AA on every ramp.
+ */
+export const PLATE_LIFT = 0.04;
 
 /** Euclidean distance in OKLab between two `oklch(l c h)` strings. */
 export function distance(x: string, y: string): number {
