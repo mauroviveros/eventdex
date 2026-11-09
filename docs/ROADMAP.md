@@ -296,6 +296,21 @@ producción) al esquema nuevo. La v2 no llegó a producción.
 
 ---
 
+## R11 · Dominios del developer ▶
+
+Sumar un dominio exige cargarlo a mano en Vercel y en Auth, y moverlo toca a dos
+organizaciones. Branch `feat/dominios-developer`.
+
+1. ✅ **DB.** Las políticas de `organization_domains` quedan solo para el developer, y
+   `assign_domain` suma o mueve sin dejar una org sin principal.
+   *Listo cuando* un owner no puede escribir dominios y mover uno deja rastro en las dos orgs.
+2. ✅ **Vista.** En `/plataforma/organizaciones/[org]`: sumar, sumar y hacer principal,
+   quitar, y mover con confirmación si otra org lo tiene. `/[org]/ajustes` solo los muestra.
+   *Listo cuando* el developer mueve un dominio ocupado después de confirmar.
+3. ▶ **Auditoría y producción.** `/accessibility`, `/code-review` y `pnpm db:push`.
+
+---
+
 ## ⏸ Estacionado
 
 Fuera de esta versión; vuelve solo con una decisión explícita.
