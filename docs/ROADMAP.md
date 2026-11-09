@@ -226,7 +226,7 @@ Branch `feat/equipo-y-marca`.
    marca, subir o quitar el logo y dominios. El color no se valida por contraste:
    la rampa lo garantiza (ver [DESIGN_SYSTEM](./DESIGN_SYSTEM.md)).
    *Listo cuando* un color o un logo inválido se rechaza con un mensaje claro.
-3. **Vista.** `/[org]/equipo` y `/[org]/ajustes` con vista previa de la marca.
+3. ✅ **Vista.** `/[org]/equipo` y `/[org]/ajustes` con vista previa de la marca.
    *Listo cuando* el owner cambia el color y el logo y se ven en la portada pública
    sin esperar la caché.
 4. **Auditoría.**
