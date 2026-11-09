@@ -214,7 +214,7 @@ Branch `feat/sorteo`. Al cierre, se sortea entre los que participaron.
    los uuid visibles para quien tiene sesión y una consulta de elegibles por sorteo).
    Lighthouse accesibilidad: 100 en el panel y en `/sorteo`.
 
-## R7 · Equipo y marca
+## R7 · Equipo y marca ✅
 
 Branch `feat/equipo-y-marca`.
 
@@ -234,11 +234,12 @@ Branch `feat/equipo-y-marca`.
    lista de zonas duplicada). axe: 0 violaciones en equipo, ajustes y portada, con
    owner y en modo soporte, que queda de solo lectura.
 
-## R8 · Plataforma
+## R8 · Plataforma ▶
 
 Branch `feat/plataforma`.
 
-1. **DB.** `invoices` y las lecturas de auditoría para el developer.
+1. ✅ **DB.** `invoices`, `set_organization_status()` y las lecturas de auditoría
+   para el developer.
    *Listo cuando* pgTAP prueba que solo el developer ve y escribe facturación.
 2. **Backend.** Las acciones de facturas, suspender una org y el filtro de auditoría.
    *Listo cuando* cada acción del developer deja una fila en `audit_logs`.
