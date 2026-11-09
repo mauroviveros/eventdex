@@ -1,3 +1,4 @@
+import { eventPhase } from "@/domain/events";
 import type { AuditFilter } from "@/lib/platform";
 import type { Supabase } from "@/lib/supabase/server";
 
@@ -27,4 +28,51 @@ export async function listAuditLogs(
     rows: data.slice(0, AUDIT_PAGE_SIZE),
     hasMore: data.length > AUDIT_PAGE_SIZE,
   };
+}
+
+/** The platform at a glance. The pending total is per currency: pesos and dollars don't add up. */
+export async function getPlatformSummary(supabase: Supabase, now = new Date()) {
+  const [organizations, published, pending] = await Promise.all([
+    supabase.from("organizations").select("status"),
+    supabase
+      .from("events")
+      .select("status, schedules:event_schedules (starts_at, ends_at)")
+      .eq("status", "published")
+      .is("deleted_at", null),
+    supabase
+      .from("invoices")
+      .select("amount_cents, currency")
+      .eq("status", "pending"),
+  ]);
+  if (organizations.error) throw organizations.error;
+  if (published.error) throw published.error;
+  if (pending.error) throw pending.error;
+  return {
+    organizations: organizations.data.length,
+    suspended: organizations.data.filter((o) => o.status === "suspended")
+      .length,
+    liveEvents: published.data.filter(
+      (e) => eventPhase(e.status, e.schedules, now) === "en-curso",
+    ).length,
+    pendingInvoices: pending.data.length,
+    pendingByCurrency: (["ARS", "USD"] as const).map((currency) => ({
+      currency,
+      cents: pending.data
+        .filter((i) => i.currency === currency)
+        .reduce((sum, i) => sum + i.amount_cents, 0),
+    })),
+  };
+}
+
+/** Every invoice, newest first. */
+export async function listInvoices(supabase: Supabase) {
+  const { data, error } = await supabase
+    .from("invoices")
+    .select(
+      "id, concept, amount_cents, currency, status, issued_on, paid_at, organization:organizations (slug, name)",
+    )
+    .order("issued_on", { ascending: false })
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data;
 }
