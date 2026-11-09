@@ -12,6 +12,8 @@ colors:
   accent-red-dark: "oklch(0.7 0.19 25)"
   accent-yellow: "oklch(0.5 0.11 85)"
   accent-yellow-dark: "oklch(0.86 0.15 95)"
+  plate: "oklch(0.9424 0.0768 125)"
+  plate-dark: "oklch(0.2992 0.048 125)"
 typography:
   display-2xl:
     fontFamily: "Jersey 10, ui-monospace, monospace"
@@ -36,6 +38,21 @@ typography:
   label:
     fontFamily: "Jersey 10, ui-monospace, monospace"
     fontSize: "1.25rem"
+    fontWeight: 400
+    lineHeight: 1
+  title:
+    fontFamily: "Press Start 2P, ui-monospace, monospace"
+    fontSize: "1.5rem"
+    fontWeight: 400
+    lineHeight: 1.25
+  title-lg:
+    fontFamily: "Press Start 2P, ui-monospace, monospace"
+    fontSize: "2rem"
+    fontWeight: 400
+    lineHeight: 1.25
+  numeral:
+    fontFamily: "Press Start 2P, ui-monospace, monospace"
+    fontSize: "2rem"
     fontWeight: 400
     lineHeight: 1
   lead:
@@ -139,15 +156,15 @@ components:
     rounded: "{rounded.none}"
     padding: "32px 24px"
   marquee-tab:
-    backgroundColor: "{colors.ramp-0}"
+    backgroundColor: "{colors.plate}"
     textColor: "{colors.accent-yellow}"
     typography: "{typography.label}"
     rounded: "{rounded.none}"
     padding: "8px 16px"
   marquee-title:
-    backgroundColor: "{colors.ramp-0}"
+    backgroundColor: "{colors.plate}"
     textColor: "{colors.accent-red}"
-    typography: "{typography.display-xl}"
+    typography: "{typography.title-lg}"
     rounded: "{rounded.none}"
     padding: "24px 40px"
   level-current:
@@ -177,7 +194,7 @@ components:
 
 # Eventdex — Diseño visual
 
-`v0.3 · 2026-11-09` · Relacionados: [PRODUCT](./PRODUCT.md) · [DESIGN_SYSTEM](./DESIGN_SYSTEM.md) · [RUTAS](./RUTAS.md)
+`v0.4 · 2026-11-09` · Relacionados: [PRODUCT](./PRODUCT.md) · [DESIGN_SYSTEM](./DESIGN_SYSTEM.md) · [RUTAS](./RUTAS.md)
 
 > Este archivo lo genera `/impeccable document` a partir del código que ya
 > está construido; no se escribe a mano. Decide **colores, tipografía y
@@ -197,22 +214,24 @@ trabajo: fondo, relleno, secundario y tinta. Cada organización recibe su propia
 rampa desde el color de su marca (un cambio de paleta, como en los juegos), así
 que la marca manda y el contraste lo fija la luminosidad, nunca la suerte.
 
-Todo es plano, cuadrado y en grilla de píxeles: líneas de 2 px, esquinas a 90°,
+Todo es plano (salvo las placas de la marquesina, abajo), cuadrado y en grilla
+de píxeles: líneas de 2 px, esquinas a 90°,
 paneles con doble filete como las cajas de diálogo de una consola. El
 movimiento es por pasos, nunca suave: una medalla nueva se "revela" pasando por
 los tonos en cuadros discretos. En la app pública del visitante la pantalla
 suma lo que tenía el cartel de la vieja app: líneas de barrido sobre todo y dos
 acentos de marquesina, rojo para el título del evento y amarillo para lo que se
-lee de un vistazo. La landing es superficie propia de Eventdex: va con la rampa
+lee de un vistazo. En las orgs sin skin, además, las placas se levantan del fondo
+con una sombra dura. La landing es superficie propia de Eventdex: va con la rampa
 verde arveja, sin líneas de barrido. Rechaza el default de la categoría: tarjetas blancas de SaaS
 con acento azul y confeti, y el hero de evento con foto y botón.
 
 **Key Characteristics:**
 - Cuatro tonos de un solo matiz, usados como roles; el oscuro invierte la rampa y el papel siempre es claro.
-- Fuera de la rampa, solo peligro (siempre con ícono) y, en la app pública, los dos acentos de marquesina (siempre sobre el fondo). La salvedad es el botón A rojo de la consola de la landing.
+- Fuera de la rampa, solo peligro (siempre con ícono) y, en la app pública, los dos acentos de marquesina (siempre sobre el fondo o la placa). La salvedad es el botón A rojo de la consola de la landing.
 - Logos tal cual son, en gris solo mientras la medalla está pendiente; sprites de 12×12 cuando no hay logo.
-- Jersey 10 en múltiplos de 10 px para títulos, contadores y códigos; Atkinson Hyperlegible Next para leer.
-- Esquinas rectas, filetes de 2 px, sin sombras suaves; líneas de barrido como textura en la app pública.
+- Jersey 10 en múltiplos de 10 px para títulos, contadores y códigos (sobre la marquesina de la app pública, Press Start 2P para títulos de página y contadores); Atkinson Hyperlegible Next para leer.
+- Esquinas rectas, filetes de 2 px, sin sombras suaves; líneas de barrido como textura en la app pública; en la app pública de las orgs sin skin, placas levantadas con sombra dura.
 - Movimiento en pasos (`steps(1, end)`), apagado con `prefers-reduced-motion`.
 
 ## Colors
@@ -236,12 +255,13 @@ marquesina de matiz fijo.
   formulario, botón destructivo, el recuadro de confirmación de una acción que
   no se deshace, el estado bloqueado de la celebración.
 - **Rojo de marquesina** (`accent-red`, y `accent-red-dark` en oscuro): solo en
-  la app pública, y solo para el título del evento en la placa del cartel. La
-  única excepción es el relleno del botón A de la consola de la landing.
+  la app pública, para el título del evento en la placa del cartel y el `h1` de
+  `/sorteo`. La única excepción es el relleno del botón A de la consola de la
+  landing.
 - **Amarillo de marquesina** (`accent-yellow`, y `accent-yellow-dark` en
   oscuro): solo en la app pública, para lo que se lee de un vistazo: la fecha
   (y el horario si hay una sola jornada) y el nombre de la sede en las pestañas
-  del cartel.
+  del cartel, y el nombre del evento en `/sorteo`.
 
 Los acentos son de matiz fijo, no de la marca: salen de `ACCENT` en
 `palette.ts` y se usan con `text-accent-red` y `text-accent-yellow` (y
@@ -256,6 +276,10 @@ el ícono: peligro siempre lleva `AlertIcon`, un título nunca.
   segmentos de la meta del sorteo, hover del botón secundario, opción
   seleccionada, estado deshabilitado, mensaje de éxito de un formulario y la
   jornada encendida.
+- **Placa de marquesina** (`plate`, y `plate-dark` en oscuro): solo en la app
+  pública sin skin. El fondo levantado apenas: pestañas y placa del cartel,
+  casillas, barra de progreso, medalla conseguida, botón secundario, menú del
+  visitante.
 
 ### Paleta y roles
 `--ramp-0..3` es la **paleta**, de más claro a más oscuro. `--lcd-0..3` son
@@ -269,6 +293,15 @@ oscuro. El esquema lo elige `prefers-color-scheme`, y una `.ramp-scope` lo
 puede forzar con `data-scheme="light"` o `data-scheme="dark"`. Toda capa que
 define `--ramp-*` lleva la clase `.ramp-scope` para que los roles se resuelvan
 contra su rampa.
+
+**Placa y marquesina.** La clase `.marquesina`
+(`src/components/visitante/marquesina.ts`), que el layout de la app pública pone
+en las orgs sin skin, prende cuatro tokens: `--plate` (el fondo con 4 % de blanco,
+`color-mix` en oklch), `--plate-rule` y `--cell-rule` (`--ramp-2`, el mismo tono
+medio en claro y en oscuro) y `--plate-cast` (el fondo al 72 % con negro). Afuera
+de esa clase caen a lo plano: `--plate` = `--lcd-0`, `--plate-rule` = `--lcd-2`,
+`--cell-rule` = `--lcd-3` y `--plate-cast` transparente, así que el admin, la
+landing y los skins se ven igual que siempre.
 
 **Impresión.** Con `@media print` todo vuelve a los roles claros (también los
 acentos, peligro y la línea de barrido), aunque la pantalla esté en oscuro: el
@@ -287,7 +320,10 @@ están testeadas para los 36 matices de 10° en `palette.test.ts`:
   cada tono, así se distingue aunque la marca sea roja;
 - cada acento sobre el fondo de su esquema (`ramp-0` en claro, `ramp-3` en
   oscuro) ≥ 4.5:1. Sobre relleno o tinta no hay garantía. El botón A usa ese
-  mismo par al revés: `--lcd-0` sobre el rojo.
+  mismo par al revés: `--lcd-0` sobre el rojo;
+- tinta, secundario, peligro y los dos acentos sobre la placa de su esquema
+  ≥ 4.5:1. El 4 % de `PLATE_LIFT` es lo máximo que deja en AA al rojo oscuro y a
+  peligro en los 36 matices.
 
 ### Skins por organización
 Una org con skin (`src/skins/`) no pasa por `rampFromHex`: define a mano sus cuatro
@@ -302,7 +338,9 @@ barrido.
 **The Four Tones Rule.** Un componente se pinta solo con `--lcd-0..3`. Nunca
 con `--ramp-*` directo (rompería el modo oscuro) ni con un color nuevo. Las
 únicas excepciones son `danger` y los dos acentos de marquesina, y cada una
-tiene su regla.
+tiene su regla. `--plate` no es un quinto tono: es un paso derivado del fondo.
+Junto con `--plate-rule`, `--cell-rule` y `--plate-cast` se define una sola vez
+en `.marquesina`, y los componentes los usan por su nombre.
 
 **The Brand Is A Hue Rule.** La marca de una organización aporta matiz y
 saturación; la luminosidad la pone la rampa. Nunca se usa el hex de la marca
@@ -313,9 +351,10 @@ va con el ícono de alerta pixelado (`AlertIcon`, 8×8 en `currentColor`); el
 color nunca carga el significado solo.
 
 **The Marquee Accent Rule.** Los acentos son de la app pública y van solo como
-texto sobre el fondo (`--lcd-0`), nunca sobre relleno ni sobre tinta: ahí no
-tienen contraste garantizado. Rojo solo para el título del evento; amarillo
-solo para lo que se lee de un vistazo (fecha, sede). Un texto en rojo de
+texto sobre el fondo (`--lcd-0`) o sobre la placa (`--plate`), nunca sobre
+relleno ni sobre tinta: ahí no tienen contraste garantizado. Rojo solo para el título del evento; amarillo
+solo para lo que se lee de un vistazo (fecha, sede). En `/sorteo`, el `h1` va en rojo y el nombre del evento en
+amarillo. Un texto en rojo de
 marquesina nunca lleva `AlertIcon`. La única excepción es la de The Red A Rule.
 
 **The Red A Rule.** El botón A de la consola de la landing es la única
@@ -331,24 +370,32 @@ marca solo aparece en una muestra con su propia `.ramp-scope`.
 ## Typography
 
 **Display Font:** Jersey 10 (con ui-monospace, monospace), vía `--font-pixel` / `font-display`
+**Wide Display Font:** Press Start 2P (con ui-monospace, monospace), la letra del cartel de la v1, vía `--wide-face` / `font-wide`; solo con `.marquesina`
 **Body Font:** Atkinson Hyperlegible Next (con ui-sans-serif, system-ui, sans-serif), vía `--font-read` / `font-sans`
 
 **Character:** una fuente de píxeles con 8/B, 5/S y 2/Z bien distintos para lo
 que se escanea, y una hiperlegible para todo lo que se lee.
 
 ### Hierarchy
+- **Title** (`font-wide`, `text-title` 24 px y `text-title-lg` 32 px desde `sm`,
+  interlineado 1.25): el `h1` de las páginas de la app pública y el título del
+  evento en la placa del cartel. Las pantallas de un solo mensaje (ingreso,
+  error, celebración) se quedan en 24 px.
+- **Numeral** (`font-wide`, `text-numeral` 32 px, interlineado 1): los números
+  de la cuenta regresiva y del progreso, y los estados "En curso" y "Finalizado".
 - **Display 2XL** (`text-px-5`, 80 px): solo el `h1` de la landing desde 1400 px
   de ancho.
-- **Display XL** (`text-px-4`, 60 px): el título de página desde `sm`; el
-  título del evento en la placa del cartel; en la landing, el `h1` por debajo
+- **Display XL** (`text-px-4`, 60 px): el título de página desde `sm`; fuera de
+  la marquesina, el título del evento en la placa del cartel; en la landing, el `h1` por debajo
   de 1400 px, los títulos de sección y los numerales de los pasos.
 - **Display** (`text-px-3`, 40 px): título de página en mobile, títulos de
-  sección desde `sm`, contadores (progreso, cuenta regresiva), título de la
-  celebración en `/s/[id]`, código del spot en la hoja de QR; en la landing,
+  sección desde `sm`, código del spot en la hoja de QR; fuera de la marquesina,
+  contadores (progreso, cuenta regresiva) y título de la celebración en
+  `/s/[id]`; en la landing,
   los pasos rápidos, el título de cada paso, el estado de la consola y la A.
 - **Headline** (`text-px-2`, 30 px): títulos de sección en mobile, códigos,
   nombre de la org en el encabezado público, nombre de cada jornada,
-  "¡Entrás al sorteo!".
+  "¡Entrás al sorteo!", "Arranca en".
 - **Label** (`text-px-1`, 20 px): botones, etiquetas de campo, insignias de
   fase, código del spot, unidades de la cuenta regresiva, pestañas del cartel,
   estado de la jornada ("Ahora", "Próxima", "Hecha").
@@ -363,14 +410,23 @@ que se escanea, y una hiperlegible para todo lo que se lee.
 `h1`, `h2` y `h3` usan Jersey 10 con `text-wrap: balance`. Los números van con
 `tabular-nums`.
 
+Sin `.marquesina`, `font-wide` y los tamaños `text-title`, `text-title-lg` y
+`text-numeral` resuelven a Jersey 10 en 40, 60 y 40 px (en un skin, a la letra del
+skin). Con ella, Press Start 2P corta las palabras largas
+(`overflow-wrap: anywhere`) porque cada letra mide un em. Oraciones y resúmenes
+siguen en Atkinson; pestañas, etiquetas, títulos de sección y unidades, en
+Jersey 10.
+
 ### Named Rules
 **The Ten Pixel Grid Rule.** Jersey 10 solo en `text-px-1..5` (20, 30, 40, 60 y
 80 px), múltiplos de su grilla de 10 px, con interlineado 1, así los bordes
 quedan nítidos. `text-px-5` es solo para el `h1` de la landing desde 1400 px.
-Nada de texto pixelado debajo de 20 px.
+Esta grilla es solo de Jersey 10: Press Start 2P va en la suya de 8 px (24 y 32
+px). Nada de texto pixelado debajo de 20 px.
 
-**The Read In Atkinson Rule.** Títulos, contadores y códigos van en Jersey 10;
-todo lo que hay que leer (oraciones, pistas, errores) va en Atkinson
+**The Read In Atkinson Rule.** Títulos, contadores y códigos van en Jersey 10
+(títulos de página y contadores, en Press Start 2P sobre la marquesina de la app
+pública); todo lo que hay que leer (oraciones, pistas, errores) va en Atkinson
 Hyperlegible Next.
 
 ## Layout
@@ -398,14 +454,26 @@ secciones se separan con un filete de 2 px o con un cambio de fondo entre
 
 Plano. No hay sombras suaves ni capas que flotan: la profundidad se marca con
 filetes de 2 px en tinta y con el relleno (`--lcd-1`) para lo seleccionado,
-encendido o pendiente. La única `box-shadow` del sistema es la del panel, y es
-un filete interno, no una sombra.
+encendido o pendiente. La salvedad es la marquesina de la app pública sin skin,
+donde las placas se levantan del fondo con una sombra dura, sin difuminar. Fuera
+de ella, la única `box-shadow` del sistema es la del panel, y es un filete
+interno, no una sombra.
 
 ### Shadow Vocabulary
 - **Doble filete del panel** (`box-shadow: inset 0 0 0 2px var(--lcd-0), inset 0 0 0 4px var(--lcd-3)`,
   sobre un borde de 2 px en tinta): la caja de diálogo de consola. Se usa en la
   pantalla de celebración, en la placa del título del cartel y en la jornada
   encendida (ahí sobre relleno).
+- **Sombra dura de la marquesina** (`shadow-plate`, `box-shadow: 4px 4px 0 var(--plate-cast)`):
+  solo se ve en la app pública sin skin; afuera `--plate-cast` es transparente.
+  La llevan las pestañas del cartel, las casillas de la cuenta regresiva, la
+  barra de progreso, la medalla conseguida, los botones (menos al presionarlos o
+  deshabilitados), el menú del visitante, el link de ingreso y los eventos sin
+  elegir en Mis medallas.
+- **Panel sobre la marquesina** (`box-shadow: inset 0 0 0 2px var(--lcd-3), 4px 4px 0 var(--plate-cast)`,
+  sobre un borde de 2 px en `--plate-rule` y con relleno `--plate`): reemplaza
+  al doble filete en todo `.panel` de la marquesina. La jornada encendida
+  conserva su relleno.
 - **Líneas de barrido** (`repeating-linear-gradient(0deg, transparent 0 2px, var(--scanline) 2px 4px)`,
   en un `::after` fijo sobre toda la pantalla, sin eventos de puntero): una
   línea de 2 px cada 4 px. `--scanline` es negro al 3 % en claro y al 8 % en
@@ -416,7 +484,10 @@ landing no la lleva.
 
 ### Named Rules
 **The Flat Screen Rule.** Una pantalla LCD no tiene sombras. La jerarquía sale
-de filetes, relleno y tamaño de letra; nunca de `box-shadow` difuso.
+de filetes, relleno y tamaño de letra; nunca de `box-shadow` difuso. La única
+salvedad es la sombra dura de la marquesina (`shadow-plate`): 4 px, sin
+difuminar, solo en la app pública sin skin. El admin, la landing y los skins
+siguen planos.
 
 **The Texture Not A Color Rule.** Las líneas de barrido son textura de
 pantalla, no un quinto color: no cargan significado, no se usan para marcar
@@ -426,8 +497,10 @@ nada y nunca se imprimen.
 
 Todo es cuadrado: radio 0 en todos lados. Los bordes son de 2 px. Un borde
 **sólido** en tinta marca lo presente o activo; un borde sólido en secundario
-marca lo que ya pasó (fase "Finalizado", jornada hecha) o una pestaña del
-cartel; un borde **punteado** en secundario marca lo pendiente, apagado o en
+marca lo que ya pasó (fase "Finalizado", jornada hecha) o, fuera de la
+marquesina, una pestaña del cartel. Sobre la marquesina, las pestañas van en
+`--plate-rule` y las casillas (cuenta regresiva, barra de progreso) en
+`--cell-rule`, los dos en `--ramp-2`. Un borde **punteado** en secundario marca lo pendiente, apagado o en
 borrador (medalla pendiente o inactiva, fase "Borrador", jornada por venir,
 estado vacío; "Sin fecha" usa punteado en tinta). En papel, el punteado es la
 línea de corte de cada tarjeta de QR. Los sprites, los íconos pixelados y el QR
@@ -445,13 +518,14 @@ Tipo consola: bloque sólido, letra pixelada, se hunde al tocarlo.
 - **Shape:** esquinas rectas (0), borde de 2 px, alto mínimo 44 px, 16 px a los
   lados, Jersey 10 a 20 px.
 - **Primary:** tinta con texto en fondo; hover pasa a secundario.
-- **Secondary:** fondo con borde y texto en tinta; hover rellena con `--lcd-1`.
+- **Secondary:** `--plate` con borde y texto en tinta; hover rellena con `--lcd-1`.
 - **Danger:** `danger` con texto en fondo; hover pasa a tinta.
 - **Hover / Focus / Active:** cambio de color en 100 ms; al presionar baja 2 px
-  (`translate-y-0.5`); el foco es el anillo global.
+  (`translate-y-0.5`); el foco es el anillo global. En la marquesina llevan la
+  sombra dura, que se apaga al presionar.
 - **Pending:** tres bloques de 6 px que parpadean en turno (cada 333 ms) y la
   etiqueta pasa a "Publicando…".
-- **Disabled:** relleno con borde y texto en secundario.
+- **Disabled:** relleno con borde y texto en secundario, sin sombra.
 - **Botón de acción** (`ActionButton`): un formulario de un solo botón, con su
   error abajo. Si lo que hace no se deshace, el primer toque abre un recuadro
   con borde de 2 px en `danger` y 12 px de aire: la consecuencia, el botón de
@@ -465,9 +539,9 @@ Tipo consola: bloque sólido, letra pixelada, se hunde al tocarlo.
 
 ### Cards / Containers
 - **Corner Style:** rectas (0).
-- **Background:** `--lcd-0`.
-- **Shadow Strategy:** solo el doble filete del panel (ver Elevation & Depth).
-- **Border:** 2 px en tinta; separadores internos con `border-t-2`.
+- **Background:** `--lcd-0` (`--plate` sobre la marquesina).
+- **Shadow Strategy:** el doble filete del panel; sobre la marquesina, su variante con filete interno en tinta y sombra dura (ver Elevation & Depth).
+- **Border:** 2 px en tinta (`--plate-rule` sobre la marquesina); separadores internos con `border-t-2`.
 - **Internal Padding:** 32 px arriba y abajo, 24 px a los lados.
 - **Estado vacío:** la misma caja con borde punteado en secundario, un título
   a 30 px y el texto que dice qué falta y qué hacer.
@@ -490,7 +564,8 @@ Casilla de 96 px con borde de 2 px; adentro, el logo original del spot, entero, 
 si no tiene, el sprite de 12×12 de su tipo (stand, atracción, sponsor,
 actividad) a 6 px por píxel. Debajo: código en Jersey 10, nombre a 14 px y
 estado en Jersey 10. Cuatro estados:
-- **Conseguida:** a todo tono (logo a color real), borde sólido en tinta.
+- **Conseguida:** a todo tono (logo a color real), borde sólido en tinta,
+  relleno `--plate` y sombra dura.
 - **Pendiente:** silueta en relleno (logo en gris, al 50 %), borde punteado en
   secundario.
 - **Nueva:** fondo relleno y la revelación en pasos.
@@ -509,21 +584,25 @@ secundario a tinta en 900 ms con `steps(1, end)`, en tres cuadros (0, 34 %, 67
 La marquesina de la vieja app, en tres piezas apiladas y centradas. Si el evento
 tiene banner, va arriba, tal cual se subió, con borde de 2 px en tinta y hasta el
 70 % del alto de la pantalla; lo escrito en la imagen no reemplaza a las piezas:
-- **Pestaña de fecha:** borde de 2 px en secundario sin el lado de abajo, fondo
-  `--lcd-0`, 8 × 16 px de padding; la fecha (y el horario si hay una sola
-  jornada) en Jersey 10 a 20 px en amarillo de marquesina. Se monta 2 px sobre
-  la placa, así su filete se funde con el de arriba de la placa.
-- **Placa del título:** un panel de doble filete, 24 px de padding (40 px a los
-  lados desde `sm`), el título a 40 px (60 px desde `sm`) en rojo de marquesina
-  y el resumen en Atkinson a `max-w-prose`.
+- **Pestaña de fecha:** borde de 2 px en `--plate-rule` sin el lado de abajo,
+  fondo `--plate`, sombra dura, 8 × 16 px de padding; un reloj pixelado de 8×8
+  (`ClockIcon`) a 24 px en secundario y la fecha (y el horario si hay una sola
+  jornada) en Jersey 10 a 20 px en amarillo de marquesina. Se mete 2 px debajo
+  de la placa.
+- **Placa del título:** un panel a todo el ancho de la columna y montado encima
+  de las dos pestañas, 24 px de padding (40 px a los lados desde `sm`), el título
+  en Press Start 2P en rojo de marquesina y el resumen en Atkinson a
+  `max-w-prose`.
 - **Pestaña de sede:** la misma pestaña colgada abajo (sin el lado de arriba),
-  12 × 16 px de padding; el nombre en amarillo a 20 px y la dirección a 14 px en
-  tinta.
+  12 × 16 px de padding y el texto alineado a la izquierda; el nombre en amarillo
+  a 20 px y la dirección a 14 px en tinta.
 
 Debajo van la cuenta regresiva y un link en Jersey 10 a 20 px a las medallas.
 Encima de todo, el encabezado de la app pública: el monograma de la org (sus
 iniciales en un cuadrado de tinta de 40 px) y su nombre a 30 px, cerrado por un
-filete de 2 px en tinta. Eventdex no aparece.
+filete de 2 px en tinta. Eventdex no aparece. El desplegable del menú del
+visitante y el link "Ingresar" van en `--plate` con borde de 2 px en tinta y
+sombra dura.
 
 ### Jornadas como niveles (app pública)
 Una lista de celdas de 16 × 20 px de padding, 12 px entre sí, con el nombre de
@@ -535,14 +614,17 @@ la jornada a 30 px y su fecha y horario en Atkinson:
 - **Por venir:** borde punteado en secundario.
 
 ### Progreso
-Barra segmentada: un segmento por spot, en un marco de 2 px con 2 px de
-separación. Conseguidos en tinta, los que faltan para la meta en relleno, el
-resto vacío. Encima, el contador a 40 px y "de N medallas" a 20 px.
+Barra segmentada: un segmento por spot, en un marco de 2 px en `--cell-rule`
+con relleno `--plate`, sombra dura y 2 px de separación. Conseguidos en tinta,
+los que faltan para la meta en relleno, el resto vacío. Encima, el contador en
+Numeral y "de N medallas" a 20 px.
 
 ### Cuenta regresiva
-Casillas de 2 px en tinta con el número a 40 px (dos dígitos, `tabular-nums`) y
-la unidad a 20 px en secundario. En curso y finalizado muestran el estado a 40
-px y una línea en secundario.
+Siempre tres casillas (Días, Horas, Minutos) bajo un "Arranca en" en Jersey 10 a
+30 px. Cada casilla lleva borde de 2 px en `--cell-rule`, relleno `--plate`,
+sombra dura y 12 px de padding, con el número en Numeral (dos dígitos,
+`tabular-nums`) y la unidad a 20 px en secundario. En curso y finalizado son una
+sola casilla igual, con el estado en Numeral y una línea en secundario.
 
 ### Código QR
 Un único `path` SVG en `currentColor` (tinta) sobre `--lcd-0`, con
@@ -579,7 +661,7 @@ separación.
 - **Do** pintar con los roles `--lcd-0..3` y dejar que el esquema los resuelva.
 - **Do** derivar la paleta de una organización con `rampFromHex`, y poner la clase `.ramp-scope` en toda capa que defina `--ramp-*`.
 - **Do** acompañar `danger` con `AlertIcon`.
-- **Do** poner los acentos de marquesina solo como texto sobre `--lcd-0` en la app pública: rojo para el título del evento, amarillo para fecha y sede.
+- **Do** poner los acentos de marquesina solo como texto sobre `--lcd-0` o `--plate` en la app pública: rojo para el título del evento y el `h1` de `/sorteo`, amarillo para fecha, sede y el nombre del evento en `/sorteo`.
 - **Do** usar la rampa de Eventdex en la landing y su consola.
 - **Do** usar Jersey 10 solo en `text-px-1..5` (20/30/40/60/80 px), con `text-px-5` solo en el `h1` de la landing desde 1400 px.
 - **Do** usar bordes de 2 px: sólidos para lo presente, punteados para lo pendiente.
@@ -588,8 +670,8 @@ separación.
 - **Do** dejar que la impresión vuelva a los roles claros y apague las líneas de barrido.
 
 ### Don't:
-- **Don't** usar `border-radius` ni sombras suaves.
-- **Don't** usar texto pixelado debajo de 20 px ni en tamaños fuera de la grilla de 10 px.
+- **Don't** usar `border-radius` ni sombras suaves, ni dejar que la sombra dura de la marquesina se vea fuera de la app pública sin skin.
+- **Don't** usar texto pixelado debajo de 20 px, ni Jersey 10 fuera de su grilla de 10 px, ni Press Start 2P fuera de la suya de 8 px.
 - **Don't** agregar un color fuera de la rampa más allá de `danger` y los dos acentos de marquesina, ni usar el hex de la marca tal cual.
 - **Don't** poner un acento sobre relleno (`--lcd-1`) o tinta, ni usarlo para avisar un error: eso es `danger` con su ícono.
 - **Don't** rellenar con un acento nada más que el botón A de la consola de la landing, ni llevar el amarillo a fondo.
