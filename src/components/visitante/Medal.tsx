@@ -63,7 +63,7 @@ export function Logo({
   src,
   mode,
   label,
-  className = "size-full",
+  className = "size-full object-cover",
 }: {
   src: string;
   mode: SpriteMode;
@@ -76,7 +76,7 @@ export function Logo({
       src={src}
       alt={label}
       data-mode={mode}
-      className={`logo object-cover ${className}`}
+      className={`logo ${className}`}
     />
   );
 }
