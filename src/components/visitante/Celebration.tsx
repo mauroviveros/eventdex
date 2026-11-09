@@ -109,7 +109,8 @@ function copyFor(
         body: "Quedó guardada en tu colección.",
         action: "Ver mis medallas",
         href: COLLECTION,
-        primary: true,
+        // The next step is walking to another stand, not this button.
+        primary: false,
       };
     case "repetida":
       return {
@@ -117,7 +118,7 @@ function copyFor(
         body: `La conseguiste el ${moment(o.claimedAt)}. Buscá un stand nuevo para sumar.`,
         action: "Ver mis medallas",
         href: COLLECTION,
-        primary: true,
+        primary: false,
       };
     case "inactivo":
       return {
