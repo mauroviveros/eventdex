@@ -6,7 +6,7 @@ import { Button, buttonClass } from "@/components/ui/Button";
 import { SelectField } from "@/components/ui/Field";
 import { listAllOrganizations } from "@/lib/data/organizations";
 import { listAuditLogs } from "@/lib/data/platform";
-import { platformMetadata } from "@/lib/data/viewer";
+import { platformMetadata, requireDeveloper } from "@/lib/data/viewer";
 import { AUDIT_AREAS, AUDIT_LABELS, parseAuditFilter } from "@/lib/platform";
 import { createClient } from "@/lib/supabase/server";
 
@@ -23,6 +23,7 @@ const WHEN = new Intl.DateTimeFormat("es-AR", {
 export default async function AuditoriaPage({
   searchParams,
 }: PageProps<"/admin/plataforma/auditoria">) {
+  await requireDeveloper();
   const filter = parseAuditFilter(await searchParams);
   const supabase = await createClient();
   const [{ rows, hasMore }, organizations] = await Promise.all([
@@ -89,9 +90,11 @@ export default async function AuditoriaPage({
 
         {rows.length === 0 ? (
           <p className="text-muted-foreground">
-            {filtered
-              ? "No hay registros con este filtro."
-              : "Todavía no hay registros."}
+            {filter.pagina > 1
+              ? "No hay más registros."
+              : filtered
+                ? "No hay registros con este filtro."
+                : "Todavía no hay registros."}
           </p>
         ) : (
           <div className="overflow-x-auto">

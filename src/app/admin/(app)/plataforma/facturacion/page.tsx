@@ -6,7 +6,7 @@ import { formatMoney } from "@/domain/money";
 import { setInvoiceStatusAction } from "@/lib/actions/platform";
 import { listAllOrganizations } from "@/lib/data/organizations";
 import { listInvoices } from "@/lib/data/platform";
-import { platformMetadata } from "@/lib/data/viewer";
+import { platformMetadata, requireDeveloper } from "@/lib/data/viewer";
 import type { Enums } from "@/lib/supabase/database.types";
 import { createClient } from "@/lib/supabase/server";
 import { NewInvoiceForm } from "./NewInvoiceForm";
@@ -32,6 +32,7 @@ const STATUS: Record<Enums<"invoice_status">, string> = {
 };
 
 export default async function FacturacionPage() {
+  await requireDeveloper();
   const supabase = await createClient();
   const [invoices, organizations] = await Promise.all([
     listInvoices(supabase),

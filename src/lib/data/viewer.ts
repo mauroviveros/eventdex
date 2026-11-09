@@ -29,6 +29,17 @@ export async function requireViewer() {
   return (await getViewer()) ?? signInAndComeBack();
 }
 
+/**
+ * The platform does not exist for anyone but the developer: 404, not 403.
+ * Every platform page awaits it before querying: pages render in parallel
+ * with the layout, so the layout alone doesn't stop their queries.
+ */
+export async function requireDeveloper() {
+  const viewer = await requireViewer();
+  if (!viewer.isDeveloper) notFound();
+  return viewer;
+}
+
 /** To /ingresar on this host, coming back to the page that asked. */
 async function signInAndComeBack(): Promise<never> {
   const next = (await headers()).get("x-public-path") ?? "/";

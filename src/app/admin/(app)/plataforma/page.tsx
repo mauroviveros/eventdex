@@ -3,7 +3,7 @@ import { StatTile } from "@/components/admin/StatTile";
 import { PageBody, TopBar } from "@/components/admin/TopBar";
 import { formatMoney } from "@/domain/money";
 import { getPlatformSummary } from "@/lib/data/platform";
-import { platformMetadata } from "@/lib/data/viewer";
+import { platformMetadata, requireDeveloper } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
 
 export function generateMetadata(): Promise<Metadata> {
@@ -11,6 +11,7 @@ export function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function PlataformaPage() {
+  await requireDeveloper();
   const summary = await getPlatformSummary(await createClient());
   const owed = summary.pendingByCurrency.filter((p) => p.cents > 0);
 
@@ -25,7 +26,7 @@ export default async function PlataformaPage() {
             value={summary.organizations}
             caption={
               summary.suspended > 0
-                ? `${summary.suspended} suspendidas`
+                ? `${summary.suspended} ${summary.suspended === 1 ? "suspendida" : "suspendidas"}`
                 : "Todas activas"
             }
           />

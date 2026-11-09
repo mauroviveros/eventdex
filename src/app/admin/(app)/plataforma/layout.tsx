@@ -1,13 +1,10 @@
-import { notFound } from "next/navigation";
 import { AdminShell } from "@/components/admin/AdminShell";
-import { requireViewer } from "@/lib/data/viewer";
+import { requireDeveloper } from "@/lib/data/viewer";
 
-/** The platform does not exist for anyone but the developer: 404, not 403. */
 export default async function PlataformaLayout({
   children,
 }: LayoutProps<"/admin/plataforma">) {
-  const viewer = await requireViewer();
-  if (!viewer.isDeveloper) notFound();
+  const viewer = await requireDeveloper();
   return (
     <AdminShell
       email={viewer.email}
