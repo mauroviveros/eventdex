@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { isTimeZone, localToInstant } from "@/domain/events";
-import { SLUG } from "@/lib/organizations";
+import { COVER_MAX_BYTES, isTimeZone, localToInstant } from "@/domain/events";
+import { LOGO_TYPES, SLUG, storeLogo } from "@/lib/organizations";
 import {
   type ActionResult,
   failed,
@@ -202,4 +202,88 @@ export async function publishEvent(
         "Para publicar, el evento tiene que ser un borrador con al menos una jornada.",
     });
   return { ok: true, data: null };
+}
+
+const COVER_BUCKET = "event-covers";
+
+const eventRef = z.object({ organizationId: z.guid(), eventId: z.guid() });
+
+const coverSchema = eventRef.extend({
+  cover: z
+    .file("Elegí una imagen.")
+    .max(COVER_MAX_BYTES, "El banner puede pesar hasta 1,5 MB.")
+    .mime(
+      Object.keys(LOGO_TYPES) as (keyof typeof LOGO_TYPES)[],
+      "Subí una imagen PNG, JPG o WebP.",
+    ),
+});
+
+type Storage = Pick<Supabase, "from" | "storage">;
+
+type EventRef = z.infer<typeof eventRef>;
+
+/** Both ids in the filter: an event of another org reads as not found. */
+async function currentCover(supabase: Storage, ref: EventRef) {
+  return supabase
+    .from("events")
+    .select("cover_path")
+    .eq("id", ref.eventId)
+    .eq("organization_id", ref.organizationId)
+    .maybeSingle();
+}
+
+/** Points the event at `path` and deletes the previous file. A file that stays behind is only an orphan. */
+async function swapCover(
+  supabase: Storage,
+  eventId: string,
+  path: string | null,
+  previous: string | null,
+): Promise<ActionResult<null>> {
+  const { data, error } = await supabase
+    .from("events")
+    .update({ cover_path: path })
+    .eq("id", eventId)
+    .select("id");
+  if (error || data.length === 0) {
+    if (path) await supabase.storage.from(COVER_BUCKET).remove([path]);
+    return failed(error ?? { code: "42501" });
+  }
+  if (previous) await supabase.storage.from(COVER_BUCKET).remove([previous]);
+  return { ok: true, data: null };
+}
+
+export async function uploadCover(
+  supabase: Storage,
+  input: unknown,
+): Promise<ActionResult<null>> {
+  const parsed = coverSchema.safeParse(input);
+  if (!parsed.success) return invalid(parsed.error);
+  const { cover, ...ref } = parsed.data;
+
+  const { data: event, error } = await currentCover(supabase, ref);
+  if (error) return failed(error);
+  if (!event) return failed({ code: "42501" });
+
+  const { path, error: uploadError } = await storeLogo(
+    supabase,
+    COVER_BUCKET,
+    ref.organizationId,
+    cover,
+  );
+  if (uploadError) return failed(uploadError);
+
+  return swapCover(supabase, ref.eventId, path, event.cover_path);
+}
+
+export async function removeCover(
+  supabase: Storage,
+  input: unknown,
+): Promise<ActionResult<null>> {
+  const parsed = eventRef.safeParse(input);
+  if (!parsed.success) return failed({ code: "42501" });
+
+  const { data: event, error } = await currentCover(supabase, parsed.data);
+  if (error) return failed(error);
+  if (!event) return failed({ code: "42501" });
+  return swapCover(supabase, parsed.data.eventId, null, event.cover_path);
 }

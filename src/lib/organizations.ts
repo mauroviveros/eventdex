@@ -110,7 +110,7 @@ export async function updateSettings(
 const LOGO_BUCKET = "org-logos";
 
 // Same limits as the bucket; here so the owner gets a message about their file.
-const LOGO_TYPES = {
+export const LOGO_TYPES = {
   "image/png": "png",
   "image/jpeg": "jpg",
   "image/webp": "webp",

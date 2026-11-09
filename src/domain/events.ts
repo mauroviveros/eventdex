@@ -14,6 +14,9 @@ export type Phase =
 
 export type Schedule = { starts_at: string; ends_at: string };
 
+/** The banner's limit, the same as the event-covers bucket: 1.5 MiB. */
+export const COVER_MAX_BYTES = 1_572_864;
+
 /** First start and last end, or null without schedules. */
 export function scheduleRange(schedules: readonly Schedule[]) {
   if (schedules.length === 0) return null;

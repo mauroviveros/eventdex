@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   experimental: {
-    // A logo goes up to 1 MiB (the bucket's limit) plus the form around it.
+    // A banner goes up to 1.5 MiB (the bucket's limit) plus the form around it.
     serverActions: { bodySizeLimit: "2mb" },
   },
 };
