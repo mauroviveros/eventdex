@@ -59,7 +59,9 @@ test("a spot's logo goes from the form to the visitor's medals", async ({
 
   await test.step("the home shows it, and the file is served", async () => {
     await visitor.goto(`${seed.origin}/eventos/feria`);
-    const logo = visitor.getByRole("img", { name: new RegExp(`^${NAME}:`) });
+    const logo = visitor
+      .getByRole("figure", { name: new RegExp(NAME) })
+      .locator("img");
     await expect(logo).toBeVisible();
     const src = await logo.getAttribute("src");
     expect(src).toContain(`/spot-logos/${seed.org.id}/`);
@@ -71,7 +73,7 @@ test("a spot's logo goes from the form to the visitor's medals", async ({
     await signInByMail(visitor, seed.visitorEmail);
     await visitor.goto(`${seed.origin}/mis-medallas`);
     await expect(
-      visitor.getByRole("img", { name: new RegExp(`^${NAME}:`) }),
+      visitor.getByRole("figure", { name: new RegExp(NAME) }).locator("img"),
     ).toBeVisible();
   });
 

@@ -42,7 +42,7 @@ export function Progress({ claimed, total, goal, finished = false }: Props) {
         aria-valuemax={total}
         aria-valuenow={claimed}
         aria-valuetext={`${claimed} de ${total} medallas`}
-        className="flex h-5 gap-0.5 border-2 border-cell-rule bg-plate p-0.5 shadow-plate"
+        className="flex h-5 gap-0.5 border-2 border-lcd-3 bg-plate p-0.5 shadow-plate"
       >
         {Array.from({ length: total }, (_, i) => (
           <span

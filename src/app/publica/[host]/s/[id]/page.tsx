@@ -34,9 +34,12 @@ export default async function ClaimPage({
 
   return (
     <main className="mx-auto grid w-full max-w-3xl justify-items-center px-4 py-10 sm:px-6">
-      <Suspense fallback={<Claiming />}>
-        <Claim target={target} visitorId={visitor.id} />
-      </Suspense>
+      {/* Outside the boundary: a live region only announces changes made inside it once it exists. */}
+      <div aria-live="polite" className="grid w-full justify-items-center">
+        <Suspense fallback={<Claiming />}>
+          <Claim target={target} visitorId={visitor.id} />
+        </Suspense>
+      </div>
     </main>
   );
 }
@@ -81,11 +84,7 @@ async function Claim({
 /** While the medal is claimed: the celebration's panel, still empty. */
 function Claiming() {
   return (
-    <div
-      role="status"
-      aria-busy
-      className="panel grid w-full max-w-sm justify-items-center gap-5 px-6 py-8 text-center"
-    >
+    <div className="panel grid w-full max-w-sm justify-items-center gap-5 px-6 py-8 text-center">
       <div className="size-40 border-2 border-dashed border-lcd-2" />
       <p className="font-display text-px-2">Sumando la medalla…</p>
     </div>

@@ -26,10 +26,9 @@ type Props = {
   logo?: string;
 };
 
-/** One spot in the visitor's collection. */
+/** One spot in the visitor's collection. The caption says it all: the picture stays silent. */
 export function Medal({ name, code, type, state, logo }: Props) {
   const muted = state === "pendiente" || state === "inactiva";
-  const label = `${name}: ${STATUS[state]}`;
   return (
     <figure className="grid w-32 justify-items-center gap-2 text-center">
       <div
@@ -38,9 +37,9 @@ export function Medal({ name, code, type, state, logo }: Props) {
         } ${state === "nueva" ? "bg-lcd-1" : ""} ${state === "conseguida" ? "bg-plate shadow-plate" : ""}`}
       >
         {logo ? (
-          <Logo src={logo} mode={MODE[state]} label={label} />
+          <Logo src={logo} mode={MODE[state]} label="" />
         ) : (
-          <Sprite type={type} mode={MODE[state]} label={label} />
+          <Sprite type={type} mode={MODE[state]} label="" />
         )}
       </div>
       <figcaption className="grid gap-1">
