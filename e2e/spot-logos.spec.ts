@@ -27,6 +27,12 @@ test("a spot's logo goes from the form to the visitor's medals", async ({
   await page.goto(`${admin}/spots/nuevo`);
   await signInByMail(page, seed.ownerEmail);
 
+  await test.step("a spot imported from the v1 opens", async () => {
+    await page.goto(`${admin}/spots/${seed.catalog[0]?.id}`);
+    await expect(page.getByLabel("Nombre")).toHaveValue("Café de la Esquina");
+    await page.goto(`${admin}/spots/nuevo`);
+  });
+
   await test.step("the owner creates a spot with its logo", async () => {
     await page.getByLabel("Nombre").fill(NAME);
     await page.getByLabel("Logo").setInputFiles({

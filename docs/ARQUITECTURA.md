@@ -106,6 +106,7 @@ que se prueba sin mocks.
 | Baja lógica con `deleted_at` | — |
 | Dinero en centavos (`bigint`) | `amount_cents` |
 | **Toda tabla de tenant lleva `organization_id`** | Hace que cada política sea un índice simple |
+| Los ids se validan con `z.guid()`, nunca con `z.uuid()` | Los importados de la v1 salen de `md5(…)::uuid`: Postgres los acepta, pero no son RFC 4122 |
 
 ### Permisos (RLS)
 

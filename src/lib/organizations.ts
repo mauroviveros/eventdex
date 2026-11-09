@@ -73,7 +73,7 @@ export async function createOrganization(
 // Same rule as the organizations_brand_color_format check. Any hue is valid:
 // the ramp fixes each tone's lightness, so contrast holds (DESIGN_SYSTEM).
 export const settingsSchema = z.object({
-  organizationId: z.uuid(),
+  organizationId: z.guid(),
   name: orgName,
   brandColor: z
     .string()
@@ -125,7 +125,7 @@ export const logoFile = z
   );
 
 export const logoSchema = z.object({
-  organizationId: z.uuid(),
+  organizationId: z.guid(),
   logo: logoFile,
 });
 
@@ -201,7 +201,7 @@ export async function removeLogo(
   supabase: Storage,
   organizationId: string,
 ): Promise<ActionResult<null>> {
-  if (!z.uuid().safeParse(organizationId).success)
+  if (!z.guid().safeParse(organizationId).success)
     return failed({ code: "42501" });
   const { data: org, error } = await currentLogo(supabase, organizationId);
   if (error) return failed(error);
@@ -227,10 +227,10 @@ export async function assignDomain(
 ): Promise<ActionResult<{ conflict: DomainConflict | null }>> {
   const parsed = z
     .object({
-      organizationId: z.uuid(),
+      organizationId: z.guid(),
       hostname,
       makePrimary: checkbox,
-      transferFrom: z.uuid().optional(),
+      transferFrom: z.guid().optional(),
     })
     .safeParse(input);
   if (!parsed.success) return invalid(parsed.error);
@@ -255,7 +255,7 @@ export async function setPrimaryDomain(
   supabase: Pick<Supabase, "rpc">,
   domainId: string,
 ): Promise<ActionResult<null>> {
-  if (!z.uuid().safeParse(domainId).success) return failed({ code: "42501" });
+  if (!z.guid().safeParse(domainId).success) return failed({ code: "42501" });
   const { error } = await supabase.rpc("set_primary_domain", {
     p_domain_id: domainId,
   });
@@ -267,7 +267,7 @@ export async function removeDomain(
   supabase: Pick<Supabase, "from">,
   domainId: string,
 ): Promise<ActionResult<null>> {
-  if (!z.uuid().safeParse(domainId).success) return failed({ code: "42501" });
+  if (!z.guid().safeParse(domainId).success) return failed({ code: "42501" });
   const { data, error } = await supabase
     .from("organization_domains")
     .delete()

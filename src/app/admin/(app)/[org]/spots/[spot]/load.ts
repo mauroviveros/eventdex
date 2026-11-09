@@ -9,7 +9,7 @@ import { createClient } from "@/lib/supabase/server";
 export const load = cache(async (slug: string, id: string) => {
   const access = await requireOrg(slug);
   // Not a uuid can't be a spot; asking the database would be an error, not a 404.
-  if (!z.uuid().safeParse(id).success) notFound();
+  if (!z.guid().safeParse(id).success) notFound();
   const spot = await getSpot(await createClient(), access.org.id, id);
   if (!spot) notFound();
   return { ...access, spot };

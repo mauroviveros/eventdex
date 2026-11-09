@@ -10,7 +10,7 @@ import type { Supabase } from "@/lib/supabase/server";
 const role = z.enum(["owner", "staff"], "Elegí un rol.");
 
 export const inviteSchema = z.object({
-  organizationId: z.uuid(),
+  organizationId: z.guid(),
   email: z.string().trim().toLowerCase().pipe(z.email("Revisá el mail.")),
   role,
 });
@@ -44,7 +44,7 @@ export async function revokeInvitation(
   supabase: Pick<Supabase, "from">,
   id: string,
 ): Promise<ActionResult<null>> {
-  if (!z.uuid().safeParse(id).success) return failed({ code: "42501" });
+  if (!z.guid().safeParse(id).success) return failed({ code: "42501" });
   const { data, error } = await supabase
     .from("organization_invitations")
     .delete()
@@ -59,7 +59,7 @@ export async function changeMemberRole(
   supabase: Pick<Supabase, "from">,
   input: unknown,
 ): Promise<ActionResult<null>> {
-  const parsed = z.object({ id: z.uuid(), role }).safeParse(input);
+  const parsed = z.object({ id: z.guid(), role }).safeParse(input);
   if (!parsed.success) return invalid(parsed.error);
   const { data, error } = await supabase
     .from("organization_members")
@@ -75,7 +75,7 @@ export async function removeMember(
   supabase: Pick<Supabase, "from">,
   id: string,
 ): Promise<ActionResult<null>> {
-  if (!z.uuid().safeParse(id).success) return failed({ code: "42501" });
+  if (!z.guid().safeParse(id).success) return failed({ code: "42501" });
   const { data, error } = await supabase
     .from("organization_members")
     .delete()

@@ -25,7 +25,7 @@ const timezone = z
   .refine(isTimeZone, "Elegí una zona horaria válida.");
 
 export const venueSchema = z.object({
-  organizationId: z.uuid(),
+  organizationId: z.guid(),
   name: z
     .string()
     .trim()
@@ -39,7 +39,7 @@ export const venueSchema = z.object({
 });
 
 export const eventSchema = z.object({
-  organizationId: z.uuid(),
+  organizationId: z.guid(),
   title: z
     .string()
     .trim()
@@ -55,7 +55,7 @@ export const eventSchema = z.object({
     ),
   // An empty select means "no venue yet".
   venueId: z
-    .union([z.literal(""), z.uuid()])
+    .union([z.literal(""), z.guid()])
     .optional()
     .transform((v) => v || null),
   editionLabel: optionalText(40),
@@ -65,7 +65,7 @@ export const eventSchema = z.object({
 
 export const scheduleSchema = z
   .object({
-    eventId: z.uuid(),
+    eventId: z.guid(),
     label: optionalText(60),
     startsAt: z
       .string()
@@ -168,7 +168,7 @@ export async function deleteSchedule(
   supabase: Client,
   id: unknown,
 ): Promise<ActionResult<null>> {
-  const parsed = z.uuid().safeParse(id);
+  const parsed = z.guid().safeParse(id);
   if (!parsed.success) return failed({ code: "42501" });
 
   const { data, error } = await supabase
@@ -190,7 +190,7 @@ export async function publishEvent(
   supabase: Client,
   eventId: unknown,
 ): Promise<ActionResult<null>> {
-  const parsed = z.uuid().safeParse(eventId);
+  const parsed = z.guid().safeParse(eventId);
   if (!parsed.success) return failed({ code: "42501" });
 
   const { error } = await supabase.rpc("publish_event", {

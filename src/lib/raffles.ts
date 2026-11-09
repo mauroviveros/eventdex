@@ -12,8 +12,8 @@ type Client = Pick<Supabase, "from" | "rpc">;
 const NOT_ALLOWED = { code: "42501" };
 
 export const raffleSchema = z.object({
-  organizationId: z.uuid(),
-  eventId: z.uuid(),
+  organizationId: z.guid(),
+  eventId: z.guid(),
   title: z
     .string()
     .trim()
@@ -27,7 +27,7 @@ export const raffleSchema = z.object({
 });
 
 export const voidDrawSchema = z.object({
-  drawId: z.uuid(),
+  drawId: z.guid(),
   reason: z
     .string()
     .trim()
@@ -57,7 +57,7 @@ export async function drawRaffle(
   supabase: Client,
   raffleId: unknown,
 ): Promise<ActionResult<null>> {
-  const parsed = z.uuid().safeParse(raffleId);
+  const parsed = z.guid().safeParse(raffleId);
   if (!parsed.success) return failed(NOT_ALLOWED);
 
   const { error } = await supabase.rpc("draw_raffle", {
@@ -87,7 +87,7 @@ export async function publishRaffleWinners(
   supabase: Client,
   raffleId: unknown,
 ): Promise<ActionResult<null>> {
-  const parsed = z.uuid().safeParse(raffleId);
+  const parsed = z.guid().safeParse(raffleId);
   if (!parsed.success) return failed(NOT_ALLOWED);
 
   const { error } = await supabase.rpc("publish_raffle_winners", {
