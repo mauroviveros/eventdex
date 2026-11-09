@@ -25,6 +25,7 @@
   --plate-rule: var(--lcd-2);
   --cell-rule: var(--lcd-3);
   --plate-cast: transparent;
+  --plate-shadow: 4px 4px 0 var(--plate-cast);
   --wide-face: var(--font-pixel), ui-monospace, monospace;
   --title-size: 2.5rem;
   --title-size-lg: 3.75rem;
@@ -97,6 +98,7 @@
   --plate-rule: var(--ramp-2);
   --cell-rule: var(--ramp-2);
   --plate-cast: color-mix(in oklch, var(--lcd-0) 72%, black);
+  --plate-shadow: 4px 4px 0 var(--plate-cast);
   --wide-face: var(--font-press), ui-monospace, monospace;
   --title-size: 1.5rem;
   --title-size-lg: 2rem;
@@ -107,7 +109,7 @@
   --color-plate: var(--plate);
   --color-plate-rule: var(--plate-rule);
   --color-cell-rule: var(--cell-rule);
-  --shadow-plate: 4px 4px 0 var(--plate-cast);
+  --shadow-plate: var(--plate-shadow);
   --font-wide: var(--wide-face);
   --text-title: var(--title-size);
   --text-title--line-height: 1.25;
@@ -260,7 +262,7 @@
     border-color: var(--plate-rule);
     box-shadow:
       inset 0 0 0 2px var(--lcd-3),
-      4px 4px 0 var(--plate-cast);
+      var(--plate-shadow);
     background: var(--plate);
   }
 
