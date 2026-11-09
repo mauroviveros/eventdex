@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { type CSSProperties, Suspense } from "react";
-import { LcdFilters } from "@/components/pixel/LcdFilters";
 import { Monogram } from "@/components/ui/Monogram";
 import { Logo } from "@/components/visitante/Medal";
 import { SignInLink, VisitorMenu } from "@/components/visitante/VisitorMenu";
@@ -40,7 +39,6 @@ export default async function PublicaLayout({
       style={style}
       className="ramp-scope scanlines min-h-dvh bg-lcd-0 text-lcd-3"
     >
-      <LcdFilters ramp={tones} />
       <header className="border-b-2 border-lcd-3">
         <div className="mx-auto flex min-h-16 max-w-3xl items-center justify-between gap-4 px-4 sm:px-6">
           <Link

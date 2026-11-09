@@ -58,12 +58,12 @@ export function Medal({ name, code, type, state, logo }: Props) {
   );
 }
 
-/** A logo posterized into the ramp (filters in LcdFilters.tsx). */
+/** A logo as its owner made it; only a medal still to get goes grey. */
 export function Logo({
   src,
   mode,
   label,
-  className = "size-full object-cover",
+  className = "size-full object-contain",
 }: {
   src: string;
   mode: SpriteMode;
@@ -71,7 +71,7 @@ export function Logo({
   className?: string;
 }) {
   return (
-    // biome-ignore lint/performance/noImgElement: logos come from Storage and go through an SVG filter; next/image adds nothing here
+    // biome-ignore lint/performance/noImgElement: logos come from Storage, at most 1 MB; next/image adds nothing here
     <img
       src={src}
       alt={label}

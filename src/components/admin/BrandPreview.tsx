@@ -1,5 +1,4 @@
 import type { CSSProperties } from "react";
-import { LcdFilters } from "@/components/pixel/LcdFilters";
 import { Sprite } from "@/components/pixel/Sprite";
 import { Monogram } from "@/components/ui/Monogram";
 import { Logo } from "@/components/visitante/Medal";
@@ -12,7 +11,7 @@ const SCHEMES = [
 
 /**
  * The public app in miniature, with a brand that may not be saved yet: its
- * ramp, its logo posterized, in both schemes the visitor's phone can pick.
+ * ramp, its logo as is, in both schemes the visitor's phone can pick.
  */
 export function BrandPreview({
   color,
@@ -30,7 +29,6 @@ export function BrandPreview({
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      <LcdFilters ramp={tones} />
       {SCHEMES.map(([scheme, label]) => (
         <figure
           key={scheme}
