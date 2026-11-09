@@ -44,7 +44,7 @@ export function BrandPreview({
                 src={logo}
                 mode="lleno"
                 label=""
-                className="size-10 object-contain"
+                className="size-10 shrink-0 object-contain"
               />
             ) : (
               <Monogram text={name} />
