@@ -289,6 +289,15 @@ están testeadas para los 36 matices de 10° en `palette.test.ts`:
   oscuro) ≥ 4.5:1. Sobre relleno o tinta no hay garantía. El botón A usa ese
   mismo par al revés: `--lcd-0` sobre el rojo.
 
+### Skins por organización
+Una org con skin (`src/skins/`) no pasa por `rampFromHex`: define a mano sus cuatro
+tonos y acentos, y su test repite los pares de arriba. Redefine los roles, así que
+los componentes no cambian. Sus reglas valen dentro de su `data-skin`, y las de esta
+página para todo lo demás. **Burning Tower Fest** es el cartel: papel crema en claro
+y negro en oscuro, un solo rojo para título, fecha y sede, Anton en mayúsculas en vez
+de Jersey 10, recuadro de un filete de 4 px en vez del doble filete, y sin líneas de
+barrido.
+
 ### Named Rules
 **The Four Tones Rule.** Un componente se pinta solo con `--lcd-0..3`. Nunca
 con `--ramp-*` directo (rompería el modo oscuro) ni con un color nuevo. Las
