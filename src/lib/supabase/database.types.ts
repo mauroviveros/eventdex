@@ -1020,6 +1020,18 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      duplicate_event: {
+        Args: {
+          p_edition_label?: string;
+          p_slug: string;
+          p_source_id: string;
+          p_summary?: string;
+          p_timezone: string;
+          p_title: string;
+          p_venue_id?: string;
+        };
+        Returns: string;
+      };
       invite_member: {
         Args: {
           p_email: string;
