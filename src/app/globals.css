@@ -264,8 +264,10 @@
     background: var(--plate);
   }
 
-  /* Press Start 2P is one em wide per letter: a long word must break on a phone. */
+  /* Press Start 2P is one em wide per letter: a long word must break on a phone,
+   * with a hyphen where the browser knows how and anywhere where it doesn't. */
   .marquesina .font-wide {
+    hyphens: auto;
     overflow-wrap: anywhere;
   }
 
