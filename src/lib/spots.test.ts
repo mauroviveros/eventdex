@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { fakeClient, inserted } from "./fake-supabase";
 import {
   addEventSpot,
@@ -6,6 +6,7 @@ import {
   removeEventSpot,
   setSpotArchived,
   updateEventSpot,
+  updateSpot,
 } from "./spots";
 
 const ORG = "0000000a-0000-4000-8000-000000000001";
@@ -28,6 +29,7 @@ describe("createSpot", () => {
       name: "Café de la Esquina",
       description: null,
       type: "stand",
+      logo_path: null,
     });
   });
 
@@ -41,6 +43,82 @@ describe("createSpot", () => {
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.fieldErrors?.type).toBe("Elegí un tipo.");
     expect(calls).toEqual([]);
+  });
+});
+
+describe("spot logos", () => {
+  const png = () => new File(["x"], "logo.png", { type: "image/png" });
+  const fields = { organizationId: ORG, name: "Kiosco", type: "stand" };
+
+  function withStorage(...results: { data: unknown; error: unknown }[]) {
+    const { client, calls } = fakeClient(...results);
+    const upload = vi.fn(async (_path: string) => ({ error: null }));
+    const remove = vi.fn();
+    const storage = { from: vi.fn(() => ({ upload, remove })) };
+    return {
+      client: { ...(client as object), storage } as never,
+      calls,
+      upload,
+      remove,
+      storage,
+    };
+  }
+  const updated = (calls: { method: string; args: unknown[] }[]) =>
+    calls.find((c) => c.method === "update")?.args[0] as Record<
+      string,
+      unknown
+    >;
+
+  it("stores a new spot's logo under its org", async () => {
+    const { client, calls, upload, storage } = withStorage({
+      data: { id: SPOT },
+      error: null,
+    });
+    await createSpot(client, { ...fields, logo: png() });
+    expect(storage.from).toHaveBeenCalledWith("spot-logos");
+    const path = upload.mock.calls[0]?.[0];
+    expect(path).toMatch(new RegExp(`^${ORG}/.+\\.png$`));
+    expect(inserted(calls)).toMatchObject({ logo_path: path });
+  });
+
+  it("treats an empty file input as no logo", async () => {
+    const { client, upload } = withStorage({ data: { id: SPOT }, error: null });
+    const empty = new File([], "", { type: "application/octet-stream" });
+    const result = await createSpot(client, { ...fields, logo: empty });
+    expect(result.ok).toBe(true);
+    expect(upload).not.toHaveBeenCalled();
+  });
+
+  it("rejects an SVG before uploading", async () => {
+    const { client, upload } = withStorage();
+    const logo = new File(["x"], "a.svg", { type: "image/svg+xml" });
+    const result = await createSpot(client, { ...fields, logo });
+    expect(result.ok).toBe(false);
+    if (!result.ok)
+      expect(result.fieldErrors?.logo).toBe("Subí una imagen PNG, JPG o WebP.");
+    expect(upload).not.toHaveBeenCalled();
+  });
+
+  const edit = { ...fields, id: SPOT };
+  const saved = { data: [{ id: SPOT }], error: null };
+
+  it("leaves the logo alone when the edit doesn't touch it", async () => {
+    const { client, calls } = withStorage(saved);
+    await updateSpot(client, edit);
+    expect(updated(calls).logo_path).toBeUndefined();
+  });
+
+  it("clears the logo but keeps the file a snapshot may use", async () => {
+    const { client, calls, remove } = withStorage(saved);
+    await updateSpot(client, { ...edit, removeLogo: "on" });
+    expect(updated(calls).logo_path).toBeNull();
+    expect(remove).not.toHaveBeenCalled();
+  });
+
+  it("a new file wins over the remove checkbox", async () => {
+    const { client, calls, upload } = withStorage(saved);
+    await updateSpot(client, { ...edit, removeLogo: "on", logo: png() });
+    expect(updated(calls).logo_path).toBe(upload.mock.calls[0]?.[0]);
   });
 });
 

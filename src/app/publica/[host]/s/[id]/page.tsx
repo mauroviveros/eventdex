@@ -5,6 +5,7 @@ import { Celebration } from "@/components/visitante/Celebration";
 import { Progress } from "@/components/visitante/Progress";
 import { claimSpot } from "@/lib/claims";
 import { getClaimTarget, getMyProgress } from "@/lib/data/claims";
+import { spotLogoUrl } from "@/lib/data/organizations";
 import { requireVisitor } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
 import { requireHostOrganization } from "../../organization";
@@ -63,7 +64,12 @@ async function Claim({
 
   return (
     <Celebration
-      spot={{ name: spot.name, code: spot.code, type: spot.type }}
+      spot={{
+        name: spot.name,
+        code: spot.code,
+        type: spot.type,
+        logo: spotLogoUrl(spot.logoPath),
+      }}
       outcome={outcome}
       timeZone={event.timezone}
       eventHref={`/eventos/${event.slug}`}
