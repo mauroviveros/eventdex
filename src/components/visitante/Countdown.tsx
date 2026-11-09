@@ -7,7 +7,7 @@ export function Countdown({ state }: { state: CountdownState }) {
   if (state.kind === "en-curso") {
     return (
       <p className={`grid justify-items-center gap-2 px-6 py-4 ${CELL}`}>
-        <span className="font-wide text-numeral">En curso</span>
+        <span className="font-wide text-title">En curso</span>
         <span className="text-muted-foreground">
           Termina a las {state.endsAt}
         </span>
@@ -17,7 +17,7 @@ export function Countdown({ state }: { state: CountdownState }) {
   if (state.kind === "finalizado") {
     return (
       <p className={`grid justify-items-center gap-2 px-6 py-4 ${CELL}`}>
-        <span className="font-wide text-numeral text-muted-foreground">
+        <span className="font-wide text-title text-muted-foreground">
           Finalizado
         </span>
         <span className="text-muted-foreground">Gracias por venir.</span>
@@ -32,11 +32,11 @@ export function Countdown({ state }: { state: CountdownState }) {
   return (
     <p className="grid justify-items-center gap-3">
       <span className="font-display text-px-2">Arranca en</span>
-      <span className="flex flex-wrap justify-center gap-3">
+      <span className="flex flex-wrap justify-center gap-2 sm:gap-3">
         {units.map(([value, unit]) => (
           <span
             key={unit}
-            className={`grid justify-items-center gap-2 px-3 py-3 ${CELL}`}
+            className={`grid justify-items-center gap-2 px-2 py-3 sm:px-3 ${CELL}`}
           >
             <span className="font-wide text-numeral tabular-nums">
               {String(value).padStart(2, "0")}
