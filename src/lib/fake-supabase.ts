@@ -16,6 +16,9 @@ export function fakeClient(...results: { data: unknown; error: unknown }[]) {
     "eq",
     "single",
     "maybeSingle",
+    "like",
+    "order",
+    "range",
   ]) {
     chain[method] = (...args: unknown[]) => {
       calls.push({ method, args });
