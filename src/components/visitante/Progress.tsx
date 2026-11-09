@@ -30,7 +30,7 @@ export function Progress({ claimed, total, goal, finished = false }: Props) {
   return (
     <section aria-label="Tu progreso" className="grid gap-3">
       <p className="flex items-baseline gap-2 font-display">
-        <span className="text-px-3 tabular-nums">{claimed}</span>
+        <span className="font-wide text-numeral tabular-nums">{claimed}</span>
         <span className="text-px-1 text-muted-foreground">
           de {total} medallas
         </span>
@@ -42,7 +42,7 @@ export function Progress({ claimed, total, goal, finished = false }: Props) {
         aria-valuemax={total}
         aria-valuenow={claimed}
         aria-valuetext={`${claimed} de ${total} medallas`}
-        className="flex h-5 gap-0.5 border-2 border-lcd-3 p-0.5"
+        className="flex h-5 gap-0.5 border-2 border-cell-rule bg-plate p-0.5 shadow-plate"
       >
         {Array.from({ length: total }, (_, i) => (
           <span

@@ -19,7 +19,7 @@ export default function PublicaError({
   return (
     <main className="mx-auto grid w-full max-w-3xl justify-items-center px-4 py-10 sm:px-6">
       <div className="panel grid w-full max-w-sm gap-4 px-6 py-8">
-        <h1 className="flex items-center gap-2 text-px-3 text-danger">
+        <h1 className="flex items-center gap-2 font-wide text-title text-danger">
           <AlertIcon size={24} />
           Algo falló
         </h1>

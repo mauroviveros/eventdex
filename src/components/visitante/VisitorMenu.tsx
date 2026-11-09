@@ -50,7 +50,7 @@ export function VisitorMenu({ account }: { account: Account }) {
         <Chevron className="group-open:rotate-180" />
         <span className="sr-only">Tu cuenta</span>
       </summary>
-      <div className="absolute top-full right-0 z-20 mt-1 grid w-64 border-2 border-lcd-3 bg-lcd-0">
+      <div className="absolute top-full right-0 z-20 mt-1 grid w-64 border-2 border-lcd-3 bg-plate shadow-plate">
         <p className="grid border-b-2 border-lcd-3 px-3 py-2 sm:hidden">
           <span className="truncate font-display text-px-1">
             {account.name}
@@ -109,7 +109,7 @@ export function SignInLink() {
   return (
     <Link
       href={`/ingresar?next=${encodeURIComponent(next)}`}
-      className="flex min-h-11 items-center border-2 border-lcd-3 px-3 font-display text-px-1 no-underline hover:bg-lcd-1"
+      className="flex min-h-11 items-center border-2 border-lcd-3 bg-plate px-3 font-display text-px-1 no-underline shadow-plate hover:bg-lcd-1 active:translate-y-0.5 active:shadow-none"
     >
       Ingresar
     </Link>

@@ -35,7 +35,7 @@ export function Medal({ name, code, type, state, logo }: Props) {
       <div
         className={`grid size-24 place-items-center overflow-hidden border-2 ${
           muted ? "border-dashed border-lcd-2" : "border-lcd-3"
-        } ${state === "nueva" ? "bg-lcd-1" : ""}`}
+        } ${state === "nueva" ? "bg-lcd-1" : ""} ${state === "conseguida" ? "bg-plate shadow-plate" : ""}`}
       >
         {logo ? (
           <Logo src={logo} mode={MODE[state]} label={label} />

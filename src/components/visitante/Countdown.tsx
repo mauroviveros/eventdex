@@ -1,11 +1,13 @@
 import type { CountdownState } from "@/domain/events";
 
+const CELL = "border-2 border-cell-rule bg-plate shadow-plate";
+
 /** Time until the next session, in the event's local time. */
 export function Countdown({ state }: { state: CountdownState }) {
   if (state.kind === "en-curso") {
     return (
-      <p className="grid gap-1">
-        <span className="font-display text-px-3">En curso</span>
+      <p className={`grid justify-items-center gap-2 px-6 py-4 ${CELL}`}>
+        <span className="font-wide text-numeral">En curso</span>
         <span className="text-muted-foreground">
           Termina a las {state.endsAt}
         </span>
@@ -14,35 +16,29 @@ export function Countdown({ state }: { state: CountdownState }) {
   }
   if (state.kind === "finalizado") {
     return (
-      <p className="grid gap-1">
-        <span className="font-display text-px-3 text-muted-foreground">
+      <p className={`grid justify-items-center gap-2 px-6 py-4 ${CELL}`}>
+        <span className="font-wide text-numeral text-muted-foreground">
           Finalizado
         </span>
         <span className="text-muted-foreground">Gracias por venir.</span>
       </p>
     );
   }
-  const units = (
-    state.days > 0
-      ? [
-          [state.days, "días"],
-          [state.hours, "horas"],
-        ]
-      : [
-          [state.hours, "horas"],
-          [state.minutes, "min"],
-        ]
-  ) as [number, string][];
+  const units: [number, string][] = [
+    [state.days, "Días"],
+    [state.hours, "Horas"],
+    [state.minutes, "Minutos"],
+  ];
   return (
-    <p className="grid gap-2">
-      <span className="text-muted-foreground">Arranca en</span>
-      <span className="flex gap-3">
+    <p className="grid justify-items-center gap-3">
+      <span className="font-display text-px-2">Arranca en</span>
+      <span className="flex flex-wrap justify-center gap-3">
         {units.map(([value, unit]) => (
           <span
             key={unit}
-            className="grid justify-items-center border-2 border-lcd-3 px-3 py-2"
+            className={`grid justify-items-center gap-2 px-3 py-3 ${CELL}`}
           >
-            <span className="font-display text-px-3 tabular-nums">
+            <span className="font-wide text-numeral tabular-nums">
               {String(value).padStart(2, "0")}
             </span>
             <span className="font-display text-px-1 text-muted-foreground">

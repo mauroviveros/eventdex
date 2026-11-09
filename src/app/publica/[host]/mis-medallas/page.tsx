@@ -52,7 +52,7 @@ export default async function MisMedallasPage({
   return (
     <main className="mx-auto grid w-full max-w-3xl gap-10 px-4 py-8 sm:px-6">
       <div className="grid gap-2">
-        <h1 className="text-px-3 sm:text-px-4">Mis medallas</h1>
+        <h1 className="font-wide text-title sm:text-title-lg">Mis medallas</h1>
         {event && <p className="font-display text-px-1">{eventName(event)}</p>}
       </div>
 
@@ -67,7 +67,9 @@ export default async function MisMedallasPage({
                     href={`/mis-medallas?evento=${e.slug}`}
                     aria-current={current ? "page" : undefined}
                     className={`flex min-h-11 items-center border-2 border-lcd-3 px-3 py-2 font-display text-px-1 no-underline ${
-                      current ? "bg-lcd-1" : ""
+                      current
+                        ? "bg-lcd-1"
+                        : "bg-plate shadow-plate hover:bg-lcd-1"
                     }`}
                   >
                     {eventName(e)}
