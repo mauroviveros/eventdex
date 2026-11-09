@@ -8,7 +8,7 @@ type Labels = {
 };
 
 const CONTROL =
-  "min-h-11 w-full min-w-0 border-2 border-lcd-3 bg-lcd-0 px-3 text-base text-lcd-3 placeholder:text-lcd-2 aria-invalid:border-danger disabled:border-lcd-2 disabled:bg-lcd-1 disabled:text-lcd-2";
+  "min-h-11 w-full min-w-0 border-2 border-lcd-3 bg-lcd-0 px-3 text-base text-lcd-3 placeholder:text-lcd-2 aria-invalid:border-danger disabled:border-lcd-2 disabled:bg-lcd-1 disabled:text-lcd-2 file:my-1 file:mr-3 file:border-2 file:border-lcd-3 file:bg-lcd-0 file:px-3 file:py-0.5 file:font-display file:text-px-1 file:text-lcd-3";
 
 /** Label, control and either its error or its hint, wired for screen readers. */
 function FieldFrame({
