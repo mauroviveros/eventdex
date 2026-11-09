@@ -83,7 +83,9 @@ Los valores los define [DESIGN](./DESIGN.md). Dos voces:
 - Espaciado en la escala de Tailwind. Los saltos fuera de escala se justifican o se
   corrigen.
 - **Esquinas rectas y sin sombras.** La profundidad la dan las reglas de 2 px y el
-  panel de doble regla (`.panel`). Nada de `rounded-*` ni `shadow-*`.
+  panel de doble regla (`.panel`). Nada de `rounded-*` ni `shadow-*`. La única
+  excepción es `shadow-plate`, la sombra dura del cartel, que solo se ve en la app
+  pública de una org sin skin.
 
 ## Componentes base
 

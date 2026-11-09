@@ -101,6 +101,24 @@
           "oklch(0.5 0.11 85)",
           "oklch(0.86 0.15 95)"
         ]
+      },
+      "plate": {
+        "role": "neutral",
+        "displayName": "Placa de marquesina",
+        "canonical": "oklch(0.9424 0.0768 125)",
+        "tonalRamp": [
+          "oklch(0.2992 0.048 125)",
+          "oklch(0.9424 0.0768 125)"
+        ]
+      },
+      "plate-dark": {
+        "role": "neutral",
+        "displayName": "Placa de marquesina (oscuro)",
+        "canonical": "oklch(0.2992 0.048 125)",
+        "tonalRamp": [
+          "oklch(0.2992 0.048 125)",
+          "oklch(0.9424 0.0768 125)"
+        ]
       }
     },
     "roles": {
@@ -117,7 +135,7 @@
       },
       "display-xl": {
         "displayName": "Display XL (text-px-4)",
-        "purpose": "Page title from sm; event title on the marquee plate. On the landing: h1 below 1400px, section titles, step numerals."
+        "purpose": "Page title from sm; event title on the plate outside .marquesina. On the landing: h1 below 1400px, section titles, step numerals."
       },
       "display": {
         "displayName": "Display (text-px-3)",
@@ -146,6 +164,18 @@
       "body-sm": {
         "displayName": "Body small",
         "purpose": "Notes, hints, field errors, medal names."
+      },
+      "title": {
+        "displayName": "Title (text-title)",
+        "purpose": "Press Start 2P with .marquesina: public page h1s and the event title. 24px."
+      },
+      "title-lg": {
+        "displayName": "Title large (text-title-lg)",
+        "purpose": "Press Start 2P with .marquesina: public page h1s and the event title from sm. 32px."
+      },
+      "numeral": {
+        "displayName": "Numeral (text-numeral)",
+        "purpose": "Press Start 2P with .marquesina: countdown and progress numerals, and the countdown status. 32px."
       }
     },
     "shadows": [
@@ -153,6 +183,16 @@
         "name": "panel-double-rule",
         "value": "inset 0 0 0 2px var(--lcd-0), inset 0 0 0 4px var(--lcd-3)",
         "purpose": "Inner rule of the double-ruled .panel (with a 2px ink border): celebration, the marquee title plate, the level on now (over fill). The only box-shadow; not a soft shadow."
+      },
+      {
+        "name": "shadow-plate",
+        "value": "4px 4px 0 var(--plate-cast)",
+        "purpose": "Hard cast shadow of the marquee, no blur. Public app of orgs without a skin only; --plate-cast is transparent elsewhere. Tabs, countdown cells, progress bar, claimed medal, buttons (off when active or disabled), visitor menu, sign-in link."
+      },
+      {
+        "name": "panel-on-marquee",
+        "value": "inset 0 0 0 2px var(--lcd-3), 4px 4px 0 var(--plate-cast)",
+        "purpose": "Replaces the double rule on every .panel inside .marquesina, over a 2px --plate-rule border and a --plate fill."
       }
     ],
     "motion": [
@@ -211,11 +251,11 @@
     },
     "accents": {
       "source": "ACCENT in src/domain/palette.ts; --accent-red / --accent-yellow; text-accent-red / text-accent-yellow",
-      "scope": "Public visitor app only. Text on the ground (--lcd-0) only; never on fill (--lcd-1) or ink. Scoped exception: the A button of the landing console fills with accent-red and uses --lcd-0 text, only on that button.",
-      "guarantee": "Each >= 4.5:1 on its scheme's ground (ramp-0 light, ramp-3 dark) for all 36 hues (palette.test.ts). The A button uses the same pair reversed: --lcd-0 on accent-red.",
+      "scope": "Public visitor app only. Text on the ground (--lcd-0) or a marquee plate (--plate) only; never on fill (--lcd-1) or ink. Scoped exception: the A button of the landing console fills with accent-red and uses --lcd-0 text, only on that button.",
+      "guarantee": "Each >= 4.5:1 on its scheme's ground (ramp-0 light, ramp-3 dark) for all 36 hues (palette.test.ts). The A button uses the same pair reversed: --lcd-0 on accent-red. Ink, secondary, danger and both accents also hold >= 4.5:1 on the plate of their scheme (PLATE_LIFT = 4%, the most that keeps the dark red and danger AA).",
       "use": {
-        "red": "Event title on the marquee plate.",
-        "yellow": "Date tab and venue name on the marquee.",
+        "red": "Event title on the marquee plate and the /sorteo h1.",
+        "yellow": "Date tab and venue name on the marquee, and the event name on /sorteo.",
         "redFill": "bg-accent-red on the landing console's A button only."
       },
       "distinctFromDanger": "Red sits near danger on purpose; danger always wears AlertIcon, a title never does."
@@ -236,6 +276,22 @@
         "ramp": "Eventdex (:root)",
         "scanlines": false,
         "note": "Brand ramps appear only as samples inside their own .ramp-scope."
+      },
+      "publicMarquee": {
+        "class": ".marquesina (src/components/visitante/marquesina.ts), public app of orgs without a skin",
+        "tokens": {
+          "--plate": "color-mix(in oklch, var(--lcd-0) 96%, white)",
+          "--plate-rule": "var(--ramp-2)",
+          "--cell-rule": "var(--ramp-2)",
+          "--plate-cast": "color-mix(in oklch, var(--lcd-0) 72%, black)"
+        },
+        "fallback": {
+          "--plate": "var(--lcd-0)",
+          "--plate-rule": "var(--lcd-2)",
+          "--cell-rule": "var(--lcd-3)",
+          "--plate-cast": "transparent"
+        },
+        "note": "Plate is a derived step of the ground, not a fifth tone. Outside .marquesina, font-wide and the title/numeral sizes resolve to Jersey 10 (or the skin face)."
       }
     }
   },
@@ -254,7 +310,7 @@
       "refersTo": "button-secondary",
       "description": "Non-primary action.",
       "html": "<button class=\"ds-btn-secondary\">Ver mis medallas</button>",
-      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 2px solid; border-radius: 0; font-family: var(--font-pixel), ui-monospace, monospace; font-size: 20px; line-height: 1; transition: background-color 100ms, border-color 100ms; cursor: pointer; background: var(--lcd-0, oklch(0.94 0.08 125)); border-color: var(--lcd-3, oklch(0.27 0.05 125)); color: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-btn-secondary:hover { background: var(--lcd-1, oklch(0.8 0.12 125)); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); outline-offset: 2px; } .ds-btn-secondary:active { transform: translateY(2px); }"
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 2px solid; border-radius: 0; font-family: var(--font-pixel), ui-monospace, monospace; font-size: 20px; line-height: 1; transition: background-color 100ms, border-color 100ms; cursor: pointer; background: var(--plate, var(--lcd-0, oklch(0.94 0.08 125))); box-shadow: 4px 4px 0 var(--plate-cast, transparent); border-color: var(--lcd-3, oklch(0.27 0.05 125)); color: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-btn-secondary:hover { background: var(--lcd-1, oklch(0.8 0.12 125)); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); outline-offset: 2px; } .ds-btn-secondary:active { transform: translateY(2px); box-shadow: none; }"
     },
     {
       "name": "Danger Button",
@@ -294,22 +350,22 @@
       "refersTo": "medal-tile",
       "description": "96px tile with the spot's original logo (grey while pending) or its 12x12 sprite; develops in steps when new.",
       "html": "<figure class=\"ds-medal\"><div class=\"ds-medal-tile\"><svg class=\"ds-sprite\" role=\"img\" aria-label=\"Café de la Esquina: Conseguida\" width=\"72\" height=\"72\" viewBox=\"0 0 12 12\"><rect x=\"1\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"3\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"4\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"5\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"6\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"7\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"8\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"9\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"10\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"1\" y=\"2\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"2\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"3\" y=\"2\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"4\" y=\"2\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"5\" y=\"2\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"6\" y=\"2\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"7\" y=\"2\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"8\" y=\"2\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"9\" y=\"2\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"10\" y=\"2\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"1\" y=\"3\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"3\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"3\" y=\"3\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"4\" y=\"3\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"5\" y=\"3\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"6\" y=\"3\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"7\" y=\"3\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"8\" y=\"3\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"9\" y=\"3\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"10\" y=\"3\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"1\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"3\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"4\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"5\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"6\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"7\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"8\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"9\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"10\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"5\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"9\" y=\"5\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"6\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"4\" y=\"6\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"5\" y=\"6\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"6\" y=\"6\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"7\" y=\"6\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"9\" y=\"6\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"7\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"4\" y=\"7\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"5\" y=\"7\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"6\" y=\"7\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"7\" y=\"7\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"9\" y=\"7\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"8\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"4\" y=\"8\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"5\" y=\"8\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"6\" y=\"8\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"7\" y=\"8\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"9\" y=\"8\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"1\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"3\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"4\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"5\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"6\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"7\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"8\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"9\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"10\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"1\" y=\"10\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"3\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"4\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"5\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"6\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"7\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"8\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"9\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"10\" y=\"10\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"1\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"3\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"4\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"5\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"6\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"7\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"8\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"9\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"10\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/></svg></div><figcaption class=\"ds-medal-cap\"><span class=\"ds-medal-code\">A12</span><span class=\"ds-medal-name\">Café de la Esquina</span><span class=\"ds-medal-status\">Conseguida</span></figcaption></figure>",
-      "css": ".ds-medal { display: grid; justify-items: center; gap: 8px; width: 128px; margin: 0; text-align: center; color: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-medal-tile { display: grid; place-items: center; width: 96px; height: 96px; border: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); } .ds-sprite { shape-rendering: crispEdges; } .ds-sprite [data-t='0'] { fill: var(--lcd-0, oklch(0.94 0.08 125)); } .ds-sprite [data-t='1'] { fill: var(--lcd-1, oklch(0.8 0.12 125)); } .ds-sprite [data-t='2'] { fill: var(--lcd-2, oklch(0.5 0.09 125)); } .ds-sprite [data-t='3'] { fill: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-medal-cap { display: grid; gap: 4px; } .ds-medal-code, .ds-medal-status { font-family: var(--font-pixel), ui-monospace, monospace; font-size: 20px; line-height: 1; } .ds-medal-code { color: var(--lcd-2, oklch(0.5 0.09 125)); } .ds-medal-name { font-size: 14px; line-height: 1.25; }"
+      "css": ".ds-medal { display: grid; justify-items: center; gap: 8px; width: 128px; margin: 0; text-align: center; color: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-medal-tile { display: grid; place-items: center; width: 96px; height: 96px; border: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); background: var(--plate, var(--lcd-0, oklch(0.94 0.08 125))); box-shadow: 4px 4px 0 var(--plate-cast, transparent); } .ds-sprite { shape-rendering: crispEdges; } .ds-sprite [data-t='0'] { fill: var(--lcd-0, oklch(0.94 0.08 125)); } .ds-sprite [data-t='1'] { fill: var(--lcd-1, oklch(0.8 0.12 125)); } .ds-sprite [data-t='2'] { fill: var(--lcd-2, oklch(0.5 0.09 125)); } .ds-sprite [data-t='3'] { fill: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-medal-cap { display: grid; gap: 4px; } .ds-medal-code, .ds-medal-status { font-family: var(--font-pixel), ui-monospace, monospace; font-size: 20px; line-height: 1; } .ds-medal-code { color: var(--lcd-2, oklch(0.5 0.09 125)); } .ds-medal-name { font-size: 14px; line-height: 1.25; }"
     },
     {
       "name": "Progress",
       "kind": "custom",
       "description": "Segmented bar, one segment per spot; fill marks the raffle goal.",
       "html": "<div class=\"ds-progress\" role=\"progressbar\" aria-valuemin=\"0\" aria-valuemax=\"12\" aria-valuenow=\"5\"><span class=\"ds-seg ds-on\"></span><span class=\"ds-seg ds-on\"></span><span class=\"ds-seg ds-on\"></span><span class=\"ds-seg ds-on\"></span><span class=\"ds-seg ds-on\"></span><span class=\"ds-seg ds-goal\"></span><span class=\"ds-seg ds-goal\"></span><span class=\"ds-seg ds-goal\"></span><span class=\"ds-seg\"></span><span class=\"ds-seg\"></span><span class=\"ds-seg\"></span><span class=\"ds-seg\"></span></div>",
-      "css": ".ds-progress { display: flex; gap: 2px; height: 20px; padding: 2px; border: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); } .ds-seg { flex: 1; } .ds-on { background: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-goal { background: var(--lcd-1, oklch(0.8 0.12 125)); }"
+      "css": ".ds-progress { display: flex; gap: 2px; height: 20px; padding: 2px; border: 2px solid var(--cell-rule, var(--lcd-3, oklch(0.27 0.05 125))); background: var(--plate, var(--lcd-0, oklch(0.94 0.08 125))); box-shadow: 4px 4px 0 var(--plate-cast, transparent); } .ds-seg { flex: 1; } .ds-on { background: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-goal { background: var(--lcd-1, oklch(0.8 0.12 125)); }"
     },
     {
       "name": "Marquee",
       "kind": "custom",
       "refersTo": "marquee-title",
-      "description": "Public event marquee: date tab, double-ruled title plate in accent red, venue tab in accent yellow.",
-      "html": "<header class=\"ds-mq\"><p class=\"ds-mq-tab ds-mq-top\">14 y 15 de marzo</p><div class=\"ds-mq-plate\"><h1 class=\"ds-mq-title\">Expo Rural 2027</h1><p class=\"ds-mq-sum\">Dos días de stands, máquinas y comida de campo.</p></div><p class=\"ds-mq-tab ds-mq-bot\"><span class=\"ds-mq-venue\">Predio La Rural</span><span class=\"ds-mq-addr\">Av. Sarmiento 2704 · Palermo</span></p></header>",
-      "css": ".ds-mq { display: grid; justify-items: center; text-align: center; color: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-mq-tab { position: relative; z-index: 1; margin: 0; padding: 8px 16px; border: 2px solid var(--lcd-2, oklch(0.5 0.09 125)); background: var(--lcd-0, oklch(0.94 0.08 125)); } .ds-mq-top { border-bottom: 0; margin-bottom: -2px; font-family: var(--font-pixel), ui-monospace, monospace; line-height: 1; font-weight: 400; font-size: 20px; color: var(--accent-yellow, oklch(0.5 0.11 85)); } .ds-mq-bot { border-top: 0; margin-top: -2px; padding: 12px 16px; display: grid; gap: 4px; } .ds-mq-venue { font-family: var(--font-pixel), ui-monospace, monospace; line-height: 1; font-weight: 400; font-size: 20px; color: var(--accent-yellow, oklch(0.5 0.11 85)); } .ds-mq-addr { font-size: 14px; } .ds-mq-plate { display: grid; gap: 12px; padding: 24px 40px; border: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); box-shadow: inset 0 0 0 2px var(--lcd-0, oklch(0.94 0.08 125)), inset 0 0 0 4px var(--lcd-3, oklch(0.27 0.05 125)); background: var(--lcd-0, oklch(0.94 0.08 125)); } .ds-mq-title { margin: 0; font-family: var(--font-pixel), ui-monospace, monospace; line-height: 1; font-weight: 400; font-size: 60px; color: var(--accent-red, oklch(0.47 0.19 25)); } .ds-mq-sum { margin: 0; max-width: 65ch; font-size: 16px; }"
+      "description": "Public event marquee: date tab with a pixel clock, full-width title plate in accent red on top of the tabs, venue tab in accent yellow.",
+      "html": "<header class=\"ds-mq\"><p class=\"ds-mq-tab ds-mq-top\"><svg class=\"ds-mq-clock\" aria-hidden=\"true\" width=\"24\" height=\"24\" viewBox=\"0 0 8 8\" shape-rendering=\"crispEdges\" fill=\"currentColor\"><path d=\"M2 0h4v1H2zM1 1h1v1H1zM6 1h1v1H6zM0 2h1v4H0zM7 2h1v4H7zM1 6h1v1H1zM6 6h1v1H6zM2 7h4v1H2zM4 2h1v2h1v1H4z\"/></svg><span>14 y 15 de marzo</span></p><div class=\"ds-mq-plate\"><h1 class=\"ds-mq-title\">Expo Rural 2027</h1><p class=\"ds-mq-sum\">Dos días de stands, máquinas y comida de campo.</p></div><p class=\"ds-mq-tab ds-mq-bot\"><span class=\"ds-mq-venue\">Predio La Rural</span><span class=\"ds-mq-addr\">Av. Sarmiento 2704 · Palermo</span></p></header>",
+      "css": ".ds-mq { --plate: color-mix(in oklch, var(--lcd-0, oklch(0.94 0.08 125)) 96%, white); --plate-rule: var(--ramp-2, oklch(0.5 0.09 125)); --plate-cast: color-mix(in oklch, var(--lcd-0, oklch(0.94 0.08 125)) 72%, black); display: grid; justify-items: center; text-align: center; color: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-mq-tab { margin: 0; padding: 8px 16px; border: 2px solid var(--plate-rule); background: var(--plate); box-shadow: 4px 4px 0 var(--plate-cast); } .ds-mq-top { display: flex; align-items: center; gap: 8px; border-bottom: 0; margin-bottom: -2px; font-family: var(--font-pixel), ui-monospace, monospace; line-height: 1; font-weight: 400; font-size: 20px; color: var(--accent-yellow, oklch(0.5 0.11 85)); } .ds-mq-clock { flex: none; color: var(--lcd-2, oklch(0.5 0.09 125)); } .ds-mq-bot { border-top: 0; margin-top: -2px; padding: 12px 16px; display: grid; gap: 4px; text-align: left; } .ds-mq-venue { font-family: var(--font-pixel), ui-monospace, monospace; line-height: 1; font-weight: 400; font-size: 20px; color: var(--accent-yellow, oklch(0.5 0.11 85)); } .ds-mq-addr { font-size: 14px; } .ds-mq-plate { position: relative; z-index: 1; display: grid; justify-items: center; gap: 12px; width: 100%; padding: 24px 40px; border: 2px solid var(--plate-rule); box-shadow: inset 0 0 0 2px var(--lcd-3, oklch(0.27 0.05 125)), 4px 4px 0 var(--plate-cast); background: var(--plate); } .ds-mq-title { margin: 0; font-family: var(--font-press, \"Press Start 2P\"), ui-monospace, monospace; line-height: 1.25; font-weight: 400; font-size: 32px; overflow-wrap: anywhere; color: var(--accent-red, oklch(0.47 0.19 25)); } .ds-mq-sum { margin: 0; max-width: 65ch; font-size: 16px; }"
     },
     {
       "name": "Levels",
@@ -338,19 +394,19 @@
   ],
   "narrative": {
     "northStar": "La consola de bolsillo",
-    "overview": "Eventdex se ve como la pantalla LCD de cuatro tonos de una consola de mano, como la vieja app de eventos. Cuatro tonos de un solo color hacen todo el trabajo: fondo, relleno, secundario y tinta. Cada organización recibe su propia rampa desde el color de su marca (un cambio de paleta, como en los juegos), así que la marca manda y el contraste lo fija la luminosidad, nunca la suerte.\n Todo es plano, cuadrado y en grilla de píxeles: líneas de 2 px, esquinas a 90°, paneles con doble filete como las cajas de diálogo de una consola. El movimiento es por pasos, nunca suave: una medalla nueva se \"revela\" pasando por los tonos en cuadros discretos. En la app pública del visitante la pantalla suma lo que tenía el cartel de la vieja app: líneas de barrido sobre todo y dos acentos de marquesina, rojo para el título del evento y amarillo para lo que se lee de un vistazo. La landing es superficie propia de Eventdex: va con la rampa verde arveja, sin líneas de barrido. Rechaza el default de la categoría: tarjetas blancas de SaaS con acento azul y confeti, y el hero de evento con foto y botón.",
+    "overview": "Eventdex se ve como la pantalla LCD de cuatro tonos de una consola de mano, como la vieja app de eventos. Cuatro tonos de un solo color hacen todo el trabajo: fondo, relleno, secundario y tinta. Cada organización recibe su propia rampa desde el color de su marca (un cambio de paleta, como en los juegos), así que la marca manda y el contraste lo fija la luminosidad, nunca la suerte.\n Todo es plano (salvo las placas de la marquesina, abajo), cuadrado y en grilla de píxeles: líneas de 2 px, esquinas a 90°, paneles con doble filete como las cajas de diálogo de una consola. El movimiento es por pasos, nunca suave: una medalla nueva se \"revela\" pasando por los tonos en cuadros discretos. En la app pública del visitante la pantalla suma lo que tenía el cartel de la vieja app: líneas de barrido sobre todo y dos acentos de marquesina, rojo para el título del evento y amarillo para lo que se lee de un vistazo. En las orgs sin skin, además, las placas se levantan del fondo con una sombra dura. La landing es superficie propia de Eventdex: va con la rampa verde arveja, sin líneas de barrido. Rechaza el default de la categoría: tarjetas blancas de SaaS con acento azul y confeti, y el hero de evento con foto y botón.",
     "keyCharacteristics": [
       "Cuatro tonos de un solo matiz, usados como roles; el oscuro invierte la rampa y el papel siempre es claro.",
-      "Fuera de la rampa, solo peligro (siempre con ícono) y, en la app pública, los dos acentos de marquesina (siempre sobre el fondo). La salvedad es el botón A rojo de la consola de la landing.",
+      "Fuera de la rampa, solo peligro (siempre con ícono) y, en la app pública, los dos acentos de marquesina (siempre sobre el fondo o la placa). La salvedad es el botón A rojo de la consola de la landing.",
       "Logos tal cual son, en gris solo mientras la medalla está pendiente; sprites de 12×12 cuando no hay logo.",
-      "Jersey 10 en múltiplos de 10 px para títulos, contadores y códigos; Atkinson Hyperlegible Next para leer.",
-      "Esquinas rectas, filetes de 2 px, sin sombras suaves; líneas de barrido como textura en la app pública.",
+      "Jersey 10 en múltiplos de 10 px para títulos, contadores y códigos (sobre la marquesina de la app pública, Press Start 2P para títulos de página y contadores); Atkinson Hyperlegible Next para leer.",
+      "Esquinas rectas, filetes de 2 px, sin sombras suaves; líneas de barrido como textura en la app pública; en la app pública de las orgs sin skin, placas levantadas con sombra dura.",
       "Movimiento en pasos (`steps(1, end)`), apagado con `prefers-reduced-motion`."
     ],
     "rules": [
       {
         "name": "The Four Tones Rule",
-        "body": "Un componente se pinta solo con `--lcd-0..3`. Nunca con `--ramp-*` directo (rompería el modo oscuro) ni con un color nuevo. Las únicas excepciones son `danger` y los dos acentos de marquesina, y cada una tiene su regla.",
+        "body": "Un componente se pinta solo con `--lcd-0..3`. Nunca con `--ramp-*` directo (rompería el modo oscuro) ni con un color nuevo. Las únicas excepciones son `danger` y los dos acentos de marquesina, y cada una tiene su regla. `--plate` no es un quinto tono: es un paso derivado del fondo. Junto con `--plate-rule`, `--cell-rule` y `--plate-cast` se define una sola vez en `.marquesina`, y los componentes los usan por su nombre.",
         "section": "colors"
       },
       {
@@ -365,7 +421,7 @@
       },
       {
         "name": "The Marquee Accent Rule",
-        "body": "Los acentos son de la app pública y van solo como texto sobre el fondo (`--lcd-0`), nunca sobre relleno ni sobre tinta: ahí no tienen contraste garantizado. Rojo solo para el título del evento; amarillo solo para lo que se lee de un vistazo (fecha, sede). Un texto en rojo de marquesina nunca lleva `AlertIcon`. La única excepción es la de The Red A Rule.",
+        "body": "Los acentos son de la app pública y van solo como texto sobre el fondo (`--lcd-0`) o sobre la placa (`--plate`), nunca sobre relleno ni sobre tinta: ahí no tienen contraste garantizado. Rojo solo para el título del evento; amarillo solo para lo que se lee de un vistazo (fecha, sede). En `/sorteo`, el `h1` va en rojo y el nombre del evento en amarillo. Un texto en rojo de marquesina nunca lleva `AlertIcon`. La única excepción es la de The Red A Rule.",
         "section": "colors"
       },
       {
@@ -385,17 +441,17 @@
       },
       {
         "name": "The Ten Pixel Grid Rule",
-        "body": "Jersey 10 solo en `text-px-1..5` (20, 30, 40, 60 y 80 px), múltiplos de su grilla de 10 px, con interlineado 1, así los bordes quedan nítidos. `text-px-5` es solo para el `h1` de la landing desde 1400 px. Nada de texto pixelado debajo de 20 px.",
+        "body": "Jersey 10 solo en `text-px-1..5` (20, 30, 40, 60 y 80 px), múltiplos de su grilla de 10 px, con interlineado 1, así los bordes quedan nítidos. `text-px-5` es solo para el `h1` de la landing desde 1400 px. Esta grilla es solo de Jersey 10: Press Start 2P va en la suya de 8 px (24 y 32 px). Nada de texto pixelado debajo de 20 px.",
         "section": "typography"
       },
       {
         "name": "The Read In Atkinson Rule",
-        "body": "Títulos, contadores y códigos van en Jersey 10; todo lo que hay que leer (oraciones, pistas, errores) va en Atkinson Hyperlegible Next.",
+        "body": "Títulos, contadores y códigos van en Jersey 10 (títulos de página y contadores, en Press Start 2P sobre la marquesina de la app pública); todo lo que hay que leer (oraciones, pistas, errores) va en Atkinson Hyperlegible Next.",
         "section": "typography"
       },
       {
         "name": "The Flat Screen Rule",
-        "body": "Una pantalla LCD no tiene sombras. La jerarquía sale de filetes, relleno y tamaño de letra; nunca de `box-shadow` difuso.",
+        "body": "Una pantalla LCD no tiene sombras. La jerarquía sale de filetes, relleno y tamaño de letra; nunca de `box-shadow` difuso. La única salvedad es la sombra dura de la marquesina (`shadow-plate`): 4 px, sin difuminar, solo en la app pública sin skin. El admin, la landing y los skins siguen planos.",
         "section": "elevation"
       },
       {
@@ -418,7 +474,7 @@
       "**Do** pintar con los roles `--lcd-0..3` y dejar que el esquema los resuelva.",
       "**Do** derivar la paleta de una organización con `rampFromHex`, y poner la clase `.ramp-scope` en toda capa que defina `--ramp-*`.",
       "**Do** acompañar `danger` con `AlertIcon`.",
-      "**Do** poner los acentos de marquesina solo como texto sobre `--lcd-0` en la app pública: rojo para el título del evento, amarillo para fecha y sede.",
+      "**Do** poner los acentos de marquesina solo como texto sobre `--lcd-0` o `--plate` en la app pública: rojo para el título del evento y el `h1` de `/sorteo`, amarillo para fecha, sede y el nombre del evento en `/sorteo`.",
       "**Do** usar la rampa de Eventdex en la landing y su consola.",
       "**Do** usar Jersey 10 solo en `text-px-1..5` (20/30/40/60/80 px), con `text-px-5` solo en el `h1` de la landing desde 1400 px.",
       "**Do** usar bordes de 2 px: sólidos para lo presente, punteados para lo pendiente.",
@@ -427,8 +483,8 @@
       "**Do** dejar que la impresión vuelva a los roles claros y apague las líneas de barrido."
     ],
     "donts": [
-      "**Don't** usar `border-radius` ni sombras suaves.",
-      "**Don't** usar texto pixelado debajo de 20 px ni en tamaños fuera de la grilla de 10 px.",
+      "**Don't** usar `border-radius` ni sombras suaves, ni dejar que la sombra dura de la marquesina se vea fuera de la app pública sin skin.",
+      "**Don't** usar texto pixelado debajo de 20 px, ni Jersey 10 fuera de su grilla de 10 px, ni Press Start 2P fuera de la suya de 8 px.",
       "**Don't** agregar un color fuera de la rampa más allá de `danger` y los dos acentos de marquesina, ni usar el hex de la marca tal cual.",
       "**Don't** poner un acento sobre relleno (`--lcd-1`) o tinta, ni usarlo para avisar un error: eso es `danger` con su ícono.",
       "**Don't** rellenar con un acento nada más que el botón A de la consola de la landing, ni llevar el amarillo a fondo.",
