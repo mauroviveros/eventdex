@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { ClockIcon } from "@/components/pixel/ClockIcon";
 import { buttonClass } from "@/components/ui/Button";
 import { Countdown } from "@/components/visitante/Countdown";
@@ -8,8 +9,11 @@ import {
   formatEventDates,
   formatScheduleTimes,
 } from "@/domain/events";
+import { listMyClaims } from "@/lib/data/claims";
 import { coverUrl, spotLogoUrl } from "@/lib/data/organizations";
 import type { getActiveEvent } from "@/lib/data/public";
+import { getVisitorAccount } from "@/lib/data/viewer";
+import { createClient } from "@/lib/supabase/server";
 
 export type PublicEvent = NonNullable<
   Awaited<ReturnType<typeof getActiveEvent>>
@@ -38,7 +42,9 @@ export function EventHome({ event, now }: Props) {
         </Link>
       )}
       {event.schedules.length > 1 && <Levels event={event} now={now} />}
-      <Medals event={event} />
+      <Suspense fallback={<MedalsLoading event={event} />}>
+        <Medals event={event} />
+      </Suspense>
     </main>
   );
 }
@@ -67,6 +73,7 @@ export function Marquee({ event, now }: Props) {
     : "";
   const subtitle = event.summary ?? event.edition_label;
   const cover = coverUrl(event.cover_path);
+  const countdown = countdownState(event.schedules, event.timezone, now);
 
   return (
     <header className="grid min-h-[50dvh] grid-cols-[minmax(0,1fr)] content-center justify-items-center gap-8 text-center">
@@ -99,13 +106,14 @@ export function Marquee({ event, now }: Props) {
         )}
       </div>
       <div className="grid justify-items-center gap-4">
-        <Countdown
-          state={countdownState(event.schedules, event.timezone, now)}
-        />
+        <Countdown state={countdown} />
+        {event.spots.length > 0 && countdown.kind !== "finalizado" && (
+          <p className="max-w-prose">{SCAN}</p>
+        )}
         {event.spots.length > 0 && (
           <a
             href="#medallas"
-            className="font-display text-px-1 underline decoration-2 underline-offset-4"
+            className="inline-flex min-h-11 items-center font-display text-px-1 underline decoration-2 underline-offset-4"
           >
             {event.spots.length === 1
               ? "1 medalla para juntar"
@@ -186,15 +194,40 @@ export function Levels({ event, now }: Props) {
   );
 }
 
-/** The collection as medals still to get: silhouettes with their codes. */
-function Medals({ event }: { event: PublicEvent }) {
+/** While the visitor's medals load: the collection's shape, still empty. */
+function MedalsLoading({ event }: { event: PublicEvent }) {
+  return (
+    <section aria-labelledby="medallas" aria-busy className="grid gap-6">
+      <SectionTitle id="medallas">Medallas</SectionTitle>
+      <ul className="flex flex-wrap gap-x-2 gap-y-6">
+        {event.spots.map((s) => (
+          <li key={s.id} className="grid w-32 justify-items-center">
+            <div className="size-24 border-2 border-dashed border-lcd-2" />
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+/** The collection: what this visitor already has, and silhouettes for the rest. */
+async function Medals({ event }: { event: PublicEvent }) {
   const n = event.spots.length;
+  const account = await getVisitorAccount();
+  const mine = account
+    ? await listMyClaims(await createClient(), event.id, account.id)
+    : [];
+  const claimed = new Set(mine.map((c) => c.event_spot_id));
+  const got = event.spots.filter((s) => claimed.has(s.id)).length;
+  const total = n.toLocaleString("es-AR");
   return (
     <section aria-labelledby="medallas" className="grid gap-6">
       <SectionTitle id="medallas">
-        {n === 1
-          ? "Medallas: 1 para juntar"
-          : `Medallas: ${n.toLocaleString("es-AR")} para juntar`}
+        {got > 0
+          ? `Medallas: ${got.toLocaleString("es-AR")} de ${total}`
+          : n === 1
+            ? "Medallas: 1 para juntar"
+            : `Medallas: ${total} para juntar`}
       </SectionTitle>
       {n === 0 ? (
         <p className="max-w-prose border-2 border-dashed border-lcd-2 px-6 py-8">
@@ -202,22 +235,19 @@ function Medals({ event }: { event: PublicEvent }) {
           fecha.
         </p>
       ) : (
-        <>
-          <p className="max-w-prose">{SCAN}</p>
-          <ul className="flex flex-wrap gap-x-2 gap-y-6">
-            {event.spots.map((s) => (
-              <li key={s.id}>
-                <Medal
-                  name={s.name}
-                  code={s.code}
-                  type={s.type}
-                  logo={spotLogoUrl(s.logoPath)}
-                  state="pendiente"
-                />
-              </li>
-            ))}
-          </ul>
-        </>
+        <ul className="flex flex-wrap gap-x-2 gap-y-6">
+          {event.spots.map((s) => (
+            <li key={s.id}>
+              <Medal
+                name={s.name}
+                code={s.code}
+                type={s.type}
+                logo={spotLogoUrl(s.logoPath)}
+                state={claimed.has(s.id) ? "conseguida" : "pendiente"}
+              />
+            </li>
+          ))}
+        </ul>
       )}
     </section>
   );

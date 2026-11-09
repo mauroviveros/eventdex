@@ -22,7 +22,7 @@ export function Progress({ claimed, total, goal, finished = false }: Props) {
       : goal === undefined
         ? missing === 0
           ? "Juntaste todas las medallas del evento."
-          : `${faltan(missing)} para completar la colección.`
+          : `¡Ya tenés ${claimed}! Buscá el próximo QR.`
         : missing === 0
           ? "Cada medalla de más suma otra chance."
           : `${faltan(missing)} para entrar al sorteo.`;
@@ -32,7 +32,7 @@ export function Progress({ claimed, total, goal, finished = false }: Props) {
       <p className="flex items-baseline gap-2 font-display">
         <span className="font-wide text-numeral tabular-nums">{claimed}</span>
         <span className="text-px-1 text-muted-foreground">
-          de {total} medallas
+          de {total} {total === 1 ? "medalla" : "medallas"}
         </span>
       </p>
       <div

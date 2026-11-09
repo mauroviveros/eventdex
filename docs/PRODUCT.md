@@ -20,7 +20,7 @@ Delegado: la propuesta y la decisión viven en [ARQUITECTURA](./ARQUITECTURA.md)
 
 Hay cuatro superficies, cada una con su usuario:
 
-- **Visitante** (principal). Va a una expo, una feria o un evento municipal. Está parado o caminando, con el celular en una mano, con poca señal, con sol o con la luz baja de un pabellón. Llega escaneando un QR o desde un link que compartió la organización. Lo que quiere hacer: sumar la medalla del stand que tiene enfrente, ver cuánto le falta y saber si entra en el sorteo. No instala nada y no lee instrucciones.
+- **Visitante** (principal). Va a una expo, una feria o un evento municipal. Está parado o caminando, con el celular en una mano, con poca señal, con sol o con la luz baja de un pabellón. Llega escaneando un QR o desde un link que compartió la organización. Lo que quiere hacer: sumar la medalla del stand que tiene enfrente y ver cuántas lleva. No instala nada y no lee instrucciones.
 - **Staff de la organización.** Carga y opera el evento: sede, jornadas, spots, QR para imprimir y, al cierre, el sorteo. Prepara todo en la notebook días antes y el día del evento lo resuelve desde el celular, apurado.
 - **Owner de la organización.** Lo mismo que el staff, y además maneja el equipo, la marca y el dominio. Es quien le compra el servicio a Eventdex.
 - **Developer (plataforma).** Da de alta organizaciones y dominios, registra la facturación a mano y da soporte. Usa la herramienta pocas veces, pero con mucho poder, así que tiene que ser inequívoca.

@@ -35,6 +35,9 @@ test("a visitor scans a QR, signs in, collects, and staff can block them", async
     await expect(
       page.getByRole("progressbar", { name: "Medallas juntadas" }),
     ).toHaveAttribute("aria-valuetext", "1 de 2 medallas");
+    await expect(
+      page.getByText("¡Ya tenés 1! Buscá el próximo QR."),
+    ).toBeVisible();
   });
 
   await test.step("scanning again keeps one medal", async () => {
@@ -55,6 +58,19 @@ test("a visitor scans a QR, signs in, collects, and staff can block them", async
     ).toBeVisible();
     await expect(
       collection.getByRole("img", { name: "Rueda gigante: Te falta" }),
+    ).toBeVisible();
+  });
+
+  await test.step("the event's page shows what the visitor already has", async () => {
+    await page.goto(`${seed.origin}/eventos/${seed.event.slug}`);
+    await expect(
+      page.getByRole("heading", { name: "Medallas: 1 de 2" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("img", { name: "Café de la Esquina: Conseguida" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("img", { name: "Rueda gigante: Te falta" }),
     ).toBeVisible();
   });
 
