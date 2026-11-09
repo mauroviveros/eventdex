@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { buttonClass } from "@/components/ui/Button";
-import { Medal } from "@/components/visitante/Medal";
+import type { Medal } from "@/components/visitante/Medal";
+import { MedalGrid } from "@/components/visitante/MedalGrid";
 import { Progress } from "@/components/visitante/Progress";
 import { collectionProgress } from "@/domain/claims";
 import { eventPhase } from "@/domain/events";
 import { listMyClaims, listMyEvents } from "@/lib/data/claims";
-import { spotLogoUrl } from "@/lib/data/organizations";
 import { getActiveEvent, getPublicEvent } from "@/lib/data/public";
 import { requireVisitor } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
@@ -138,19 +138,7 @@ function Collection({
   return (
     <>
       <Progress claimed={p.medals} total={p.total} finished={finished} />
-      <ul aria-label="Tu colección" className="flex flex-wrap gap-x-2 gap-y-6">
-        {spots.map((s) => (
-          <li key={s.id}>
-            <Medal
-              name={s.name}
-              code={s.code}
-              type={s.type}
-              logo={spotLogoUrl(s.logoPath)}
-              state={claimed.has(s.id) ? "conseguida" : "pendiente"}
-            />
-          </li>
-        ))}
-      </ul>
+      <MedalGrid spots={spots} claimed={claimed} label="Tu colección" />
     </>
   );
 }
