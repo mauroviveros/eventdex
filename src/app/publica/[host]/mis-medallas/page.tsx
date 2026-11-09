@@ -5,7 +5,7 @@ import { Medal } from "@/components/visitante/Medal";
 import { Progress } from "@/components/visitante/Progress";
 import { collectionProgress } from "@/domain/claims";
 import { eventPhase } from "@/domain/events";
-import { getLastCollectedEventSlug, listMyClaims } from "@/lib/data/claims";
+import { listMyClaims, listMyEvents } from "@/lib/data/claims";
 import { spotLogoUrl } from "@/lib/data/organizations";
 import { getActiveEvent, getPublicEvent } from "@/lib/data/public";
 import { requireVisitor } from "@/lib/data/viewer";
@@ -17,25 +17,35 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
-/** The visitor's collection in the org's current event: what they have and what's left. */
+type EventName = { title: string; edition_label: string | null };
+
+const eventName = (e: EventName) =>
+  e.edition_label ? `${e.title} · ${e.edition_label}` : e.title;
+
+/** The visitor's collection in one event: what they have and what's left. */
 export default async function MisMedallasPage({
   params,
+  searchParams,
 }: PageProps<"/publica/[host]/mis-medallas">) {
   const { org } = await requireHostOrganization((await params).host);
+  const { evento } = await searchParams;
   const supabase = await createClient();
   const [visitor, active] = await Promise.all([
     requireVisitor(),
     getActiveEvent(supabase, org.id),
   ]);
+  const myEvents = await listMyEvents(supabase, org.id, visitor.id);
   // A live event is where the visitor is collecting now. Otherwise the active
   // one may be next week's: show the last event they collected in instead.
-  let event = active;
-  if (!active || eventPhase(active.status, active.schedules) !== "en-curso") {
-    const slug = await getLastCollectedEventSlug(supabase, org.id, visitor.id);
-    if (slug && slug !== active?.slug) {
-      event = (await getPublicEvent(supabase, org.id, slug)) ?? active;
-    }
-  }
+  const live =
+    active && eventPhase(active.status, active.schedules) === "en-curso";
+  const slug =
+    myEvents.find((e) => e.slug === evento)?.slug ??
+    (live ? undefined : myEvents[0]?.slug);
+  const event =
+    slug && slug !== active?.slug
+      ? ((await getPublicEvent(supabase, org.id, slug)) ?? active)
+      : active;
   const mine = event ? await listMyClaims(supabase, event.id, visitor.id) : [];
   const claimed = new Set(mine.map((c) => c.event_spot_id));
 
@@ -43,8 +53,31 @@ export default async function MisMedallasPage({
     <main className="mx-auto grid w-full max-w-3xl gap-10 px-4 py-8 sm:px-6">
       <div className="grid gap-2">
         <h1 className="text-px-3 sm:text-px-4">Mis medallas</h1>
-        {event && <p className="font-display text-px-1">{event.title}</p>}
+        {event && <p className="font-display text-px-1">{eventName(event)}</p>}
       </div>
+
+      {myEvents.some((e) => e.slug !== event?.slug) && (
+        <nav aria-label="Tus eventos">
+          <ul className="flex flex-wrap gap-2">
+            {myEvents.map((e) => {
+              const current = e.slug === event?.slug;
+              return (
+                <li key={e.slug}>
+                  <Link
+                    href={`/mis-medallas?evento=${e.slug}`}
+                    aria-current={current ? "page" : undefined}
+                    className={`flex min-h-11 items-center border-2 border-lcd-3 px-3 py-2 font-display text-px-1 no-underline ${
+                      current ? "bg-lcd-1" : ""
+                    }`}
+                  >
+                    {eventName(e)}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      )}
 
       {!event ? (
         <p className="max-w-prose border-2 border-dashed border-lcd-2 px-6 py-8">
