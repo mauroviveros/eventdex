@@ -59,8 +59,9 @@ Los valores los define [DESIGN](./DESIGN.md). Hay una sola paleta de cuatro tono
   contraste está garantizado para cualquier marca, sin validar nada al guardar.
 - **Modo oscuro:** sigue al sistema (`prefers-color-scheme`). Los roles se
   invierten (el fondo pasa a ser el tono más oscuro) y el contraste no cambia.
-- **Logos de los spots:** se pasan a los cuatro tonos por luminosidad, con el
-  mismo mapeo de roles. Un spot sin logo usa el sprite de su tipo.
+- **Logos:** los de la org y los spots se ven tal cual son, sin filtro. La única
+  excepción es la medalla que todavía no se consiguió, que va en gris y apagada;
+  al conseguirla recupera el color. Un spot sin logo usa el sprite de su tipo.
 
 ## Tipografía
 
@@ -94,7 +95,7 @@ En `src/components/<dominio>/`. Cada uno documenta sus estados en `/dev/componen
 
 | Componente | Qué muestra | Estados |
 |------------|-------------|---------|
-| **Medalla** | Un spot conseguido o pendiente: su logo en cuatro tonos, o el sprite de su tipo | conseguida · pendiente (apagada) · nueva (se revela en pasos) · spot inactivo (tramada) |
+| **Medalla** | Un spot conseguido o pendiente: su logo original, o el sprite de su tipo | conseguida (a color) · pendiente (gris y apagada) · nueva (pasa de gris a color en pasos) · spot inactivo (gris y tramada) |
 | **Progreso** | Medallas conseguidas / total. Sin meta habla de completar la colección; con meta (R6, si el sorteo pide un mínimo), del sorteo | sin medallas · en progreso · colección completa · evento finalizado · con meta |
 | **Cuenta del visitante** | Fin de la cabecera del dominio de la org: foto, nombre y mail, con un menú a Mis medallas y Salir | con sesión · sin nombre (solo mail) · celular (solo la foto) · sin sesión (Ingresar) |
 | **Celebración** | La pantalla de `/s/[id]` al reclamar. Las fechas, en la zona del evento | medalla nueva · ya la tenías · spot inactivo · evento no en curso (todavía no arrancó / terminó) · bloqueado |

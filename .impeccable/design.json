@@ -204,22 +204,9 @@
       }
     ],
     "focusRing": "outline: 2px solid var(--lcd-3); outline-offset: 2px",
-    "logoFilters": {
-      "vars": [
-        "--logo-full",
-        "--logo-mid",
-        "--logo-faded"
-      ],
-      "light": [
-        "#lcd-full",
-        "#lcd-mid",
-        "#lcd-faded"
-      ],
-      "dark": [
-        "#lcd-full-dark",
-        "#lcd-mid-dark",
-        "#lcd-faded-dark"
-      ],
+    "logoTreatment": {
+      "default": "none: the file as uploaded, object-fit contain",
+      "pending": "grayscale(1) opacity(0.5)",
       "inactiveMask": "conic-gradient checker, mask-size 4px 4px"
     },
     "accents": {
@@ -305,7 +292,7 @@
       "name": "Medal",
       "kind": "custom",
       "refersTo": "medal-tile",
-      "description": "96px tile with the spot logo posterized or its 12x12 sprite; develops in steps when new.",
+      "description": "96px tile with the spot's original logo (grey while pending) or its 12x12 sprite; develops in steps when new.",
       "html": "<figure class=\"ds-medal\"><div class=\"ds-medal-tile\"><svg class=\"ds-sprite\" role=\"img\" aria-label=\"Café de la Esquina: Conseguida\" width=\"72\" height=\"72\" viewBox=\"0 0 12 12\"><rect x=\"1\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"3\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"4\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"5\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"6\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"7\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"8\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"9\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"10\" y=\"1\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"1\" y=\"2\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"2\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"3\" y=\"2\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"4\" y=\"2\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"5\" y=\"2\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"6\" y=\"2\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"7\" y=\"2\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"8\" y=\"2\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"9\" y=\"2\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"10\" y=\"2\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"1\" y=\"3\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"3\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"3\" y=\"3\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"4\" y=\"3\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"5\" y=\"3\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"6\" y=\"3\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"7\" y=\"3\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"8\" y=\"3\" width=\"1\" height=\"1\" data-t=\"1\"/><rect x=\"9\" y=\"3\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"10\" y=\"3\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"1\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"3\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"4\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"5\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"6\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"7\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"8\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"9\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"10\" y=\"4\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"5\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"9\" y=\"5\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"6\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"4\" y=\"6\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"5\" y=\"6\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"6\" y=\"6\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"7\" y=\"6\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"9\" y=\"6\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"7\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"4\" y=\"7\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"5\" y=\"7\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"6\" y=\"7\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"7\" y=\"7\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"9\" y=\"7\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"8\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"4\" y=\"8\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"5\" y=\"8\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"6\" y=\"8\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"7\" y=\"8\" width=\"1\" height=\"1\" data-t=\"0\"/><rect x=\"9\" y=\"8\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"1\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"3\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"4\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"5\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"6\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"7\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"8\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"9\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"10\" y=\"9\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"1\" y=\"10\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"3\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"4\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"5\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"6\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"7\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"8\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"9\" y=\"10\" width=\"1\" height=\"1\" data-t=\"2\"/><rect x=\"10\" y=\"10\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"1\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"2\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"3\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"4\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"5\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"6\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"7\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"8\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"9\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/><rect x=\"10\" y=\"11\" width=\"1\" height=\"1\" data-t=\"3\"/></svg></div><figcaption class=\"ds-medal-cap\"><span class=\"ds-medal-code\">A12</span><span class=\"ds-medal-name\">Café de la Esquina</span><span class=\"ds-medal-status\">Conseguida</span></figcaption></figure>",
       "css": ".ds-medal { display: grid; justify-items: center; gap: 8px; width: 128px; margin: 0; text-align: center; color: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-medal-tile { display: grid; place-items: center; width: 96px; height: 96px; border: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); } .ds-sprite { shape-rendering: crispEdges; } .ds-sprite [data-t='0'] { fill: var(--lcd-0, oklch(0.94 0.08 125)); } .ds-sprite [data-t='1'] { fill: var(--lcd-1, oklch(0.8 0.12 125)); } .ds-sprite [data-t='2'] { fill: var(--lcd-2, oklch(0.5 0.09 125)); } .ds-sprite [data-t='3'] { fill: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-medal-cap { display: grid; gap: 4px; } .ds-medal-code, .ds-medal-status { font-family: var(--font-pixel), ui-monospace, monospace; font-size: 20px; line-height: 1; } .ds-medal-code { color: var(--lcd-2, oklch(0.5 0.09 125)); } .ds-medal-name { font-size: 14px; line-height: 1.25; }"
     },
@@ -355,7 +342,7 @@
     "keyCharacteristics": [
       "Cuatro tonos de un solo matiz, usados como roles; el oscuro invierte la rampa y el papel siempre es claro.",
       "Fuera de la rampa, solo peligro (siempre con ícono) y, en la app pública, los dos acentos de marquesina (siempre sobre el fondo). La salvedad es el botón A rojo de la consola de la landing.",
-      "Logos posterizados a los cuatro tonos; sprites de 12×12 cuando no hay logo.",
+      "Logos tal cual son, en gris solo mientras la medalla está pendiente; sprites de 12×12 cuando no hay logo.",
       "Jersey 10 en múltiplos de 10 px para títulos, contadores y códigos; Atkinson Hyperlegible Next para leer.",
       "Esquinas rectas, filetes de 2 px, sin sombras suaves; líneas de barrido como textura en la app pública.",
       "Movimiento en pasos (`steps(1, end)`), apagado con `prefers-reduced-motion`."
@@ -447,7 +434,7 @@
       "**Don't** rellenar con un acento nada más que el botón A de la consola de la landing, ni llevar el amarillo a fondo.",
       "**Don't** poner `.scanlines` en la landing.",
       "**Don't** usar las líneas de barrido para marcar nada ni subir su opacidad: son textura.",
-      "**Don't** mostrar un logo sin pasarlo por los filtros LCD.",
+      "**Don't** alterar un logo fuera del gris de la medalla pendiente, ni recortarlo.",
       "**Don't** interpolar movimiento (easing suave); y todo se apaga con `prefers-reduced-motion`: la medalla nueva aparece revelada y nada parpadea.",
       "**Don't** volver a tarjetas blancas de SaaS con acento azul y confeti."
     ]
