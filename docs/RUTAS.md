@@ -28,7 +28,7 @@ el visitante.
 
 | Ruta | Vista | Acceso | Rebanada |
 |------|-------|--------|----------|
-| `/` | Portada del evento activo: fase, countdown, jornadas, sede y spots. Activo es, entre los publicados y públicos, el que está en curso; si no hay, el próximo; si no, el último que terminó (`resolve_active_event`). Si no hay evento, un estado vacío con la marca de la org | Público | R4 |
+| `/` | Portada del evento activo: banner si tiene, fase, countdown, jornadas, sede y spots. Activo es, entre los publicados y públicos, el que está en curso; si no hay, el próximo; si no, el último que terminó (`resolve_active_event`). Si no hay evento, un estado vacío con la marca de la org | Público | R4 |
 | `/eventos/[slug]` | Un evento puntual (pasado o próximo), con la misma vista que la portada | Público | R4 |
 | `/s/[id]` | **Destino del QR.** Reclama la medalla al abrirse (es idempotente: recargar responde "ya la tenías") y la celebra con el progreso. Un QR de otra org o de un evento sin publicar es 404, sin pedir login. Sin sesión, pasa por `/ingresar` y vuelve | Visitante | R5 |
 | `/mis-medallas` | La colección del evento en curso; si no hay uno, la del último evento en que el visitante juntó medallas (si no juntó nunca, la del activo): medallas conseguidas y faltantes. Quien juntó en otros eventos elige cuál ver (`?evento=`). Sin meta del sorteo: cada sorteo fija su mínimo, y el visitante no lo ve hasta que se publican los ganadores. Se llega desde el menú de la cuenta, en la cabecera de todo el dominio (con sesión, foto, nombre, Mis medallas y Salir; sin sesión, Ingresar) | Visitante | R5 |
@@ -49,7 +49,7 @@ staff y owner.
 | `/[org]` | Dashboard de la organización: métricas (eventos, publicados, sedes; stands, visitantes y medallas se suman en R3 y R5), búsqueda y filtro por fase en la URL (`?q=…&fase=…`) y una tarjeta por evento. Un no miembro recibe 404; el developer entra en modo soporte, solo lectura (sin formularios ni botones de alta), y queda en la auditoría | Miembro · developer en soporte | R2 |
 | `/[org]/eventos` | Redirige a `/[org]` con los mismos filtros: la lista de eventos es el dashboard | Miembro | R2 |
 | `/[org]/eventos/nuevo` | Alta de evento: nace como borrador y lleva a su página. En modo soporte, 404 | Miembro | R2 |
-| `/[org]/eventos/[evento]` | Datos del evento, jornadas (agregar y quitar, en la zona del evento) y publicación | Miembro | R2 |
+| `/[org]/eventos/[evento]` | Datos del evento, banner (subir, cambiar y quitar), jornadas (agregar y quitar, en la zona del evento) y publicación | Miembro | R2 |
 | `/[org]/eventos/[evento]/spots` | Spots del evento: agregar desde el catálogo, código, puntos, activo/inactivo | Miembro | R3 |
 | `/[org]/eventos/[evento]/qr` | Hoja de QR para imprimir: una tarjeta por spot activo, 3 por fila en A4, para recortar. Impresa sale siempre en tonos claros, sin la barra del panel | Miembro | R3 |
 | `/[org]/eventos/[evento]/visitantes` | Registrados, medallas por visitante, bloquear | Miembro | R5 |
