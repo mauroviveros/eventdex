@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { type ReactNode, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import { Button, type Variant } from "@/components/ui/Button";
 import { signInWithGoogle } from "@/lib/actions/auth";
@@ -25,6 +25,17 @@ export function GoogleSignIn({ next, ...button }: Props) {
 
 function Submit({ variant, className, children }: Omit<Props, "next">) {
   const { pending } = useFormStatus();
+
+  // Back from Google can restore this page frozen mid-submit, button disabled.
+  useEffect(() => {
+    if (!pending) return;
+    const restored = (e: PageTransitionEvent) => {
+      if (e.persisted) location.reload();
+    };
+    addEventListener("pageshow", restored);
+    return () => removeEventListener("pageshow", restored);
+  }, [pending]);
+
   return (
     <Button
       type="submit"
