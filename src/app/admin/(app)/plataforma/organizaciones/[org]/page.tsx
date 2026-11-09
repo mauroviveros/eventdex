@@ -14,7 +14,7 @@ import {
   getOrganizationSettings,
   listTeam,
 } from "@/lib/data/organizations";
-import { platformMetadata } from "@/lib/data/viewer";
+import { platformMetadata, requireDeveloper } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
 
 const load = cache(async (slug: string) => {
@@ -32,6 +32,7 @@ export async function generateMetadata({
 export default async function PlataformaOrganizacionPage({
   params,
 }: PageProps<"/admin/plataforma/organizaciones/[org]">) {
+  await requireDeveloper();
   const org = await load((await params).org);
   const supabase = await createClient();
   const [settings, team, events] = await Promise.all([

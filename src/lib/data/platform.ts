@@ -64,6 +64,7 @@ export async function getPlatformSummary(supabase: Supabase, now = new Date()) {
   };
 }
 
+// shortcut: no pagination, PostgREST cuts at 1000 rows; page it past a few hundred invoices
 /** Every invoice, newest first. */
 export async function listInvoices(supabase: Supabase) {
   const { data, error } = await supabase
