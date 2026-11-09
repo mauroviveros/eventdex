@@ -58,8 +58,8 @@ staff y owner.
 | `/[org]/spots/nuevo` | Alta de spot | Miembro | R3 |
 | `/[org]/spots/[spot]` | Editar o archivar un spot; en qué eventos se usa. `[spot]` es el `id`: un spot no tiene slug, para no pedir uno por cada stand | Miembro | R3 |
 | `/[org]/sedes` | Sedes: lista y alta en la misma vista. La edición llega cuando haga falta | Miembro | R2 |
-| `/[org]/equipo` | Miembros, invitaciones y roles | Owner | R7 |
-| `/[org]/ajustes` | Nombre, marca (logo y colores, con vista previa) y dominios | Owner | R7 |
+| `/[org]/equipo` | Miembros, invitaciones y roles. Sin mails: quien invita avisa, y la invitación se acepta al entrar con esa cuenta. Nadie se cambia ni se quita a sí mismo desde acá | Owner (developer: solo lectura) | R7 |
+| `/[org]/ajustes` | Nombre, zona horaria, marca (logo y color, con vista previa en claro y oscuro) y dominios | Owner (developer: solo lectura) | R7 |
 
 ## Plataforma · `eventdex-admin.vercel.app/plataforma`
 
