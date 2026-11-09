@@ -34,6 +34,34 @@ export async function listEvents(supabase: Supabase, organizationId: string) {
   return data;
 }
 
+/** What the form to duplicate an event starts from. Null if hidden or missing. */
+export async function getEventToDuplicate(
+  supabase: Supabase,
+  organizationId: string,
+  slug: string,
+) {
+  const { data, error } = await supabase
+    .from("events")
+    .select(
+      "id, title, summary, venue_id, spots:event_spots (spot:spots (archived_at))",
+    )
+    .eq("organization_id", organizationId)
+    .eq("slug", slug)
+    .is("deleted_at", null)
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) return null;
+  const archived = data.spots.filter((s) => s.spot.archived_at).length;
+  return {
+    id: data.id,
+    title: data.title,
+    summary: data.summary,
+    venueId: data.venue_id,
+    spots: data.spots.length - archived,
+    archived,
+  };
+}
+
 /** One event by slug inside an organization, with its schedules in order. Null if hidden or missing. */
 export async function getEventBySlug(
   supabase: Supabase,

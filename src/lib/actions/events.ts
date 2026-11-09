@@ -6,11 +6,23 @@ import {
   createEvent,
   createVenue,
   deleteSchedule,
+  duplicateEvent,
   publishEvent,
   removeCover,
   uploadCover,
 } from "@/lib/events";
 import { type FormState, runFormWrite, takeLogo } from "./form";
+
+/** Lands on the new draft, where its schedules and spots are adjusted. */
+export async function duplicateEventAction(
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const r = await runFormWrite(formData, duplicateEvent);
+  if (!r.ok) return r.state;
+  const { slug } = r.data as { slug: string };
+  redirect(`/${r.org}/eventos/${slug}`);
+}
 
 export async function uploadCoverAction(
   _prev: FormState,
