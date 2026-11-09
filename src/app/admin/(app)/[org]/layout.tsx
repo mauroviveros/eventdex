@@ -23,6 +23,12 @@ export default async function OrgLayout({
     { href: `/${slug}/spots`, label: "Spots" },
     { href: `/${slug}/sedes`, label: "Sedes" },
   ];
+  if (role === "owner" || support) {
+    sections.push(
+      { href: `/${slug}/equipo`, label: "Equipo" },
+      { href: `/${slug}/ajustes`, label: "Ajustes" },
+    );
+  }
   if (viewer.isDeveloper) {
     sections.push({ href: "/plataforma/organizaciones", label: "Plataforma" });
   }
