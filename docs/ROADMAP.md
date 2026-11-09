@@ -280,7 +280,12 @@ producción) al esquema nuevo. La v2 no llegó a producción.
    cierran.
 4. **Producción.** Corrida real con backup previo.
    *Listo cuando* un visitante de la v1 inicia sesión y ve sus medallas viejas.
-5. **Auditoría.**
+5. ▶ **Auditoría.** `/code-review` antes del merge: 10 hallazgos, 8 resueltos (los
+   logos de las medallas cargan de a poco, el script de logos no falla con los
+   subidos después, casos del importador que el backup no tenía y repeticiones). Sin
+   cambios: un archivo huérfano si falla la escritura del spot, y la clave secreta
+   del script, que ARQUITECTURA permite para la migración. Lighthouse accesibilidad:
+   100 en `/dev/componentes`. Falta verificar la corrida real.
 
 ---
 
