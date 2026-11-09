@@ -20,8 +20,32 @@ const STATUS = {
   pending: "Todavía no la tenés",
 };
 
-const PAD_ARM =
-  "grid size-12 place-items-center bg-lcd-3 text-lcd-0 hover:bg-lcd-2";
+const PAD = [
+  {
+    label: "Subir al stand anterior",
+    step: -1,
+    cell: "col-start-2 row-start-1",
+    icon: "rotate-180",
+  },
+  {
+    label: "Stand anterior",
+    step: -1,
+    cell: "col-start-1 row-start-2",
+    icon: "rotate-90",
+  },
+  {
+    label: "Stand siguiente",
+    step: 1,
+    cell: "col-start-3 row-start-2",
+    icon: "-rotate-90",
+  },
+  {
+    label: "Bajar al stand siguiente",
+    step: 1,
+    cell: "col-start-2 row-start-3",
+    icon: "",
+  },
+] as const;
 
 /** A handheld that plays the visitor's loop: walk to a stand, scan it, get the medal. */
 export function ConsoleDemo() {
@@ -33,7 +57,7 @@ export function ConsoleDemo() {
   // Remounts the sprite so a new medal develops again.
   const [scans, setScans] = useState(0);
 
-  const stand = STANDS[selected] ?? STANDS[0];
+  const stand = STANDS[selected];
   if (!stand) return null;
   const owned = claimed.has(selected);
 
@@ -80,6 +104,7 @@ export function ConsoleDemo() {
           </div>
           <p aria-live="polite" className="font-display text-px-3">
             {STATUS[status]}
+            <span className="sr-only"> {stand.name}</span>
           </p>
           <div className="grid justify-items-center gap-2">
             <div aria-hidden className="flex gap-2">
@@ -107,42 +132,21 @@ export function ConsoleDemo() {
 
       <div className="mt-6 flex items-center justify-between sm:mt-8">
         <div className="grid grid-cols-3 grid-rows-3">
-          <button
-            type="button"
-            aria-label="Subir al stand anterior"
-            onClick={() => move(-1)}
-            className={`${PAD_ARM} col-start-2`}
-          >
-            <Chevron className="rotate-180" />
-          </button>
-          <button
-            type="button"
-            aria-label="Stand anterior"
-            onClick={() => move(-1)}
-            className={`${PAD_ARM} col-start-1 row-start-2`}
-          >
-            <Chevron className="rotate-90" />
-          </button>
+          {PAD.map((arm) => (
+            <button
+              key={arm.label}
+              type="button"
+              aria-label={arm.label}
+              onClick={() => move(arm.step)}
+              className={`grid size-12 place-items-center bg-lcd-3 text-lcd-0 hover:bg-lcd-2 ${arm.cell}`}
+            >
+              <Chevron className={arm.icon} />
+            </button>
+          ))}
           <span
             aria-hidden
             className="col-start-2 row-start-2 size-12 bg-lcd-3"
           />
-          <button
-            type="button"
-            aria-label="Stand siguiente"
-            onClick={() => move(1)}
-            className={`${PAD_ARM} col-start-3 row-start-2`}
-          >
-            <Chevron className="-rotate-90" />
-          </button>
-          <button
-            type="button"
-            aria-label="Bajar al stand siguiente"
-            onClick={() => move(1)}
-            className={`${PAD_ARM} col-start-2 row-start-3`}
-          >
-            <Chevron />
-          </button>
         </div>
         <div className="grid justify-items-center gap-2">
           <button
