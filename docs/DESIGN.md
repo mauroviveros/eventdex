@@ -13,6 +13,11 @@ colors:
   accent-yellow: "oklch(0.5 0.11 85)"
   accent-yellow-dark: "oklch(0.86 0.15 95)"
 typography:
+  display-2xl:
+    fontFamily: "Jersey 10, ui-monospace, monospace"
+    fontSize: "5rem"
+    fontWeight: 400
+    lineHeight: 1
   display-xl:
     fontFamily: "Jersey 10, ui-monospace, monospace"
     fontSize: "3.75rem"
@@ -33,6 +38,16 @@ typography:
     fontSize: "1.25rem"
     fontWeight: 400
     lineHeight: 1
+  lead:
+    fontFamily: "Atkinson Hyperlegible Next, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.25rem"
+    fontWeight: 400
+    lineHeight: 1.4
+  body-lg:
+    fontFamily: "Atkinson Hyperlegible Next, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.125rem"
+    fontWeight: 400
+    lineHeight: 1.56
   body:
     fontFamily: "Atkinson Hyperlegible Next, ui-sans-serif, system-ui, sans-serif"
     fontSize: "1rem"
@@ -50,9 +65,13 @@ spacing:
   "2": "8px"
   "3": "12px"
   "4": "16px"
+  "5": "20px"
   "6": "24px"
   "8": "32px"
+  "10": "40px"
   "12": "48px"
+  "16": "64px"
+  "24": "96px"
 components:
   button-primary:
     backgroundColor: "{colors.ramp-3}"
@@ -142,11 +161,23 @@ components:
     textColor: "{colors.ramp-3}"
     rounded: "{rounded.none}"
     width: "40mm"
+  console-a-button:
+    backgroundColor: "{colors.accent-red}"
+    textColor: "{colors.ramp-0}"
+    typography: "{typography.display}"
+    rounded: "{rounded.none}"
+    size: "80px"
+  console-a-button-hover:
+    backgroundColor: "{colors.ramp-3}"
+    textColor: "{colors.ramp-0}"
+  console-medal-tile:
+    rounded: "{rounded.none}"
+    size: "144px"
 ---
 
 # Eventdex — Diseño visual
 
-`v0.2 · 2026-11-07` · Relacionados: [PRODUCT](./PRODUCT.md) · [DESIGN_SYSTEM](./DESIGN_SYSTEM.md) · [RUTAS](./RUTAS.md)
+`v0.3 · 2026-11-09` · Relacionados: [PRODUCT](./PRODUCT.md) · [DESIGN_SYSTEM](./DESIGN_SYSTEM.md) · [RUTAS](./RUTAS.md)
 
 > Este archivo lo genera `/impeccable document` a partir del código que ya
 > está construido; no se escribe a mano. Decide **colores, tipografía y
@@ -172,12 +203,13 @@ movimiento es por pasos, nunca suave: una medalla nueva se "revela" pasando por
 los tonos en cuadros discretos. En la app pública del visitante la pantalla
 suma lo que tenía el cartel de la vieja app: líneas de barrido sobre todo y dos
 acentos de marquesina, rojo para el título del evento y amarillo para lo que se
-lee de un vistazo. Rechaza el default de la categoría: tarjetas blancas de SaaS
+lee de un vistazo. La landing es superficie propia de Eventdex: va con la rampa
+verde arveja, sin líneas de barrido. Rechaza el default de la categoría: tarjetas blancas de SaaS
 con acento azul y confeti, y el hero de evento con foto y botón.
 
 **Key Characteristics:**
 - Cuatro tonos de un solo matiz, usados como roles; el oscuro invierte la rampa y el papel siempre es claro.
-- Fuera de la rampa, solo peligro (siempre con ícono) y, en la app pública, los dos acentos de marquesina (siempre sobre el fondo).
+- Fuera de la rampa, solo peligro (siempre con ícono) y, en la app pública, los dos acentos de marquesina (siempre sobre el fondo). La salvedad es el botón A rojo de la consola de la landing.
 - Logos posterizados a los cuatro tonos; sprites de 12×12 cuando no hay logo.
 - Jersey 10 en múltiplos de 10 px para títulos, contadores y códigos; Atkinson Hyperlegible Next para leer.
 - Esquinas rectas, filetes de 2 px, sin sombras suaves; líneas de barrido como textura en la app pública.
@@ -204,14 +236,16 @@ marquesina de matiz fijo.
   formulario, botón destructivo, el recuadro de confirmación de una acción que
   no se deshace, el estado bloqueado de la celebración.
 - **Rojo de marquesina** (`accent-red`, y `accent-red-dark` en oscuro): solo en
-  la app pública, y solo para el título del evento en la placa del cartel.
+  la app pública, y solo para el título del evento en la placa del cartel. La
+  única excepción es el relleno del botón A de la consola de la landing.
 - **Amarillo de marquesina** (`accent-yellow`, y `accent-yellow-dark` en
   oscuro): solo en la app pública, para lo que se lee de un vistazo: la fecha
   (y el horario si hay una sola jornada) y el nombre de la sede en las pestañas
   del cartel.
 
 Los acentos son de matiz fijo, no de la marca: salen de `ACCENT` en
-`palette.ts` y se usan con `text-accent-red` y `text-accent-yellow`. El rojo
+`palette.ts` y se usan con `text-accent-red` y `text-accent-yellow` (y
+`bg-accent-red` solo en ese botón A). El rojo
 queda cerca de `danger` a propósito (es el look de la v1); lo que los separa es
 el ícono: peligro siempre lleva `AlertIcon`, un título nunca.
 
@@ -252,7 +286,8 @@ están testeadas para los 36 matices de 10° en `palette.test.ts`:
 - peligro sobre el fondo de su esquema ≥ 4.5:1, y a distancia OKLab ≥ 0.1 de
   cada tono, así se distingue aunque la marca sea roja;
 - cada acento sobre el fondo de su esquema (`ramp-0` en claro, `ramp-3` en
-  oscuro) ≥ 4.5:1. Sobre relleno o tinta no hay garantía.
+  oscuro) ≥ 4.5:1. Sobre relleno o tinta no hay garantía. El botón A usa ese
+  mismo par al revés: `--lcd-0` sobre el rojo.
 
 ### Named Rules
 **The Four Tones Rule.** Un componente se pinta solo con `--lcd-0..3`. Nunca
@@ -272,7 +307,15 @@ color nunca carga el significado solo.
 texto sobre el fondo (`--lcd-0`), nunca sobre relleno ni sobre tinta: ahí no
 tienen contraste garantizado. Rojo solo para el título del evento; amarillo
 solo para lo que se lee de un vistazo (fecha, sede). Un texto en rojo de
-marquesina nunca lleva `AlertIcon`.
+marquesina nunca lleva `AlertIcon`. La única excepción es la de The Red A Rule.
+
+**The Red A Rule.** El botón A de la consola de la landing es la única
+superficie rellena con un acento: `bg-accent-red` con `text-lcd-0`, y solo ese
+botón. No habilita otros rellenos de acento ni lleva el amarillo a fondo.
+
+**The Own Surface Rule.** La landing y su consola son superficie propia de
+Eventdex: usan la rampa de `:root` y nunca llevan `.scanlines`. Una rampa de
+marca solo aparece en una muestra con su propia `.ramp-scope`.
 
 **The Paper Is Light Rule.** Lo impreso usa siempre los roles claros.
 
@@ -285,17 +328,25 @@ marquesina nunca lleva `AlertIcon`.
 que se escanea, y una hiperlegible para todo lo que se lee.
 
 ### Hierarchy
+- **Display 2XL** (`text-px-5`, 80 px): solo el `h1` de la landing desde 1400 px
+  de ancho.
 - **Display XL** (`text-px-4`, 60 px): el título de página desde `sm`; el
-  título del evento en la placa del cartel.
+  título del evento en la placa del cartel; en la landing, el `h1` por debajo
+  de 1400 px, los títulos de sección y los numerales de los pasos.
 - **Display** (`text-px-3`, 40 px): título de página en mobile, títulos de
   sección desde `sm`, contadores (progreso, cuenta regresiva), título de la
-  celebración en `/s/[id]`, código del spot en la hoja de QR.
+  celebración en `/s/[id]`, código del spot en la hoja de QR; en la landing,
+  los pasos rápidos, el título de cada paso, el estado de la consola y la A.
 - **Headline** (`text-px-2`, 30 px): títulos de sección en mobile, códigos,
   nombre de la org en el encabezado público, nombre de cada jornada,
   "¡Entrás al sorteo!".
 - **Label** (`text-px-1`, 20 px): botones, etiquetas de campo, insignias de
   fase, código del spot, unidades de la cuenta regresiva, pestañas del cartel,
   estado de la jornada ("Ahora", "Próxima", "Hecha").
+- **Lead** (20 px, Atkinson): solo en la landing, la bajada del hero y de las
+  secciones de quién y prueba.
+- **Body large** (18 px, Atkinson): solo en la landing, los textos de pasos,
+  marca y contacto.
 - **Body** (16 px): todo lo que se lee; párrafos a `max-w-prose` (65ch).
 - **Body small** (14 px): notas, pistas y errores de campo, nombre del spot
   bajo la medalla, dirección de la sede.
@@ -304,9 +355,10 @@ que se escanea, y una hiperlegible para todo lo que se lee.
 `tabular-nums`.
 
 ### Named Rules
-**The Ten Pixel Grid Rule.** Jersey 10 solo en `text-px-1..4` (20, 30, 40 y 60
-px), múltiplos de su grilla de 10 px, con interlineado 1, así los bordes quedan
-nítidos. Nada de texto pixelado debajo de 20 px.
+**The Ten Pixel Grid Rule.** Jersey 10 solo en `text-px-1..5` (20, 30, 40, 60 y
+80 px), múltiplos de su grilla de 10 px, con interlineado 1, así los bordes
+quedan nítidos. `text-px-5` es solo para el `h1` de la landing desde 1400 px.
+Nada de texto pixelado debajo de 20 px.
 
 **The Read In Atkinson Rule.** Títulos, contadores y códigos van en Jersey 10;
 todo lo que hay que leer (oraciones, pistas, errores) va en Atkinson
@@ -328,6 +380,11 @@ pantalla (`50dvh`), con 32 px entre el cartel y la cuenta regresiva. La hoja de
 QR se mide en milímetros para el A4 (márgenes de 10 mm, tarjetas con 5 mm de
 aire y QR de 40 mm), en tres columnas al imprimir.
 
+La landing usa `max-w-5xl` (el hero llega a 90rem), margen lateral de 16 px (32
+px desde `sm`) y 64 px de aire vertical por sección (96 px desde `sm`). Las
+secciones se separan con un filete de 2 px o con un cambio de fondo entre
+`--lcd-0`, `--lcd-1` y `--lcd-3`.
+
 ## Elevation & Depth
 
 Plano. No hay sombras suaves ni capas que flotan: la profundidad se marca con
@@ -345,7 +402,8 @@ un filete interno, no una sombra.
   línea de 2 px cada 4 px. `--scanline` es negro al 3 % en claro y al 8 % en
   oscuro; es negro y no tinta porque oscurece el fondo en los dos esquemas y con
   cualquier marca. Con el 3 %, el secundario sigue ≥ 4.6:1 sobre la fila
-  rayada en los 36 matices. Hoy solo la usa la app pública (`.scanlines`).
+  rayada en los 36 matices. Hoy solo la usa la app pública (`.scanlines`); la
+landing no la lleva.
 
 ### Named Rules
 **The Flat Screen Rule.** Una pantalla LCD no tiene sombras. La jerarquía sale
@@ -363,7 +421,7 @@ marca lo que ya pasó (fase "Finalizado", jornada hecha) o una pestaña del
 cartel; un borde **punteado** en secundario marca lo pendiente, apagado o en
 borrador (medalla pendiente o inactiva, fase "Borrador", jornada por venir,
 estado vacío; "Sin fecha" usa punteado en tinta). En papel, el punteado es la
-línea de corte de cada tarjeta de QR. Los sprites, el ícono de alerta y el QR
+línea de corte de cada tarjeta de QR. Los sprites, los íconos pixelados y el QR
 se dibujan con `shape-rendering: crispEdges`.
 
 **The Square Corner Rule.** Sin `border-radius`, sin excepciones.
@@ -487,6 +545,21 @@ módulos dibujada adentro, así no se puede recortar. En la hoja de QR va en una
 tarjeta de borde punteado (la línea de corte) con el código a 40 px y el nombre
 del spot debajo.
 
+### Consola de la landing
+Superficie propia de Eventdex, jugable. Carcasa plana en `--lcd-0` con borde de
+2 px en tinta y sin lado de abajo; la pantalla va enmarcada en secundario y
+tiene su propio borde de 2 px en tinta.
+- **Casilla de medalla:** 144 px con borde de 2 px y el sprite a 9 px por
+  píxel. Conseguida = sólido en tinta; pendiente = punteado en secundario con
+  silueta; nueva = fondo relleno y la revelación en pasos.
+- **Hilera de colección:** cinco casillas de 32 px (40 px desde `sm`), con el
+  mismo código de borde.
+- **Cruceta:** brazos de 48 px en tinta con el cheurón de 8×8 en `--lcd-0`;
+  hover pasa a secundario.
+- **Botón A:** 80 px, relleno en rojo de marquesina, la A en Jersey 10 a 40 px
+  en `--lcd-0`, borde de 2 px en tinta; hover pasa a tinta y el foco es el
+  anillo global. Es la excepción de The Red A Rule.
+
 ### Superficies del navegador
 Tematizadas con los roles: selección en tinta con texto en fondo; foco con
 `outline` de 2 px en tinta y 2 px de separación; scrollbar en secundario sobre
@@ -501,7 +574,8 @@ separación.
 - **Do** derivar la paleta de una organización con `rampFromHex`, y poner la clase `.ramp-scope` en toda capa que defina `--ramp-*`.
 - **Do** acompañar `danger` con `AlertIcon`.
 - **Do** poner los acentos de marquesina solo como texto sobre `--lcd-0` en la app pública: rojo para el título del evento, amarillo para fecha y sede.
-- **Do** usar Jersey 10 solo en `text-px-1..4` (20/30/40/60 px).
+- **Do** usar la rampa de Eventdex en la landing y su consola.
+- **Do** usar Jersey 10 solo en `text-px-1..5` (20/30/40/60/80 px), con `text-px-5` solo en el `h1` de la landing desde 1400 px.
 - **Do** usar bordes de 2 px: sólidos para lo presente, punteados para lo pendiente.
 - **Do** animar en pasos (`steps(1, end)`): la revelación de 900 ms y el parpadeo de 1 s para lo que está en vivo.
 - **Do** mostrar el sprite de 12×12 del tipo de spot cuando no hay logo.
@@ -512,6 +586,8 @@ separación.
 - **Don't** usar texto pixelado debajo de 20 px ni en tamaños fuera de la grilla de 10 px.
 - **Don't** agregar un color fuera de la rampa más allá de `danger` y los dos acentos de marquesina, ni usar el hex de la marca tal cual.
 - **Don't** poner un acento sobre relleno (`--lcd-1`) o tinta, ni usarlo para avisar un error: eso es `danger` con su ícono.
+- **Don't** rellenar con un acento nada más que el botón A de la consola de la landing, ni llevar el amarillo a fondo.
+- **Don't** poner `.scanlines` en la landing.
 - **Don't** usar las líneas de barrido para marcar nada ni subir su opacidad: son textura.
 - **Don't** mostrar un logo sin pasarlo por los filtros LCD.
 - **Don't** interpolar movimiento (easing suave); y todo se apaga con `prefers-reduced-motion`: la medalla nueva aparece revelada y nada parpadea.
