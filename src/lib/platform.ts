@@ -119,6 +119,32 @@ export const AUDIT_AREAS = {
   visitor: "Visitantes",
 } as const;
 
+/** What each audit action means on screen. An unknown one shows as it is. */
+export const AUDIT_LABELS: Record<string, string> = {
+  "organization.created": "Organización creada",
+  "organization.suspended": "Organización suspendida",
+  "organization.reactivated": "Organización reactivada",
+  "domain.created": "Dominio agregado",
+  "domain.updated": "Dominio cambiado",
+  "domain.deleted": "Dominio quitado",
+  "member.updated": "Rol cambiado",
+  "member.deleted": "Miembro quitado",
+  "member.account_deleted": "Cuenta de miembro borrada",
+  "invitation.created": "Invitación enviada",
+  "invitation.deleted": "Invitación revocada",
+  "invitation.accepted": "Invitación aceptada",
+  "invoice.created": "Factura registrada",
+  "invoice.paid": "Factura pagada",
+  "invoice.voided": "Factura anulada",
+  "support.viewed": "Entró en modo soporte",
+  "event.published": "Evento publicado",
+  "raffle.drawn": "Extracción de sorteo",
+  "raffle.draw_voided": "Extracción anulada",
+  "raffle.winners_published": "Ganadores publicados",
+  "visitor.blocked": "Visitante bloqueado",
+  "visitor.unblocked": "Visitante desbloqueado",
+};
+
 const auditFilterSchema = z.object({
   org: z.uuid().optional().catch(undefined),
   area: z

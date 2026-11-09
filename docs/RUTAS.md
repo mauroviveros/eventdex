@@ -71,9 +71,9 @@ un 404, no un 403: la ruta no existe para él.
 | `/plataforma` | Resumen: organizaciones, eventos en curso, facturas pendientes | Developer | R8 |
 | `/plataforma/organizaciones` | Lista de organizaciones con su estado | Developer | R1 |
 | `/plataforma/organizaciones/nueva` | Alta de organización + invitación al owner + primer dominio | Developer | R1 |
-| `/plataforma/organizaciones/[org]` | Detalle: dominios, miembros, eventos, suspender | Developer | R8 |
+| `/plataforma/organizaciones/[org]` | Detalle: dominios, miembros, eventos, suspender o reactivar, y la entrada al modo soporte | Developer | R8 |
 | `/plataforma/facturacion` | Facturas manuales: alta, marcar pagada, anular | Developer | R8 |
-| `/plataforma/auditoria` | Registro de acciones sensibles, filtrable | Developer | R8 |
+| `/plataforma/auditoria` | Registro de acciones sensibles, filtrable por organización y área en la URL (`?org=…&area=…&pagina=…`) | Developer | R8 |
 
 ## Landing · `eventdex.vercel.app`
 
