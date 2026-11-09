@@ -32,7 +32,7 @@ componentes se traducen así:
 | Título | Qué es esta pantalla, sin adornos | "Spots de Expo 2026" | "Gestioná tus spots" |
 | Error | Qué pasó + qué hacer | "No pudimos guardar. Revisá tu conexión y probá de nuevo." | "Error 500" |
 | Vacío | Por qué está vacío + la acción que lo llena | "Todavía no hay spots. Agregá el primero desde el catálogo." | "Sin datos" |
-| Éxito del visitante | Breve y celebratorio | "¡Medalla nueva! Te faltan 3." | "Operación exitosa" |
+| Éxito del visitante | Breve y celebratorio | "¡Medalla nueva! Ya tenés 3." | "Operación exitosa" |
 | Fechas | Hora local del evento, formato es-AR | "sáb 14 de nov, 14:00" | "2026-11-14T17:00Z" |
 
 Los números, fechas y monedas siempre pasan por `Intl` con `es-AR` y la zona del
