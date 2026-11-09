@@ -3,8 +3,10 @@ import Link from "next/link";
 import { type CSSProperties, Suspense } from "react";
 import { LcdFilters } from "@/components/pixel/LcdFilters";
 import { Monogram } from "@/components/ui/Monogram";
+import { Logo } from "@/components/visitante/Medal";
 import { SignInLink, VisitorMenu } from "@/components/visitante/VisitorMenu";
 import { EVENTDEX_HUE, ramp, rampFromHex } from "@/domain/palette";
+import { logoUrl } from "@/lib/data/organizations";
 import { getVisitorAccount } from "@/lib/data/viewer";
 import { requireHostOrganization } from "./organization";
 
@@ -45,7 +47,16 @@ export default async function PublicaLayout({
             href="/"
             className="flex min-h-11 min-w-0 items-center gap-3 font-display text-px-2 no-underline"
           >
-            <Monogram text={org.name} />
+            {org.logo_path ? (
+              <Logo
+                src={logoUrl(org.logo_path)}
+                mode="lleno"
+                label=""
+                className="size-10 object-contain"
+              />
+            ) : (
+              <Monogram text={org.name} />
+            )}
             <span className="truncate">{org.name}</span>
           </Link>
           <Suspense fallback={<span className="min-h-11" />}>
