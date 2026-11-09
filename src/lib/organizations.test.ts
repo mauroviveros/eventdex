@@ -194,7 +194,7 @@ describe("domains", () => {
   const domain = { organizationId: ORG, hostname: "Expo.com.ar" };
 
   it("normalizes the hostname and reads the buttons pressed", async () => {
-    const { client, rpc } = fakeRpc({ data: null, error: null });
+    const { client, rpc } = fakeRpc({ data: [], error: null });
     expect(
       await assignDomain(client, { ...domain, makePrimary: "on" }),
     ).toEqual({ ok: true, data: { conflict: null } });
@@ -202,33 +202,47 @@ describe("domains", () => {
       p_organization_id: ORG,
       p_hostname: "expo.com.ar",
       p_make_primary: true,
-      p_transfer: false,
+      p_transfer_from: undefined,
     });
   });
 
-  it("names the org that already has the domain", async () => {
-    const { client } = fakeRpc({ data: "Otra Org", error: null });
+  it("returns who has the domain and what would become their primary", async () => {
+    const conflict = {
+      owner_id: ORG,
+      owner_name: "Otra Org",
+      next_primary: "otra.com.ar",
+    };
+    const { client } = fakeRpc({ data: [conflict], error: null });
     expect(await assignDomain(client, domain)).toEqual({
       ok: true,
-      data: { conflict: "Otra Org" },
+      data: { conflict },
     });
   });
 
-  it("explains a domain the org already has", async () => {
-    const { client } = fakeRpc({ data: null, error: { code: "23505" } });
-    expect(await assignDomain(client, domain)).toEqual({
-      ok: false,
-      error: "Esta organización ya tiene ese dominio.",
-    });
+  it.each([
+    ["42710", "Esta organización ya tiene ese dominio."],
+    ["23505", "Otro cambio se cruzó con este. Probá de nuevo."],
+    [
+      "23514",
+      "Algún dato no tiene el formato esperado. Revisalo y probá de nuevo.",
+    ],
+    [
+      "23001",
+      "Es el único dominio de su organización: sumale otro antes de moverlo.",
+    ],
+  ])("explains error %s without guessing the cause", async (code, error) => {
+    const { client } = fakeRpc({ data: null, error: { code } });
+    expect(await assignDomain(client, domain)).toEqual({ ok: false, error });
   });
 
-  it("explains why an org's only domain cannot move", async () => {
-    const { client } = fakeRpc({ data: null, error: { code: "23514" } });
-    const result = await assignDomain(client, { ...domain, transfer: "on" });
-    expect(result).toMatchObject({
-      ok: false,
-      error: expect.stringContaining("único dominio"),
+  it("only moves from an org it can identify", async () => {
+    const { client, rpc } = fakeRpc({ data: [], error: null });
+    const result = await assignDomain(client, {
+      ...domain,
+      transferFrom: "no-es-uuid",
     });
+    expect(result.ok).toBe(false);
+    expect(rpc).not.toHaveBeenCalled();
   });
 
   it("rejects a hostname with a scheme before calling the database", async () => {

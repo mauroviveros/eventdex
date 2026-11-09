@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import {
   assignDomain,
+  type DomainConflict,
   removeDomain,
   setPrimaryDomain,
 } from "@/lib/organizations";
@@ -63,8 +64,8 @@ export type DomainFormState =
       ok: false;
       error: string;
       values: Record<string, string>;
-      /** The org that has the domain: the form asks before moving it. */
-      conflict: string;
+      /** Another org has the domain: the form asks before moving it. */
+      conflict: DomainConflict;
     };
 
 export async function assignDomainAction(
