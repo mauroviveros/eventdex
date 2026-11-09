@@ -106,6 +106,14 @@ export default async function EventoPage({
           >
             Sorteo
           </Link>
+          {editable && (
+            <Link
+              href={`/${org.slug}/eventos/nuevo?desde=${event.slug}`}
+              className={buttonClass("secondary", "no-underline")}
+            >
+              Duplicar
+            </Link>
+          )}
         </nav>
 
         {draft && editable && (

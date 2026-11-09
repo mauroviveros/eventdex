@@ -5,17 +5,29 @@ import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
 import { useFormFeedback } from "@/components/ui/useFormFeedback";
-import { createEventAction } from "@/lib/actions/events";
+import { createEventAction, duplicateEventAction } from "@/lib/actions/events";
 
 type Props = {
   org: { id: string; slug: string; timezone: string };
   venues: { id: string; name: string; timezone: string }[];
+  /** The event being duplicated: the form starts from its data. */
+  source?: {
+    id: string;
+    title: string;
+    summary: string | null;
+    venueId: string | null;
+  };
 };
 
-export function NewEventForm({ org, venues }: Props) {
-  const [state, action, pending] = useActionState(createEventAction, null);
+export function NewEventForm({ org, venues, source }: Props) {
+  const [state, action, pending] = useActionState(
+    source ? duplicateEventAction : createEventAction,
+    null,
+  );
   const { form, failed, fields, values } = useFormFeedback(state);
-  const [venueId, setVenueId] = useState(values.venueId ?? "");
+  const [venueId, setVenueId] = useState(
+    values.venueId ?? source?.venueId ?? "",
+  );
 
   // The event shows its times in its venue's zone; without a venue, the org's.
   const timezone =
@@ -26,13 +38,14 @@ export function NewEventForm({ org, venues }: Props) {
       <input type="hidden" name="org" value={org.slug} />
       <input type="hidden" name="organizationId" value={org.id} />
       <input type="hidden" name="timezone" value={timezone} />
+      {source && <input type="hidden" name="sourceId" value={source.id} />}
       {failed && !failed.fieldErrors && (
         <FormMessage tone="error">{failed.error}</FormMessage>
       )}
       <Field
         label="Nombre"
         name="title"
-        defaultValue={values.title}
+        defaultValue={values.title ?? source?.title}
         required
         placeholder="Expo de Ejemplo 2026"
         error={fields.title}
@@ -76,13 +89,13 @@ export function NewEventForm({ org, venues }: Props) {
       <Field
         label="Resumen"
         name="summary"
-        defaultValue={values.summary}
+        defaultValue={values.summary ?? source?.summary ?? undefined}
         hint="Opcional. Una línea que aparece al compartir el link."
         error={fields.summary}
       />
       <div className="flex flex-wrap items-center gap-4">
         <Button type="submit" pending={pending} pendingLabel="Creando…">
-          Crear evento
+          {source ? "Duplicar evento" : "Crear evento"}
         </Button>
         <Link href={`/${org.slug}`} className="font-display text-px-1">
           Cancelar

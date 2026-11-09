@@ -103,6 +103,11 @@ export async function createVenue(
   return { ok: true, data };
 }
 
+const EVENT_ERRORS = {
+  "23505": "Ya hay un evento con esa dirección en tu organización.",
+  "23503": "Elegí una sede de tu organización.",
+};
+
 export async function createEvent(
   supabase: Client,
   input: unknown,
@@ -124,12 +129,32 @@ export async function createEvent(
     })
     .select("id, slug")
     .single();
-  if (error)
-    return failed(error, {
-      "23505": "Ya hay un evento con esa dirección en tu organización.",
-      "23503": "Elegí una sede de tu organización.",
-    });
+  if (error) return failed(error, EVENT_ERRORS);
   return { ok: true, data };
+}
+
+const duplicateSchema = eventSchema.extend({ sourceId: z.guid() });
+
+/** A new draft with the data typed in the form and the spots of `sourceId`. */
+export async function duplicateEvent(
+  supabase: Client,
+  input: unknown,
+): Promise<ActionResult<{ slug: string }>> {
+  const parsed = duplicateSchema.safeParse(input);
+  if (!parsed.success) return invalid(parsed.error);
+
+  const e = parsed.data;
+  const { data, error } = await supabase.rpc("duplicate_event", {
+    p_source_id: e.sourceId,
+    p_slug: e.slug,
+    p_title: e.title,
+    p_timezone: e.timezone,
+    p_edition_label: e.editionLabel ?? undefined,
+    p_summary: e.summary ?? undefined,
+    p_venue_id: e.venueId ?? undefined,
+  });
+  if (error) return failed(error, EVENT_ERRORS);
+  return { ok: true, data: { slug: data } };
 }
 
 /** The form sends wall-clock times; they are read in the event's zone. */

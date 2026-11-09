@@ -3,11 +3,57 @@ import {
   addSchedule,
   createEvent,
   deleteSchedule,
+  duplicateEvent,
   publishEvent,
   removeCover,
   uploadCover,
 } from "./events";
 import { fakeClient, inserted } from "./fake-supabase";
+
+describe("duplicateEvent", () => {
+  const valid = {
+    organizationId: "0000000a-0000-4000-8000-000000000001",
+    sourceId: "0000000a-0000-4000-8000-000000000002",
+    title: " Fest ",
+    slug: "Fest-Nov",
+    venueId: "",
+    editionLabel: "Noviembre",
+    summary: "",
+    timezone: "America/Argentina/Buenos_Aires",
+  };
+
+  it("normalizes the input and calls the database function", async () => {
+    const { client, rpc } = fakeClient({ data: "fest-nov", error: null });
+    expect(await duplicateEvent(client, valid)).toEqual({
+      ok: true,
+      data: { slug: "fest-nov" },
+    });
+    expect(rpc).toHaveBeenCalledWith("duplicate_event", {
+      p_source_id: valid.sourceId,
+      p_slug: "fest-nov",
+      p_title: "Fest",
+      p_timezone: valid.timezone,
+      p_edition_label: "Noviembre",
+      p_summary: undefined,
+      p_venue_id: undefined,
+    });
+  });
+
+  it("explains a slug already in use", async () => {
+    const { client } = fakeClient({ data: null, error: { code: "23505" } });
+    expect(await duplicateEvent(client, valid)).toEqual({
+      ok: false,
+      error: "Ya hay un evento con esa dirección en tu organización.",
+    });
+  });
+
+  it("calls nothing without a source event", async () => {
+    const { client, rpc } = fakeClient();
+    const result = await duplicateEvent(client, { ...valid, sourceId: "x" });
+    expect(result.ok).toBe(false);
+    expect(rpc).not.toHaveBeenCalled();
+  });
+});
 
 const ORG = "0000000a-0000-4000-8000-000000000001";
 const EVENT = "0000000a-0000-4000-8000-000000000002";
