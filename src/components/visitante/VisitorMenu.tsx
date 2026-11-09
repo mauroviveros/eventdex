@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRef } from "react";
 import { Chevron } from "@/components/pixel/Chevron";
+import { GoogleSignIn } from "@/components/ui/GoogleSignIn";
 import { Monogram } from "@/components/ui/Monogram";
 
 type Account = {
@@ -98,7 +99,7 @@ function Avatar({ account }: { account: Account }) {
 }
 
 /**
- * Signed out: straight to the sign-in, coming back to this page. Reads the
+ * Signed out: the way to sign in, coming back to this page. Reads the
  * path on the client, so it follows navigation the server header doesn't see.
  */
 export function SignInLink() {
@@ -106,6 +107,18 @@ export function SignInLink() {
   const query = useSearchParams().toString();
   if (pathname.startsWith("/ingresar")) return null;
   const next = query ? `${pathname}?${query}` : pathname;
+  // Production only has Google, so straight to it; /ingresar also offers the mail link.
+  if (process.env.NODE_ENV === "production") {
+    return (
+      <GoogleSignIn
+        next={next}
+        variant="secondary"
+        className="whitespace-nowrap"
+      >
+        Ingresar
+      </GoogleSignIn>
+    );
+  }
   return (
     <Link
       href={`/ingresar?next=${encodeURIComponent(next)}`}
