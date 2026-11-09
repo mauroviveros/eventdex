@@ -61,6 +61,16 @@ export const requireOrg = cache(async (slug: string) => {
 });
 
 /**
+ * For owner-only pages: the owner works in them and the developer reads them
+ * in support mode. A staff member gets the same 404 as anyone else.
+ */
+export async function requireOrgOwner(slug: string) {
+  const context = await requireOrg(slug);
+  if (context.role !== "owner" && !context.support) notFound();
+  return context;
+}
+
+/**
  * The signed-in visitor as the public header shows them: name, mail and
  * photo from their profile. Null without a session. No developer check: the
  * public app never needs it.
