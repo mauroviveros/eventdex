@@ -31,8 +31,8 @@ Sigue el recorrido real: **nada existe hasta que alguien lo carga.**
 6. Al cierre, el **sorteo** (R6) usa las medallas de R5.
 7. Con el circuito completo andando: **equipo y marca** (R7), la **plataforma**
    completa (R8) y la **landing** (R9). Ninguno bloquea el circuito.
-8. **Migración** de los datos de v1 y v2 (R10), al final, cuando el esquema ya no se
-   mueve.
+8. **Migración** de los datos de la v1 (R10), cuando el esquema ya no se mueve. Se
+   hizo antes que R9: desde el corte, la v1 estaba apagada y sus datos no se veían.
 
 ---
 
@@ -262,7 +262,7 @@ Branch `feat/landing`. Sin DB: es contenido estático.
    Lighthouse en mobile.
 2. **Auditoría.** SEO y accesibilidad.
 
-## R10 · Migración de datos ▶
+## R10 · Migración de datos ✅
 
 Branch `feat/migracion`. Los datos de la v1 (esquema `v1` del proyecto de
 producción) al esquema nuevo. La v2 no llegó a producción.
@@ -278,14 +278,17 @@ producción) al esquema nuevo. La v2 no llegó a producción.
    entran y cuántas se descartan.
    *Listo cuando* corre dos veces contra la base local sin duplicar, y los conteos
    cierran.
-4. **Producción.** Corrida real con backup previo.
+4. ✅ **Producción.** Corrida real con backup previo.
    *Listo cuando* un visitante de la v1 inicia sesión y ve sus medallas viejas.
-5. ▶ **Auditoría.** `/code-review` antes del merge: 10 hallazgos, 8 resueltos (los
+   Corrido el 2026-11-09: 4 eventos, 70 spots, 703 inscripciones, 1649 medallas y 70
+   logos, con los conteos exactos. Una cuenta de la v1 entró con Google en
+   `evento.lodecharlytcg.com` y vio sus medallas.
+5. ✅ **Auditoría.** `/code-review` antes del merge: 10 hallazgos, 8 resueltos (los
    logos de las medallas cargan de a poco, el script de logos no falla con los
    subidos después, casos del importador que el backup no tenía y repeticiones). Sin
    cambios: un archivo huérfano si falla la escritura del spot, y la clave secreta
    del script, que ARQUITECTURA permite para la migración. Lighthouse accesibilidad:
-   100 en `/dev/componentes`. Falta verificar la corrida real.
+   100 en `/dev/componentes`.
 
 ---
 
