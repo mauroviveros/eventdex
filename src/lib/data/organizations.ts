@@ -1,3 +1,4 @@
+import { env } from "@/lib/env";
 import type { Supabase } from "@/lib/supabase/server";
 
 /**
@@ -82,6 +83,11 @@ export async function listAllOrganizations(supabase: Supabase) {
       .filter((i) => i.accepted_at === null)
       .map((i) => i.email),
   }));
+}
+
+/** Where a logo is served from: the bucket is public, so no client is needed. */
+export function logoUrl(path: string) {
+  return `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/org-logos/${path}`;
 }
 
 /** The org's primary hostname: where its public app (and every QR) points. */
