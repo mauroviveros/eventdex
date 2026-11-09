@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PageBody, TopBar } from "@/components/admin/TopBar";
 import { buttonClass } from "@/components/ui/Button";
 import { listAllOrganizations } from "@/lib/data/organizations";
-import { platformMetadata } from "@/lib/data/viewer";
+import { platformMetadata, requireDeveloper } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
 
 export function generateMetadata(): Promise<Metadata> {
@@ -13,6 +13,7 @@ export function generateMetadata(): Promise<Metadata> {
 export default async function PlataformaOrganizacionesPage({
   searchParams,
 }: PageProps<"/admin/plataforma/organizaciones">) {
+  await requireDeveloper();
   const { creada } = await searchParams;
   const supabase = await createClient();
   const organizations = await listAllOrganizations(supabase);
