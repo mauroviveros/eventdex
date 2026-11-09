@@ -1,13 +1,6 @@
 "use server";
 
-import {
-  addDomain,
-  removeDomain,
-  removeLogo,
-  setPrimaryDomain,
-  updateSettings,
-  uploadLogo,
-} from "@/lib/organizations";
+import { removeLogo, updateSettings, uploadLogo } from "@/lib/organizations";
 import { type FormState, runFormWrite, takeLogo } from "./form";
 import { invalidateOrganizations } from "./invalidate";
 
@@ -44,30 +37,5 @@ export async function removeLogoAction(
 ): Promise<FormState> {
   return runPublicWrite(formData, (supabase, v) =>
     removeLogo(supabase, v.organizationId ?? ""),
-  );
-}
-
-export async function addDomainAction(
-  _prev: FormState,
-  formData: FormData,
-): Promise<FormState> {
-  return runPublicWrite(formData, addDomain);
-}
-
-export async function setPrimaryDomainAction(
-  _prev: FormState,
-  formData: FormData,
-): Promise<FormState> {
-  return runPublicWrite(formData, (supabase, v) =>
-    setPrimaryDomain(supabase, v.id ?? ""),
-  );
-}
-
-export async function removeDomainAction(
-  _prev: FormState,
-  formData: FormData,
-): Promise<FormState> {
-  return runPublicWrite(formData, (supabase, v) =>
-    removeDomain(supabase, v.id ?? ""),
   );
 }
