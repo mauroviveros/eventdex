@@ -57,7 +57,7 @@ const STEPS = [
 
 // Real results of the v1 events, published with the owner's approval.
 const RESULTS = [
-  { name: "Burning Tower Fest 2026", people: 253, medals: 764 },
+  { name: "Burning Tower Fest · Agosto 2026", people: 253, medals: 764 },
   {
     name: "Lo de Charly TCG · Junio 2026",
     people: 151,
@@ -179,7 +179,7 @@ export default function LandingPage() {
           <div className="mx-auto grid max-w-5xl gap-10 px-4 py-16 sm:px-8 sm:py-24">
             <div className="grid gap-5">
               <h2 id="prueba" className="text-balance text-px-4">
-                Lo de Charly TCG ya lo jugó cuatro veces
+                Lo de Charly TCG y Burning Tower Fest ya lo jugaron cuatro veces
               </h2>
               <p className="max-w-[40rem] text-xl">
                 Entre abril y agosto de 2026, 644 personas distintas juntaron
@@ -188,7 +188,8 @@ export default function LandingPage() {
             </div>
             <table className="w-full border-collapse font-display tabular-nums">
               <caption className="sr-only">
-                Resultados de los eventos de Lo de Charly TCG
+                Resultados de los eventos de Lo de Charly TCG y Burning Tower
+                Fest
               </caption>
               <thead>
                 <tr className="border-b-2 border-lcd-0 text-left text-px-1 text-lcd-1">

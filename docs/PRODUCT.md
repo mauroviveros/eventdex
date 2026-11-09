@@ -69,7 +69,7 @@ Es una **mecánica de colección** atada al espacio físico: cada medalla prueba
 ## Evidence on Hand
 
 - Hay eventos reales de la v1 y la v2 con datos de visitantes y medallas, a migrar al final ([ROADMAP](./ROADMAP.md)).
-- Los resultados de los cuatro eventos de Lo de Charly TCG se publican en la landing, con su nombre: 644 personas y 1649 medallas. No hay testimonios ni otros casos: **no se inventan**.
+- Los resultados de los cuatro eventos de Lo de Charly TCG y Burning Tower Fest se publican en la landing, con su nombre: 644 personas y 1649 medallas. No hay testimonios ni otros casos: **no se inventan**.
 - Esos datos no sostienen que el público recorra todos los stands (en promedio, de 2 a 3 medallas por persona): la landing promete una razón para ir a cada stand, no el recorrido completo.
 
 ## Product Principles
