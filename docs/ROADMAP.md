@@ -274,7 +274,7 @@ producción) al esquema nuevo. La v2 no llegó a producción.
    desde el formulario del spot y las medallas mostrando el logo.
    *Listo cuando* pgTAP prueba que una org no escribe en la carpeta de otra, y un
    spot con logo se ve así en la portada y en mis medallas.
-3. **Script.** `scripts/migrate/`, idempotente, con un reporte de cuántas filas
+3. ✅ **Script.** `scripts/migrate/`, idempotente, con un reporte de cuántas filas
    entran y cuántas se descartan.
    *Listo cuando* corre dos veces contra la base local sin duplicar, y los conteos
    cierran.
