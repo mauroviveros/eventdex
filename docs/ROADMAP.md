@@ -229,7 +229,10 @@ Branch `feat/equipo-y-marca`.
 3. ✅ **Vista.** `/[org]/equipo` y `/[org]/ajustes` con vista previa de la marca.
    *Listo cuando* el owner cambia el color y el logo y se ven en la portada pública
    sin esperar la caché.
-4. **Auditoría.**
+4. ✅ **Auditoría.** `/code-review`: 3 hallazgos, todos resueltos (aviso al hacer
+   principal un dominio que todavía no abre, logo que se achicaba en la cabecera,
+   lista de zonas duplicada). axe: 0 violaciones en equipo, ajustes y portada, con
+   owner y en modo soporte, que queda de solo lectura.
 
 ## R8 · Plataforma
 
