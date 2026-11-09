@@ -54,7 +54,7 @@ export async function seedLiveEvent() {
     await admin
       .from("organizations")
       .insert({ slug: `e2e-${id}`, name: `Feria E2E ${id}` })
-      .select("id, slug")
+      .select("id, slug, name")
       .single(),
   );
   must(
@@ -131,12 +131,35 @@ export async function seedLiveEvent() {
         .from("event_registrations")
         .delete()
         .eq("organization_id", org.id);
+      // Invoices restrict deleting their org, on purpose.
+      await admin.from("invoices").delete().eq("organization_id", org.id);
       await admin.from("organizations").delete().eq("id", org.id);
       const { data } = await admin
         .from("profiles")
         .select("id")
         .in("email", [ownerEmail, visitorEmail]);
       for (const p of data ?? []) await admin.auth.admin.deleteUser(p.id);
+    },
+  };
+}
+
+/** A platform developer of their own. `cleanup` removes the account. */
+export async function seedDeveloper() {
+  const admin = createClient<Database>(url, secretKey(), options);
+  const id = Date.now().toString(36);
+  const email = `dev-${id}@e2e.local`;
+  const created = await admin.auth.admin.createUser({
+    email,
+    password: `e2e-${id}-pass`,
+    email_confirm: true,
+  });
+  if (created.error) throw created.error;
+  const userId = created.data.user.id;
+  must(await admin.from("platform_admins").insert({ user_id: userId }));
+  return {
+    email,
+    async cleanup() {
+      await admin.auth.admin.deleteUser(userId);
     },
   };
 }
