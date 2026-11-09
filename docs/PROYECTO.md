@@ -154,5 +154,6 @@ erDiagram
 5. **Duplicar evento**: ¿copia spots, sede y jornadas, o solo spots?
 6. ~~**Facturación**~~: decidido en R8, concepto libre por organización; sirve por
    evento y por período.
-7. **Migración**: ¿qué se migra de la v1 (solo visitantes y medallas, o también
-   eventos pasados)? ¿Los usuarios conservan su login?
+7. ~~**Migración**~~: decidido en R10, se migran la org, sus eventos pasados, spots y
+   medallas (las medallas cuelgan de ellos). Los usuarios conservan su login.
+   Mapeo en [ARQUITECTURA](./ARQUITECTURA.md#migración-de-datos-al-final).

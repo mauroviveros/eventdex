@@ -256,15 +256,48 @@ Si algo sale mal, `scripts/migrate/01_rollback.sql` borra lo nuevo y devuelve la
 
 ## Migración de datos (al final)
 
-Es la última rebanada del [ROADMAP](./ROADMAP.md). La estrategia:
+Es la última rebanada del [ROADMAP](./ROADMAP.md). La fuente es el esquema `v1` del
+mismo proyecto, cerrado a la API. Los usuarios ya están en `auth.users` con sus ids
+y sus perfiles salieron del backfill del corte: no se migran. La v2 no llegó a
+producción y su código queda en el tag `v2-legacy`.
 
-1. La fuente es el esquema `v1` del mismo proyecto, cerrado a la API. Los usuarios
-   ya están en `auth.users` con sus ids: no se migran.
-2. Un script en `scripts/migrate/` (Node, con la clave de servicio) que lee `v1`,
-   transforma al esquema nuevo e inserta de forma idempotente (se puede correr dos
-   veces sin duplicar).
-3. Primero contra la base local, después contra producción.
-4. El código de la v2, que no llegó a producción, queda en el tag `v2-legacy`.
+- **`scripts/migrate/03_import_v1.sql`**: `insert … select` desde `v1`, en una sola
+  transacción y con `on conflict do nothing`. SQL y no Node porque `v1` no se expone
+  por la API y son unas 2500 filas.
+- **Los logos no se copian por SQL:** un script chico los pasa con la API de Storage
+  y la clave de servicio, del bucket `spot` de la v1 a `spot-logos`.
+- Primero contra la base local con una copia del backup, después contra producción.
+
+### Mapeo desde la v1
+
+Conteos del backup del corte (2026-11-08).
+
+| v1 | Filas | Destino | Filas | Cómo |
+|---|---|---|---|---|
+| `organizations` | 1 | `organizations` | 0 | Ya existe en producción, vacía: `lodecharlytcg`, con mejor nombre y el mismo dominio. No se toca; todo lo de la v1 se cuelga de su id |
+| `organizations.domain` | 1 | `organization_domains` | 0 | `evento.lodecharlytcg.com` ya está cargado como principal |
+| `organization_members` | 3 | `organization_members` | 2 | `ADMIN` → `owner`: en la v1 podía hacer todo. Uno de los tres ya es owner de la org |
+| `events` | 5 | `events` | 4 | Mismo id. Publicados y públicos, `published_at` = `created_at`. `edition` → `edition_label`. Slug de título + edición (`burning-tower-fest-mayo-2026`) |
+| `event_locations` | 5 | `venues` | 3 | Una por nombre: dos ediciones comparten sede. `Argentina` → `AR`. Sin latitud ni longitud |
+| `event_schedules` | 5 | `event_schedules` | 4 | Id nuevo, derivado del viejo para que correr dos veces no duplique |
+| `event_spots` | 71 | `event_spots` | 70 | Mismo id. `code` secuencial por evento en orden de alta (`A01`). El `snapshot` guarda nombre, descripción y logo de esa edición |
+| `event_spots` | 71 | `spots` (catálogo) | 58 | Uno por nombre, sin distinguir mayúsculas; 8 se repiten entre ediciones y queda la más reciente. `LOCAL` → `stand` |
+| `event_spots.avatar_path` | 70 | bucket `spot-logos` | 70 | Un archivo por edición, bajo `{organization_id}/`. Ninguno pasa de 1 MiB |
+| `user_spot_history` | 1650 | `spot_claims` | 1649 | `collected_at` → `claimed_at` |
+| — | — | `event_registrations` | 703 | Una por visitante y evento, con fecha de su primera medalla. La v1 no las tenía |
+
+**Se descarta:**
+
+- El evento de prueba `temp_20260807`, ya borrado en la v1, con su sede, su spot y su
+  única medalla.
+- `profiles` de la v1 (1 fila): los perfiles ya salieron de `auth.users`.
+- `raffle_winners` (0 filas) y `events.config`, que repite título y descripción.
+- `event_spots.location` (vacío en todos), 3 archivos del bucket `spot` que ningún
+  spot usa, y la latitud y longitud de las sedes.
+- Las URLs viejas `/spot/[id]`: los cuatro eventos ya terminaron. Los spots conservan
+  su id, así que `/s/[id]` responde con el spot correcto.
+
+El script aborta sin escribir nada si la org `lodecharlytcg` no existe.
 
 ## Preguntas abiertas
 
