@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { fakeClient } from "./fake-supabase";
 import {
-  addDomain,
+  assignDomain,
   createOrganization,
   removeDomain,
   updateSettings,
@@ -191,11 +191,54 @@ describe("uploadLogo", () => {
 });
 
 describe("domains", () => {
-  it("explains a hostname another org already has", async () => {
-    const { client } = fakeClient({ data: null, error: { code: "23505" } });
+  const domain = { organizationId: ORG, hostname: "Expo.com.ar" };
+
+  it("normalizes the hostname and reads the buttons pressed", async () => {
+    const { client, rpc } = fakeRpc({ data: null, error: null });
     expect(
-      await addDomain(client, { organizationId: ORG, hostname: "Expo.com.ar" }),
-    ).toEqual({ ok: false, error: "Ese dominio ya está en uso." });
+      await assignDomain(client, { ...domain, makePrimary: "on" }),
+    ).toEqual({ ok: true, data: { conflict: null } });
+    expect(rpc).toHaveBeenCalledWith("assign_domain", {
+      p_organization_id: ORG,
+      p_hostname: "expo.com.ar",
+      p_make_primary: true,
+      p_transfer: false,
+    });
+  });
+
+  it("names the org that already has the domain", async () => {
+    const { client } = fakeRpc({ data: "Otra Org", error: null });
+    expect(await assignDomain(client, domain)).toEqual({
+      ok: true,
+      data: { conflict: "Otra Org" },
+    });
+  });
+
+  it("explains a domain the org already has", async () => {
+    const { client } = fakeRpc({ data: null, error: { code: "23505" } });
+    expect(await assignDomain(client, domain)).toEqual({
+      ok: false,
+      error: "Esta organización ya tiene ese dominio.",
+    });
+  });
+
+  it("explains why an org's only domain cannot move", async () => {
+    const { client } = fakeRpc({ data: null, error: { code: "23514" } });
+    const result = await assignDomain(client, { ...domain, transfer: "on" });
+    expect(result).toMatchObject({
+      ok: false,
+      error: expect.stringContaining("único dominio"),
+    });
+  });
+
+  it("rejects a hostname with a scheme before calling the database", async () => {
+    const { client, rpc } = fakeRpc({ data: null, error: null });
+    const result = await assignDomain(client, {
+      ...domain,
+      hostname: "https://mal/",
+    });
+    expect(result.ok).toBe(false);
+    expect(rpc).not.toHaveBeenCalled();
   });
 
   it("does not remove the primary one", async () => {

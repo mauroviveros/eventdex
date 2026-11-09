@@ -65,18 +65,12 @@ test("the owner runs the team and the brand shows on the public app", async ({
     await expect(visitor.locator("header img.logo")).toHaveCount(0);
   });
 
-  await test.step("a bad domain is explained, a good one is listed", async () => {
-    await page
-      .getByRole("textbox", { name: "Dominio", exact: true })
-      .fill("https://mal/");
-    await page.getByRole("button", { name: "Sumar dominio" }).click();
-    await expect(page.getByText("Escribí solo el dominio")).toBeVisible();
-
-    await page
-      .getByRole("textbox", { name: "Dominio", exact: true })
-      .fill(`otro-${seed.org.slug}.test`);
-    await page.getByRole("button", { name: "Sumar dominio" }).click();
-    await expect(page.getByText(`otro-${seed.org.slug}.test`)).toBeVisible();
+  await test.step("the owner sees the domains but cannot change them", async () => {
+    await expect(page.getByText("Principal: acá apuntan")).toBeVisible();
+    await expect(page.getByText("escribinos a")).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Sumar dominio" }),
+    ).toHaveCount(0);
   });
 
   await test.step("an invitation is listed and revoked", async () => {

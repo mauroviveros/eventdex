@@ -7,7 +7,11 @@ import { ActionButton } from "@/components/ui/ActionButton";
 import { buttonClass } from "@/components/ui/Button";
 import { PhaseBadge } from "@/components/visitante/PhaseBadge";
 import { eventPhase } from "@/domain/events";
-import { setOrganizationStatusAction } from "@/lib/actions/platform";
+import {
+  removeDomainAction,
+  setOrganizationStatusAction,
+  setPrimaryDomainAction,
+} from "@/lib/actions/platform";
 import { listEvents } from "@/lib/data/events";
 import {
   getOrganizationBySlug,
@@ -16,6 +20,7 @@ import {
 } from "@/lib/data/organizations";
 import { platformMetadata, requireDeveloper } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
+import { DomainForm } from "./DomainForm";
 
 const load = cache(async (slug: string) => {
   const org = await getOrganizationBySlug(await createClient(), slug);
@@ -93,15 +98,48 @@ export default async function PlataformaOrganizacionPage({
           )}
         </section>
 
-        <section className="grid gap-3">
+        <section className="grid gap-4">
           <h2 className="text-px-2">Dominios</h2>
           {settings?.domains.length ? (
-            <ul className="grid gap-1">
+            <ul className="grid max-w-3xl gap-2">
               {settings.domains.map((d) => (
-                <li key={d.id}>
-                  {d.hostname}
-                  {d.is_primary && (
-                    <span className="text-muted-foreground"> · principal</span>
+                <li
+                  key={d.id}
+                  className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-2 border-lcd-3 px-4 py-3"
+                >
+                  <div className="min-w-0">
+                    <p className="break-all">{d.hostname}</p>
+                    {d.is_primary && (
+                      <p className="text-sm text-muted-foreground">
+                        Principal: acá apuntan los QR que se impriman
+                      </p>
+                    )}
+                  </div>
+                  {!d.is_primary && (
+                    <div className="flex flex-wrap gap-2">
+                      <ActionButton
+                        action={setPrimaryDomainAction}
+                        fields={{ id: d.id }}
+                        label="Hacer principal"
+                        ariaLabel={`Hacer principal ${d.hostname}`}
+                        pendingLabel="Cambiando…"
+                        confirm={{
+                          message: `Hacelo solo si ${d.hostname} ya abre los eventos de ${org.name}: los QR que se impriman desde ahora van a apuntar ahí. Los ya impresos siguen andando mientras no se quite el dominio anterior.`,
+                          label: "Sí, hacer principal",
+                        }}
+                      />
+                      <ActionButton
+                        action={removeDomainAction}
+                        fields={{ id: d.id }}
+                        label="Quitar"
+                        ariaLabel={`Quitar ${d.hostname}`}
+                        pendingLabel="Quitando…"
+                        confirm={{
+                          message: `${d.hostname} deja de mostrar los eventos de ${org.name}, y los QR impresos con ese dominio dejan de andar.`,
+                          label: "Sí, quitar",
+                        }}
+                      />
+                    </div>
                   )}
                 </li>
               ))}
@@ -109,6 +147,15 @@ export default async function PlataformaOrganizacionPage({
           ) : (
             <p className="text-muted-foreground">Todavía no tiene dominios.</p>
           )}
+          <section
+            aria-labelledby="nuevo-dominio"
+            className="panel grid max-w-xl gap-6 p-6"
+          >
+            <h3 id="nuevo-dominio" className="text-px-2">
+              Sumar un dominio
+            </h3>
+            <DomainForm organizationId={org.id} />
+          </section>
         </section>
 
         <section className="grid gap-3">

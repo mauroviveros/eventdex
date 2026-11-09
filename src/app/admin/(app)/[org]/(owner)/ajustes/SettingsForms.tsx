@@ -8,7 +8,6 @@ import { Field, FormMessage, SelectField } from "@/components/ui/Field";
 import { LogoField } from "@/components/ui/LogoField";
 import { useFormFeedback } from "@/components/ui/useFormFeedback";
 import {
-  addDomainAction,
   removeLogoAction,
   updateSettingsAction,
   uploadLogoAction,
@@ -143,42 +142,5 @@ function LogoForm({ ids, hasLogo }: { ids: Ids; hasLogo: boolean }) {
         />
       )}
     </div>
-  );
-}
-
-export function AddDomainForm({ ids }: { ids: Ids }) {
-  const [state, action, pending] = useActionState(addDomainAction, null);
-  const { form, failed, fields, values } = useFormFeedback(state);
-
-  return (
-    <form ref={form} action={action} className="grid gap-6" noValidate>
-      <Hidden ids={ids} />
-      {failed && !failed.fieldErrors && (
-        <FormMessage tone="error">{failed.error}</FormMessage>
-      )}
-      {state?.ok && (
-        <FormMessage tone="success">
-          Dominio sumado. Avisanos para conectarlo: hasta entonces no abre.
-        </FormMessage>
-      )}
-      <Field
-        label="Dominio"
-        name="hostname"
-        defaultValue={values.hostname}
-        autoComplete="off"
-        placeholder="expo.com.ar"
-        required
-        hint="Solo el dominio, sin https:// ni barras."
-        error={fields.hostname}
-      />
-      <Button
-        type="submit"
-        pending={pending}
-        pendingLabel="Sumando…"
-        className="justify-self-start"
-      >
-        Sumar dominio
-      </Button>
-    </form>
   );
 }
