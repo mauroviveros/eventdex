@@ -234,7 +234,7 @@ Branch `feat/equipo-y-marca`.
    lista de zonas duplicada). axe: 0 violaciones en equipo, ajustes y portada, con
    owner y en modo soporte, que queda de solo lectura.
 
-## R8 · Plataforma ▶
+## R8 · Plataforma ✅
 
 Branch `feat/plataforma`.
 
@@ -247,7 +247,11 @@ Branch `feat/plataforma`.
    `/plataforma/facturacion` y `/plataforma/auditoria`.
    *Listo cuando* se registra una factura, se marca pagada y aparece en la
    auditoría.
-4. **Auditoría.**
+4. ✅ **Auditoría.** `/code-review`: 7 hallazgos, 5 resueltos (test de pgTAP que
+   dependía de datos locales, consultas antes de la guarda del developer, textos y
+   el límite de la lista de facturas) y 2 sin cambios por ahora (ninguna acción hace
+   baja lógica de una org; los selects cargan de más con pocas orgs). axe: 0 violaciones en
+   las cuatro pantallas, en claro y oscuro, a 412 y 1280 px.
 
 ## R9 · Landing
 
