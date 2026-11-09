@@ -2,7 +2,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(28);
+select plan(29);
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000008d1', 'dev@team.local'),
@@ -106,8 +106,6 @@ update public.organization_members set role = 'staff'
 where user_id = '00000000-0000-0000-0000-0000000008a3';
 delete from public.organization_members where user_id = '00000000-0000-0000-0000-0000000008a3';
 delete from public.organization_invitations where email = 'nueva@team.local';
-insert into public.organization_domains (organization_id, hostname)
-values ('0000000a-0000-0000-0000-000000000008', 'team-a.test');
 
 reset role;
 
@@ -117,12 +115,11 @@ select results_eq(
        and actor_id = '00000000-0000-0000-0000-0000000008a1'
      group by action order by action $$,
   $$ values
-     ('domain.created', 1),
      ('invitation.created', 2),
      ('invitation.deleted', 2),
      ('member.deleted', 1),
      ('member.updated', 2) $$,
-  'team and domain changes leave a trail with their actor'
+  'team changes leave a trail with their actor'
 );
 select results_eq(
   $$ select diff -> 'before' ->> 'role', diff -> 'after' ->> 'role' from public.audit_logs
@@ -210,9 +207,17 @@ select throws_ok(
 
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000008a1","role":"authenticated"}', true);
 
+select throws_ok(
+  $$ select public.set_primary_domain('00000000-0000-0000-0000-000000000802') $$,
+  '42501', null,
+  'the owner cannot change the primary domain'
+);
+
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000008d1","role":"authenticated"}', true);
+
 select lives_ok(
   $$ select public.set_primary_domain('00000000-0000-0000-0000-000000000802') $$,
-  'the owner changes the primary domain'
+  'the developer changes the primary domain'
 );
 select results_eq(
   $$ select hostname::text from public.organization_domains

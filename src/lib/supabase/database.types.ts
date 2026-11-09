@@ -966,6 +966,15 @@ export type Database = {
           isSetofReturn: true;
         };
       };
+      assign_domain: {
+        Args: {
+          p_hostname: string;
+          p_make_primary?: boolean;
+          p_organization_id: string;
+          p_transfer?: boolean;
+        };
+        Returns: string;
+      };
       claim_spot: {
         Args: { p_event_spot_id: string };
         Returns: {
