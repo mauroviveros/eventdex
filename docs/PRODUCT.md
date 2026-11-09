@@ -64,7 +64,7 @@ Es una **mecánica de colección** atada al espacio físico: cada medalla prueba
 - Voz con el staff y el owner: clara, directa y operativa. Dice qué pasó y qué hacer, sin chistes.
 - Voz en la plataforma: precisa y sin ambigüedad. Las acciones destructivas dicen exactamente a qué afectan.
 - Los errores nunca culpan al usuario y siempre ofrecen el paso siguiente.
-- La marca de cada organización (logo y color en `organizations`) manda en la app pública. Eventdex se ve en la landing, el admin y la plataforma.
+- La marca de cada organización (logo y color en `organizations`, o un skin a medida en código) manda en la app pública. Eventdex se ve en la landing, el admin y la plataforma.
 
 ## Evidence on Hand
 
@@ -84,6 +84,6 @@ Es una **mecánica de colección** atada al espacio físico: cada medalla prueba
 
 - WCAG 2.2 AA en todas las superficies: contraste, foco visible, áreas táctiles de 24×24 px como mínimo (44×44 en las acciones principales del visitante) y navegación por teclado completa en el admin.
 - La app del visitante se diseña primero para 360 px de ancho, uso con una mano, sol directo y conexión lenta.
-- El color de marca de cada organización no puede romper el contraste: de él se toman solo el tono y la saturación, y la luminosidad de cada tono es fija.
+- El color de marca de cada organización no puede romper el contraste: de él se toman solo el tono y la saturación, y la luminosidad de cada tono es fija. Un skin elige sus tonos a mano, así que cada uno trae su test de contraste con los mismos pares.
 - Se respeta `prefers-reduced-motion`; las celebraciones no dependen solo de la animación.
 - Lenguaje llano: nada de jerga técnica para el visitante.

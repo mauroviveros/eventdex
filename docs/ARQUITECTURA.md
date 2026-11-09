@@ -169,6 +169,15 @@ carpetas nunca se alcanzan directo (`expo.com/admin` es un 404):
   principio se hace a mano desde el dashboard de Vercel; se automatiza con la API
   de dominios cuando haya más de un puñado de organizaciones.
 
+### Skins
+
+Una org puede tener un look a medida en vez del color de marca. Vive en
+`src/skins/<nombre>/` (paleta, CSS acotado por `data-skin` y fuente con `next/font`) y
+`skinFor(slug)`, en `src/skins/index.ts`, dice cuál le toca. **Shortcut**: va atado al
+slug y sale con un deploy, sin columna ni pantalla para elegirlo; se pasa a una columna
+si un owner lo tiene que elegir. Solo afecta su app pública y la vista previa de
+Ajustes: el admin sigue con la identidad de Eventdex.
+
 ## Entornos
 
 | Entorno | Base | App | Para qué |
