@@ -262,20 +262,25 @@ Branch `feat/landing`. Sin DB: es contenido estático.
    Lighthouse en mobile.
 2. **Auditoría.** SEO y accesibilidad.
 
-## R10 · Migración de datos
+## R10 · Migración de datos ▶
 
 Branch `feat/migracion`. Los datos de la v1 (esquema `v1` del proyecto de
 producción) al esquema nuevo. La v2 no llegó a producción.
 
-1. **Relevamiento.** El mapeo tabla por tabla desde el esquema `v1`.
+1. ✅ **Relevamiento.** El mapeo tabla por tabla desde el esquema `v1`, en
+   [ARQUITECTURA](./ARQUITECTURA.md#mapeo-desde-la-v1).
    *Listo cuando* el mapeo está aprobado, incluyendo qué se descarta.
-2. **Script.** `scripts/migrate/`, idempotente, con un reporte de cuántas filas
+2. **Logos de spots.** Bucket `spot-logos` con permisos por organización, subida
+   desde el formulario del spot y las medallas mostrando el logo.
+   *Listo cuando* pgTAP prueba que una org no escribe en la carpeta de otra, y un
+   spot con logo se ve así en la portada y en mis medallas.
+3. **Script.** `scripts/migrate/`, idempotente, con un reporte de cuántas filas
    entran y cuántas se descartan.
    *Listo cuando* corre dos veces contra la base local sin duplicar, y los conteos
    cierran.
-3. **Producción.** Corrida real con backup previo.
+4. **Producción.** Corrida real con backup previo.
    *Listo cuando* un visitante de la v1 inicia sesión y ve sus medallas viejas.
-4. **Auditoría.**
+5. **Auditoría.**
 
 ---
 
