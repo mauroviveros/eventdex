@@ -9,14 +9,7 @@ import {
   updateEventSpot,
   updateSpot,
 } from "@/lib/spots";
-import { type FormState, runFormWrite } from "./form";
-
-/** The file stays out of FormState: on error only the text values go back. */
-function takeLogo(formData: FormData) {
-  const logo = formData.get("logo");
-  formData.delete("logo");
-  return logo;
-}
+import { type FormState, runFormWrite, takeLogo } from "./form";
 
 /** Lands on the catalog, where the new spot shows up. */
 export async function createSpotAction(

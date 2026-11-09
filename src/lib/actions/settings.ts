@@ -8,7 +8,7 @@ import {
   updateSettings,
   uploadLogo,
 } from "@/lib/organizations";
-import { type FormState, runFormWrite } from "./form";
+import { type FormState, runFormWrite, takeLogo } from "./form";
 import { invalidateOrganizations } from "./invalidate";
 
 type Write = Parameters<typeof runFormWrite>[1];
@@ -32,9 +32,7 @@ export async function uploadLogoAction(
   _prev: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  // The file stays out of FormState: on error only the text values go back.
-  const logo = formData.get("logo");
-  formData.delete("logo");
+  const logo = takeLogo(formData);
   return runPublicWrite(formData, (supabase, v) =>
     uploadLogo(supabase, { ...v, logo }),
   );
