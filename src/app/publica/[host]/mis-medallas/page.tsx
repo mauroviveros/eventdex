@@ -30,11 +30,11 @@ export default async function MisMedallasPage({
   const { org } = await requireHostOrganization((await params).host);
   const { evento } = await searchParams;
   const supabase = await createClient();
-  const [visitor, active] = await Promise.all([
-    requireVisitor(),
+  const visitor = await requireVisitor();
+  const [active, myEvents] = await Promise.all([
     getActiveEvent(supabase, org.id),
+    listMyEvents(supabase, org.id, visitor.id),
   ]);
-  const myEvents = await listMyEvents(supabase, org.id, visitor.id);
   // A live event is where the visitor is collecting now. Otherwise the active
   // one may be next week's: show the last event they collected in instead.
   const live =

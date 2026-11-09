@@ -75,6 +75,8 @@ export function Logo({
     <img
       src={src}
       alt={label}
+      loading="lazy"
+      decoding="async"
       data-mode={mode}
       className={`logo ${className}`}
     />
