@@ -210,7 +210,7 @@ con acento azul y confeti, y el hero de evento con foto y botón.
 **Key Characteristics:**
 - Cuatro tonos de un solo matiz, usados como roles; el oscuro invierte la rampa y el papel siempre es claro.
 - Fuera de la rampa, solo peligro (siempre con ícono) y, en la app pública, los dos acentos de marquesina (siempre sobre el fondo). La salvedad es el botón A rojo de la consola de la landing.
-- Logos posterizados a los cuatro tonos; sprites de 12×12 cuando no hay logo.
+- Logos tal cual son, en gris solo mientras la medalla está pendiente; sprites de 12×12 cuando no hay logo.
 - Jersey 10 en múltiplos de 10 px para títulos, contadores y códigos; Atkinson Hyperlegible Next para leer.
 - Esquinas rectas, filetes de 2 px, sin sombras suaves; líneas de barrido como textura en la app pública.
 - Movimiento en pasos (`steps(1, end)`), apagado con `prefers-reduced-motion`.
@@ -477,29 +477,24 @@ Tipo consola: bloque sólido, letra pixelada, se hunde al tocarlo.
   en tinta, 12 × 16 px de padding.
 
 ### Medalla (signature)
-Casilla de 96 px con borde de 2 px; adentro, el logo del spot posterizado o,
+Casilla de 96 px con borde de 2 px; adentro, el logo original del spot, entero, o,
 si no tiene, el sprite de 12×12 de su tipo (stand, atracción, sponsor,
 actividad) a 6 px por píxel. Debajo: código en Jersey 10, nombre a 14 px y
 estado en Jersey 10. Cuatro estados:
-- **Conseguida:** a todo tono, borde sólido en tinta.
-- **Pendiente:** silueta en relleno (logo en el filtro desvaído), borde
-  punteado en secundario.
+- **Conseguida:** a todo tono (logo a color real), borde sólido en tinta.
+- **Pendiente:** silueta en relleno (logo en gris, al 50 %), borde punteado en
+  secundario.
 - **Nueva:** fondo relleno y la revelación en pasos.
 - **Inactiva:** silueta tramada: el sprite pierde un píxel de cada dos y el
   logo lleva una máscara de damero de 4 px, así el fondo se ve a través.
 
-**Logos posterizados.** `LcdFilters` renderiza filtros SVG que pasan la imagen a
-luminancia y la cuantizan en cuatro bandas mapeadas a **roles**: lo más claro
-(el fondo del logo) cae en el fondo, lo más oscuro en la tinta. Hay tres
-intensidades (lleno, medio, desvaído) y un juego invertido para oscuro;
-`globals.css` elige cuál vía `--logo-full`, `--logo-mid` y `--logo-faded`, así
-el logo se invierte con el resto de la pantalla. Se renderizan una vez dentro de
-la `.ramp-scope` que define la rampa.
+**Logos tal cual.** El logo es el arte de quien lo subió: no pasa por la rampa ni
+se invierte en oscuro, y se ajusta sin recortarse. El único tratamiento es el gris
+de la medalla que falta conseguir; ganarla le devuelve el color.
 
 **Revelación (el movimiento firma).** Una medalla nueva pasa de relleno a
 secundario a tinta en 900 ms con `steps(1, end)`, en tres cuadros (0, 34 %, 67
-%); el logo hace lo mismo pasando por desvaído, medio y lleno. Nada se
-interpola.
+%); el logo hace lo mismo, de gris a color. Nada se interpola.
 
 ### Cartel del evento (app pública)
 La marquesina de la vieja app, en tres piezas apiladas y centradas:
@@ -589,6 +584,6 @@ separación.
 - **Don't** rellenar con un acento nada más que el botón A de la consola de la landing, ni llevar el amarillo a fondo.
 - **Don't** poner `.scanlines` en la landing.
 - **Don't** usar las líneas de barrido para marcar nada ni subir su opacidad: son textura.
-- **Don't** mostrar un logo sin pasarlo por los filtros LCD.
+- **Don't** alterar un logo fuera del gris de la medalla pendiente, ni recortarlo.
 - **Don't** interpolar movimiento (easing suave); y todo se apaga con `prefers-reduced-motion`: la medalla nueva aparece revelada y nada parpadea.
 - **Don't** volver a tarjetas blancas de SaaS con acento azul y confeti.
