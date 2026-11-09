@@ -54,10 +54,12 @@ test("a visitor scans a QR, signs in, collects, and staff can block them", async
     await expect(page).toHaveURL(`${seed.origin}/mis-medallas`);
     const collection = page.getByRole("list", { name: "Tu colección" });
     await expect(
-      collection.getByRole("img", { name: "Café de la Esquina: Conseguida" }),
+      collection.getByRole("figure", {
+        name: /Café de la Esquina.*Conseguida/,
+      }),
     ).toBeVisible();
     await expect(
-      collection.getByRole("img", { name: "Rueda gigante: Te falta" }),
+      collection.getByRole("figure", { name: /Rueda gigante.*Te falta/ }),
     ).toBeVisible();
   });
 
@@ -67,10 +69,10 @@ test("a visitor scans a QR, signs in, collects, and staff can block them", async
       page.getByRole("heading", { name: "Medallas: 1 de 2" }),
     ).toBeVisible();
     await expect(
-      page.getByRole("img", { name: "Café de la Esquina: Conseguida" }),
+      page.getByRole("figure", { name: /Café de la Esquina.*Conseguida/ }),
     ).toBeVisible();
     await expect(
-      page.getByRole("img", { name: "Rueda gigante: Te falta" }),
+      page.getByRole("figure", { name: /Rueda gigante.*Te falta/ }),
     ).toBeVisible();
   });
 
@@ -118,18 +120,22 @@ test("a visitor picks which event's collection to see", async ({ page }) => {
       picker.getByRole("link", { name: "Feria E2E", exact: true }),
     ).toHaveAttribute("aria-current", "page");
     await expect(
-      collection.getByRole("img", { name: "Café de la Esquina: Conseguida" }),
+      collection.getByRole("figure", {
+        name: /Café de la Esquina.*Conseguida/,
+      }),
     ).toBeVisible();
 
     await picker.getByRole("link", { name: "Feria E2E · Abril" }).click();
     await expect(page).toHaveURL(/\?evento=feria-vieja$/);
     await expect(
-      collection.getByRole("img", { name: "Stand viejo: Conseguida" }),
+      collection.getByRole("figure", { name: /Stand viejo.*Conseguida/ }),
     ).toBeVisible();
 
     await page.goto(`${own.origin}/mis-medallas?evento=no-existe`);
     await expect(
-      collection.getByRole("img", { name: "Café de la Esquina: Conseguida" }),
+      collection.getByRole("figure", {
+        name: /Café de la Esquina.*Conseguida/,
+      }),
     ).toBeVisible();
   } finally {
     await own.cleanup();

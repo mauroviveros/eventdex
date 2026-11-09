@@ -8,6 +8,7 @@ type Props = {
   mode?: SpriteMode;
   /** Rendered size of one pixel, in px. */
   scale?: number;
+  /** Empty when the text next to it already says what it is. */
   label: string;
 };
 
@@ -18,8 +19,9 @@ export function Sprite({ type, mode = "lleno", scale = 6, label }: Props) {
     <svg
       className="sprite shrink-0"
       data-mode={mode}
-      role="img"
-      aria-label={label}
+      role={label ? "img" : undefined}
+      aria-label={label || undefined}
+      aria-hidden={label ? undefined : true}
       width={size * scale}
       height={size * scale}
       viewBox={`0 0 ${size} ${size}`}
