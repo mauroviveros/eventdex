@@ -117,24 +117,22 @@ export async function getMyProgress(
 }
 
 /**
- * The slug of the last event of this org where the visitor collected (their
- * registration is born with the first medal). Null if they never did.
+ * The events of this org where the visitor collected, latest first (their
+ * registration is born with the first medal).
  */
-export async function getLastCollectedEventSlug(
+export async function listMyEvents(
   supabase: Supabase,
   organizationId: string,
   userId: string,
 ) {
   const { data, error } = await supabase
     .from("event_registrations")
-    .select("event:events!inner (slug)")
+    .select("event:events!inner (slug, title, edition_label)")
     .eq("organization_id", organizationId)
     .eq("user_id", userId)
     .eq("event.status", "published")
     .is("event.deleted_at", null)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .order("created_at", { ascending: false });
   if (error) throw error;
-  return data?.event.slug ?? null;
+  return data.map((r) => r.event);
 }
