@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 export { CONTACT_EMAIL } from "@/lib/contact";
-export const UPDATED = "7 de noviembre de 2026";
+export const UPDATED = "9 de noviembre de 2026";
 
 /** Shared frame for the legal pages: readable measure, plain structure. */
 export function LegalPage({
