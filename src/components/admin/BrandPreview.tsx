@@ -3,6 +3,7 @@ import { Sprite } from "@/components/pixel/Sprite";
 import { Monogram } from "@/components/ui/Monogram";
 import { Logo } from "@/components/visitante/Medal";
 import { rampFromHex } from "@/domain/palette";
+import type { Skin } from "@/skins/types";
 
 const SCHEMES = [
   ["light", "Claro"],
@@ -17,15 +18,19 @@ export function BrandPreview({
   color,
   name,
   logo,
+  skin,
 }: {
   color: string;
   name: string;
   logo: string | null;
+  /** The org's made-to-measure look: it replaces the color. */
+  skin?: Skin;
 }) {
-  const tones = rampFromHex(color);
-  const style = Object.fromEntries(
-    tones.map((tone, i) => [`--ramp-${i}`, tone]),
-  ) as CSSProperties;
+  const tones = skin?.ramp ?? rampFromHex(color);
+  const style = {
+    ...Object.fromEntries(tones.map((tone, i) => [`--ramp-${i}`, tone])),
+    ...skin?.vars,
+  } as CSSProperties;
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
@@ -34,7 +39,8 @@ export function BrandPreview({
           key={scheme}
           style={style}
           data-scheme={scheme}
-          className="ramp-scope min-w-0 border-2 border-lcd-3 bg-lcd-0 text-lcd-3"
+          data-skin={skin?.name}
+          className={`ramp-scope min-w-0 border-2 border-lcd-3 bg-lcd-0 text-lcd-3 ${skin?.fontClass ?? ""}`}
         >
           <div className="flex min-h-16 min-w-0 items-center gap-3 border-b-2 border-lcd-3 px-4 py-2 font-display text-px-2">
             {logo ? (
