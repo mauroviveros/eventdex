@@ -59,7 +59,7 @@ staff y owner.
 | `/[org]/spots/[spot]` | Editar o archivar un spot; en qué eventos se usa. `[spot]` es el `id`: un spot no tiene slug, para no pedir uno por cada stand | Miembro | R3 |
 | `/[org]/sedes` | Sedes: lista y alta en la misma vista. La edición llega cuando haga falta | Miembro | R2 |
 | `/[org]/equipo` | Miembros, invitaciones y roles. Sin mails: quien invita avisa, y la invitación se acepta al entrar con esa cuenta. Nadie se cambia ni se quita a sí mismo desde acá | Owner (developer: solo lectura) | R7 |
-| `/[org]/ajustes` | Nombre, zona horaria, marca (logo y color, con vista previa en claro y oscuro) y dominios | Owner (developer: solo lectura) | R7 |
+| `/[org]/ajustes` | Nombre, zona horaria, marca (logo y color, con vista previa en claro y oscuro). Los dominios se ven, pero los configura el developer | Owner (developer: solo lectura) | R7 |
 
 ## Plataforma · `eventdex-admin.vercel.app/plataforma`
 
@@ -71,7 +71,7 @@ un 404, no un 403: la ruta no existe para él.
 | `/plataforma` | Resumen: organizaciones, eventos en curso, facturas pendientes | Developer | R8 |
 | `/plataforma/organizaciones` | Lista de organizaciones con su estado | Developer | R1 |
 | `/plataforma/organizaciones/nueva` | Alta de organización + invitación al owner + primer dominio | Developer | R1 |
-| `/plataforma/organizaciones/[org]` | Detalle: dominios, miembros, eventos, suspender o reactivar, y la entrada al modo soporte | Developer | R8 |
+| `/plataforma/organizaciones/[org]` | Detalle: dominios (sumar, hacer principal, quitar y mover desde otra org, con confirmación), miembros, eventos, suspender o reactivar, y la entrada al modo soporte | Developer | R8 |
 | `/plataforma/facturacion` | Facturas manuales: alta, marcar pagada, anular | Developer | R8 |
 | `/plataforma/auditoria` | Registro de acciones sensibles, filtrable por organización y área en la URL (`?org=…&area=…&pagina=…`) | Developer | R8 |
 
