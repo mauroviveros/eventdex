@@ -253,14 +253,18 @@ Branch `feat/plataforma`.
    baja lógica de una org; los selects cargan de más con pocas orgs). axe: 0 violaciones en
    las cuatro pantallas, en claro y oscuro, a 412 y 1280 px.
 
-## R9 · Landing
+## R9 · Landing ✅
 
 Branch `feat/landing`. Sin DB: es contenido estático.
 
 1. ✅ **Vista.** `/` de eventdex.com, con `/impeccable` en modo Persuade.
    *Listo cuando* está aprobada, no inventa testimonios ni métricas y pasa
    Lighthouse en mobile.
-2. **Auditoría.** SEO y accesibilidad.
+2. ✅ **Auditoría.** SEO y accesibilidad. `/code-review`: 10 hallazgos, 9 resueltos
+   (faltaban `robots.txt`, `sitemap.xml`, la URL canónica y los datos para compartir;
+   la consola no anunciaba el stand elegido a los lectores de pantalla) y 1 sin
+   cambios (el armado de las variables de la rampa, repetido en otras vistas). Lighthouse
+   mobile sobre el build de producción: 100 en las cuatro categorías.
 
 ## R10 · Migración de datos ✅
 
