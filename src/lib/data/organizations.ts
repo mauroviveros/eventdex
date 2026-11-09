@@ -95,6 +95,11 @@ export function spotLogoUrl(path: string | null) {
   return path ? logoUrl(path, "spot-logos") : undefined;
 }
 
+/** Same for an event's banner. */
+export function coverUrl(path: string | null) {
+  return path ? logoUrl(path, "event-covers") : undefined;
+}
+
 /** The org's primary hostname: where its public app (and every QR) points. */
 export async function getPrimaryHostname(
   supabase: Supabase,

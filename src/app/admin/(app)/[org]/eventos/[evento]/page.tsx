@@ -3,6 +3,7 @@ import Link from "next/link";
 import { PageBody, TopBar } from "@/components/admin/TopBar";
 import { ActionButton } from "@/components/ui/ActionButton";
 import { buttonClass } from "@/components/ui/Button";
+import { EventCover } from "@/components/visitante/EventHome";
 import { PhaseBadge } from "@/components/visitante/PhaseBadge";
 import {
   eventPhase,
@@ -10,6 +11,8 @@ import {
   formatScheduleTimes,
 } from "@/domain/events";
 import { deleteScheduleAction } from "@/lib/actions/events";
+import { coverUrl } from "@/lib/data/organizations";
+import { CoverForm } from "./CoverForm";
 import { load } from "./load";
 import { AddScheduleForm, PublishButton } from "./ScheduleForms";
 
@@ -30,6 +33,7 @@ export default async function EventoPage({
   const phase = eventPhase(event.status, event.schedules);
   const draft = event.status === "draft";
   const editable = !support;
+  const cover = coverUrl(event.cover_path);
 
   return (
     <>
@@ -120,6 +124,30 @@ export default async function EventoPage({
             />
           </section>
         )}
+
+        <section aria-labelledby="banner" className="grid max-w-3xl gap-4">
+          <h2 id="banner" className="text-px-2">
+            Banner
+          </h2>
+          {cover ? (
+            <EventCover src={cover} alt="Banner actual" />
+          ) : (
+            <p className="max-w-prose border-2 border-dashed border-lcd-2 px-6 py-8">
+              Todavía no hay banner. Si subís uno, se ve arriba de todo en la
+              portada del evento.
+            </p>
+          )}
+          {editable && (
+            <CoverForm
+              ids={{
+                org: org.slug,
+                organizationId: org.id,
+                eventId: event.id,
+              }}
+              hasCover={cover !== undefined}
+            />
+          )}
+        </section>
 
         <div className="grid grid-cols-1 gap-10 xl:grid-cols-[1fr_28rem] xl:items-start">
           <section

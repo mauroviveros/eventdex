@@ -7,7 +7,7 @@ import {
   formatEventDates,
   formatScheduleTimes,
 } from "@/domain/events";
-import { spotLogoUrl } from "@/lib/data/organizations";
+import { coverUrl, spotLogoUrl } from "@/lib/data/organizations";
 import type { getActiveEvent } from "@/lib/data/public";
 
 export type PublicEvent = NonNullable<
@@ -42,7 +42,22 @@ export function EventHome({ event, now }: Props) {
   );
 }
 
-/** Date on a tab, the title on a double-ruled plate, the venue on a tab, then the countdown. */
+/** The event's banner, as uploaded. */
+export function EventCover({ src, alt }: { src: string; alt: string }) {
+  return (
+    // shortcut: no stored dimensions, so the page shifts as it loads; save width and height at upload if it shows in Web Vitals
+    // biome-ignore lint/performance/noImgElement: banners come from Storage, at most 1.5 MB; next/image adds nothing here
+    <img
+      src={src}
+      alt={alt}
+      fetchPriority="high"
+      decoding="async"
+      className="max-h-[70dvh] w-auto max-w-full border-2 border-lcd-3"
+    />
+  );
+}
+
+/** The banner if there is one, date on a tab, the title on a double-ruled plate, the venue on a tab, then the countdown. */
 export function Marquee({ event, now }: Props) {
   const only = event.schedules.length === 1 ? event.schedules[0] : null;
   const dates = formatEventDates(event.schedules, event.timezone, now);
@@ -50,9 +65,11 @@ export function Marquee({ event, now }: Props) {
     ? [event.venue.address_line, event.venue.city].filter(Boolean).join(" · ")
     : "";
   const subtitle = event.summary ?? event.edition_label;
+  const cover = coverUrl(event.cover_path);
 
   return (
     <header className="grid min-h-[50dvh] place-content-center justify-items-center gap-8 text-center">
+      {cover && <EventCover src={cover} alt={`Cartel de ${event.title}`} />}
       <div className="grid justify-items-center">
         {dates && (
           <p className="relative z-10 -mb-0.5 border-2 border-b-0 border-lcd-2 bg-lcd-0 px-4 py-2 font-display text-px-1 text-accent-yellow">
