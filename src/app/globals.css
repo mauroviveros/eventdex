@@ -123,6 +123,8 @@
   --text-px-3--line-height: 1;
   --text-px-4: 3.75rem;
   --text-px-4--line-height: 1;
+  --text-px-5: 5rem;
+  --text-px-5--line-height: 1;
 
   /* Square world: no radii, no soft shadows. */
   --radius-none: 0;
