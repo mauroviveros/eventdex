@@ -270,7 +270,7 @@ producción) al esquema nuevo. La v2 no llegó a producción.
 1. ✅ **Relevamiento.** El mapeo tabla por tabla desde el esquema `v1`, en
    [ARQUITECTURA](./ARQUITECTURA.md#mapeo-desde-la-v1).
    *Listo cuando* el mapeo está aprobado, incluyendo qué se descarta.
-2. **Logos de spots.** Bucket `spot-logos` con permisos por organización, subida
+2. ✅ **Logos de spots.** Bucket `spot-logos` con permisos por organización, subida
    desde el formulario del spot y las medallas mostrando el logo.
    *Listo cuando* pgTAP prueba que una org no escribe en la carpeta de otra, y un
    spot con logo se ve así en la portada y en mis medallas.

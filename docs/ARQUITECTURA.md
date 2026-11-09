@@ -234,7 +234,9 @@ pueda levantar Supabase completo (auth y Mailpit) y la app.
   buckets con políticas por organización. `org-logos` es público para leer, solo
   el owner escribe bajo la carpeta `{organization_id}/`, hasta 1 MiB y sin SVG (un
   SVG servido desde el bucket puede ejecutar scripts). El logo sube por Server
-  Action, por eso `serverActions.bodySizeLimit` es de 2 MB.
+  Action, por eso `serverActions.bodySizeLimit` es de 2 MB. `spot-logos` tiene los
+  mismos límites, cualquier miembro de la org sube bajo su carpeta y los archivos
+  no se reemplazan ni se borran: el snapshot de un evento publicado puede usarlos.
 
 ## Corte a producción (hecho el 2026-11-08)
 
