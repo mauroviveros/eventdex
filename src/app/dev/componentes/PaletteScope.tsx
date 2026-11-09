@@ -1,7 +1,6 @@
 "use client";
 
 import { type CSSProperties, type ReactNode, useState } from "react";
-import { LcdFilters } from "@/components/pixel/LcdFilters";
 import { EVENTDEX_HUE, ramp, rampFromHex } from "@/domain/palette";
 
 // Synthetic organizations, only to show the palette swap.
@@ -31,7 +30,6 @@ export function PaletteScope({ children }: { children: ReactNode }) {
       data-scheme={scheme === "system" ? undefined : scheme}
       className="ramp-scope min-h-dvh bg-lcd-0 text-lcd-3"
     >
-      <LcdFilters ramp={tones} />
       {/* Sticky only where the switcher fits on one row; on phones it would eat the screen. */}
       <header className="z-10 border-b-2 border-lcd-3 bg-lcd-0 lg:sticky lg:top-0">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-1 px-4 py-2 sm:px-6">

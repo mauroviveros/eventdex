@@ -115,7 +115,7 @@ function LogoForm({ ids, hasLogo }: { ids: Ids; hasLogo: boolean }) {
           <FormMessage tone="success">Logo actualizado.</FormMessage>
         )}
         <LogoField
-          hint="PNG, JPG o WebP, hasta 1 MB. Se muestra en los cuatro tonos de tu marca."
+          hint="PNG, JPG o WebP, hasta 1 MB. Se muestra tal cual lo subas."
           error={fields.logo}
         />
         <Button
