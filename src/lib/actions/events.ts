@@ -7,8 +7,29 @@ import {
   createVenue,
   deleteSchedule,
   publishEvent,
+  removeCover,
+  uploadCover,
 } from "@/lib/events";
-import { type FormState, runFormWrite } from "./form";
+import { type FormState, runFormWrite, takeLogo } from "./form";
+
+export async function uploadCoverAction(
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const cover = takeLogo(formData);
+  const r = await runFormWrite(formData, (supabase, v) =>
+    uploadCover(supabase, { ...v, cover }),
+  );
+  return r.ok ? { ok: true } : r.state;
+}
+
+export async function removeCoverAction(
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const r = await runFormWrite(formData, removeCover);
+  return r.ok ? { ok: true } : r.state;
+}
 
 export async function createVenueAction(
   _prev: FormState,

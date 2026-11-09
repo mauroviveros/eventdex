@@ -1,9 +1,11 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   addSchedule,
   createEvent,
   deleteSchedule,
   publishEvent,
+  removeCover,
+  uploadCover,
 } from "./events";
 import { fakeClient, inserted } from "./fake-supabase";
 
@@ -152,5 +154,78 @@ describe("publishEvent", () => {
       error:
         "Para publicar, el evento tiene que ser un borrador con al menos una jornada.",
     });
+  });
+});
+
+describe("event cover", () => {
+  const ref = { organizationId: ORG, eventId: EVENT };
+  const png = () => new File(["x"], "banner.png", { type: "image/png" });
+
+  function withStorage(...results: { data: unknown; error: unknown }[]) {
+    const { client } = fakeClient(...results);
+    const upload = vi.fn(async (_path: string) => ({ error: null }));
+    const remove = vi.fn(async () => ({ error: null }));
+    return {
+      client: {
+        ...(client as object),
+        storage: { from: () => ({ upload, remove }) },
+      } as never,
+      upload,
+      remove,
+    };
+  }
+
+  it("uploads under the org folder and deletes the previous file", async () => {
+    const { client, upload, remove } = withStorage(
+      { data: { cover_path: `${ORG}/old.png` }, error: null },
+      { data: [{ id: EVENT }], error: null },
+    );
+    expect(await uploadCover(client, { ...ref, cover: png() })).toEqual({
+      ok: true,
+      data: null,
+    });
+    expect(upload.mock.calls[0]?.[0]).toMatch(new RegExp(`^${ORG}/.+\\.png$`));
+    expect(remove).toHaveBeenCalledWith([`${ORG}/old.png`]);
+  });
+
+  it("deletes the new file if the event can't point to it", async () => {
+    const { client, upload, remove } = withStorage(
+      { data: { cover_path: null }, error: null },
+      { data: [], error: null },
+    );
+    const result = await uploadCover(client, { ...ref, cover: png() });
+    expect(result.ok).toBe(false);
+    expect(remove).toHaveBeenCalledWith([upload.mock.calls[0]?.[0]]);
+  });
+
+  it("uploads nothing for an event of another org", async () => {
+    const { client, upload } = withStorage({ data: null, error: null });
+    const result = await uploadCover(client, { ...ref, cover: png() });
+    expect(result.ok).toBe(false);
+    expect(upload).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["an SVG", new File(["x"], "a.svg", { type: "image/svg+xml" })],
+    [
+      "a file over 1.5 MB",
+      new File([new Uint8Array(1_572_865)], "a.png", { type: "image/png" }),
+    ],
+    ["no file", null],
+  ])("rejects %s before uploading", async (_label, cover) => {
+    const { client, upload } = withStorage();
+    const result = await uploadCover(client, { ...ref, cover });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.fieldErrors?.cover).toBeTruthy();
+    expect(upload).not.toHaveBeenCalled();
+  });
+
+  it("removing clears the event and deletes the file", async () => {
+    const { client, remove } = withStorage(
+      { data: { cover_path: `${ORG}/old.png` }, error: null },
+      { data: [{ id: EVENT }], error: null },
+    );
+    expect(await removeCover(client, ref)).toEqual({ ok: true, data: null });
+    expect(remove).toHaveBeenCalledWith([`${ORG}/old.png`]);
   });
 });

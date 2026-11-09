@@ -19,6 +19,7 @@ import { LogoField } from "@/components/ui/LogoField";
 import { Celebration } from "@/components/visitante/Celebration";
 import { Countdown } from "@/components/visitante/Countdown";
 import {
+  EventCover,
   Levels,
   Marquee,
   type PublicEvent,
@@ -326,6 +327,13 @@ export default function ComponentesPage() {
             <Marquee event={SAMPLE.finished} now={SAMPLE_NOW} />
             <Marquee event={SAMPLE.single} now={SAMPLE_NOW} />
           </div>
+        </Section>
+
+        <Section
+          title="Portada: banner"
+          note="La imagen que sube el staff, tal cual, arriba de la placa del título. Sin banner no se muestra nada."
+        >
+          <EventCover src={ceramica.src} alt="Cartel de ejemplo" />
         </Section>
 
         <Section
