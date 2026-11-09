@@ -324,15 +324,28 @@ primero es Burning Tower Fest. Va antes del evento del 29 de noviembre.
    *Listo cuando* header, medalla conseguida y celebración muestran el archivo original
    en claro y oscuro, y la pendiente se ve gris.
    `/code-review`: sin hallazgos. axe queda sin correr.
-2. ▶ **Banner por evento.** Branch `feat/portada-evento`. Bucket `event-covers`, subida
+2. ✅ **Banner por evento.** Branch `feat/portada-evento`. Bucket `event-covers`, subida
    desde el panel y portada pública.
    *Listo cuando* el staff sube el banner y se ve en la portada; sin banner, todo igual.
+   `/code-review`: sin hallazgos. axe queda sin correr.
 3. **Skin Burning Tower.** Branch `feat/skins`. Mapa `slug → skin` y el look de cartel
    en toda su app pública.
    *Listo cuando* todas sus pantallas públicas lo toman, en ambos esquemas, y otra org
    sigue idéntica.
 4. **Portada Burning Tower.** Misma branch. Banner protagonista y llamas.
    *Listo cuando* se parece al cartel en celular y escritorio, con todos los estados.
+
+## R13 · Duplicar evento
+
+Una edición nueva suele repetir casi todo de la anterior, y cargar cada spot de a uno
+es lo que más tarda. Branch `feat/duplicar-evento`.
+
+1. ▶ **Duplicar.** `duplicate_event` crea un borrador con los datos del formulario y
+   los spots del original, todo o nada; salta los archivados. No copia jornadas, banner,
+   visitantes, medallas ni sorteos, y cada edición tiene sus propios QR. Se entra con
+   «Duplicar» desde el evento, a `/[org]/eventos/nuevo?desde=<slug>`.
+   *Listo cuando* un evento se duplica desde el panel y el borrador trae sus spots, sin
+   tocar el original.
 
 ---
 
