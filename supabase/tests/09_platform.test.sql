@@ -38,13 +38,13 @@ select pg_temp.login('00000000-0000-0000-0000-000000000ad1');
 
 select lives_ok(
   $$ insert into public.invoices (organization_id, concept, amount_cents, currency) values
-       ('0000000a-0000-0000-0000-00000000000a', 'Expo 2026', 150000, 'ARS'),
-       ('0000000a-0000-0000-0000-00000000000a', 'Noviembre', 9900, 'USD') $$,
+       ('0000000a-0000-0000-0000-00000000000a', 'Prueba pgTAP expo', 150000, 'ARS'),
+       ('0000000a-0000-0000-0000-00000000000a', 'Prueba pgTAP abono', 9900, 'USD') $$,
   'the developer registers invoices'
 );
 
 select is(
-  (select status::text from public.invoices where concept = 'Expo 2026'),
+  (select status::text from public.invoices where concept = 'Prueba pgTAP expo'),
   'pending',
   'a new invoice starts pending'
 );
@@ -77,45 +77,45 @@ select throws_ok(
   'only ARS and USD exist'
 );
 
-update public.invoices set status = 'paid' where concept = 'Expo 2026';
+update public.invoices set status = 'paid' where concept = 'Prueba pgTAP expo';
 
 select isnt(
-  (select paid_at from public.invoices where concept = 'Expo 2026'),
+  (select paid_at from public.invoices where concept = 'Prueba pgTAP expo'),
   null,
   'marking it paid stamps the date'
 );
 
 -- Doble clic: no cambia nada ni deja otro paso.
-update public.invoices set status = 'paid' where concept = 'Expo 2026';
+update public.invoices set status = 'paid' where concept = 'Prueba pgTAP expo';
 
 select throws_ok(
-  $$ update public.invoices set status = 'pending' where concept = 'Expo 2026' $$,
+  $$ update public.invoices set status = 'pending' where concept = 'Prueba pgTAP expo' $$,
   '23514', null,
   'a paid invoice does not go back to pending'
 );
 
 select throws_ok(
-  $$ update public.invoices set amount_cents = 1 where concept = 'Expo 2026' $$,
+  $$ update public.invoices set amount_cents = 1 where concept = 'Prueba pgTAP expo' $$,
   '42501', null,
   'an invoice amount cannot be edited'
 );
 
 select throws_ok(
-  $$ delete from public.invoices where concept = 'Expo 2026' $$,
+  $$ delete from public.invoices where concept = 'Prueba pgTAP expo' $$,
   '42501', null,
   'an invoice cannot be deleted'
 );
 
-update public.invoices set status = 'void' where concept = 'Expo 2026';
+update public.invoices set status = 'void' where concept = 'Prueba pgTAP expo';
 
 select isnt(
-  (select paid_at from public.invoices where concept = 'Expo 2026'),
+  (select paid_at from public.invoices where concept = 'Prueba pgTAP expo'),
   null,
   'voiding a paid invoice keeps when it was paid'
 );
 
 select throws_ok(
-  $$ update public.invoices set status = 'paid' where concept = 'Expo 2026' $$,
+  $$ update public.invoices set status = 'paid' where concept = 'Prueba pgTAP expo' $$,
   '23514', null,
   'a voided invoice stays voided'
 );
@@ -135,7 +135,7 @@ select throws_ok(
   'an owner cannot create an invoice'
 );
 
-update public.invoices set status = 'paid' where concept = 'Noviembre';
+update public.invoices set status = 'paid' where concept = 'Prueba pgTAP abono';
 
 select pg_temp.login('00000000-0000-0000-0000-000000000aa2');
 select is_empty($$ select * from public.invoices $$, 'staff does not see invoices');
@@ -143,7 +143,7 @@ select is_empty($$ select * from public.invoices $$, 'staff does not see invoice
 reset role;
 
 select is(
-  (select status::text from public.invoices where concept = 'Noviembre'),
+  (select status::text from public.invoices where concept = 'Prueba pgTAP abono'),
   'pending',
   'an owner cannot mark an invoice paid'
 );
@@ -201,7 +201,8 @@ select throws_ok(
 
 select results_eq(
   $$ select action, count(*)::int from public.audit_logs
-     where action like 'invoice.%' or action like 'organization.%' and entity_id = '0000000a-0000-0000-0000-00000000000a'
+     where organization_id = '0000000a-0000-0000-0000-00000000000a'
+       and (action like 'invoice.%' or action like 'organization.%')
      group by action order by action $$,
   $$ values ('invoice.created', 2), ('invoice.paid', 1), ('invoice.voided', 1),
             ('organization.reactivated', 1), ('organization.suspended', 1) $$,
@@ -210,7 +211,7 @@ select results_eq(
 
 select is(
   (select p.email::text from public.audit_logs l join public.profiles p on p.id = l.actor_id
-   where l.action = 'invoice.paid'),
+   where l.action = 'invoice.paid' and l.organization_id = '0000000a-0000-0000-0000-00000000000a'),
   'dev@platform.local',
   'the log says who did it, and the developer can read that account'
 );
