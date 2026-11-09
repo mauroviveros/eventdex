@@ -84,6 +84,42 @@ test("a visitor scans a QR, signs in, collects, and staff can block them", async
   });
 });
 
+test("a visitor picks which event's collection to see", async ({ page }) => {
+  const own = await seedLiveEvent();
+  try {
+    const [cafe] = own.spots;
+    await page.goto(`${own.origin}/s/${cafe?.id}`);
+    await signInByMail(page, own.visitorEmail);
+    await expect(
+      page.getByRole("heading", { name: "¡Medalla nueva!" }),
+    ).toBeVisible();
+    await own.addPastCollection();
+
+    await page.goto(`${own.origin}/mis-medallas`);
+    const picker = page.getByRole("navigation", { name: "Tus eventos" });
+    const collection = page.getByRole("list", { name: "Tu colección" });
+    await expect(
+      picker.getByRole("link", { name: "Feria E2E", exact: true }),
+    ).toHaveAttribute("aria-current", "page");
+    await expect(
+      collection.getByRole("img", { name: "Café de la Esquina: Conseguida" }),
+    ).toBeVisible();
+
+    await picker.getByRole("link", { name: "Feria E2E · Abril" }).click();
+    await expect(page).toHaveURL(/\?evento=feria-vieja$/);
+    await expect(
+      collection.getByRole("img", { name: "Stand viejo: Conseguida" }),
+    ).toBeVisible();
+
+    await page.goto(`${own.origin}/mis-medallas?evento=no-existe`);
+    await expect(
+      collection.getByRole("img", { name: "Café de la Esquina: Conseguida" }),
+    ).toBeVisible();
+  } finally {
+    await own.cleanup();
+  }
+});
+
 test("a QR of another org or a broken one is a 404, without asking to sign in", async ({
   page,
 }) => {

@@ -124,6 +124,78 @@ export async function seedLiveEvent() {
     spots: eventSpots,
     ownerEmail,
     visitorEmail,
+    /** A finished event where the visitor already collected, as the v1 import leaves it. */
+    async addPastCollection() {
+      const profile = must(
+        await admin
+          .from("profiles")
+          .select("id")
+          .eq("email", visitorEmail)
+          .single(),
+      );
+      const past = must(
+        await admin
+          .from("events")
+          .insert({
+            organization_id: org.id,
+            slug: "feria-vieja",
+            title: "Feria E2E",
+            edition_label: "Abril",
+            status: "published",
+            published_at: new Date().toISOString(),
+          })
+          .select("id, slug")
+          .single(),
+      );
+      must(
+        await admin.from("event_schedules").insert({
+          event_id: past.id,
+          organization_id: org.id,
+          starts_at: new Date(Date.now() - 48 * hour).toISOString(),
+          ends_at: new Date(Date.now() - 40 * hour).toISOString(),
+        }),
+      );
+      const spot = must(
+        await admin
+          .from("spots")
+          .insert({ organization_id: org.id, name: "Stand viejo" })
+          .select("id")
+          .single(),
+      );
+      const eventSpot = must(
+        await admin
+          .from("event_spots")
+          .insert({
+            event_id: past.id,
+            organization_id: org.id,
+            spot_id: spot.id,
+            code: "V01",
+          })
+          .select("id")
+          .single(),
+      );
+      const registration = must(
+        await admin
+          .from("event_registrations")
+          .insert({
+            event_id: past.id,
+            organization_id: org.id,
+            user_id: profile.id,
+            created_at: new Date(Date.now() - 44 * hour).toISOString(),
+          })
+          .select("id")
+          .single(),
+      );
+      must(
+        await admin.from("spot_claims").insert({
+          event_spot_id: eventSpot.id,
+          registration_id: registration.id,
+          event_id: past.id,
+          organization_id: org.id,
+          user_id: profile.id,
+        }),
+      );
+    },
     async cleanup() {
       // Medals restrict deleting their spots: they go first.
       await admin.from("spot_claims").delete().eq("organization_id", org.id);
