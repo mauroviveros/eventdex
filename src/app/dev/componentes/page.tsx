@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { AccountMenu } from "@/components/admin/AccountMenu";
 import { AdminShell } from "@/components/admin/AdminShell";
+import { BrandPreview } from "@/components/admin/BrandPreview";
 import { EventCard } from "@/components/admin/EventCard";
 import { EventFilters } from "@/components/admin/EventFilters";
 import { OrgSwitcher } from "@/components/admin/OrgSwitcher";
@@ -370,6 +371,13 @@ export default function ComponentesPage() {
               <AccountMenu email="owner@expo.test" />
             </div>
           </div>
+        </Section>
+
+        <Section
+          title="Ajustes: vista previa de la marca"
+          note="La app pública en miniatura, con el color que se está eligiendo. Sin logo, las iniciales; con logo, posterizado a los cuatro tonos."
+        >
+          <BrandPreview color="#d6336c" name="Expo de ejemplo" logo={null} />
         </Section>
 
         <Section

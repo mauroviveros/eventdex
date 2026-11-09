@@ -19,6 +19,9 @@ const TONES: readonly Tone[] = [
 /** Eventdex's own ramp: pea green. */
 export const EVENTDEX_HUE = 125;
 
+/** A hex of that hue, for the color picker of an org that has no brand yet. */
+export const EVENTDEX_COLOR = "#638028";
+
 export function ramp(hue: number, saturation = 1): Ramp {
   const [a, b, c, d] = TONES.map((t) => {
     const chroma = maxInGamutChroma(t.l, t.c * saturation, hue);

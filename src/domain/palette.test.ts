@@ -4,6 +4,7 @@ import {
   contrast,
   DANGER,
   distance,
+  EVENTDEX_COLOR,
   EVENTDEX_HUE,
   ramp,
   rampFromHex,
@@ -85,6 +86,13 @@ describe("rampFromHex", () => {
     const hue = Number(rampFromHex("#1e66f5")[3].split(" ")[2]?.slice(0, -1));
     expect(hue).toBeGreaterThan(255);
     expect(hue).toBeLessThan(270);
+  });
+
+  it("has a default color on Eventdex's own hue", () => {
+    const hue = Number(
+      rampFromHex(EVENTDEX_COLOR)[3].split(" ")[2]?.slice(0, -1),
+    );
+    expect(Math.abs(hue - EVENTDEX_HUE)).toBeLessThan(2);
   });
 
   it("turns a grey brand into a grey ramp", () => {
