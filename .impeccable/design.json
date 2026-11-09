@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-07T00:00:00Z",
+  "generatedAt": "2026-11-09T00:00:00Z",
   "title": "Design System: Eventdex",
   "extensions": {
     "colorMeta": {
@@ -111,13 +111,17 @@
       "lcd-3": "ink"
     },
     "typographyMeta": {
+      "display-2xl": {
+        "displayName": "Display 2XL (text-px-5)",
+        "purpose": "Landing h1 from 1400px wide. Nowhere else."
+      },
       "display-xl": {
         "displayName": "Display XL (text-px-4)",
-        "purpose": "Page title from sm; event title on the marquee plate."
+        "purpose": "Page title from sm; event title on the marquee plate. On the landing: h1 below 1400px, section titles, step numerals."
       },
       "display": {
         "displayName": "Display (text-px-3)",
-        "purpose": "Mobile page title, section titles from sm, counters, celebration title."
+        "purpose": "Mobile page title, section titles from sm, counters, celebration title. On the landing: quick steps, step titles, console status, the A."
       },
       "headline": {
         "displayName": "Headline (text-px-2)",
@@ -126,6 +130,14 @@
       "label": {
         "displayName": "Label (text-px-1)",
         "purpose": "Buttons, field labels, phase badges, spot codes, marquee tabs, level state. Smallest pixel size allowed."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "Landing only: hero and section intro paragraphs."
+      },
+      "body-lg": {
+        "displayName": "Body large",
+        "purpose": "Landing only: step, brand and contact text."
       },
       "body": {
         "displayName": "Body",
@@ -183,6 +195,10 @@
         "value": "1280px"
       },
       {
+        "name": "landing-display",
+        "value": "1400px"
+      },
+      {
         "name": "print",
         "value": "@media print: light roles, no scanlines, A4 with 10mm margins"
       }
@@ -208,11 +224,12 @@
     },
     "accents": {
       "source": "ACCENT in src/domain/palette.ts; --accent-red / --accent-yellow; text-accent-red / text-accent-yellow",
-      "scope": "Public visitor app only. Text on the ground (--lcd-0) only; never on fill (--lcd-1) or ink.",
-      "guarantee": "Each >= 4.5:1 on its scheme's ground (ramp-0 light, ramp-3 dark) for all 36 hues (palette.test.ts).",
+      "scope": "Public visitor app only. Text on the ground (--lcd-0) only; never on fill (--lcd-1) or ink. Scoped exception: the A button of the landing console fills with accent-red and uses --lcd-0 text, only on that button.",
+      "guarantee": "Each >= 4.5:1 on its scheme's ground (ramp-0 light, ramp-3 dark) for all 36 hues (palette.test.ts). The A button uses the same pair reversed: --lcd-0 on accent-red.",
       "use": {
         "red": "Event title on the marquee plate.",
-        "yellow": "Date tab and venue name on the marquee."
+        "yellow": "Date tab and venue name on the marquee.",
+        "redFill": "bg-accent-red on the landing console's A button only."
       },
       "distinctFromDanger": "Red sits near danger on purpose; danger always wears AlertIcon, a title never does."
     },
@@ -224,9 +241,16 @@
           "light": "rgb(0 0 0 / 0.03)",
           "dark": "rgb(0 0 0 / 0.08)"
         },
-        "purpose": "Fixed ::after overlay over the whole public app (.scanlines), pointer-events none. Texture, not a color; hidden in print. At 3% secondary text stays >= 4.6:1 on striped rows for every hue."
+        "purpose": "Fixed ::after overlay over the whole public app (.scanlines), pointer-events none. Texture, not a color; hidden in print. At 3% secondary text stays >= 4.6:1 on striped rows for every hue. Never on the landing, which is Eventdex's own surface."
       }
-    ]
+    ],
+    "surfaces": {
+      "landing": {
+        "ramp": "Eventdex (:root)",
+        "scanlines": false,
+        "note": "Brand ramps appear only as samples inside their own .ramp-scope."
+      }
+    }
   },
   "components": [
     {
@@ -315,14 +339,22 @@
       "description": "A form's own outcome above its fields: success is a filled box; error is danger text with AlertIcon.",
       "html": "<p class=\"ds-fm\" role=\"status\">Guardamos los cambios del evento.</p>",
       "css": ".ds-fm { margin: 0; padding: 12px 16px; border: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); background: var(--lcd-1, oklch(0.8 0.12 125)); color: var(--lcd-3, oklch(0.27 0.05 125)); font-size: 16px; max-width: 28rem; }"
+    },
+    {
+      "name": "Console A Button",
+      "kind": "button",
+      "refersTo": "console-a-button",
+      "description": "The landing console's scan button: the one surface filled with a marquee accent.",
+      "html": "<button class=\"ds-console-a\" aria-label=\"Escanear el QR de este stand\">A</button>",
+      "css": ".ds-console-a { display: grid; place-items: center; width: 80px; height: 80px; border: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); border-radius: 0; background: var(--accent-red, oklch(0.47 0.19 25)); color: var(--lcd-0, oklch(0.94 0.08 125)); font-family: var(--font-pixel), ui-monospace, monospace; font-size: 40px; line-height: 1; cursor: pointer; } .ds-console-a:hover { background: var(--lcd-3, oklch(0.27 0.05 125)); } .ds-console-a:focus-visible { outline: 2px solid var(--lcd-3, oklch(0.27 0.05 125)); outline-offset: 2px; }"
     }
   ],
   "narrative": {
     "northStar": "La consola de bolsillo",
-    "overview": "Eventdex se ve como la pantalla LCD de cuatro tonos de una consola de mano, como la vieja app de eventos. Cuatro tonos de un solo color hacen todo el trabajo: fondo, relleno, secundario y tinta. Cada organización recibe su propia rampa desde el color de su marca (un cambio de paleta, como en los juegos), así que la marca manda y el contraste lo fija la luminosidad, nunca la suerte.\n Todo es plano, cuadrado y en grilla de píxeles: líneas de 2 px, esquinas a 90°, paneles con doble filete como las cajas de diálogo de una consola. El movimiento es por pasos, nunca suave: una medalla nueva se \"revela\" pasando por los tonos en cuadros discretos. En la app pública del visitante la pantalla suma lo que tenía el cartel de la vieja app: líneas de barrido sobre todo y dos acentos de marquesina, rojo para el título del evento y amarillo para lo que se lee de un vistazo. Rechaza el default de la categoría: tarjetas blancas de SaaS con acento azul y confeti, y el hero de evento con foto y botón.",
+    "overview": "Eventdex se ve como la pantalla LCD de cuatro tonos de una consola de mano, como la vieja app de eventos. Cuatro tonos de un solo color hacen todo el trabajo: fondo, relleno, secundario y tinta. Cada organización recibe su propia rampa desde el color de su marca (un cambio de paleta, como en los juegos), así que la marca manda y el contraste lo fija la luminosidad, nunca la suerte.\n Todo es plano, cuadrado y en grilla de píxeles: líneas de 2 px, esquinas a 90°, paneles con doble filete como las cajas de diálogo de una consola. El movimiento es por pasos, nunca suave: una medalla nueva se \"revela\" pasando por los tonos en cuadros discretos. En la app pública del visitante la pantalla suma lo que tenía el cartel de la vieja app: líneas de barrido sobre todo y dos acentos de marquesina, rojo para el título del evento y amarillo para lo que se lee de un vistazo. La landing es superficie propia de Eventdex: va con la rampa verde arveja, sin líneas de barrido. Rechaza el default de la categoría: tarjetas blancas de SaaS con acento azul y confeti, y el hero de evento con foto y botón.",
     "keyCharacteristics": [
       "Cuatro tonos de un solo matiz, usados como roles; el oscuro invierte la rampa y el papel siempre es claro.",
-      "Fuera de la rampa, solo peligro (siempre con ícono) y, en la app pública, los dos acentos de marquesina (siempre sobre el fondo).",
+      "Fuera de la rampa, solo peligro (siempre con ícono) y, en la app pública, los dos acentos de marquesina (siempre sobre el fondo). La salvedad es el botón A rojo de la consola de la landing.",
       "Logos posterizados a los cuatro tonos; sprites de 12×12 cuando no hay logo.",
       "Jersey 10 en múltiplos de 10 px para títulos, contadores y códigos; Atkinson Hyperlegible Next para leer.",
       "Esquinas rectas, filetes de 2 px, sin sombras suaves; líneas de barrido como textura en la app pública.",
@@ -346,7 +378,17 @@
       },
       {
         "name": "The Marquee Accent Rule",
-        "body": "Los acentos son de la app pública y van solo como texto sobre el fondo (`--lcd-0`), nunca sobre relleno ni sobre tinta: ahí no tienen contraste garantizado. Rojo solo para el título del evento; amarillo solo para lo que se lee de un vistazo (fecha, sede). Un texto en rojo de marquesina nunca lleva `AlertIcon`.",
+        "body": "Los acentos son de la app pública y van solo como texto sobre el fondo (`--lcd-0`), nunca sobre relleno ni sobre tinta: ahí no tienen contraste garantizado. Rojo solo para el título del evento; amarillo solo para lo que se lee de un vistazo (fecha, sede). Un texto en rojo de marquesina nunca lleva `AlertIcon`. La única excepción es la de The Red A Rule.",
+        "section": "colors"
+      },
+      {
+        "name": "The Red A Rule",
+        "body": "El botón A de la consola de la landing es la única superficie rellena con un acento: `bg-accent-red` con `text-lcd-0`, y solo ese botón. No habilita otros rellenos de acento ni lleva el amarillo a fondo.",
+        "section": "colors"
+      },
+      {
+        "name": "The Own Surface Rule",
+        "body": "La landing y su consola son superficie propia de Eventdex: usan la rampa de `:root` y nunca llevan `.scanlines`. Una rampa de marca solo aparece en una muestra con su propia `.ramp-scope`.",
         "section": "colors"
       },
       {
@@ -356,7 +398,7 @@
       },
       {
         "name": "The Ten Pixel Grid Rule",
-        "body": "Jersey 10 solo en `text-px-1..4` (20, 30, 40 y 60 px), múltiplos de su grilla de 10 px, con interlineado 1, así los bordes quedan nítidos. Nada de texto pixelado debajo de 20 px.",
+        "body": "Jersey 10 solo en `text-px-1..5` (20, 30, 40, 60 y 80 px), múltiplos de su grilla de 10 px, con interlineado 1, así los bordes quedan nítidos. `text-px-5` es solo para el `h1` de la landing desde 1400 px. Nada de texto pixelado debajo de 20 px.",
         "section": "typography"
       },
       {
@@ -390,7 +432,8 @@
       "**Do** derivar la paleta de una organización con `rampFromHex`, y poner la clase `.ramp-scope` en toda capa que defina `--ramp-*`.",
       "**Do** acompañar `danger` con `AlertIcon`.",
       "**Do** poner los acentos de marquesina solo como texto sobre `--lcd-0` en la app pública: rojo para el título del evento, amarillo para fecha y sede.",
-      "**Do** usar Jersey 10 solo en `text-px-1..4` (20/30/40/60 px).",
+      "**Do** usar la rampa de Eventdex en la landing y su consola.",
+      "**Do** usar Jersey 10 solo en `text-px-1..5` (20/30/40/60/80 px), con `text-px-5` solo en el `h1` de la landing desde 1400 px.",
       "**Do** usar bordes de 2 px: sólidos para lo presente, punteados para lo pendiente.",
       "**Do** animar en pasos (`steps(1, end)`): la revelación de 900 ms y el parpadeo de 1 s para lo que está en vivo.",
       "**Do** mostrar el sprite de 12×12 del tipo de spot cuando no hay logo.",
@@ -401,6 +444,8 @@
       "**Don't** usar texto pixelado debajo de 20 px ni en tamaños fuera de la grilla de 10 px.",
       "**Don't** agregar un color fuera de la rampa más allá de `danger` y los dos acentos de marquesina, ni usar el hex de la marca tal cual.",
       "**Don't** poner un acento sobre relleno (`--lcd-1`) o tinta, ni usarlo para avisar un error: eso es `danger` con su ícono.",
+      "**Don't** rellenar con un acento nada más que el botón A de la consola de la landing, ni llevar el amarillo a fondo.",
+      "**Don't** poner `.scanlines` en la landing.",
       "**Don't** usar las líneas de barrido para marcar nada ni subir su opacidad: son textura.",
       "**Don't** mostrar un logo sin pasarlo por los filtros LCD.",
       "**Don't** interpolar movimiento (easing suave); y todo se apaga con `prefers-reduced-motion`: la medalla nueva aparece revelada y nada parpadea.",

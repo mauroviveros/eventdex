@@ -257,7 +257,7 @@ Branch `feat/plataforma`.
 
 Branch `feat/landing`. Sin DB: es contenido estático.
 
-1. **Vista.** `/` de eventdex.com, con `/impeccable` en modo Persuade.
+1. ✅ **Vista.** `/` de eventdex.com, con `/impeccable` en modo Persuade.
    *Listo cuando* está aprobada, no inventa testimonios ni métricas y pasa
    Lighthouse en mobile.
 2. **Auditoría.** SEO y accesibilidad.
