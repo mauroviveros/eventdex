@@ -258,7 +258,7 @@ Si algo sale mal, `scripts/migrate/01_rollback.sql` borra lo nuevo y devuelve la
 
 ## Migración de datos (al final)
 
-Es la última rebanada del [ROADMAP](./ROADMAP.md). La fuente es el esquema `v1` del
+Hecha el 2026-11-09 (R10 del [ROADMAP](./ROADMAP.md)). La fuente es el esquema `v1` del
 mismo proyecto, cerrado a la API. Los usuarios ya están en `auth.users` con sus ids
 y sus perfiles salieron del backfill del corte: no se migran. La v2 no llegó a
 producción y su código queda en el tag `v2-legacy`.
