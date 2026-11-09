@@ -5,6 +5,7 @@ import { Sprite } from "@/components/pixel/Sprite";
 import { ActionButton } from "@/components/ui/ActionButton";
 import { SPOT_TYPE_LABEL } from "@/domain/spots";
 import { setSpotArchivedAction, updateSpotAction } from "@/lib/actions/spots";
+import { spotLogoUrl } from "@/lib/data/organizations";
 import { SpotForm } from "../SpotForm";
 import { load } from "./load";
 
@@ -87,7 +88,8 @@ export default async function SpotPage({
             )}
             <p className="max-w-prose text-sm text-muted-foreground">
               Los cambios del catálogo llegan a los borradores. Un evento
-              publicado conserva el nombre y el tipo que tenía al publicarse.
+              publicado conserva el nombre, el tipo y el logo que tenía al
+              publicarse.
             </p>
           </section>
 
@@ -103,8 +105,9 @@ export default async function SpotPage({
                 <SpotForm
                   action={updateSpotAction}
                   org={org.slug}
-                  ids={{ id: spot.id }}
+                  ids={{ id: spot.id, organizationId: org.id }}
                   spot={spot}
+                  logo={spotLogoUrl(spot.logo_path)}
                   submitLabel="Guardar"
                   pendingLabel="Guardando…"
                   savedMessage="Cambios guardados."

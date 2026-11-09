@@ -90,6 +90,13 @@ export function logoUrl(path: string) {
   return `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/org-logos/${path}`;
 }
 
+/** Same for a spot's logo; undefined so a medal falls back to its sprite. */
+export function spotLogoUrl(path: string | null) {
+  return path
+    ? `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/spot-logos/${path}`
+    : undefined;
+}
+
 /** The org's primary hostname: where its public app (and every QR) points. */
 export async function getPrimaryHostname(
   supabase: Supabase,

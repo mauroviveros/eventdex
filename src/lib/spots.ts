@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { SPOT_TYPES } from "@/domain/spots";
+import { logoFile, storeLogo } from "@/lib/organizations";
 import {
   type ActionResult,
   failed,
@@ -15,6 +16,9 @@ import type { Supabase } from "@/lib/supabase/server";
  */
 
 type Client = Pick<Supabase, "from">;
+type WithStorage = Pick<Supabase, "from" | "storage">;
+
+const LOGO_BUCKET = "spot-logos";
 
 // Same rule as the event_spots_code_format check, after uppercasing.
 const CODE = /^[A-Z0-9][A-Z0-9-]{0,9}$/;
@@ -31,11 +35,30 @@ const spotFields = {
   type: z.enum(SPOT_TYPES, "Elegí un tipo."),
 };
 
+// A file input left empty arrives as a 0-byte File.
+const optionalLogo = z.preprocess(
+  (v) => (v instanceof File && v.size > 0 ? v : undefined),
+  logoFile.optional(),
+);
+
+// A checkbox: present means on.
+const checkbox = z
+  .string()
+  .optional()
+  .transform((v) => v === "on");
+
 export const spotSchema = z.object({
   organizationId: z.uuid(),
   ...spotFields,
+  logo: optionalLogo,
 });
-export const spotUpdateSchema = z.object({ id: z.uuid(), ...spotFields });
+export const spotUpdateSchema = z.object({
+  id: z.uuid(),
+  organizationId: z.uuid(),
+  ...spotFields,
+  logo: optionalLogo,
+  removeLogo: checkbox,
+});
 
 const code = z
   .string()
@@ -68,11 +91,7 @@ export const eventSpotUpdateSchema = z.object({
   descriptionOverride: optionalText(500),
   booth: optionalText(60),
   points,
-  // A checkbox: present means on.
-  isActive: z
-    .string()
-    .optional()
-    .transform((v) => v === "on"),
+  isActive: checkbox,
 });
 
 const EVENT_SPOT_MESSAGES = {
@@ -83,13 +102,25 @@ const EVENT_SPOT_MESSAGES = {
 };
 
 export async function createSpot(
-  supabase: Client,
+  supabase: WithStorage,
   input: unknown,
 ): Promise<ActionResult<{ id: string }>> {
   const parsed = spotSchema.safeParse(input);
   if (!parsed.success) return invalid(parsed.error);
 
   const s = parsed.data;
+  let logoPath: string | null = null;
+  if (s.logo) {
+    const stored = await storeLogo(
+      supabase,
+      LOGO_BUCKET,
+      s.organizationId,
+      s.logo,
+    );
+    if (stored.error) return failed(stored.error);
+    logoPath = stored.path;
+  }
+
   const { data, error } = await supabase
     .from("spots")
     .insert({
@@ -97,6 +128,7 @@ export async function createSpot(
       name: s.name,
       description: s.description,
       type: s.type,
+      logo_path: logoPath,
     })
     .select("id")
     .single();
@@ -104,18 +136,40 @@ export async function createSpot(
   return { ok: true, data };
 }
 
-/** Catalog edits reach drafts; published editions keep their snapshot. */
+/**
+ * Catalog edits reach drafts; published editions keep their snapshot, so a
+ * replaced logo's file stays in the bucket.
+ */
+// shortcut: replaced logos are never deleted, sweep the ones no snapshot uses if the bucket grows
 export async function updateSpot(
-  supabase: Client,
+  supabase: WithStorage,
   input: unknown,
 ): Promise<ActionResult<null>> {
   const parsed = spotUpdateSchema.safeParse(input);
   if (!parsed.success) return invalid(parsed.error);
 
   const s = parsed.data;
+  // Left out of the update when the logo isn't touched.
+  let logoPath: string | null | undefined = s.removeLogo ? null : undefined;
+  if (s.logo) {
+    const stored = await storeLogo(
+      supabase,
+      LOGO_BUCKET,
+      s.organizationId,
+      s.logo,
+    );
+    if (stored.error) return failed(stored.error);
+    logoPath = stored.path;
+  }
+
   const { data, error } = await supabase
     .from("spots")
-    .update({ name: s.name, description: s.description, type: s.type })
+    .update({
+      name: s.name,
+      description: s.description,
+      type: s.type,
+      logo_path: logoPath,
+    })
     .eq("id", s.id)
     .select("id");
   if (error) return failed(error);

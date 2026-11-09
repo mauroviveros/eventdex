@@ -6,6 +6,7 @@ import { Progress } from "@/components/visitante/Progress";
 import { collectionProgress } from "@/domain/claims";
 import { eventPhase } from "@/domain/events";
 import { getLastCollectedEventSlug, listMyClaims } from "@/lib/data/claims";
+import { spotLogoUrl } from "@/lib/data/organizations";
 import { getActiveEvent, getPublicEvent } from "@/lib/data/public";
 import { requireVisitor } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
@@ -78,6 +79,7 @@ type Spot = Parameters<typeof collectionProgress>[0][number] & {
   name: string;
   code: string;
   type: Parameters<typeof Medal>[0]["type"];
+  logoPath: string | null;
 };
 
 function Collection({
@@ -108,6 +110,7 @@ function Collection({
               name={s.name}
               code={s.code}
               type={s.type}
+              logo={spotLogoUrl(s.logoPath)}
               state={claimed.has(s.id) ? "conseguida" : "pendiente"}
             />
           </li>

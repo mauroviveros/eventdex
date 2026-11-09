@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
+import { LogoField } from "@/components/ui/LogoField";
 import { useFormFeedback } from "@/components/ui/useFormFeedback";
 import { SPOT_TYPE_LABEL, SPOT_TYPES, type SpotType } from "@/domain/spots";
 import type { FormState } from "@/lib/actions/form";
@@ -13,6 +14,8 @@ type Props = {
   /** Hidden ids the action needs (organizationId to create, id to edit). */
   ids: Record<string, string>;
   spot?: { name: string; description: string | null; type: SpotType };
+  /** The spot's current logo, to edit. */
+  logo?: string;
   submitLabel: string;
   pendingLabel: string;
   savedMessage?: string;
@@ -24,6 +27,7 @@ export function SpotForm({
   org,
   ids,
   spot,
+  logo,
   submitLabel,
   pendingLabel,
   savedMessage,
@@ -71,6 +75,28 @@ export function SpotForm({
         hint="Opcional. Una línea sobre qué hay en el spot."
         error={fields.description}
       />
+      <LogoField
+        hint="Opcional. PNG, JPG o WebP, hasta 1 MB. Sin logo, la medalla usa el dibujo del tipo."
+        error={fields.logo}
+      />
+      {logo && (
+        <div className="flex flex-wrap items-center gap-4">
+          {/* biome-ignore lint/performance/noImgElement: a logo from Storage, shown as uploaded */}
+          <img
+            src={logo}
+            alt="Logo actual"
+            className="size-16 border-2 border-lcd-3 object-contain"
+          />
+          <label className="flex min-h-11 items-center gap-3">
+            <input
+              type="checkbox"
+              name="removeLogo"
+              className="size-5 accent-lcd-3"
+            />
+            <span>Quitar el logo</span>
+          </label>
+        </div>
+      )}
       <Button
         type="submit"
         pending={pending}
