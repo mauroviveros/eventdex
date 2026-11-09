@@ -296,7 +296,7 @@ producción) al esquema nuevo. La v2 no llegó a producción.
 
 ---
 
-## R11 · Dominios del developer ▶
+## R11 · Dominios del developer ✅
 
 Sumar un dominio exige cargarlo a mano en Vercel y en Auth, y moverlo toca a dos
 organizaciones. Branch `feat/dominios-developer`.
@@ -307,7 +307,12 @@ organizaciones. Branch `feat/dominios-developer`.
 2. ✅ **Vista.** En `/plataforma/organizaciones/[org]`: sumar, sumar y hacer principal,
    quitar, y mover con confirmación si otra org lo tiene. `/[org]/ajustes` solo los muestra.
    *Listo cuando* el developer mueve un dominio ocupado después de confirmar.
-3. ▶ **Auditoría y producción.** `/accessibility`, `/code-review` y `pnpm db:push`.
+3. ✅ **Auditoría y producción.** `/code-review`: 10 hallazgos, 7 resueltos; quedan sin
+   cambios el panel de confirmación parecido al de `ActionButton`, un texto de error que
+   no se muestra y `DomainForm` fuera de `/dev/componentes`, como los demás forms de
+   página. axe (WCAG AA): 0 violaciones en plataforma, la alerta y ajustes, antes de
+   esos arreglos. Migración aplicada el 2026-11-09, con las políticas verificadas en
+   producción.
 
 ---
 
