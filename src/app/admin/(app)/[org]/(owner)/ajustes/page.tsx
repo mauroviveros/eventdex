@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { BrandPreview } from "@/components/admin/BrandPreview";
 import { PageBody, TopBar } from "@/components/admin/TopBar";
 import { ActionButton } from "@/components/ui/ActionButton";
+import { timeZoneOptions } from "@/domain/events";
 import { EVENTDEX_COLOR } from "@/domain/palette";
 import {
   removeDomainAction,
@@ -11,7 +12,7 @@ import {
 import { getOrganizationSettings, logoUrl } from "@/lib/data/organizations";
 import { requireOrgOwner } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
-import { AddDomainForm, BrandEditor, LogoForm } from "./SettingsForms";
+import { AddDomainForm, BrandEditor } from "./SettingsForms";
 
 export async function generateMetadata({
   params,
@@ -52,14 +53,7 @@ export default async function AjustesPage({
                 timezone: settings.default_timezone,
               }}
               logo={logo}
-              // The org's zone may be an alias Intl doesn't list.
-              timezones={[
-                ...new Set([
-                  settings.default_timezone,
-                  ...Intl.supportedValuesOf("timeZone"),
-                ]),
-              ].sort()}
-              logoForm={<LogoForm ids={ids} hasLogo={logo !== null} />}
+              timezones={timeZoneOptions(settings.default_timezone)}
             />
           )}
         </section>
@@ -92,7 +86,7 @@ export default async function AjustesPage({
                         ariaLabel={`Hacer principal ${domain.hostname}`}
                         pendingLabel="Cambiando…"
                         confirm={{
-                          message: `Los QR que imprimas desde ahora van a apuntar a ${domain.hostname}. Los que ya imprimiste siguen andando mientras no quites el dominio anterior.`,
+                          message: `Hacelo solo si ${domain.hostname} ya abre tu evento: los QR que imprimas desde ahora van a apuntar ahí. Los que ya imprimiste siguen andando mientras no quites el dominio anterior.`,
                           label: "Sí, hacer principal",
                         }}
                       />
