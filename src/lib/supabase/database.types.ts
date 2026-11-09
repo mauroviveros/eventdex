@@ -341,6 +341,51 @@ export type Database = {
           },
         ];
       };
+      invoices: {
+        Row: {
+          amount_cents: number;
+          concept: string;
+          created_at: string;
+          currency: Database["public"]["Enums"]["invoice_currency"];
+          id: string;
+          issued_on: string;
+          organization_id: string;
+          paid_at: string | null;
+          status: Database["public"]["Enums"]["invoice_status"];
+        };
+        ComputedFields: never;
+        Insert: {
+          amount_cents: number;
+          concept: string;
+          created_at?: string;
+          currency: Database["public"]["Enums"]["invoice_currency"];
+          id?: string;
+          issued_on?: string;
+          organization_id: string;
+          paid_at?: string | null;
+          status?: Database["public"]["Enums"]["invoice_status"];
+        };
+        Update: {
+          amount_cents?: number;
+          concept?: string;
+          created_at?: string;
+          currency?: Database["public"]["Enums"]["invoice_currency"];
+          id?: string;
+          issued_on?: string;
+          organization_id?: string;
+          paid_at?: string | null;
+          status?: Database["public"]["Enums"]["invoice_status"];
+        };
+        Relationships: [
+          {
+            foreignKeyName: "invoices_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       organization_domains: {
         Row: {
           created_at: string;
@@ -1001,6 +1046,13 @@ export type Database = {
           slug: string;
         }[];
       };
+      set_organization_status: {
+        Args: {
+          p_organization_id: string;
+          p_status: Database["public"]["Enums"]["organization_status"];
+        };
+        Returns: undefined;
+      };
       set_primary_domain: { Args: { p_domain_id: string }; Returns: undefined };
       void_raffle_draw: {
         Args: { p_draw_id: string; p_reason: string };
@@ -1031,6 +1083,8 @@ export type Database = {
       event_phase: "upcoming" | "live" | "finished";
       event_status: "draft" | "published" | "archived" | "cancelled";
       event_visibility: "public" | "unlisted";
+      invoice_currency: "ARS" | "USD";
+      invoice_status: "pending" | "paid" | "void";
       organization_role: "owner" | "staff";
       organization_status: "active" | "suspended";
       spot_type: "stand" | "attraction" | "sponsor" | "activity";
@@ -1168,6 +1222,8 @@ export const Constants = {
       event_phase: ["upcoming", "live", "finished"],
       event_status: ["draft", "published", "archived", "cancelled"],
       event_visibility: ["public", "unlisted"],
+      invoice_currency: ["ARS", "USD"],
+      invoice_status: ["pending", "paid", "void"],
       organization_role: ["owner", "staff"],
       organization_status: ["active", "suspended"],
       spot_type: ["stand", "attraction", "sponsor", "activity"],
