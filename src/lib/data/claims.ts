@@ -17,7 +17,7 @@ export async function getClaimTarget(
   organizationId: string,
   eventSpotId: string,
 ) {
-  if (!z.uuid().safeParse(eventSpotId).success) return null;
+  if (!z.guid().safeParse(eventSpotId).success) return null;
   const { data, error } = await supabase
     .from("event_spots")
     .select(

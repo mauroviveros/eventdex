@@ -27,6 +27,9 @@ function must<T>({ data, error }: { data: T; error: unknown }) {
   return data as NonNullable<T>;
 }
 
+// Like the ids imported from the v1, from md5(...)::uuid: not RFC 4122.
+const importedId = () => crypto.randomUUID().replace(/^(.{14})./, "$1c");
+
 /**
  * An org of its own on a fresh host, with a live published event and two
  * spots, and its owner. Published by the owner through publish_event(), the
@@ -87,8 +90,18 @@ export async function seedLiveEvent() {
     await admin
       .from("spots")
       .insert([
-        { organization_id: org.id, name: "Café de la Esquina", type: "stand" },
-        { organization_id: org.id, name: "Rueda gigante", type: "attraction" },
+        {
+          id: importedId(),
+          organization_id: org.id,
+          name: "Café de la Esquina",
+          type: "stand",
+        },
+        {
+          id: importedId(),
+          organization_id: org.id,
+          name: "Rueda gigante",
+          type: "attraction",
+        },
       ])
       .select("id"),
   );
@@ -122,6 +135,7 @@ export async function seedLiveEvent() {
     org,
     event,
     spots: eventSpots,
+    catalog: spots,
     ownerEmail,
     visitorEmail,
     /** A finished event where the visitor already collected, as the v1 import leaves it. */
