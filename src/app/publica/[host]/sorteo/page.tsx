@@ -25,7 +25,7 @@ export default async function GanadoresPage({
   return (
     <main className="mx-auto grid w-full max-w-3xl gap-10 px-4 py-8 sm:px-6">
       <div className="grid gap-2">
-        <h1 className="text-px-3 text-accent-red sm:text-px-4">
+        <h1 className="font-wide text-title text-accent-red sm:text-title-lg">
           {winners ? "Ganadores del sorteo" : "Todavía no hay ganadores"}
         </h1>
         {winners ? (

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ClockIcon } from "@/components/pixel/ClockIcon";
 import { buttonClass } from "@/components/ui/Button";
 import { Countdown } from "@/components/visitante/Countdown";
 import { Medal } from "@/components/visitante/Medal";
@@ -68,23 +69,28 @@ export function Marquee({ event, now }: Props) {
   const cover = coverUrl(event.cover_path);
 
   return (
-    <header className="grid min-h-[50dvh] place-content-center justify-items-center gap-8 text-center">
+    <header className="grid min-h-[50dvh] grid-cols-[minmax(0,1fr)] content-center justify-items-center gap-8 text-center">
       {cover && <EventCover src={cover} alt={`Cartel de ${event.title}`} />}
-      <div className="grid justify-items-center">
+      <div className="grid w-full justify-items-center">
         {dates && (
-          <p className="relative z-10 -mb-0.5 border-2 border-b-0 border-lcd-2 bg-lcd-0 px-4 py-2 font-display text-px-1 text-accent-yellow">
-            {dates}
-            {only && ` · ${formatScheduleTimes(only, event.timezone)}`}
+          <p className="-mb-0.5 flex items-center gap-2 border-2 border-b-0 border-plate-rule bg-plate px-4 py-2 font-display text-px-1 text-accent-yellow shadow-plate">
+            <span className="text-muted-foreground">
+              <ClockIcon />
+            </span>
+            <span>
+              {dates}
+              {only && ` · ${formatScheduleTimes(only, event.timezone)}`}
+            </span>
           </p>
         )}
-        <div className="panel grid gap-3 px-6 py-6 sm:px-10">
-          <h1 className="text-px-3 text-accent-red sm:text-px-4">
+        <div className="panel relative z-10 grid w-full justify-items-center gap-3 px-4 py-6 sm:px-10">
+          <h1 className="font-wide text-title text-accent-red sm:text-title-lg">
             {event.title}
           </h1>
           {subtitle && <p className="max-w-prose">{subtitle}</p>}
         </div>
         {event.venue && (
-          <p className="relative z-10 -mt-0.5 grid gap-1 border-2 border-t-0 border-lcd-2 bg-lcd-0 px-4 py-3">
+          <p className="-mt-0.5 grid gap-1 border-2 border-t-0 border-plate-rule bg-plate px-4 py-3 text-left shadow-plate">
             <span className="font-display text-px-1 text-accent-yellow">
               {event.venue.name}
             </span>

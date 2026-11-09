@@ -25,13 +25,15 @@
 }
 
 /* Outside the layers to beat the px type's line-height of 1: capital accents need the room. */
-.ramp-scope[data-skin="burning-tower"] :is(h1, h2, h3, .font-display) {
+.ramp-scope[data-skin="burning-tower"]
+  :is(h1, h2, h3, .font-display, .font-wide) {
   line-height: 1.15;
 }
 
 /* In the components layer so a utility like normal-case can still win. */
 @layer components {
-  .ramp-scope[data-skin="burning-tower"] :is(h1, h2, h3, .font-display) {
+  .ramp-scope[data-skin="burning-tower"]
+    :is(h1, h2, h3, .font-display, .font-wide) {
     text-transform: uppercase;
     letter-spacing: 0.01em;
   }

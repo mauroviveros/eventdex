@@ -6,6 +6,7 @@ import {
   distance,
   EVENTDEX_COLOR,
   EVENTDEX_HUE,
+  PLATE_LIFT,
   ramp,
   rampFromHex,
   SCANLINE,
@@ -55,6 +56,38 @@ describe("marquee accents stay legible on every ramp", () => {
       // Light: on the ground (ramp-0). Dark: on the inverted ground (ramp-3).
       expect(contrast(accent.light, tones[0])).toBeGreaterThanOrEqual(4.5);
       expect(contrast(accent.dark, tones[3])).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+});
+
+describe("text stays AA on the marquee plate", () => {
+  // color-mix(in oklch, ground, white): white has no hue, so the ground's stays.
+  const plate = (ground: string) => {
+    const [l = 0, c = 0, h = 0] = ground.match(/[\d.]+/g)?.map(Number) ?? [];
+    return `oklch(${l + (1 - l) * PLATE_LIFT} ${c * (1 - PLATE_LIFT)} ${h})`;
+  };
+
+  it.each(hues)("hue %i", (hue) => {
+    const [t0, t1, t2, t3] = ramp(hue);
+    const light = plate(t0);
+    const dark = plate(t3);
+    for (const fg of [
+      t3,
+      t2,
+      DANGER.light,
+      ACCENT.red.light,
+      ACCENT.yellow.light,
+    ]) {
+      expect(contrast(fg, light)).toBeGreaterThanOrEqual(4.5);
+    }
+    for (const fg of [
+      t0,
+      t1,
+      DANGER.dark,
+      ACCENT.red.dark,
+      ACCENT.yellow.dark,
+    ]) {
+      expect(contrast(fg, dark)).toBeGreaterThanOrEqual(4.5);
     }
   });
 });

@@ -25,6 +25,7 @@ import {
   type PublicEvent,
 } from "@/components/visitante/EventHome";
 import { Medal } from "@/components/visitante/Medal";
+import { MARQUESINA } from "@/components/visitante/marquesina";
 import { PhaseBadge } from "@/components/visitante/PhaseBadge";
 import { Progress } from "@/components/visitante/Progress";
 import { SignInLink, VisitorMenu } from "@/components/visitante/VisitorMenu";
@@ -197,154 +198,157 @@ export default function ComponentesPage() {
           </div>
         </Section>
 
-        <Section
-          title="Medalla"
-          note="El logo original del spot; sin logo, el sprite de su tipo. Pendiente va en gris y apagada; la nueva pasa de gris a color, en pasos."
-        >
-          <div className="flex flex-wrap items-start gap-6">
-            <Medal {...CAFE} state="conseguida" />
-            <Medal {...RUEDA} state="pendiente" />
-            <Replay>
-              <Medal {...CERAMICA} state="nueva" />
-            </Replay>
-            <Medal {...BANCO} state="inactiva" />
-            <Medal {...RUEDA} state="conseguida" />
-          </div>
-        </Section>
+        {/* The public app's look: its components, as they ship. */}
+        <div className={`contents ${MARQUESINA}`}>
+          <Section
+            title="Medalla"
+            note="El logo original del spot; sin logo, el sprite de su tipo. Pendiente va en gris y apagada; la nueva pasa de gris a color, en pasos."
+          >
+            <div className="flex flex-wrap items-start gap-6">
+              <Medal {...CAFE} state="conseguida" />
+              <Medal {...RUEDA} state="pendiente" />
+              <Replay>
+                <Medal {...CERAMICA} state="nueva" />
+              </Replay>
+              <Medal {...BANCO} state="inactiva" />
+              <Medal {...RUEDA} state="conseguida" />
+            </div>
+          </Section>
 
-        <Section
-          title="Cuenta del visitante"
-          note="Fin de la cabecera del dominio de la org. Con sesión: foto (o iniciales), nombre y mail; en el celular solo la foto, y el nombre pasa al menú. Sin sesión: Ingresar, que vuelve a la página actual."
-        >
-          <div className="flex flex-wrap items-start gap-8 pb-40">
-            <VisitorMenu
-              account={{
-                name: "Mauro Viveros",
-                email: "mauro@ejemplo.com",
-                avatarUrl: null,
-              }}
-            />
-            <VisitorMenu
-              account={{
-                name: "visitante@ejemplo.com",
-                email: "visitante@ejemplo.com",
-                avatarUrl: null,
-              }}
-            />
-            <SignInLink />
-          </div>
-        </Section>
+          <Section
+            title="Cuenta del visitante"
+            note="Fin de la cabecera del dominio de la org. Con sesión: foto (o iniciales), nombre y mail; en el celular solo la foto, y el nombre pasa al menú. Sin sesión: Ingresar, que vuelve a la página actual."
+          >
+            <div className="flex flex-wrap items-start gap-8 pb-40">
+              <VisitorMenu
+                account={{
+                  name: "Mauro Viveros",
+                  email: "mauro@ejemplo.com",
+                  avatarUrl: null,
+                }}
+              />
+              <VisitorMenu
+                account={{
+                  name: "visitante@ejemplo.com",
+                  email: "visitante@ejemplo.com",
+                  avatarUrl: null,
+                }}
+              />
+              <SignInLink />
+            </div>
+          </Section>
 
-        <Section
-          title="Progreso"
-          note="Un segmento por spot. Sin meta (R5: alcanza con una medalla) habla de completar la colección; con meta, los segmentos de color relleno marcan la del sorteo."
-        >
-          <div className="grid gap-10 md:grid-cols-2">
-            <Progress claimed={0} total={12} />
-            <Progress claimed={5} total={12} />
-            <Progress claimed={12} total={12} />
-            <Progress claimed={7} total={12} finished />
-            <Progress claimed={5} total={12} goal={8} />
-            <Progress claimed={9} total={12} goal={8} />
-          </div>
-        </Section>
+          <Section
+            title="Progreso"
+            note="Un segmento por spot. Sin meta (R5: alcanza con una medalla) habla de completar la colección; con meta, los segmentos de color relleno marcan la del sorteo."
+          >
+            <div className="grid gap-10 md:grid-cols-2">
+              <Progress claimed={0} total={12} />
+              <Progress claimed={5} total={12} />
+              <Progress claimed={12} total={12} />
+              <Progress claimed={7} total={12} finished />
+              <Progress claimed={5} total={12} goal={8} />
+              <Progress claimed={9} total={12} goal={8} />
+            </div>
+          </Section>
 
-        <Section
-          title="Celebración"
-          note="La pantalla de /s/[id] después de escanear, en sus cinco resultados (fuera de fase, antes y después). Ahí el título es el h1."
-        >
-          <div className="grid items-start justify-items-center gap-6 md:grid-cols-2 xl:grid-cols-3">
-            <Replay className="w-full max-w-sm">
+          <Section
+            title="Celebración"
+            note="La pantalla de /s/[id] después de escanear, en sus cinco resultados (fuera de fase, antes y después). Ahí el título es el h1."
+          >
+            <div className="grid items-start justify-items-center gap-6 md:grid-cols-2 xl:grid-cols-3">
+              <Replay className="w-full max-w-sm">
+                <Celebration
+                  {...CELEBRATION}
+                  spot={CAFE}
+                  outcome={{ kind: "nueva", claimedAt: SAMPLE_CLAIM }}
+                  progress={<Progress claimed={6} total={12} />}
+                />
+              </Replay>
+              <Celebration
+                {...CELEBRATION}
+                spot={RUEDA}
+                outcome={{ kind: "repetida", claimedAt: SAMPLE_CLAIM }}
+                progress={<Progress claimed={6} total={12} />}
+              />
+              <Celebration
+                {...CELEBRATION}
+                spot={BANCO}
+                outcome={{ kind: "inactivo" }}
+              />
+              <Celebration
+                {...CELEBRATION}
+                spot={CERAMICA}
+                outcome={{
+                  kind: "fuera-de-fase",
+                  startsAt: "2026-11-14T17:00:00Z",
+                  endsAt: "2026-11-16T01:00:00Z",
+                  ended: false,
+                }}
+              />
+              <Celebration
+                {...CELEBRATION}
+                spot={CERAMICA}
+                outcome={{
+                  kind: "fuera-de-fase",
+                  startsAt: "2026-11-14T17:00:00Z",
+                  endsAt: "2026-11-16T01:00:00Z",
+                  ended: true,
+                }}
+              />
               <Celebration
                 {...CELEBRATION}
                 spot={CAFE}
-                outcome={{ kind: "nueva", claimedAt: SAMPLE_CLAIM }}
-                progress={<Progress claimed={6} total={12} />}
+                outcome={{ kind: "bloqueado" }}
               />
-            </Replay>
-            <Celebration
-              {...CELEBRATION}
-              spot={RUEDA}
-              outcome={{ kind: "repetida", claimedAt: SAMPLE_CLAIM }}
-              progress={<Progress claimed={6} total={12} />}
-            />
-            <Celebration
-              {...CELEBRATION}
-              spot={BANCO}
-              outcome={{ kind: "inactivo" }}
-            />
-            <Celebration
-              {...CELEBRATION}
-              spot={CERAMICA}
-              outcome={{
-                kind: "fuera-de-fase",
-                startsAt: "2026-11-14T17:00:00Z",
-                endsAt: "2026-11-16T01:00:00Z",
-                ended: false,
-              }}
-            />
-            <Celebration
-              {...CELEBRATION}
-              spot={CERAMICA}
-              outcome={{
-                kind: "fuera-de-fase",
-                startsAt: "2026-11-14T17:00:00Z",
-                endsAt: "2026-11-16T01:00:00Z",
-                ended: true,
-              }}
-            />
-            <Celebration
-              {...CELEBRATION}
-              spot={CAFE}
-              outcome={{ kind: "bloqueado" }}
-            />
-          </div>
-        </Section>
+            </div>
+          </Section>
 
-        <Section
-          title="Cuenta regresiva"
-          note="Hasta la próxima jornada, en la hora local del evento."
-        >
-          <div className="flex flex-wrap gap-12">
-            <Countdown
-              state={{ kind: "faltan", days: 3, hours: 14, minutes: 6 }}
-            />
-            <Countdown
-              state={{ kind: "faltan", days: 0, hours: 2, minutes: 45 }}
-            />
-            <Countdown state={{ kind: "en-curso", endsAt: "22:00" }} />
-            <Countdown state={{ kind: "finalizado" }} />
-          </div>
-        </Section>
+          <Section
+            title="Cuenta regresiva"
+            note="Hasta la próxima jornada, en la hora local del evento."
+          >
+            <div className="flex flex-wrap gap-12">
+              <Countdown
+                state={{ kind: "faltan", days: 3, hours: 14, minutes: 6 }}
+              />
+              <Countdown
+                state={{ kind: "faltan", days: 0, hours: 2, minutes: 45 }}
+              />
+              <Countdown state={{ kind: "en-curso", endsAt: "22:00" }} />
+              <Countdown state={{ kind: "finalizado" }} />
+            </div>
+          </Section>
 
-        <Section
-          title="Portada: cartel"
-          note="La apertura de la portada pública: fecha en una pestaña, título en la placa de doble filete, sede en otra pestaña, y la cuenta regresiva. Con una sola jornada, el horario va en la pestaña; sin sede, la pestaña de abajo no está."
-        >
-          <div className="grid gap-12">
-            <Marquee event={SAMPLE.upcoming} now={SAMPLE_NOW} />
-            <Marquee event={SAMPLE.live} now={SAMPLE_NOW} />
-            <Marquee event={SAMPLE.finished} now={SAMPLE_NOW} />
-            <Marquee event={SAMPLE.single} now={SAMPLE_NOW} />
-          </div>
-        </Section>
+          <Section
+            title="Portada: cartel"
+            note="La apertura de la portada pública: fecha en una pestaña, título en la placa de doble filete, sede en otra pestaña, y la cuenta regresiva. Con una sola jornada, el horario va en la pestaña; sin sede, la pestaña de abajo no está."
+          >
+            <div className="grid gap-12">
+              <Marquee event={SAMPLE.upcoming} now={SAMPLE_NOW} />
+              <Marquee event={SAMPLE.live} now={SAMPLE_NOW} />
+              <Marquee event={SAMPLE.finished} now={SAMPLE_NOW} />
+              <Marquee event={SAMPLE.single} now={SAMPLE_NOW} />
+            </div>
+          </Section>
 
-        <Section
-          title="Portada: banner"
-          note="La imagen que sube el staff, tal cual, arriba de la placa del título. Sin banner no se muestra nada."
-        >
-          <EventCover src={ceramica.src} alt="Cartel de ejemplo" />
-        </Section>
+          <Section
+            title="Portada: banner"
+            note="La imagen que sube el staff, tal cual, arriba de la placa del título. Sin banner no se muestra nada."
+          >
+            <EventCover src={ceramica.src} alt="Cartel de ejemplo" />
+          </Section>
 
-        <Section
-          title="Portada: jornadas como niveles"
-          note="La jornada de ahora (o la próxima) es una celda rellena de doble filete; las que faltan van punteadas y las terminadas, apagadas."
-        >
-          <div className="grid gap-12">
-            <Levels event={SAMPLE.live} now={SAMPLE_NOW} />
-            <Levels event={SAMPLE.upcoming} now={SAMPLE_NOW} />
-          </div>
-        </Section>
+          <Section
+            title="Portada: jornadas como niveles"
+            note="La jornada de ahora (o la próxima) es una celda rellena de doble filete; las que faltan van punteadas y las terminadas, apagadas."
+          >
+            <div className="grid gap-12">
+              <Levels event={SAMPLE.live} now={SAMPLE_NOW} />
+              <Levels event={SAMPLE.upcoming} now={SAMPLE_NOW} />
+            </div>
+          </Section>
+        </div>
 
         <Section title="Fase" note="Del evento, calculada desde sus jornadas.">
           <div className="flex flex-wrap gap-3">
