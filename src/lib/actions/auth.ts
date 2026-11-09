@@ -20,7 +20,9 @@ export async function signInWithGoogle(formData: FormData) {
     provider: "google",
     options: { redirectTo: await callbackUrl(next) },
   });
-  if (error || !data.url) redirect("/ingresar?error=auth");
+  if (error || !data.url) {
+    redirect(`/ingresar?error=auth&next=${encodeURIComponent(next)}`);
+  }
   redirect(data.url);
 }
 
