@@ -209,21 +209,39 @@ export async function removeLogo(
   return swapLogo(supabase, organizationId, null, org.logo_path);
 }
 
-const TAKEN_DOMAIN = { "23505": "Ese dominio ya está en uso." };
+const checkbox = z
+  .string()
+  .optional()
+  .transform((v) => v === "on");
 
-export async function addDomain(
-  supabase: Pick<Supabase, "from">,
+/** `conflict` names the org that has the domain: nothing changed, ask before moving it. */
+export async function assignDomain(
+  supabase: Pick<Supabase, "rpc">,
   input: unknown,
-): Promise<ActionResult<null>> {
+): Promise<ActionResult<{ conflict: string | null }>> {
   const parsed = z
-    .object({ organizationId: z.uuid(), hostname })
+    .object({
+      organizationId: z.uuid(),
+      hostname,
+      makePrimary: checkbox,
+      transfer: checkbox,
+    })
     .safeParse(input);
   if (!parsed.success) return invalid(parsed.error);
-  const { error } = await supabase.from("organization_domains").insert({
-    organization_id: parsed.data.organizationId,
-    hostname: parsed.data.hostname,
+  const { organizationId, makePrimary, transfer } = parsed.data;
+  const { data, error } = await supabase.rpc("assign_domain", {
+    p_organization_id: organizationId,
+    p_hostname: parsed.data.hostname,
+    p_make_primary: makePrimary,
+    p_transfer: transfer,
   });
-  return error ? failed(error, TAKEN_DOMAIN) : { ok: true, data: null };
+  if (error)
+    return failed(error, {
+      "23505": "Esta organización ya tiene ese dominio.",
+      "23514":
+        "Es el único dominio de su organización: sumale otro antes de moverlo.",
+    });
+  return { ok: true, data: { conflict: data || null } };
 }
 
 export async function setPrimaryDomain(
