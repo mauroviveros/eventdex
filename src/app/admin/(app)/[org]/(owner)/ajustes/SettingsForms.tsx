@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  type ChangeEvent,
-  type ReactNode,
-  useActionState,
-  useState,
-} from "react";
+import { type ChangeEvent, useActionState, useState } from "react";
 import { BrandPreview } from "@/components/admin/BrandPreview";
 import { ActionButton } from "@/components/ui/ActionButton";
 import { Button } from "@/components/ui/Button";
@@ -35,13 +30,11 @@ export function BrandEditor({
   settings,
   logo,
   timezones,
-  logoForm,
 }: {
   ids: Ids;
   settings: { name: string; color: string; timezone: string };
   logo: string | null;
   timezones: string[];
-  logoForm: ReactNode;
 }) {
   const [state, action, pending] = useActionState(updateSettingsAction, null);
   const { form, failed, fields, values } = useFormFeedback(state);
@@ -98,7 +91,7 @@ export function BrandEditor({
             Guardar cambios
           </Button>
         </form>
-        {logoForm}
+        <LogoForm ids={ids} hasLogo={logo !== null} />
       </div>
       <div className="min-w-0 xl:order-first">
         <BrandPreview color={color} name={name} logo={logo} />
@@ -110,7 +103,7 @@ export function BrandEditor({
 const MAX_LOGO_BYTES = 1024 * 1024;
 const TOO_BIG = "El logo puede pesar hasta 1 MB.";
 
-export function LogoForm({ ids, hasLogo }: { ids: Ids; hasLogo: boolean }) {
+function LogoForm({ ids, hasLogo }: { ids: Ids; hasLogo: boolean }) {
   const [state, action, pending] = useActionState(uploadLogoAction, null);
   const { form, failed, fields } = useFormFeedback(state);
   const [tooBig, setTooBig] = useState(false);

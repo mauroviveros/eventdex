@@ -96,6 +96,11 @@ export function isTimeZone(value: string) {
   }
 }
 
+/** Every zone to pick from, `current` included: it may be an alias Intl doesn't list (America/Argentina/Buenos_Aires). */
+export function timeZoneOptions(current: string) {
+  return [...new Set([current, ...Intl.supportedValuesOf("timeZone")])].sort();
+}
+
 /** The wall clock of `instant` in `timeZone`, read as if it were UTC (ms). */
 function wallClock(instant: number, timeZone: string) {
   const parts = Object.fromEntries(

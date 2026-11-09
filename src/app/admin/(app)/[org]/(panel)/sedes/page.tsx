@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PageBody, TopBar } from "@/components/admin/TopBar";
+import { timeZoneOptions } from "@/domain/events";
 import { listVenues } from "@/lib/data/events";
 import { requireOrg } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
@@ -68,13 +69,7 @@ export default async function SedesPage({
                   slug: org.slug,
                   timezone: org.default_timezone,
                 }}
-                // The org's zone may be an alias Intl doesn't list (America/Argentina/Buenos_Aires).
-                timezones={[
-                  ...new Set([
-                    org.default_timezone,
-                    ...Intl.supportedValuesOf("timeZone"),
-                  ]),
-                ].sort()}
+                timezones={timeZoneOptions(org.default_timezone)}
               />
             </section>
           )}
