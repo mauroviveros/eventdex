@@ -302,6 +302,21 @@ Conteos del backup del corte (2026-11-08).
 
 El script aborta sin escribir nada si la org `lodecharlytcg` no existe.
 
+### Separación de Burning Tower Fest
+
+R10 colgó los cuatro eventos de `lodecharlytcg`, pero son de dos marcas.
+`scripts/migrate/05_split_burning_tower.sql` muda dos a la org `burning-tower-fest`, en
+una sola transacción, y `06_copy_burning_tower_logos.mjs` copia sus logos a la carpeta de
+la org nueva.
+
+- Los 5 spots del catálogo que usaban los dos grupos se duplican; el resto se muda.
+- El equipo de Lo de Charly se copia con los mismos roles.
+- `burning-tower-fest-2026` pasa a `burning-tower-fest-agosto-2026`, por la fecha de su
+  jornada, y sus dos sedes eran la misma: queda Centro Metropolitano de Diseño.
+- **Un host, una org**: `organization_domains.hostname` es único. Cada org tiene su alias
+  de Vercel como principal y `evento.lodecharlytcg.com` se puede prestar entre las dos,
+  solo entre eventos: mientras no sea suyo, los QR impresos con ese host dan 404.
+
 ## Preguntas abiertas
 
 1. **Stack**: confirmar la recomendación de una sola app Next.
