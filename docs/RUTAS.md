@@ -84,6 +84,7 @@ un 404, no un 403: la ruta no existe para él.
 | `/` | Qué es, cómo funciona, para quién y contacto | Público | R9 |
 | `/privacidad` | Política de privacidad (la pide Google OAuth) | Público | R1 |
 | `/terminos` | Términos de uso | Público | R1 |
+| `/robots.txt` · `/sitemap.xml` | Para los buscadores | Público | R9 |
 
 ## Compartidas · cualquier host
 
