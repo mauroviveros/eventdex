@@ -243,7 +243,7 @@ Branch `feat/plataforma`.
    *Listo cuando* pgTAP prueba que solo el developer ve y escribe facturación.
 2. ✅ **Backend.** Las acciones de facturas, suspender una org y el filtro de auditoría.
    *Listo cuando* cada acción del developer deja una fila en `audit_logs`.
-3. **Vista.** `/plataforma`, `/plataforma/organizaciones/[org]`,
+3. ✅ **Vista.** `/plataforma`, `/plataforma/organizaciones/[org]`,
    `/plataforma/facturacion` y `/plataforma/auditoria`.
    *Listo cuando* se registra una factura, se marca pagada y aparece en la
    auditoría.

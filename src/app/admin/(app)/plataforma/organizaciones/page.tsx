@@ -81,7 +81,7 @@ export default async function PlataformaOrganizacionesPage({
                   >
                     <td className="py-3 pr-4">
                       <Link
-                        href={`/${org.slug}`}
+                        href={`/plataforma/organizaciones/${org.slug}`}
                         className="block font-display text-px-2"
                       >
                         {org.name}

@@ -12,7 +12,10 @@ export default async function PlataformaLayout({
     <AdminShell
       email={viewer.email}
       sections={[
+        { href: "/plataforma", label: "Resumen", exact: true },
         { href: "/plataforma/organizaciones", label: "Organizaciones" },
+        { href: "/plataforma/facturacion", label: "Facturación" },
+        { href: "/plataforma/auditoria", label: "Auditoría" },
       ]}
     >
       {children}
