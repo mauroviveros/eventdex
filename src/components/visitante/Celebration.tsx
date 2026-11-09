@@ -48,7 +48,7 @@ export function Celebration({
   const mode = MODE[outcome.kind];
   return (
     <article className="panel grid w-full max-w-sm justify-items-center gap-5 px-6 py-8 text-center">
-      <div aria-live="polite" className="grid justify-items-center gap-4">
+      <div className="grid justify-items-center gap-4">
         {!blocked &&
           (spot.logo ? (
             <div className="size-32 border-2 border-lcd-3">
@@ -77,7 +77,8 @@ export function Celebration({
       <Link
         href={copy.href}
         className={buttonClass(
-          copy.primary ? "primary" : "secondary",
+          // The next step is walking to another stand, not this button.
+          "secondary",
           "w-full no-underline",
         )}
       >
@@ -92,7 +93,6 @@ type Copy = {
   body: string;
   action: string;
   href: string;
-  primary: boolean;
 };
 
 const COLLECTION = "/mis-medallas";
@@ -109,8 +109,6 @@ function copyFor(
         body: "Quedó guardada en tu colección.",
         action: "Ver mis medallas",
         href: COLLECTION,
-        // The next step is walking to another stand, not this button.
-        primary: false,
       };
     case "repetida":
       return {
@@ -118,7 +116,6 @@ function copyFor(
         body: `La conseguiste el ${moment(o.claimedAt)}. Buscá un stand nuevo para sumar.`,
         action: "Ver mis medallas",
         href: COLLECTION,
-        primary: false,
       };
     case "inactivo":
       return {
@@ -126,7 +123,6 @@ function copyFor(
         body: "No está activo en este evento. Probá con otro stand.",
         action: "Ver los stands",
         href: `${eventHref}#medallas`,
-        primary: false,
       };
     case "fuera-de-fase":
       return o.ended
@@ -135,14 +131,12 @@ function copyFor(
             body: `Las medallas se sumaban hasta el ${moment(o.endsAt)}. Las que juntaste siguen en tu colección.`,
             action: "Ver mis medallas",
             href: COLLECTION,
-            primary: false,
           }
         : {
             title: "Todavía no arrancó",
             body: `Las medallas se suman durante el evento. Volvé el ${moment(o.startsAt)}.`,
             action: "Ver el evento",
             href: eventHref,
-            primary: false,
           };
     case "bloqueado":
       return {
@@ -150,7 +144,6 @@ function copyFor(
         body: "Tu registro en este evento está suspendido. Si creés que es un error, hablá con la organización en el predio.",
         action: "Ir al inicio",
         href: "/",
-        primary: false,
       };
   }
 }

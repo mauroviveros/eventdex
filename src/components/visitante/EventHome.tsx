@@ -3,14 +3,15 @@ import { Suspense } from "react";
 import { ClockIcon } from "@/components/pixel/ClockIcon";
 import { buttonClass } from "@/components/ui/Button";
 import { Countdown } from "@/components/visitante/Countdown";
-import { Medal } from "@/components/visitante/Medal";
+import { MedalGrid } from "@/components/visitante/MedalGrid";
+import { collectionProgress } from "@/domain/claims";
 import {
   countdownState,
   formatEventDates,
   formatScheduleTimes,
 } from "@/domain/events";
 import { listMyClaims } from "@/lib/data/claims";
-import { coverUrl, spotLogoUrl } from "@/lib/data/organizations";
+import { coverUrl } from "@/lib/data/organizations";
 import type { getActiveEvent } from "@/lib/data/public";
 import { getVisitorAccount } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
@@ -42,7 +43,7 @@ export function EventHome({ event, now }: Props) {
         </Link>
       )}
       {event.schedules.length > 1 && <Levels event={event} now={now} />}
-      <Suspense fallback={<MedalsLoading event={event} />}>
+      <Suspense fallback={<MedalsLoading spots={event.spots} />}>
         <Medals event={event} />
       </Suspense>
     </main>
@@ -116,8 +117,8 @@ export function Marquee({ event, now }: Props) {
             className="inline-flex min-h-11 items-center font-display text-px-1 underline decoration-2 underline-offset-4"
           >
             {event.spots.length === 1
-              ? "1 medalla para juntar"
-              : `${event.spots.length.toLocaleString("es-AR")} medallas para juntar`}
+              ? "Ver la medalla"
+              : `Ver las ${event.spots.length.toLocaleString("es-AR")} medallas`}
           </a>
         )}
       </div>
@@ -195,12 +196,15 @@ export function Levels({ event, now }: Props) {
 }
 
 /** While the visitor's medals load: the collection's shape, still empty. */
-function MedalsLoading({ event }: { event: PublicEvent }) {
+export function MedalsLoading({ spots }: { spots: readonly { id: string }[] }) {
   return (
     <section aria-labelledby="medallas" aria-busy className="grid gap-6">
       <SectionTitle id="medallas">Medallas</SectionTitle>
-      <ul className="flex flex-wrap gap-x-2 gap-y-6">
-        {event.spots.map((s) => (
+      <p role="status" className="sr-only">
+        Cargando tus medallas…
+      </p>
+      <ul aria-hidden className="flex flex-wrap gap-x-2 gap-y-6">
+        {spots.map((s) => (
           <li key={s.id} className="grid w-32 justify-items-center">
             <div className="size-24 border-2 border-dashed border-lcd-2" />
           </li>
@@ -210,44 +214,51 @@ function MedalsLoading({ event }: { event: PublicEvent }) {
   );
 }
 
+/** Which spots this visitor has; empty signed out, null if the read failed. */
+async function myClaims(eventId: string) {
+  const account = await getVisitorAccount();
+  if (!account) return new Set<string>();
+  try {
+    const mine = await listMyClaims(await createClient(), eventId, account.id);
+    return new Set(mine.map((c) => c.event_spot_id));
+  } catch (error) {
+    // The event's own page still stands: only this section says it failed.
+    console.error("reading the visitor's medals failed", error);
+    return null;
+  }
+}
+
 /** The collection: what this visitor already has, and silhouettes for the rest. */
 async function Medals({ event }: { event: PublicEvent }) {
-  const n = event.spots.length;
-  const account = await getVisitorAccount();
-  const mine = account
-    ? await listMyClaims(await createClient(), event.id, account.id)
-    : [];
-  const claimed = new Set(mine.map((c) => c.event_spot_id));
-  const got = event.spots.filter((s) => claimed.has(s.id)).length;
-  const total = n.toLocaleString("es-AR");
+  const claimed = await myClaims(event.id);
+  if (!claimed) {
+    return (
+      <section aria-labelledby="medallas" className="grid gap-6">
+        <SectionTitle id="medallas">Medallas</SectionTitle>
+        <p className="max-w-prose border-2 border-dashed border-lcd-2 px-6 py-8">
+          No pudimos cargar tus medallas. Recargá la página para verlas.
+        </p>
+      </section>
+    );
+  }
+  const { medals, total } = collectionProgress(event.spots, claimed);
+  const count = total.toLocaleString("es-AR");
   return (
     <section aria-labelledby="medallas" className="grid gap-6">
       <SectionTitle id="medallas">
-        {got > 0
-          ? `Medallas: ${got.toLocaleString("es-AR")} de ${total}`
-          : n === 1
+        {medals > 0
+          ? `Medallas: ${medals.toLocaleString("es-AR")} de ${count}`
+          : total === 1
             ? "Medallas: 1 para juntar"
-            : `Medallas: ${total} para juntar`}
+            : `Medallas: ${count} para juntar`}
       </SectionTitle>
-      {n === 0 ? (
+      {total === 0 ? (
         <p className="max-w-prose border-2 border-dashed border-lcd-2 px-6 py-8">
           Los stands del evento todavía no se cargaron. Volvé más cerca de la
           fecha.
         </p>
       ) : (
-        <ul className="flex flex-wrap gap-x-2 gap-y-6">
-          {event.spots.map((s) => (
-            <li key={s.id}>
-              <Medal
-                name={s.name}
-                code={s.code}
-                type={s.type}
-                logo={spotLogoUrl(s.logoPath)}
-                state={claimed.has(s.id) ? "conseguida" : "pendiente"}
-              />
-            </li>
-          ))}
-        </ul>
+        <MedalGrid spots={event.spots} claimed={claimed} />
       )}
     </section>
   );

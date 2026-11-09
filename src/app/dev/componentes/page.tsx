@@ -23,6 +23,7 @@ import {
   EventCover,
   Levels,
   Marquee,
+  MedalsLoading,
   type PublicEvent,
 } from "@/components/visitante/EventHome";
 import { Medal } from "@/components/visitante/Medal";
@@ -348,6 +349,13 @@ export default function ComponentesPage() {
             note="La imagen que sube el staff, tal cual, arriba de la placa del título. Sin banner no se muestra nada."
           >
             <EventCover src={ceramica.src} alt="Cartel de ejemplo" />
+          </Section>
+
+          <Section
+            title="Portada: medallas cargando"
+            note="Mientras llegan las medallas del visitante: la forma de la colección, vacía."
+          >
+            <MedalsLoading spots={[{ id: "a" }, { id: "b" }, { id: "c" }]} />
           </Section>
 
           <Section
