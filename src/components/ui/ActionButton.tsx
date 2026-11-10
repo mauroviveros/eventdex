@@ -67,7 +67,11 @@ export function ActionButton({
         <input key={name} type="hidden" name={name} value={value} />
       ))}
       {confirm ? (
-        <AlertDialog open={asking} onOpenChange={setAsking}>
+        <AlertDialog
+          open={asking}
+          // Escape can't close it mid-action: it would look cancelled.
+          onOpenChange={(open) => pending || setAsking(open)}
+        >
           <AlertDialogTrigger asChild>{button}</AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogTitle>{ariaLabel ?? label}</AlertDialogTitle>

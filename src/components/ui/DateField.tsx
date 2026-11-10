@@ -107,11 +107,14 @@ export function DateField({
                 <span className="truncate">{shown}</span>
               </button>
             </PopoverTrigger>
-            <PopoverContent>
+            <PopoverContent aria-label={`${label}: elegí la fecha`}>
               <Calendar
                 mode="single"
+                // The chosen day (or today) takes the focus, so arrows move by day.
+                autoFocus
                 selected={date ? toDate(date) : undefined}
                 defaultMonth={date ? toDate(date) : undefined}
+                // shortcut: the year dropdown spans ±5 years, widen it if an invoice or edition falls outside
                 startMonth={new Date(year - 5, 0)}
                 endMonth={new Date(year + 5, 11)}
                 onSelect={(day) => {

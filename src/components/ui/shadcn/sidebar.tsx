@@ -75,6 +75,12 @@ function SidebarProvider({
 
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      // Typing in a field keeps its own ⌘B.
+      if (
+        event.target instanceof Element &&
+        event.target.closest("input, textarea, select, [contenteditable]")
+      )
+        return;
       if (
         event.key === SIDEBAR_KEYBOARD_SHORTCUT &&
         (event.metaKey || event.ctrlKey)
@@ -332,7 +338,7 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<"li">) {
 
 // The current item is an inverted LCD cell; hover draws its frame.
 const sidebarMenuButtonVariants = cva(
-  "peer/menu-button flex w-full items-center gap-3 overflow-hidden border-2 border-transparent px-3 text-left no-underline hover:border-sidebar-border focus-visible:-outline-offset-4 disabled:pointer-events-none disabled:opacity-50 data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[state=open]:bg-sidebar-accent group-data-[collapsible=icon]:size-11! group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0! [&>span:last-child]:truncate group-data-[collapsible=icon]:[&>span:last-child]:sr-only",
+  "peer/menu-button flex w-full items-center gap-3 overflow-hidden border-2 border-transparent px-3 text-left no-underline hover:border-sidebar-border focus-visible:-outline-offset-4 data-[active=true]:focus-visible:outline-sidebar-primary-foreground disabled:pointer-events-none disabled:opacity-50 data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[state=open]:bg-sidebar-accent group-data-[collapsible=icon]:size-11! group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0! [&>span:last-child]:truncate group-data-[collapsible=icon]:[&>span:last-child]:sr-only",
   {
     variants: {
       size: {
