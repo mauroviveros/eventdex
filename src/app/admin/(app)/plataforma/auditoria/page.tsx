@@ -4,6 +4,15 @@ import Link from "next/link";
 import { PageBody, TopBar } from "@/components/admin/TopBar";
 import { Button, buttonClass } from "@/components/ui/Button";
 import { SelectField } from "@/components/ui/Field";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/shadcn/table";
 import { listAllOrganizations } from "@/lib/data/organizations";
 import { listAuditLogs } from "@/lib/data/platform";
 import { platformMetadata, requireDeveloper } from "@/lib/data/viewer";
@@ -97,71 +106,58 @@ export default async function AuditoriaPage({
                 : "Todavía no hay registros."}
           </p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-3xl border-collapse text-left">
-              <caption className="sr-only">Registro de auditoría</caption>
-              <thead>
-                <tr className="border-b-2 border-lcd-3 font-display text-px-1">
-                  <th scope="col" className="py-2 pr-4 font-normal">
-                    Cuándo
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-normal">
-                    Acción
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-normal">
-                    Organización
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-normal">
-                    Quién
-                  </th>
-                  <th scope="col" className="py-2 font-normal">
-                    Detalle
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((row) => (
-                  <tr
-                    key={row.id}
-                    className="border-b-2 border-dashed border-lcd-2 align-top"
-                  >
-                    <td className="py-3 pr-4 tabular-nums whitespace-nowrap">
-                      {WHEN.format(new Date(row.created_at))}
-                    </td>
-                    <td className="py-3 pr-4">
-                      {AUDIT_LABELS[row.action] ?? row.action}
-                    </td>
-                    <td className="py-3 pr-4">
-                      {row.organization ? (
-                        <Link
-                          href={`/plataforma/organizaciones/${row.organization.slug}`}
-                        >
-                          {row.organization.name}
-                        </Link>
-                      ) : (
-                        "—"
-                      )}
-                    </td>
-                    <td className="py-3 pr-4">{row.actor?.email ?? "—"}</td>
-                    <td className="py-3">
-                      {row.diff ? (
-                        <details>
-                          <summary className="min-h-6 cursor-pointer">
-                            Ver
-                          </summary>
-                          <pre className="mt-2 max-w-md text-sm break-all whitespace-pre-wrap">
-                            {JSON.stringify(row.diff, null, 2)}
-                          </pre>
-                        </details>
-                      ) : (
-                        "—"
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <Table className="min-w-3xl">
+            <TableCaption className="sr-only">
+              Registro de auditoría
+            </TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Cuándo</TableHead>
+                <TableHead>Acción</TableHead>
+                <TableHead>Organización</TableHead>
+                <TableHead>Quién</TableHead>
+                <TableHead>Detalle</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {rows.map((row) => (
+                <TableRow key={row.id}>
+                  <TableCell className="tabular-nums whitespace-nowrap">
+                    {WHEN.format(new Date(row.created_at))}
+                  </TableCell>
+                  <TableCell>
+                    {AUDIT_LABELS[row.action] ?? row.action}
+                  </TableCell>
+                  <TableCell>
+                    {row.organization ? (
+                      <Link
+                        href={`/plataforma/organizaciones/${row.organization.slug}`}
+                      >
+                        {row.organization.name}
+                      </Link>
+                    ) : (
+                      "—"
+                    )}
+                  </TableCell>
+                  <TableCell>{row.actor?.email ?? "—"}</TableCell>
+                  <TableCell>
+                    {row.diff ? (
+                      <details>
+                        <summary className="min-h-6 cursor-pointer">
+                          Ver
+                        </summary>
+                        <pre className="mt-2 max-w-md text-sm break-all whitespace-pre-wrap">
+                          {JSON.stringify(row.diff, null, 2)}
+                        </pre>
+                      </details>
+                    ) : (
+                      "—"
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         )}
 
         {(filter.pagina > 1 || hasMore) && (
