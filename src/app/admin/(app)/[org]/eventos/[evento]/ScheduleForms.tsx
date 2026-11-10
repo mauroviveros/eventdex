@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
+import { DateField } from "@/components/ui/DateField";
 import { Field, FormMessage } from "@/components/ui/Field";
 import { useFormFeedback } from "@/components/ui/useFormFeedback";
 import { addScheduleAction, publishEventAction } from "@/lib/actions/events";
@@ -33,20 +34,18 @@ export function AddScheduleForm({
         hint="Opcional."
         error={fields.label}
       />
-      <Field
+      <DateField
         label="Empieza"
         name="startsAt"
-        type="datetime-local"
+        time
         defaultValue={values.startsAt}
-        required
         error={fields.startsAt}
       />
-      <Field
+      <DateField
         label="Termina"
         name="endsAt"
-        type="datetime-local"
+        time
         defaultValue={values.endsAt}
-        required
         error={fields.endsAt}
       />
       <p className="text-sm text-muted-foreground">

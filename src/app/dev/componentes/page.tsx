@@ -14,9 +14,13 @@ import { TopBar } from "@/components/admin/TopBar";
 import { ConsoleDemo } from "@/components/landing/ConsoleDemo";
 import { ActionButton } from "@/components/ui/ActionButton";
 import { Button } from "@/components/ui/Button";
+import { DateField } from "@/components/ui/DateField";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
 import { GoogleSignIn } from "@/components/ui/GoogleSignIn";
 import { LogoField } from "@/components/ui/LogoField";
+import { Checkbox } from "@/components/ui/shadcn/checkbox";
+import { Label } from "@/components/ui/shadcn/label";
+import { SidebarProvider } from "@/components/ui/shadcn/sidebar";
 import { Celebration } from "@/components/visitante/Celebration";
 import { Countdown } from "@/components/visitante/Countdown";
 import {
@@ -39,6 +43,10 @@ import ceramica from "./logos/ceramica.svg";
 import retrato from "./logos/retrato.png";
 import { PaletteScope } from "./PaletteScope";
 import { Replay } from "./Replay";
+
+/** A sample admin frame: its fixed sidebar is held inside the box (transform makes the box its containing block). */
+const FRAME =
+  "h-128 transform-gpu overflow-auto border-2 border-lcd-3 [&_[data-slot=sidebar-container]]:h-full [&_[data-slot=sidebar-wrapper]]:min-h-full";
 
 // The catalog's buttons answer like a failed write, so the error state shows.
 async function catalogAction() {
@@ -452,10 +460,10 @@ export default function ComponentesPage() {
 
         <Section
           title="Panel: barra lateral"
-          note="La organización arriba (con varias, se despliega para cambiar) y la cuenta abajo, que abre hacia arriba. La sección actual es una celda invertida."
+          note="La organización arriba (con varias, abre un menú con todas) y la cuenta abajo, con su foto o sus iniciales. Los menús son de shadcn y se abren hacia la página."
         >
-          <div className="grid max-w-64 border-2 border-lcd-3">
-            <div className="border-b-2 border-lcd-3">
+          <SidebarProvider className="min-h-0">
+            <div className="grid w-64 border-2 border-lcd-3 p-2">
               <OrgSwitcher
                 current={{
                   slug: "expo",
@@ -467,19 +475,24 @@ export default function ComponentesPage() {
                   { slug: "feria", name: "Feria de ejemplo" },
                 ]}
               />
+              <OrgSwitcher
+                current={{
+                  slug: "expo",
+                  name: "Expo de ejemplo",
+                  role: "staff",
+                }}
+                all={[{ slug: "expo", name: "Expo de ejemplo" }]}
+              />
+              <AccountMenu account={CARD_ACCOUNT} />
+              <AccountMenu
+                account={{
+                  name: "owner@expo.test",
+                  email: "owner@expo.test",
+                  avatarUrl: null,
+                }}
+              />
             </div>
-            <div className="grid gap-1 p-2">
-              <span className="flex min-h-11 items-center bg-lcd-3 px-3 font-display text-px-1 text-lcd-0">
-                Eventos
-              </span>
-              <span className="flex min-h-11 items-center px-3 font-display text-px-1">
-                Spots
-              </span>
-            </div>
-            <div className="mt-24 border-t-2 border-lcd-3">
-              <AccountMenu email="owner@expo.test" />
-            </div>
-          </div>
+          </SidebarProvider>
         </Section>
 
         <Section
@@ -559,29 +572,34 @@ export default function ComponentesPage() {
 
         <Section
           title="Panel: barra superior"
-          note="Dónde estás a la izquierda y la única acción principal de la pantalla a la derecha. Queda fija al scrollear."
+          note="El botón que muestra u oculta la barra lateral y dónde estás a la izquierda; la única acción principal de la pantalla a la derecha. Queda fija al scrollear."
         >
-          <div className="grid gap-4">
+          <SidebarProvider className="grid min-h-0 gap-4">
             <div className="border-2 border-lcd-3">
               <TopBar title="Sedes" />
             </div>
             <div className="border-2 border-lcd-3">
               <TopBar title="Eventos" actions={<Button>Nuevo evento</Button>} />
             </div>
-          </div>
+          </SidebarProvider>
         </Section>
 
         <Section
           title="Panel: marco"
-          note="Barra lateral con la organización, las secciones y la cuenta; la página a la derecha. En el celular la barra pasa arriba. En modo soporte suma el aviso bajo la organización; en la plataforma, sin organización, muestra la marca."
+          note="Barra lateral con la organización, las secciones y la cuenta; la página a la derecha. Se colapsa a íconos (botón de la barra superior, el borde o Ctrl/⌘ B) y lo recuerda. En el celular es un panel que abre el mismo botón. En modo soporte el aviso va sobre la página; en la plataforma, sin organización, muestra la marca."
         >
           <div className="grid gap-6">
-            <div className="h-128 overflow-auto border-2 border-lcd-3">
+            <div className={FRAME}>
               <AdminShell
-                email="owner@expo.test"
+                account={CARD_ACCOUNT}
                 sections={[
-                  { href: "/dev/componentes", label: "Eventos", exact: true },
-                  { href: "/dev/sedes", label: "Sedes" },
+                  {
+                    href: "/dev/componentes",
+                    label: "Eventos",
+                    icon: "eventos",
+                    exact: true,
+                  },
+                  { href: "/dev/sedes", label: "Sedes", icon: "sedes" },
                 ]}
                 org={{
                   current: {
@@ -601,11 +619,19 @@ export default function ComponentesPage() {
                 <p className="px-4 py-8 sm:px-6">Contenido de la página.</p>
               </AdminShell>
             </div>
-            <div className="h-128 overflow-auto border-2 border-lcd-3">
+            <div className={FRAME}>
               <AdminShell
-                email="dev@eventdex.test"
+                account={{
+                  name: "dev@eventdex.test",
+                  email: "dev@eventdex.test",
+                  avatarUrl: null,
+                }}
                 sections={[
-                  { href: "/dev/organizaciones", label: "Organizaciones" },
+                  {
+                    href: "/dev/organizaciones",
+                    label: "Organizaciones",
+                    icon: "plataforma",
+                  },
                 ]}
               >
                 <TopBar title="Plataforma" />
@@ -713,7 +739,7 @@ export default function ComponentesPage() {
 
         <Section
           title="Campos"
-          note="El error aparece al lado del campo y dice cómo resolverlo."
+          note="Input, NativeSelect, Checkbox y Calendar de shadcn en el marco de Field. El error aparece al lado del campo y dice cómo resolverlo. La fecha abre un calendario y manda lo mismo que un input nativo."
         >
           <div className="grid max-w-md gap-6">
             <Field
@@ -739,7 +765,27 @@ export default function ComponentesPage() {
               <option value="">Sin sede por ahora</option>
               <option value="norte">Predio Norte</option>
             </SelectField>
-            <Field label="Empieza" type="datetime-local" />
+            <DateField label="Empieza" name="empieza" time />
+            <DateField
+              label="Termina"
+              name="termina"
+              time
+              defaultValue="2026-11-14T22:00"
+            />
+            <DateField
+              label="Fecha"
+              name="fecha"
+              defaultValue="2026-11-14"
+              error="Elegí la fecha de la factura."
+            />
+            <Label className="min-h-11 font-sans text-base">
+              <Checkbox defaultChecked />
+              <span>Activo: su QR entrega medalla.</span>
+            </Label>
+            <Label className="min-h-11 font-sans text-base">
+              <Checkbox disabled />
+              <span>Quitar el logo</span>
+            </Label>
             <FormMessage tone="success">Sede creada.</FormMessage>
             <FormMessage tone="error">
               No pudimos guardar. Probá de nuevo en un rato.
