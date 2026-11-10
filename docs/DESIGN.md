@@ -619,6 +619,17 @@ con relleno `--plate`, sombra dura y 2 px de separación. Conseguidos en tinta,
 los que faltan para la meta en relleno, el resto vacío. Encima, el contador en
 Numeral y "de N medallas" a 20 px.
 
+### Tarjeta de visitante
+La pantalla de la consola con los datos de quien juntó: marco en secundario de 12 px
+y, adentro, una pantalla con borde de 2 px en tinta sobre `--plate`, centrada y de
+hasta 384 px de ancho. Lleva el título del evento en la letra ancha y en rojo, edición,
+fechas y sede en amarillo, la foto de 144 px, el nombre, hasta 12 casillas de 40 px con
+las medallas conseguidas (nunca las que faltan), la cuenta y la organización.
+
+**La foto en la pantalla.** A 36 px, escalada sin suavizar, en cuatro grises que tiñe
+el fondo (`.foto-lcd`). Siempre sobre los tonos claros: invertida, una cara se lee como
+un negativo. Sin foto, el monograma de 144 px.
+
 ### Cuenta regresiva
 Siempre tres casillas (Días, Horas, Minutos) bajo un "Arranca en" en Jersey 10 a
 30 px, las tres del mismo ancho (el de la más ancha); si con el texto agrandado no entran en fila, se apilan. Cada casilla lleva borde
