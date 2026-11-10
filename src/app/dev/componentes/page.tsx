@@ -43,6 +43,7 @@ import ceramica from "./logos/ceramica.svg";
 import retrato from "./logos/retrato.png";
 import { PaletteScope } from "./PaletteScope";
 import { Replay } from "./Replay";
+import { ToastDemo } from "./ToastDemo";
 
 /** A sample admin frame: its fixed sidebar is held inside the box (transform makes the box its containing block). */
 const FRAME =
@@ -504,7 +505,7 @@ export default function ComponentesPage() {
 
         <Section
           title="Botón de acción"
-          note="Una acción, un botón: campos ocultos, estado pendiente y el error debajo. Lo que no se deshace pide confirmación: el primer clic explica la consecuencia y ofrece un segundo botón explícito."
+          note="Una acción, un botón: campos ocultos, estado pendiente y el error debajo. Lo que no se deshace pide confirmación en un diálogo (AlertDialog de shadcn) con la acción y su objeto, la consecuencia y un botón explícito; el foco arranca en Cancelar. Un éxito del panel se avisa con un toast abajo."
         >
           <div className="flex flex-wrap items-start gap-6">
             <ActionButton
@@ -524,6 +525,7 @@ export default function ComponentesPage() {
                 label: "Quitar A12",
               }}
             />
+            <ToastDemo />
           </div>
         </Section>
 

@@ -35,7 +35,7 @@ export function SpotForm({
   savedMessage,
 }: Props) {
   const [state, action, pending] = useActionState(run, null);
-  const { form, failed, fields, values } = useFormFeedback(state);
+  const { form, failed, fields, values } = useFormFeedback(state, savedMessage);
 
   return (
     <form ref={form} action={action} className="grid gap-6" noValidate>
@@ -45,9 +45,6 @@ export function SpotForm({
       ))}
       {failed && !failed.fieldErrors && (
         <FormMessage tone="error">{failed.error}</FormMessage>
-      )}
-      {state?.ok && savedMessage && (
-        <FormMessage tone="success">{savedMessage}</FormMessage>
       )}
       <Field
         label="Nombre"

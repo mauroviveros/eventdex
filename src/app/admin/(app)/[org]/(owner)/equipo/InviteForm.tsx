@@ -8,7 +8,10 @@ import { inviteMemberAction } from "@/lib/actions/team";
 
 export function InviteForm({ org }: { org: { id: string; slug: string } }) {
   const [state, action, pending] = useActionState(inviteMemberAction, null);
-  const { form, failed, fields, values } = useFormFeedback(state);
+  const { form, failed, fields, values } = useFormFeedback(
+    state,
+    "Invitación creada. Avisale que entre al panel con ese mail.",
+  );
 
   return (
     <form ref={form} action={action} className="grid gap-6" noValidate>
@@ -16,11 +19,6 @@ export function InviteForm({ org }: { org: { id: string; slug: string } }) {
       <input type="hidden" name="organizationId" value={org.id} />
       {failed && !failed.fieldErrors && (
         <FormMessage tone="error">{failed.error}</FormMessage>
-      )}
-      {state?.ok && (
-        <FormMessage tone="success">
-          Invitación creada. Avisale que entre al panel con ese mail.
-        </FormMessage>
       )}
       <Field
         label="Mail"

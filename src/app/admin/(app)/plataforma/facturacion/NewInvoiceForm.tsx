@@ -14,15 +14,15 @@ type Props = {
 
 export function NewInvoiceForm({ organizations, today }: Props) {
   const [state, action, pending] = useActionState(createInvoiceAction, null);
-  const { form, failed, fields, values } = useFormFeedback(state);
+  const { form, failed, fields, values } = useFormFeedback(
+    state,
+    "Factura registrada.",
+  );
 
   return (
     <form ref={form} action={action} className="grid gap-6" noValidate>
       {failed && !failed.fieldErrors && (
         <FormMessage tone="error">{failed.error}</FormMessage>
-      )}
-      {state?.ok && (
-        <FormMessage tone="success">Factura registrada.</FormMessage>
       )}
       <SelectField
         label="Organización"
