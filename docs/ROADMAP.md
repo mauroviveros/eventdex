@@ -380,7 +380,12 @@ cada uno revisado antes del siguiente. Branch `feat/admin-shadcn`.
    queda para el bloque de confirmaciones.
    *Listo cuando* se agrega una jornada eligiendo la fecha en el calendario, un error
    conserva lo cargado, y los formularios del panel pasan sus e2e.
-3. **Tablas y estados.** Table y Badge en las listas del panel.
+3. ▶ **Tablas y estados.** Table en organizaciones, facturación y auditoría; Badge
+   para la fase del evento (`PhaseBadge`), el estado de una organización y el de una
+   factura. Las tablas siguen corriéndose de costado en el celular; pasarlas a
+   tarjetas (DESIGN_SYSTEM · Móvil) queda pendiente.
+   *Listo cuando* las tres tablas y los estados se ven con las primitivas, y los e2e
+   de la plataforma pasan.
 4. **Confirmaciones y avisos.** Dialog para lo que no se deshace y toasts.
 
 ---
