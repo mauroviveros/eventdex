@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-font",
+        "value": "${encodeuricomponent(family",
+        "createdAt": "2026-11-10T00:51:41.563Z",
+        "reason": "false positive: the agent's own check, the URL interpolates font families that DESIGN.md already documents"
+      }
+    ]
+  }
+}
