@@ -5,7 +5,8 @@ import type * as React from "react";
 import { cn } from "@/lib/utils";
 
 // shadcn/ui dropdown-menu, cut to what the admin uses and squared to the LCD:
-// 2 px rule, no radius, shadow or animation, 44 px items. Add the checkbox,
+// 2 px rule, no radius, shadow or animation, 44 px items. Keyboard focus is
+// the global outline drawn inside the item, plus the fill. Add the checkbox,
 // radio and sub parts back from the registry when a screen needs them.
 
 function DropdownMenu(
@@ -61,7 +62,7 @@ function DropdownMenuItem({
     <DropdownMenuPrimitive.Item
       data-slot="dropdown-menu-item"
       className={cn(
-        "flex min-h-11 cursor-pointer items-center gap-3 px-3 font-display text-px-1 no-underline outline-none select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 aria-[current=page]:bg-primary aria-[current=page]:text-primary-foreground",
+        "flex min-h-11 cursor-pointer items-center gap-3 px-3 font-display text-px-1 no-underline select-none focus:bg-accent focus:text-accent-foreground focus-visible:-outline-offset-4 data-disabled:pointer-events-none data-disabled:opacity-50",
         className,
       )}
       {...props}
