@@ -80,7 +80,7 @@ export function ConsoleDemo() {
   return (
     <section
       aria-label="Probá cómo se junta una medalla"
-      className="w-full max-w-[32.5rem] border-2 border-b-0 border-lcd-3 bg-lcd-0 px-5 pt-5 pb-12 sm:px-10 sm:pt-10 sm:pb-20"
+      className="boot w-full max-w-[32.5rem] border-2 border-b-0 border-lcd-3 bg-lcd-0 px-5 pt-5 pb-12 sm:px-10 sm:pt-10 sm:pb-20"
     >
       <div className="bg-lcd-2 p-4 sm:p-6">
         <div className="grid min-h-[25rem] content-between justify-items-center gap-3 border-2 border-lcd-3 bg-lcd-0 p-4 text-center sm:p-6">
