@@ -61,6 +61,11 @@ test("a visitor scans a QR, signs in, collects, and staff can block them", async
     await expect(
       collection.getByRole("figure", { name: /Rueda gigante.*Te falta/ }),
     ).toBeVisible();
+
+    const card = page.getByRole("region", { name: "Tu tarjeta de visitante" });
+    await expect(card.getByRole("heading")).toHaveText("Feria E2E");
+    await expect(card).toContainText("1 medalla");
+    await expect(card).not.toContainText(seed.visitorEmail);
   });
 
   await test.step("the event's page shows what the visitor already has", async () => {
