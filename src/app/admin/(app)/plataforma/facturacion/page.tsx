@@ -2,6 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageBody, TopBar } from "@/components/admin/TopBar";
 import { ActionButton } from "@/components/ui/ActionButton";
+import { Badge } from "@/components/ui/shadcn/badge";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/shadcn/table";
 import { formatMoney } from "@/domain/money";
 import { setInvoiceStatusAction } from "@/lib/actions/platform";
 import { listAllOrganizations } from "@/lib/data/organizations";
@@ -30,6 +40,13 @@ const STATUS: Record<Enums<"invoice_status">, string> = {
   paid: "Pagada",
   void: "Anulada",
 };
+
+/** Pending asks for something (ink), paid is done, void is crossed out. */
+const INVOICE_BADGE = {
+  pending: "default",
+  paid: "outline",
+  void: "muted",
+} as const satisfies Record<Enums<"invoice_status">, string>;
 
 export default async function FacturacionPage() {
   await requireDeveloper();
@@ -70,90 +87,75 @@ export default async function FacturacionPage() {
               Todavía no registraste ninguna factura.
             </p>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-3xl border-collapse text-left">
-                <caption className="sr-only">Facturas registradas</caption>
-                <thead>
-                  <tr className="border-b-2 border-lcd-3 font-display text-px-1">
-                    <th scope="col" className="py-2 pr-4 font-normal">
-                      Fecha
-                    </th>
-                    <th scope="col" className="py-2 pr-4 font-normal">
-                      Organización
-                    </th>
-                    <th scope="col" className="py-2 pr-4 font-normal">
-                      Concepto
-                    </th>
-                    <th
-                      scope="col"
-                      className="py-2 pr-4 text-right font-normal"
-                    >
-                      Monto
-                    </th>
-                    <th scope="col" className="py-2 pr-4 font-normal">
-                      Estado
-                    </th>
-                    <th scope="col" className="py-2 font-normal">
-                      Acciones
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {invoices.map((invoice) => (
-                    <tr
-                      key={invoice.id}
-                      className="border-b-2 border-dashed border-lcd-2 align-top"
-                    >
-                      <td className="py-3 pr-4 tabular-nums">
-                        {ISSUED.format(new Date(invoice.issued_on))}
-                      </td>
-                      <td className="py-3 pr-4">
-                        {invoice.organization?.name}
-                      </td>
-                      <td className="py-3 pr-4">{invoice.concept}</td>
-                      <td className="py-3 pr-4 text-right tabular-nums whitespace-nowrap">
-                        {formatMoney(invoice.amount_cents, invoice.currency)}
-                      </td>
-                      <td
-                        className={`py-3 pr-4 font-display text-px-1 ${invoice.status === "void" ? "text-muted-foreground line-through" : ""}`}
+            <Table className="min-w-3xl">
+              <TableCaption className="sr-only">
+                Facturas registradas
+              </TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Fecha</TableHead>
+                  <TableHead>Organización</TableHead>
+                  <TableHead>Concepto</TableHead>
+                  <TableHead className="text-right">Monto</TableHead>
+                  <TableHead>Estado</TableHead>
+                  <TableHead>Acciones</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {invoices.map((invoice) => (
+                  <TableRow key={invoice.id}>
+                    <TableCell className="tabular-nums">
+                      {ISSUED.format(new Date(invoice.issued_on))}
+                    </TableCell>
+                    <TableCell>{invoice.organization?.name}</TableCell>
+                    <TableCell>{invoice.concept}</TableCell>
+                    <TableCell className="text-right tabular-nums whitespace-nowrap">
+                      {formatMoney(invoice.amount_cents, invoice.currency)}
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={INVOICE_BADGE[invoice.status]}
+                        className={
+                          invoice.status === "void" ? "line-through" : ""
+                        }
                       >
                         {STATUS[invoice.status]}
-                      </td>
-                      <td className="py-3">
-                        {invoice.status !== "void" && (
-                          <div className="flex flex-wrap items-start gap-2">
-                            {invoice.status === "pending" && (
-                              <ActionButton
-                                action={setInvoiceStatusAction}
-                                fields={{
-                                  invoiceId: invoice.id,
-                                  status: "paid",
-                                }}
-                                label="Marcar pagada"
-                                pendingLabel="Guardando…"
-                                ariaLabel={`Marcar pagada ${invoice.concept}`}
-                              />
-                            )}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {invoice.status !== "void" && (
+                        <div className="flex flex-wrap items-start gap-2">
+                          {invoice.status === "pending" && (
                             <ActionButton
                               action={setInvoiceStatusAction}
-                              fields={{ invoiceId: invoice.id, status: "void" }}
-                              label="Anular"
-                              pendingLabel="Anulando…"
-                              ariaLabel={`Anular ${invoice.concept}`}
-                              confirm={{
-                                message:
-                                  "Una factura anulada no vuelve atrás. Si hace falta, cargá otra.",
-                                label: "Sí, anular",
+                              fields={{
+                                invoiceId: invoice.id,
+                                status: "paid",
                               }}
+                              label="Marcar pagada"
+                              pendingLabel="Guardando…"
+                              ariaLabel={`Marcar pagada ${invoice.concept}`}
                             />
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                          )}
+                          <ActionButton
+                            action={setInvoiceStatusAction}
+                            fields={{ invoiceId: invoice.id, status: "void" }}
+                            label="Anular"
+                            pendingLabel="Anulando…"
+                            ariaLabel={`Anular ${invoice.concept}`}
+                            confirm={{
+                              message:
+                                "Una factura anulada no vuelve atrás. Si hace falta, cargá otra.",
+                              label: "Sí, anular",
+                            }}
+                          />
+                        </div>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           )}
         </section>
       </PageBody>
