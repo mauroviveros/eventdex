@@ -104,6 +104,7 @@ export default async function MisMedallasPage({
                 now={new Date()}
               />
               <ShareCardButton
+                key={event.slug}
                 href={`/mis-medallas/tarjeta?evento=${event.slug}`}
                 fileName={`tarjeta-${event.slug}.png`}
               />

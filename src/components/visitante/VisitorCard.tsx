@@ -57,13 +57,11 @@ export function VisitorCard({
           )}
         </div>
 
-        {account.avatarUrl ? (
-          <Photo src={account.avatarUrl} />
-        ) : (
-          <div className="border-2 border-lcd-3">
-            <Monogram text={name} size="lg" />
-          </div>
-        )}
+        {/* The monogram stays behind the photo: it shows if the photo fails to load. */}
+        <div className="relative border-2 border-lcd-3">
+          <Monogram text={name} size="lg" />
+          {account.avatarUrl && <Photo src={account.avatarUrl} />}
+        </div>
 
         <p className="line-clamp-2 w-full font-display text-px-3 break-words">
           {name}
@@ -122,7 +120,7 @@ function Photo({ src }: { src: string }) {
       width={144}
       height={144}
       referrerPolicy="no-referrer"
-      className="box-content size-36 border-2 border-lcd-3 object-cover"
+      className="absolute inset-0 size-36 object-cover"
     />
   );
 }
