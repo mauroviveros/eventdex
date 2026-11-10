@@ -629,6 +629,10 @@ las medallas conseguidas (nunca las que faltan), la cuenta y la organización.
 **La foto tal cual.** Como los logos, es de quien la eligió: a color, sin pasar por la
 rampa y recortada al cuadrado. Sin foto, el monograma de 144 px.
 
+**La imagen para compartir.** La misma pantalla en 1080×1920, siempre con los tonos
+claros y sin líneas de barrido: como el papel, no depende del esquema de quien la mira.
+Un logo que no se puede decodificar (webp) sale con el sprite de su tipo.
+
 ### Cuenta regresiva
 Siempre tres casillas (Días, Horas, Minutos) bajo un "Arranca en" en Jersey 10 a
 30 px, las tres del mismo ancho (el de la más ancha); si con el texto agrandado no entran en fila, se apilan. Cada casilla lleva borde

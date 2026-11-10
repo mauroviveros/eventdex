@@ -178,6 +178,15 @@ slug y sale con un deploy, sin columna ni pantalla para elegirlo; se pasa a una 
 si un owner lo tiene que elegir. Solo afecta su app pública y la vista previa de
 Ajustes: el admin sigue con la identidad de Eventdex.
 
+### Imagen de la tarjeta
+
+`/mis-medallas/tarjeta` genera el PNG con `next/og`, que viene con Next. No lee CSS ni
+oklch: los colores se pasan a hex y cada skin declara su fuente en `image`. **Solo se
+descargan fotos de Google** (`isGooglePhoto`), porque el visitante puede editar su
+`avatar_url` y sin ese filtro podría hacer que el servidor pida una dirección interna.
+**Shortcuts**: las fuentes se bajan de Google Fonts en tiempo de ejecución, una vez por
+instancia, y un logo en webp sale con su sprite porque `next/og` no lo decodifica.
+
 ## Entornos
 
 | Entorno | Base | App | Para qué |
