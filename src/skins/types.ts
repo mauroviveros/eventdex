@@ -9,4 +9,12 @@ export type Skin = {
   ramp: Ramp;
   /** Extra custom properties, set beside the ramp. */
   vars: Record<string, string>;
+  /** For generated images, which can't read the CSS. */
+  image: {
+    /** Family name on Google Fonts. */
+    font: string;
+    /** Average character width over the font size, to fit the longest word. */
+    charWidth: number;
+    accent: string;
+  };
 };
