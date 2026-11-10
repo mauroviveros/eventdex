@@ -1,21 +1,35 @@
+"use client";
+
 import Link from "next/link";
 import { Chevron } from "@/components/pixel/Chevron";
 import { Monogram } from "@/components/ui/Monogram";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/shadcn/dropdown-menu";
+import { SidebarMenuButton, useSidebar } from "@/components/ui/shadcn/sidebar";
 
 type Org = { slug: string; name: string; role?: "owner" | "staff" };
 
 const ROLE = { owner: "Owner", staff: "Staff" } as const;
 
+/** Hidden while the sidebar is collapsed to icons. */
+const EXPANDED_ONLY = "group-data-[collapsible=icon]:hidden";
+
 /**
- * The organization you are in, at the top of the rail. With more than one,
- * it opens a list to switch (native <details>: no JS, keyboard included).
+ * The organization you are in, at the top of the sidebar. With more than one,
+ * it opens a menu with all of them to switch.
  */
 export function OrgSwitcher({ current, all }: { current: Org; all: Org[] }) {
-  const others = all.filter((o) => o.slug !== current.slug);
+  const { isMobile } = useSidebar();
   const head = (
     <>
       <Monogram text={current.name} />
-      <span className="grid min-w-0 flex-1">
+      <span className={`grid min-w-0 flex-1 text-left ${EXPANDED_ONLY}`}>
         <span className="truncate font-display text-px-1">{current.name}</span>
         {current.role && (
           <span className="text-sm text-muted-foreground">
@@ -26,30 +40,48 @@ export function OrgSwitcher({ current, all }: { current: Org; all: Org[] }) {
     </>
   );
 
-  if (others.length === 0) {
-    return <div className="flex items-center gap-3 p-3">{head}</div>;
+  if (!all.some((o) => o.slug !== current.slug)) {
+    return (
+      <div className="flex min-h-14 items-center gap-3 px-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+        {head}
+      </div>
+    );
   }
 
   return (
-    <details className="group relative">
-      <summary className="flex min-h-11 cursor-pointer list-none items-center gap-3 p-3 hover:bg-lcd-1 [&::-webkit-details-marker]:hidden">
-        {head}
-        <Chevron className="group-open:rotate-180" />
-        <span className="sr-only">Cambiar de organización</span>
-      </summary>
-      <ul className="absolute inset-x-2 top-full z-20 grid border-2 border-lcd-3 bg-lcd-0">
-        {others.map((org) => (
-          <li key={org.slug}>
-            <Link
-              href={`/${org.slug}`}
-              className="flex min-h-11 items-center gap-3 px-3 no-underline hover:bg-lcd-1"
-            >
-              <Monogram text={org.name} size="sm" />
-              <span className="truncate">{org.name}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </details>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <SidebarMenuButton size="lg" className="px-1">
+          {head}
+          <Chevron className={EXPANDED_ONLY} />
+          <span className="sr-only">Cambiar de organización</span>
+        </SidebarMenuButton>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        side={isMobile ? "bottom" : "right"}
+        align="start"
+        className="w-(--radix-dropdown-menu-trigger-width) min-w-64"
+      >
+        <DropdownMenuLabel>Organizaciones</DropdownMenuLabel>
+        <DropdownMenuGroup>
+          {all.map((org) => (
+            <DropdownMenuItem key={org.slug} asChild>
+              <Link
+                href={`/${org.slug}`}
+                aria-current={org.slug === current.slug ? "page" : undefined}
+              >
+                <Monogram text={org.name} size="sm" />
+                <span className="min-w-0 flex-1 truncate">{org.name}</span>
+                {org.slug === current.slug && (
+                  <span className="font-sans text-sm text-muted-foreground">
+                    actual
+                  </span>
+                )}
+              </Link>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
