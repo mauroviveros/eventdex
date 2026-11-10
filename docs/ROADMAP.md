@@ -386,7 +386,13 @@ cada uno revisado antes del siguiente. Branch `feat/admin-shadcn`.
    tarjetas (DESIGN_SYSTEM · Móvil) queda pendiente.
    *Listo cuando* las tres tablas y los estados se ven con las primitivas, y los e2e
    de la plataforma pasan.
-4. **Confirmaciones y avisos.** Dialog para lo que no se deshace y toasts.
+4. ▶ **Confirmaciones y avisos.** `Button` sobre el de shadcn (mismos nombres de
+   variante y estado pendiente). Lo que no se deshace confirma en un AlertDialog con la
+   acción y su objeto, la consecuencia y un botón explícito; el foco arranca en Cancelar.
+   Los éxitos del panel son un toast (Sonner) abajo; los errores siguen al lado del
+   formulario.
+   *Listo cuando* las confirmaciones y los avisos del panel usan las primitivas, y la
+   suite e2e pasa.
 
 ---
 
