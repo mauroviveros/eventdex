@@ -75,6 +75,11 @@ test("a visitor scans a QR, signs in, collects, and staff can block them", async
     expect(image.headers()["content-type"]).toBe("image/png");
     expect(image.headers()["cache-control"]).toBe("private, no-store");
 
+    const unknown = await page.request.get(
+      `${seed.origin}/mis-medallas/tarjeta?evento=no-existe`,
+    );
+    expect(unknown.status()).toBe(404);
+
     const stranger = await browser.newContext();
     const denied = await stranger.request.get(url, { maxRedirects: 0 });
     expect(denied.status()).toBe(307);
