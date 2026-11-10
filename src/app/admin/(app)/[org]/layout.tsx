@@ -1,5 +1,5 @@
 import { AdminShell, type Section } from "@/components/admin/AdminShell";
-import { requireOrg } from "@/lib/data/viewer";
+import { getVisitorAccount, requireOrg } from "@/lib/data/viewer";
 import { SupportVisit } from "./SupportVisit";
 
 /**
@@ -11,31 +11,41 @@ export default async function OrgLayout({
   params,
 }: LayoutProps<"/admin/[org]">) {
   const { org: slug } = await params;
-  const { viewer, org, mine, role, support } = await requireOrg(slug);
+  const [{ viewer, org, mine, role, support }, account] = await Promise.all([
+    requireOrg(slug),
+    getVisitorAccount(),
+  ]);
 
   const sections: Section[] = [
     {
       href: `/${slug}`,
       label: "Eventos",
+      icon: "eventos",
       exact: true,
       also: `/${slug}/eventos`,
     },
-    { href: `/${slug}/spots`, label: "Spots" },
-    { href: `/${slug}/sedes`, label: "Sedes" },
+    { href: `/${slug}/spots`, label: "Spots", icon: "spots" },
+    { href: `/${slug}/sedes`, label: "Sedes", icon: "sedes" },
   ];
   if (role === "owner" || support) {
     sections.push(
-      { href: `/${slug}/equipo`, label: "Equipo" },
-      { href: `/${slug}/ajustes`, label: "Ajustes" },
+      { href: `/${slug}/equipo`, label: "Equipo", icon: "equipo" },
+      { href: `/${slug}/ajustes`, label: "Ajustes", icon: "ajustes" },
     );
   }
   if (viewer.isDeveloper) {
-    sections.push({ href: "/plataforma/organizaciones", label: "Plataforma" });
+    sections.push({
+      href: "/plataforma/organizaciones",
+      label: "Plataforma",
+      icon: "plataforma",
+    });
   }
 
   return (
     <AdminShell
-      email={viewer.email}
+      account={
+        account ?? { name: "", email: viewer.email ?? "", avatarUrl: null }
+      }
       sections={sections}
       org={{
         current: { slug: org.slug, name: org.name, role },
