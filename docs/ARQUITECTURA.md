@@ -17,7 +17,7 @@
 | Framework | **Next.js 16** (App Router, React 19, Server Actions) | Un runtime para las cuatro superficies |
 | Datos y auth | **Supabase** (Postgres, RLS, Auth, Storage) con `@supabase/ssr` | Ya probado en la v2; RLS como barrera real |
 | Estilos | **Tailwind v4** con tokens en CSS | Los tokens salen de [DESIGN](./DESIGN.md) |
-| Componentes | **shadcn/ui** como base, adaptados al design system | Son código propio, no una dependencia |
+| Componentes | **shadcn/ui** (Radix) como base, adaptados al design system | Son código propio, no una dependencia. `components.json` manda el CLI a `ui/shadcn/` (en macOS `button.tsx` pisaría `Button.tsx`); traen `radix-ui`, `class-variance-authority`, `clsx` y `tailwind-merge`. `cn` (`src/lib/utils.ts`) registra los tamaños de texto propios en `tailwind-merge`. Los íconos son pixel (`components/pixel/icons.tsx`), sin `lucide-react`. El calendario suma `react-day-picker` (con `date-fns`), elegido en R15 sobre el input de fecha nativo, que cada navegador dibuja distinto |
 | Validación | **Zod** | Un esquema por acción, en el borde del servidor |
 | Fechas | **`Intl` nativo** + `@date-fns/tz` si hace falta aritmética con zonas | Formatear con zona no necesita una librería |
 | QR | **`uqr`** (`encode()` → matriz; el SVG lo dibuja `QrCode` en el servidor) | Sin dependencias; impresión nítida a cualquier tamaño, sin JS en el navegador. Elegida en R3 sobre `qrcode`, que pesa más para lo mismo |
@@ -54,7 +54,8 @@ src/
 │   ├── auth/            Callback y salida, compartidos
 │   └── dev/             Rutas solo de desarrollo (/dev/componentes)
 ├── components/
-│   ├── ui/              Primitivas (shadcn adaptadas)
+│   ├── ui/              Primitivas propias (Button, Field, Monogram…)
+│   │   └── shadcn/      Primitivas de shadcn/ui adaptadas (las agrega el CLI)
 │   └── <dominio>/       Medalla, progreso, countdown, QR…
 ├── lib/
 │   ├── supabase/        Clientes servidor / navegador / servicio
