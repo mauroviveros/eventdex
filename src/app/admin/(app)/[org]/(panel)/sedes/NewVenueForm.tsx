@@ -13,7 +13,10 @@ type Props = {
 
 export function NewVenueForm({ org, timezones }: Props) {
   const [state, action, pending] = useActionState(createVenueAction, null);
-  const { form, failed, fields, values } = useFormFeedback(state);
+  const { form, failed, fields, values } = useFormFeedback(
+    state,
+    "Sede creada.",
+  );
 
   return (
     <form ref={form} action={action} className="grid gap-6" noValidate>
@@ -22,7 +25,6 @@ export function NewVenueForm({ org, timezones }: Props) {
       {failed && !failed.fieldErrors && (
         <FormMessage tone="error">{failed.error}</FormMessage>
       )}
-      {state?.ok && <FormMessage tone="success">Sede creada.</FormMessage>}
       <Field
         label="Nombre"
         name="name"

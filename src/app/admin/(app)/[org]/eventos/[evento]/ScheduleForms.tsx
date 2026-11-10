@@ -16,7 +16,10 @@ export function AddScheduleForm({
   timezone,
 }: Ids & { timezone: string }) {
   const [state, action, pending] = useActionState(addScheduleAction, null);
-  const { form, failed, fields, values } = useFormFeedback(state);
+  const { form, failed, fields, values } = useFormFeedback(
+    state,
+    "Jornada agregada.",
+  );
 
   return (
     <form ref={form} action={action} className="grid gap-6" noValidate>
@@ -25,7 +28,6 @@ export function AddScheduleForm({
       {failed && !failed.fieldErrors && (
         <FormMessage tone="error">{failed.error}</FormMessage>
       )}
-      {state?.ok && <FormMessage tone="success">Jornada agregada.</FormMessage>}
       <Field
         label="Nombre"
         name="label"

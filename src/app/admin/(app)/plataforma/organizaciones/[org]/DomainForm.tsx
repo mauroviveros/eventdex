@@ -65,7 +65,10 @@ function Confirm({
 /** Adds a domain. Asks first if it becomes the primary or another org has it. */
 export function DomainForm({ organizationId }: { organizationId: string }) {
   const [state, action, pending] = useActionState(assignDomainAction, null);
-  const { form, failed, fields, values } = useFormFeedback(state);
+  const { form, failed, fields, values } = useFormFeedback(
+    state,
+    "Dominio sumado.",
+  );
   // Each holds the state it was decided on, so the next response closes it.
   const [cancelled, setCancelled] = useState<DomainFormState>(null);
   const [askedPrimary, setAskedPrimary] = useState<DomainFormState>();
@@ -81,7 +84,6 @@ export function DomainForm({ organizationId }: { organizationId: string }) {
       {failed && !failed.fieldErrors && !taken && (
         <FormMessage tone="error">{failed.error}</FormMessage>
       )}
-      {state?.ok && <FormMessage tone="success">Dominio sumado.</FormMessage>}
       <Field
         label="Dominio"
         name="hostname"
