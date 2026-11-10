@@ -2,37 +2,45 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { type IconName, PixelIcon } from "@/components/pixel/icons";
+import { SidebarMenuButton, useSidebar } from "@/components/ui/shadcn/sidebar";
 
 /**
- * A section in the admin rail. The current one reads as an inverted LCD cell
- * (ink block, ground text) and carries aria-current.
+ * A section in the admin sidebar. The current one reads as an inverted LCD
+ * cell and carries aria-current. Collapsed, only its icon shows, with the
+ * label as a tooltip.
  */
 export function NavLink({
   href,
-  children,
+  label,
+  icon,
   exact = false,
   also,
 }: {
   href: string;
-  children: ReactNode;
+  label: string;
+  icon: IconName;
   /** Only the exact path is current (for "/", which prefixes everything). */
   exact?: boolean;
   /** Another path prefix that also makes it current. */
   also?: string;
 }) {
+  const { isMobile, setOpenMobile } = useSidebar();
   // Internal paths carry the surface prefix (/admin); links don't.
   const path = usePathname().replace(/^\/admin(?=\/|$)/, "") || "/";
   const current =
     (exact ? path === href : path.startsWith(href)) ||
     (also !== undefined && path.startsWith(also));
   return (
-    <Link
-      href={href}
-      aria-current={current ? "page" : undefined}
-      className="flex min-h-11 shrink-0 items-center border-2 border-transparent px-3 font-display text-px-1 whitespace-nowrap no-underline hover:border-lcd-3 aria-[current=page]:bg-lcd-3 aria-[current=page]:text-lcd-0"
-    >
-      {children}
-    </Link>
+    <SidebarMenuButton asChild isActive={current} tooltip={label}>
+      <Link
+        href={href}
+        aria-current={current ? "page" : undefined}
+        onClick={() => isMobile && setOpenMobile(false)}
+      >
+        <PixelIcon name={icon} />
+        <span>{label}</span>
+      </Link>
+    </SidebarMenuButton>
   );
 }
