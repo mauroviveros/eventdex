@@ -621,8 +621,9 @@ Numeral y "de N medallas" a 20 px.
 
 ### Cuenta regresiva
 Siempre tres casillas (Días, Horas, Minutos) bajo un "Arranca en" en Jersey 10 a
-30 px. Cada casilla lleva borde de 2 px en `--cell-rule`, relleno `--plate`,
-sombra dura y 12 px de padding, con el número en Numeral (dos dígitos,
+30 px, las tres del mismo ancho (el de la más ancha); si con el texto agrandado no entran en fila, se apilan. Cada casilla lleva borde
+de 2 px en `--cell-rule`, relleno `--plate`, sombra dura y 12 px de padding, con
+el número en Numeral (dos dígitos,
 `tabular-nums`) y la unidad a 20 px en secundario. En curso y finalizado son una
 sola casilla igual, con el estado en Title y una línea en secundario.
 
