@@ -30,10 +30,12 @@ import { Medal } from "@/components/visitante/Medal";
 import { MARQUESINA } from "@/components/visitante/marquesina";
 import { PhaseBadge } from "@/components/visitante/PhaseBadge";
 import { Progress } from "@/components/visitante/Progress";
+import { VisitorCard } from "@/components/visitante/VisitorCard";
 import { SignInLink, VisitorMenu } from "@/components/visitante/VisitorMenu";
 import banco from "./logos/banco.svg";
 import cafe from "./logos/cafe.svg";
 import ceramica from "./logos/ceramica.svg";
+import retrato from "./logos/retrato.png";
 import { PaletteScope } from "./PaletteScope";
 import { Replay } from "./Replay";
 
@@ -121,6 +123,26 @@ const SAMPLE = {
 export const metadata: Metadata = {
   title: "Componentes · Eventdex",
   robots: { index: false },
+};
+
+const CARD_TYPES = ["stand", "attraction", "sponsor", "activity"] as const;
+const CARD_MEDALS = Array.from({ length: 14 }, (_, i) => ({
+  id: `m${i}`,
+  name: `Stand ${i + 1}`,
+  type: CARD_TYPES[i % 4] ?? "stand",
+  logoPath: null,
+}));
+const CARD_ACCOUNT = {
+  name: "Ana García",
+  email: "ana@example.com",
+  avatarUrl: retrato.src,
+};
+const CARD = {
+  org: { name: "Expo de ejemplo", logo_path: null },
+  event: SAMPLE.live,
+  medals: CARD_MEDALS,
+  total: 48,
+  now: SAMPLE_NOW,
 };
 
 // Synthetic spots and logos, only for the catalog.
@@ -261,6 +283,38 @@ export default function ComponentesPage() {
               <Progress claimed={7} total={12} finished />
               <Progress claimed={5} total={12} goal={8} />
               <Progress claimed={9} total={12} goal={8} />
+            </div>
+          </Section>
+
+          <Section
+            title="Tarjeta de visitante"
+            note="Encabeza Mis medallas desde la primera medalla: muestra hasta 12 y cuenta todas. La foto va con pocos píxeles y cuatro tonos, siempre claros; sin foto, el monograma. Sin nombre dice Visitante: nunca el mail."
+          >
+            <div className="flex flex-wrap items-start gap-6">
+              <VisitorCard
+                {...CARD}
+                account={CARD_ACCOUNT}
+                medals={CARD_MEDALS.slice(0, 1)}
+              />
+              <VisitorCard {...CARD} account={CARD_ACCOUNT} total={14} />
+              <VisitorCard
+                {...CARD}
+                event={SAMPLE.single}
+                account={{
+                  name: "María Victoria Fernández de la Fuente",
+                  email: "maria@example.com",
+                  avatarUrl: null,
+                }}
+              />
+              <VisitorCard
+                {...CARD}
+                account={{
+                  name: "ana@example.com",
+                  email: "ana@example.com",
+                  avatarUrl: null,
+                }}
+                medals={CARD_MEDALS.slice(0, 5)}
+              />
             </div>
           </Section>
 
