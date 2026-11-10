@@ -18,4 +18,5 @@ export const burningTower: Skin = {
     "--skin-accent-light": ACCENT.light,
     "--skin-accent-dark": ACCENT.dark,
   },
+  image: { font: "Anton", charWidth: 0.5, accent: ACCENT.light },
 };

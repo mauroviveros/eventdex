@@ -3,12 +3,14 @@ import { Monogram } from "@/components/ui/Monogram";
 import type { PublicEvent } from "@/components/visitante/EventHome";
 import { Logo } from "@/components/visitante/Medal";
 import { largeAvatar } from "@/domain/avatar";
-import { formatEventDates } from "@/domain/events";
 import type { SpotType } from "@/domain/spots";
+import {
+  CARD_MEDALS_SHOWN,
+  cardCount,
+  cardDetails,
+  cardName,
+} from "@/domain/visitorCard";
 import { logoUrl, spotLogoUrl } from "@/lib/data/organizations";
-
-// Two rows: what a visitor shows off, not an inventory. The count says the rest.
-const SHOWN = 12;
 
 type Props = {
   account: { name: string; email: string; avatarUrl: string | null };
@@ -35,16 +37,8 @@ export function VisitorCard({
   total,
   now,
 }: Props) {
-  // Made to be shared: never print the mail of a profile without a name.
-  const name = account.name === account.email ? "Visitante" : account.name;
-  const details = [
-    event.edition_label,
-    formatEventDates(event.schedules, event.timezone, now),
-    event.venue?.name,
-  ]
-    .filter(Boolean)
-    .join(" · ");
-  const count = medals.length;
+  const name = cardName(account);
+  const details = cardDetails(event, now);
 
   return (
     <section
@@ -79,7 +73,7 @@ export function VisitorCard({
           aria-label="Tus medallas"
           className="flex flex-wrap justify-center gap-1"
         >
-          {medals.slice(0, SHOWN).map((m) => {
+          {medals.slice(0, CARD_MEDALS_SHOWN).map((m) => {
             const logo = spotLogoUrl(m.logoPath);
             return (
               <li
@@ -97,9 +91,7 @@ export function VisitorCard({
         </ul>
 
         <p className="font-display text-px-2 tabular-nums">
-          {count === total && count > 1
-            ? `¡Las ${count} medallas!`
-            : `${count} ${count === 1 ? "medalla" : "medallas"}`}
+          {cardCount(medals.length, total)}
         </p>
 
         <p className="flex items-center gap-2 font-display text-px-1">
