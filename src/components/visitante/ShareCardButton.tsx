@@ -66,6 +66,10 @@ export function ShareCardButton({
       >
         {retry ? "Compartir ahora" : "Compartir mi tarjeta"}
       </Button>
+      <p role="status" className="sr-only">
+        {pending && "Armando tu tarjeta."}
+        {retry && "Tu tarjeta está lista. Tocá Compartir ahora."}
+      </p>
       {failed && (
         <FormMessage tone="error">
           No pudimos armar tu tarjeta. Probá de nuevo.

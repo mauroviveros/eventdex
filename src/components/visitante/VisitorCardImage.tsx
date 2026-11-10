@@ -36,7 +36,14 @@ type Props = {
 function titleSize(title: string, theme: CardImageTheme) {
   const longest = Math.max(...title.split(/\s+/).map((w) => w.length));
   const fit = Math.floor(CONTENT_WIDTH / (longest * theme.charWidth) / 8) * 8;
-  return Math.min(theme.maxTitleSize, fit);
+  return Math.max(24, Math.min(theme.maxTitleSize, fit));
+}
+
+function shortened(name: string) {
+  // By code points: slicing the string could cut an emoji in half.
+  const chars = Array.from(name);
+  if (chars.length <= MAX_NAME) return name;
+  return `${chars.slice(0, MAX_NAME).join("").trimEnd()}...`;
 }
 
 function Picture({
@@ -160,9 +167,7 @@ export function VisitorCardImage({
             lineHeight: 1.25,
           }}
         >
-          {name.length > MAX_NAME
-            ? `${name.slice(0, MAX_NAME).trimEnd()}...`
-            : name}
+          {shortened(name)}
         </div>
 
         <div

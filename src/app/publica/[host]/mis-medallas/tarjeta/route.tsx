@@ -30,7 +30,7 @@ import { createClient } from "@/lib/supabase/server";
 import { skinFor } from "@/skins";
 import { requireHostOrganization } from "../../organization";
 
-// shortcut: fonts come from Google at runtime, once per instance; commit the TTFs if it ever fails in production
+// shortcut: fonts come from Google at runtime once per instance, commit the TTFs if it ever fails in production
 const fonts = new Map<string, Promise<ArrayBuffer>>();
 
 function loadFont(family: string) {
@@ -44,16 +44,22 @@ function loadFont(family: string) {
   return font;
 }
 
+async function fontRequest(url: string) {
+  const response = await fetch(url, { signal: AbortSignal.timeout(5000) });
+  if (!response.ok) throw new Error(`${response.status} from ${url}`);
+  return response;
+}
+
 async function fetchFont(family: string) {
-  const css = await fetch(
+  const css = await fontRequest(
     `https://fonts.googleapis.com/css2?family=${encodeURIComponent(family)}`,
   ).then((r) => r.text());
   const url = css.match(/src: url\((.+?)\) format\('truetype'\)/)?.[1];
   if (!url) throw new Error(`No TTF for ${family}`);
-  return fetch(url).then((r) => r.arrayBuffer());
+  return fontRequest(url).then((r) => r.arrayBuffer());
 }
 
-// shortcut: next/og can't decode webp, so a webp logo falls back to its sprite; convert at upload if the sprites show
+// shortcut: next/og can't decode webp so a webp logo falls back to its sprite, convert at upload if the sprites show
 const DECODABLE = new Set(["image/png", "image/jpeg"]);
 
 /** An image as a data URI, or null: one bad image must not lose the whole card. */
