@@ -2,7 +2,7 @@ import { Sprite } from "@/components/pixel/Sprite";
 import { Monogram } from "@/components/ui/Monogram";
 import type { PublicEvent } from "@/components/visitante/EventHome";
 import { Logo } from "@/components/visitante/Medal";
-import { pixelAvatar } from "@/domain/avatar";
+import { largeAvatar } from "@/domain/avatar";
 import { formatEventDates } from "@/domain/events";
 import type { SpotType } from "@/domain/spots";
 import { logoUrl, spotLogoUrl } from "@/lib/data/organizations";
@@ -120,35 +120,17 @@ export function VisitorCard({
   );
 }
 
-/**
- * The photo on the LCD: few pixels, four greys tinted by the ground. Always on
- * the light tones, because inverted a face reads as a negative.
- */
+/** The photo as its owner chose it, like a logo. */
 function Photo({ src }: { src: string }) {
   return (
-    <div
-      className="ramp-scope isolate size-36 box-content border-2 border-lcd-3 bg-lcd-0"
-      data-scheme="light"
-    >
-      <svg aria-hidden className="absolute size-0">
-        <filter id="foto-lcd" colorInterpolationFilters="sRGB">
-          <feColorMatrix type="saturate" values="0" />
-          <feComponentTransfer>
-            <feFuncR type="discrete" tableValues="0.2 0.5 0.8 1" />
-            <feFuncG type="discrete" tableValues="0.2 0.5 0.8 1" />
-            <feFuncB type="discrete" tableValues="0.2 0.5 0.8 1" />
-          </feComponentTransfer>
-        </filter>
-      </svg>
-      {/* biome-ignore lint/performance/noImgElement: a 36 px external photo, pixelated on purpose; next/image would smooth it */}
-      <img
-        src={pixelAvatar(src)}
-        alt=""
-        width={144}
-        height={144}
-        referrerPolicy="no-referrer"
-        className="foto-lcd size-36"
-      />
-    </div>
+    // biome-ignore lint/performance/noImgElement: an external photo; next/image would need every provider's host in the config
+    <img
+      src={largeAvatar(src)}
+      alt=""
+      width={144}
+      height={144}
+      referrerPolicy="no-referrer"
+      className="box-content size-36 border-2 border-lcd-3 object-cover"
+    />
   );
 }
