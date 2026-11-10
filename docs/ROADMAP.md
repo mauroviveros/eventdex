@@ -363,6 +363,26 @@ La colección del evento, con la cara de quien la juntó, lista para mostrar. Br
    `/code-review`: 10 hallazgos, 8 resueltos; los 2 de limpieza quedan para cuando haya
    otro skin. `/accessibility`: revisión manual sin hallazgos abiertos; axe queda sin correr.
 
+## R15 · Panel con shadcn
+
+El panel pasa a las primitivas de shadcn/ui, adaptadas al mundo LCD: esquinas rectas,
+reglas de 2 px, sin sombras ni animaciones, objetivos de 44 px. Un bloque por zona,
+cada uno revisado antes del siguiente. Branch `feat/admin-shadcn`.
+
+1. ▶ **Shell.** `Sidebar` con la organización arriba, las secciones con íconos pixel y
+   la cuenta abajo (`DropdownMenu` + `Avatar`). Colapsa a íconos y lo recuerda; en el
+   celular es una `Sheet` que abre el botón de la barra superior.
+   *Listo cuando* se navega, se cambia de organización y se sale desde el panel en
+   escritorio y celular, con teclado, en ambos esquemas.
+2. ▶ **Formularios.** `Field` y `SelectField` sobre Input, NativeSelect y Label;
+   Checkbox en los spots; `DateField` (Calendar + Popover, en castellano) para las
+   jornadas y las facturas, que manda el mismo texto que el input nativo. `Button`
+   queda para el bloque de confirmaciones.
+   *Listo cuando* se agrega una jornada eligiendo la fecha en el calendario, un error
+   conserva lo cargado, y los formularios del panel pasan sus e2e.
+3. **Tablas y estados.** Table y Badge en las listas del panel.
+4. **Confirmaciones y avisos.** Dialog para lo que no se deshace y toasts.
+
 ---
 
 ## ⏸ Estacionado
