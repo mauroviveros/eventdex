@@ -40,7 +40,10 @@ export function BrandEditor({
   skin?: Skin;
 }) {
   const [state, action, pending] = useActionState(updateSettingsAction, null);
-  const { form, failed, fields, values } = useFormFeedback(state);
+  const { form, failed, fields, values } = useFormFeedback(
+    state,
+    "Cambios guardados.",
+  );
   const [name, setName] = useState(settings.name);
   const [color, setColor] = useState(settings.color);
 
@@ -51,9 +54,6 @@ export function BrandEditor({
           <Hidden ids={ids} />
           {failed && !failed.fieldErrors && (
             <FormMessage tone="error">{failed.error}</FormMessage>
-          )}
-          {state?.ok && (
-            <FormMessage tone="success">Cambios guardados.</FormMessage>
           )}
           <Field
             label="Nombre"
@@ -115,7 +115,7 @@ export function BrandEditor({
 
 function LogoForm({ ids, hasLogo }: { ids: Ids; hasLogo: boolean }) {
   const [state, action, pending] = useActionState(uploadLogoAction, null);
-  const { form, failed, fields } = useFormFeedback(state);
+  const { form, failed, fields } = useFormFeedback(state, "Logo actualizado.");
 
   return (
     <div className="grid gap-4 border-t-2 border-lcd-3 pt-6">
@@ -123,9 +123,6 @@ function LogoForm({ ids, hasLogo }: { ids: Ids; hasLogo: boolean }) {
         <Hidden ids={ids} />
         {failed && !failed.fieldErrors && (
           <FormMessage tone="error">{failed.error}</FormMessage>
-        )}
-        {state?.ok && (
-          <FormMessage tone="success">Logo actualizado.</FormMessage>
         )}
         <LogoField
           hint="PNG, JPG o WebP, hasta 1 MB. Se muestra tal cual lo subas."

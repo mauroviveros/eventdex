@@ -14,7 +14,10 @@ type Ids = { org: string; organizationId: string; eventId: string };
 /** Uploads, replaces or removes the event's banner. */
 export function CoverForm({ ids, hasCover }: { ids: Ids; hasCover: boolean }) {
   const [state, action, pending] = useActionState(uploadCoverAction, null);
-  const { form, failed, fields } = useFormFeedback(state);
+  const { form, failed, fields } = useFormFeedback(
+    state,
+    "Banner actualizado.",
+  );
 
   return (
     <div className="grid gap-4">
@@ -24,9 +27,6 @@ export function CoverForm({ ids, hasCover }: { ids: Ids; hasCover: boolean }) {
         <input type="hidden" name="eventId" value={ids.eventId} />
         {failed && !failed.fieldErrors && (
           <FormMessage tone="error">{failed.error}</FormMessage>
-        )}
-        {state?.ok && (
-          <FormMessage tone="success">Banner actualizado.</FormMessage>
         )}
         <LogoField
           label="Banner"

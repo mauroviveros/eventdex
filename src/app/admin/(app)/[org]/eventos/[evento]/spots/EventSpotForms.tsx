@@ -20,7 +20,10 @@ export function AddEventSpotForm({
   spots: { id: string; name: string }[];
 }) {
   const [state, action, pending] = useActionState(addEventSpotAction, null);
-  const { form, failed, fields, values } = useFormFeedback(state);
+  const { form, failed, fields, values } = useFormFeedback(
+    state,
+    "Spot agregado.",
+  );
 
   return (
     <form ref={form} action={action} className="grid gap-6" noValidate>
@@ -29,7 +32,6 @@ export function AddEventSpotForm({
       {failed && !failed.fieldErrors && (
         <FormMessage tone="error">{failed.error}</FormMessage>
       )}
-      {state?.ok && <FormMessage tone="success">Spot agregado.</FormMessage>}
       <SelectField
         label="Spot del catálogo"
         name="spotId"
@@ -109,7 +111,10 @@ export function EditEventSpotForm({
   catalogName: string;
 }) {
   const [state, action, pending] = useActionState(updateEventSpotAction, null);
-  const { form, failed, fields, values } = useFormFeedback(state);
+  const { form, failed, fields, values } = useFormFeedback(
+    state,
+    "Cambios guardados.",
+  );
   // After a failed save, show what was typed (keyed by field name).
   const v = (field: string, saved: string | null) =>
     values[field] ?? saved ?? "";
@@ -120,9 +125,6 @@ export function EditEventSpotForm({
       <input type="hidden" name="id" value={spot.id} />
       {failed && !failed.fieldErrors && (
         <FormMessage tone="error">{failed.error}</FormMessage>
-      )}
-      {state?.ok && (
-        <FormMessage tone="success">Cambios guardados.</FormMessage>
       )}
       <div className="grid gap-5 sm:grid-cols-3">
         <Field

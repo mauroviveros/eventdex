@@ -1,17 +1,19 @@
 import type { ComponentProps } from "react";
+import { cn } from "@/lib/utils";
+import { buttonVariants, Button as ShadcnButton } from "./shadcn/button";
 
 export type Variant = "primary" | "secondary" | "danger";
 
-const VARIANTS: Record<Variant, string> = {
-  primary: "border-lcd-3 bg-lcd-3 text-lcd-0 hover:border-lcd-2 hover:bg-lcd-2",
-  secondary: "border-lcd-3 bg-plate text-lcd-3 hover:bg-lcd-1",
-  danger:
-    "border-danger bg-danger text-danger-foreground hover:bg-lcd-3 hover:border-lcd-3",
-};
+// Our names for shadcn's variants.
+const VARIANT = {
+  primary: "default",
+  secondary: "secondary",
+  danger: "destructive",
+} as const;
 
 /** Button look for anything that acts like one (a Link to a form, for instance). */
 export function buttonClass(variant: Variant = "primary", className = "") {
-  return `inline-flex min-h-11 items-center justify-center gap-2 border-2 px-4 font-display text-px-1 shadow-plate transition-colors duration-100 active:translate-y-0.5 active:shadow-none disabled:cursor-not-allowed disabled:shadow-none disabled:border-lcd-2 disabled:bg-lcd-1 disabled:text-lcd-2 ${VARIANTS[variant]} ${className}`;
+  return cn(buttonVariants({ variant: VARIANT[variant] }), className);
 }
 
 type Props = ComponentProps<"button"> & {
@@ -21,6 +23,7 @@ type Props = ComponentProps<"button"> & {
   pending?: boolean;
 };
 
+/** shadcn's Button with our variant names and a pending state ("Publicando…"). */
 export function Button({
   variant = "primary",
   pending = false,
@@ -32,16 +35,17 @@ export function Button({
   ...props
 }: Props) {
   return (
-    <button
+    <ShadcnButton
       type={type}
+      variant={VARIANT[variant]}
       disabled={disabled || pending}
       aria-busy={pending || undefined}
-      className={buttonClass(variant, className)}
+      className={className}
       {...props}
     >
       {pending && <PendingBlocks />}
       {pending && pendingLabel ? pendingLabel : children}
-    </button>
+    </ShadcnButton>
   );
 }
 
