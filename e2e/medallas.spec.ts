@@ -68,6 +68,29 @@ test("a visitor scans a QR, signs in, collects, and staff can block them", async
     await expect(card).not.toContainText(seed.visitorEmail);
   });
 
+  await test.step("the card can be shared as a private image", async () => {
+    const url = `${seed.origin}/mis-medallas/tarjeta?evento=${seed.event.slug}`;
+    const image = await page.request.get(url);
+    expect(image.status()).toBe(200);
+    expect(image.headers()["content-type"]).toBe("image/png");
+    expect(image.headers()["cache-control"]).toBe("private, no-store");
+
+    const stranger = await browser.newContext();
+    const denied = await stranger.request.get(url, { maxRedirects: 0 });
+    expect(denied.status()).toBe(307);
+    await stranger.close();
+
+    // Without the share sheet, as on a desktop browser, the image downloads.
+    await page.evaluate(() => {
+      Object.defineProperty(navigator, "canShare", { value: undefined });
+    });
+    const download = page.waitForEvent("download");
+    await page.getByRole("button", { name: "Compartir mi tarjeta" }).click();
+    expect((await download).suggestedFilename()).toBe(
+      `tarjeta-${seed.event.slug}.png`,
+    );
+  });
+
   await test.step("the event's page shows what the visitor already has", async () => {
     await page.goto(`${seed.origin}/eventos/${seed.event.slug}`);
     await expect(
