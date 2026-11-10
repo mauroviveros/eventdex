@@ -2,6 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageBody, TopBar } from "@/components/admin/TopBar";
 import { buttonClass } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/shadcn/badge";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/shadcn/table";
 import { listAllOrganizations } from "@/lib/data/organizations";
 import { platformMetadata, requireDeveloper } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
@@ -50,70 +60,55 @@ export default async function PlataformaOrganizacionesPage({
             </p>
           </section>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-2xl border-collapse text-left">
-              <caption className="sr-only">
-                Organizaciones de la plataforma
-              </caption>
-              <thead>
-                <tr className="border-b-2 border-lcd-3 font-display text-px-1">
-                  <th scope="col" className="py-2 pr-4 font-normal">
-                    Organización
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-normal">
-                    Dominio
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-normal">
-                    Estado
-                  </th>
-                  <th scope="col" className="py-2 pr-4 text-right font-normal">
-                    Equipo
-                  </th>
-                  <th scope="col" className="py-2 font-normal">
-                    Invitación abierta
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {organizations.map((org) => (
-                  <tr
-                    key={org.id}
-                    className="border-b-2 border-dashed border-lcd-2"
-                  >
-                    <td className="py-3 pr-4">
-                      <Link
-                        href={`/plataforma/organizaciones/${org.slug}`}
-                        className="block font-display text-px-2"
-                      >
-                        {org.name}
-                      </Link>
-                      <span className="text-sm text-muted-foreground">
-                        {org.slug}
-                      </span>
-                    </td>
-                    <td className="py-3 pr-4 text-sm">{org.hostname ?? "—"}</td>
-                    <td className="py-3 pr-4">
-                      {org.status === "active" ? (
-                        <span className="font-display text-px-1">Activa</span>
-                      ) : (
-                        <span className="font-display text-px-1 text-danger">
-                          Suspendida
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-3 pr-4 text-right font-display text-px-1 tabular-nums">
-                      {org.members}
-                    </td>
-                    <td className="py-3 text-sm">
-                      {org.pendingInvitations.length > 0
-                        ? org.pendingInvitations.join(", ")
-                        : "—"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <Table className="min-w-2xl">
+            <TableCaption className="sr-only">
+              Organizaciones de la plataforma
+            </TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Organización</TableHead>
+                <TableHead>Dominio</TableHead>
+                <TableHead>Estado</TableHead>
+                <TableHead className="text-right">Equipo</TableHead>
+                <TableHead>Invitación abierta</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {organizations.map((org) => (
+                <TableRow key={org.id}>
+                  <TableCell>
+                    <Link
+                      href={`/plataforma/organizaciones/${org.slug}`}
+                      className="block font-display text-px-2"
+                    >
+                      {org.name}
+                    </Link>
+                    <span className="text-sm text-muted-foreground">
+                      {org.slug}
+                    </span>
+                  </TableCell>
+                  <TableCell className="text-sm">
+                    {org.hostname ?? "—"}
+                  </TableCell>
+                  <TableCell>
+                    {org.status === "active" ? (
+                      <Badge variant="outline">Activa</Badge>
+                    ) : (
+                      <Badge variant="destructive">Suspendida</Badge>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-right font-display text-px-1 tabular-nums">
+                    {org.members}
+                  </TableCell>
+                  <TableCell className="text-sm">
+                    {org.pendingInvitations.length > 0
+                      ? org.pendingInvitations.join(", ")
+                      : "—"}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         )}
       </PageBody>
     </>
