@@ -156,6 +156,24 @@
   --text-px-5: 5rem;
   --text-px-5--line-height: 1;
 
+  /* shadcn/ui roles (src/components/ui/shadcn), on the LCD roles: no new colors. */
+  --color-sidebar: var(--lcd-0);
+  --color-sidebar-foreground: var(--lcd-3);
+  --color-sidebar-primary: var(--lcd-3);
+  --color-sidebar-primary-foreground: var(--lcd-0);
+  --color-sidebar-accent: var(--lcd-1);
+  --color-sidebar-accent-foreground: var(--lcd-3);
+  --color-sidebar-border: var(--lcd-3);
+  --color-sidebar-ring: var(--lcd-3);
+  --color-popover: var(--lcd-0);
+  --color-popover-foreground: var(--lcd-3);
+  --color-accent: var(--lcd-1);
+  --color-accent-foreground: var(--lcd-3);
+  --color-muted: var(--lcd-1);
+  --color-border: var(--lcd-3);
+  --color-input: var(--lcd-3);
+  --color-ring: var(--lcd-3);
+
   /* Square world: no radii, no soft shadows. */
   --radius-none: 0;
 
