@@ -360,6 +360,8 @@ La colección del evento, con la cara de quien la juntó, lista para mostrar. Br
 2. ▶ **Compartir.** Una imagen de 1080×1920 generada con sesión, Web Share con archivo y
    descarga si el navegador no puede.
    *Listo cuando* el visitante comparte su tarjeta como imagen desde el celular.
+   `/code-review`: 10 hallazgos, 8 resueltos; los 2 de limpieza quedan para cuando haya
+   otro skin. `/accessibility`: revisión manual sin hallazgos abiertos; axe queda sin correr.
 
 ---
 
