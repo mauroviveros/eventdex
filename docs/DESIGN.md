@@ -626,9 +626,8 @@ hasta 384 px de ancho. Lleva el título del evento en la letra ancha y en rojo, 
 fechas y sede en amarillo, la foto de 144 px, el nombre, hasta 12 casillas de 40 px con
 las medallas conseguidas (nunca las que faltan), la cuenta y la organización.
 
-**La foto en la pantalla.** A 36 px, escalada sin suavizar, en cuatro grises que tiñe
-el fondo (`.foto-lcd`). Siempre sobre los tonos claros: invertida, una cara se lee como
-un negativo. Sin foto, el monograma de 144 px.
+**La foto tal cual.** Como los logos, es de quien la eligió: a color, sin pasar por la
+rampa y recortada al cuadrado. Sin foto, el monograma de 144 px.
 
 ### Cuenta regresiva
 Siempre tres casillas (Días, Horas, Minutos) bajo un "Arranca en" en Jersey 10 a

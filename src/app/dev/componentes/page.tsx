@@ -288,7 +288,7 @@ export default function ComponentesPage() {
 
           <Section
             title="Tarjeta de visitante"
-            note="Encabeza Mis medallas desde la primera medalla: muestra hasta 12 y cuenta todas. La foto va con pocos píxeles y cuatro tonos, siempre claros; sin foto, el monograma. Sin nombre dice Visitante: nunca el mail."
+            note="Encabeza Mis medallas desde la primera medalla: muestra hasta 12 y cuenta todas. La foto va tal cual, como un logo; sin foto, el monograma. Sin nombre dice Visitante: nunca el mail."
           >
             <div className="flex flex-wrap items-start gap-6">
               <VisitorCard
