@@ -88,7 +88,10 @@ test("staff draws, voids and publishes; the visitor sees the winner", async ({
     await raffle.getByRole("button", { name: "Sacar ganador" }).click();
     await expect(raffle).toContainText(seed.visitorEmail);
     await raffle.getByRole("button", { name: "Publicar ganadores" }).click();
-    await raffle.getByRole("button", { name: "Sí, publicar" }).click();
+    await staff
+      .getByRole("alertdialog")
+      .getByRole("button", { name: "Sí, publicar" })
+      .click();
     await expect(raffle).toContainText("Ganadores publicados");
   });
 
