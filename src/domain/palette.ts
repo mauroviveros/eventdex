@@ -91,6 +91,16 @@ export function toRgb(oklch: string): Rgb {
   }) as Rgb;
 }
 
+/** `#rrggbb` for an `oklch(l c h)` string, for what doesn't read oklch (generated images). */
+export function toHex(oklch: string) {
+  const channels = toRgb(oklch).map((v) =>
+    Math.round(v * 255)
+      .toString(16)
+      .padStart(2, "0"),
+  );
+  return `#${channels.join("")}`;
+}
+
 /** WCAG 2 contrast ratio between two `oklch(l c h)` strings. */
 export function contrast(fg: string, bg: string): number {
   const [l1, l2] = [luminance(fg), luminance(bg)].sort((x, y) => y - x) as [

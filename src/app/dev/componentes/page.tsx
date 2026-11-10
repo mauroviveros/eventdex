@@ -30,6 +30,7 @@ import { Medal } from "@/components/visitante/Medal";
 import { MARQUESINA } from "@/components/visitante/marquesina";
 import { PhaseBadge } from "@/components/visitante/PhaseBadge";
 import { Progress } from "@/components/visitante/Progress";
+import { ShareCardButton } from "@/components/visitante/ShareCardButton";
 import { VisitorCard } from "@/components/visitante/VisitorCard";
 import { SignInLink, VisitorMenu } from "@/components/visitante/VisitorMenu";
 import banco from "./logos/banco.svg";
@@ -288,7 +289,7 @@ export default function ComponentesPage() {
 
           <Section
             title="Tarjeta de visitante"
-            note="Encabeza Mis medallas desde la primera medalla: muestra hasta 12 y cuenta todas. La foto va tal cual, como un logo; sin foto, el monograma. Sin nombre dice Visitante: nunca el mail."
+            note="Encabeza Mis medallas desde la primera medalla: muestra hasta 12 y cuenta todas. La foto va tal cual, como un logo; sin foto, el monograma. Sin nombre dice Visitante: nunca el mail. El botón de acá no tiene imagen: al tocarlo muestra el error."
           >
             <div className="flex flex-wrap items-start gap-6">
               <VisitorCard
@@ -315,6 +316,7 @@ export default function ComponentesPage() {
                 }}
                 medals={CARD_MEDALS.slice(0, 5)}
               />
+              <ShareCardButton href="/dev/sin-imagen" fileName="tarjeta.png" />
             </div>
           </Section>
 

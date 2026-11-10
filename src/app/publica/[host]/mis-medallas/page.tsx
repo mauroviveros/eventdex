@@ -4,6 +4,7 @@ import { buttonClass } from "@/components/ui/Button";
 import type { Medal } from "@/components/visitante/Medal";
 import { MedalGrid } from "@/components/visitante/MedalGrid";
 import { Progress } from "@/components/visitante/Progress";
+import { ShareCardButton } from "@/components/visitante/ShareCardButton";
 import { VisitorCard } from "@/components/visitante/VisitorCard";
 import { collectionProgress } from "@/domain/claims";
 import { eventPhase } from "@/domain/events";
@@ -93,14 +94,20 @@ export default async function MisMedallasPage({
       ) : (
         <>
           {medals.length > 0 && (
-            <VisitorCard
-              account={visitor}
-              org={org}
-              event={event}
-              medals={medals}
-              total={event.spots.length}
-              now={new Date()}
-            />
+            <div className="grid gap-4">
+              <VisitorCard
+                account={visitor}
+                org={org}
+                event={event}
+                medals={medals}
+                total={event.spots.length}
+                now={new Date()}
+              />
+              <ShareCardButton
+                href={`/mis-medallas/tarjeta?evento=${event.slug}`}
+                fileName={`tarjeta-${event.slug}.png`}
+              />
+            </div>
           )}
           <Collection
             spots={event.spots}
