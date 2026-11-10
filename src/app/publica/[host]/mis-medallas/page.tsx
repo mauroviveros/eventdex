@@ -4,6 +4,7 @@ import { buttonClass } from "@/components/ui/Button";
 import type { Medal } from "@/components/visitante/Medal";
 import { MedalGrid } from "@/components/visitante/MedalGrid";
 import { Progress } from "@/components/visitante/Progress";
+import { VisitorCard } from "@/components/visitante/VisitorCard";
 import { collectionProgress } from "@/domain/claims";
 import { eventPhase } from "@/domain/events";
 import { listMyClaims, listMyEvents } from "@/lib/data/claims";
@@ -48,12 +49,15 @@ export default async function MisMedallasPage({
       : active;
   const mine = event ? await listMyClaims(supabase, event.id, visitor.id) : [];
   const claimed = new Set(mine.map((c) => c.event_spot_id));
+  const medals = event?.spots.filter((s) => claimed.has(s.id)) ?? [];
 
   return (
     <main className="mx-auto grid w-full max-w-3xl gap-10 px-4 py-8 sm:px-6">
       <div className="grid gap-2">
         <h1 className="font-wide text-title sm:text-title-lg">Mis medallas</h1>
-        {event && <p className="font-display text-px-1">{eventName(event)}</p>}
+        {event && medals.length === 0 && (
+          <p className="font-display text-px-1">{eventName(event)}</p>
+        )}
       </div>
 
       {myEvents.some((e) => e.slug !== event?.slug) && (
@@ -88,6 +92,16 @@ export default async function MisMedallasPage({
         </p>
       ) : (
         <>
+          {medals.length > 0 && (
+            <VisitorCard
+              account={visitor}
+              org={org}
+              event={event}
+              medals={medals}
+              total={event.spots.length}
+              now={new Date()}
+            />
+          )}
           <Collection
             spots={event.spots}
             claimed={claimed}

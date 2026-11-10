@@ -1,10 +1,16 @@
+const SIZES = {
+  sm: "size-8 text-px-1",
+  md: "size-10 text-px-2",
+  lg: "size-36 text-px-4",
+};
+
 /** Initials on an ink square: stands in for a logo or an avatar. */
 export function Monogram({
   text,
   size = "md",
 }: {
   text: string;
-  size?: "sm" | "md";
+  size?: "sm" | "md" | "lg";
 }) {
   const initials = text
     .replace(/@.*/, "")
@@ -16,9 +22,7 @@ export function Monogram({
   return (
     <span
       aria-hidden
-      className={`grid shrink-0 place-items-center bg-lcd-3 font-display text-lcd-0 ${
-        size === "sm" ? "size-8 text-px-1" : "size-10 text-px-2"
-      }`}
+      className={`grid shrink-0 place-items-center bg-lcd-3 font-display text-lcd-0 ${SIZES[size]}`}
     >
       {initials || "?"}
     </span>
