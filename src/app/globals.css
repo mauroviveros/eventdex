@@ -248,6 +248,13 @@
     animation: develop-logo 900ms steps(1, end) both;
   }
 
+  /* The visitor's photo on the LCD; the filter is defined next to it. */
+  .foto-lcd {
+    image-rendering: pixelated;
+    filter: url(#foto-lcd);
+    mix-blend-mode: multiply;
+  }
+
   /* Double-ruled panel, like a handheld dialog box. */
   .panel {
     border: 2px solid var(--lcd-3);
