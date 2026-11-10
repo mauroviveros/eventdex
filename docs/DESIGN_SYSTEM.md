@@ -93,7 +93,9 @@ Primitivas de shadcn/ui en `src/components/ui/shadcn/`, adaptadas a los tokens: 
 Input, Textarea, Select, Checkbox, Switch, Dialog, Sheet, Dropdown, Tabs, Table,
 Badge, Toast, Skeleton, Tooltip, Avatar y Card. Ya están Sidebar, Sheet, Dropdown,
 Tooltip, Avatar, Input, Label, NativeSelect (el select del sistema, cómodo en el
-celular), Checkbox, Popover y Calendar (R15). Las fechas se eligen con `DateField`:
+celular), Checkbox, Popover, Calendar, Table y Badge (R15). Badge tiene una variante por tono
+(tinta, relleno, regla, secundario) más `destructive`, que es solo para algo que anda
+mal. Las fechas se eligen con `DateField`:
 calendario en castellano, semana desde el lunes, días de 44 px y la hora al lado. Sus roles (`sidebar-*`, `popover`, `accent`, `muted`,
 `border`, `ring`) apuntan a los roles LCD en `globals.css`: no suman colores.
 
