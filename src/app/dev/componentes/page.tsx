@@ -18,9 +18,19 @@ import { DateField } from "@/components/ui/DateField";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
 import { GoogleSignIn } from "@/components/ui/GoogleSignIn";
 import { LogoField } from "@/components/ui/LogoField";
+import { Badge } from "@/components/ui/shadcn/badge";
 import { Checkbox } from "@/components/ui/shadcn/checkbox";
 import { Label } from "@/components/ui/shadcn/label";
 import { SidebarProvider } from "@/components/ui/shadcn/sidebar";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/shadcn/table";
 import { Celebration } from "@/components/visitante/Celebration";
 import { Countdown } from "@/components/visitante/Countdown";
 import {
@@ -569,6 +579,59 @@ export default function ComponentesPage() {
               label="QR de ejemplo, chico"
               className="w-24"
             />
+          </div>
+        </Section>
+
+        <Section
+          title="Panel: tabla y estados"
+          note="Table de shadcn: regla de tinta bajo el encabezado y líneas punteadas entre filas; en el celular se corre de costado. Badge con un tono por estado; el rojo es solo para algo que anda mal."
+        >
+          <div className="grid gap-6">
+            <div className="flex flex-wrap gap-2">
+              <Badge>Pendiente</Badge>
+              <Badge variant="secondary">Próximo</Badge>
+              <Badge variant="outline">Activa</Badge>
+              <Badge variant="muted">Finalizado</Badge>
+              <Badge variant="muted" className="line-through">
+                Anulada
+              </Badge>
+              <Badge variant="destructive">Suspendida</Badge>
+            </div>
+            <Table className="min-w-xl">
+              <TableCaption className="sr-only">
+                Facturas de ejemplo
+              </TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Fecha</TableHead>
+                  <TableHead>Concepto</TableHead>
+                  <TableHead className="text-right">Monto</TableHead>
+                  <TableHead>Estado</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell className="tabular-nums">14/11/26</TableCell>
+                  <TableCell>Expo de ejemplo 2026</TableCell>
+                  <TableCell className="text-right tabular-nums">
+                    $ 1.500,50
+                  </TableCell>
+                  <TableCell>
+                    <Badge>Pendiente</Badge>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="tabular-nums">02/10/26</TableCell>
+                  <TableCell>Feria de ejemplo</TableCell>
+                  <TableCell className="text-right tabular-nums">
+                    US$ 99,00
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="outline">Pagada</Badge>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
           </div>
         </Section>
 
