@@ -92,7 +92,9 @@ los encuentre.
   radios (`rounded-[13px]`) ni sombras arbitrarias. Si falta un token, se propone en
   `DESIGN.md`; no se inventa en el componente.
 - Todo componente nuevo aparece en `/dev/componentes` con todos sus estados.
-- Las primitivas de shadcn se agregan cuando las usa una pantalla real.
+- Las primitivas de shadcn se agregan cuando las usa una pantalla real, con
+  `pnpm dlx shadcn@latest add <nombre>`, y se adaptan a los tokens antes de usarlas:
+  sin `rounded-*`, `shadow-*` ni `animate-*`, íconos pixel en vez de lucide.
 
 ### Framework (Next.js 16 + Supabase)
 
@@ -168,6 +170,7 @@ desde `.claude/skills/`. Se restauran con `npx skills experimental_install`.
 | `playwright-best-practices` | Recorridos e2e de cada rebanada (`e2e/`) |
 | `deploy-to-vercel` | Deploys y configuración de dominios |
 | `nodejs-best-practices` | El script de migración (R10) |
+| `shadcn` | Al agregar o adaptar primitivas de shadcn/ui (`components.json`, `ui/shadcn/`) |
 
 ### Del usuario (globales)
 
@@ -185,7 +188,6 @@ Se buscan con `/find-skills` al llegar a la fase y se instalan solo con OK.
 | Área | Fase |
 |---|---|
 | Tests de base con pgTAP | F0 · bloque 6 |
-| shadcn/ui → `shadcn-ui/ui@shadcn` | F0 · bloque 9 |
 | Generación e impresión de QR | R3 · buscada: no hay una skill útil; se usa `uqr` (ver ARQUITECTURA) |
 
 <!-- BEGIN:nextjs-agent-rules -->

@@ -89,9 +89,13 @@ Los valores los define [DESIGN](./DESIGN.md). Dos voces:
 
 ## Componentes base
 
-Primitivas de shadcn/ui en `src/components/ui/`, adaptadas a los tokens: Button,
+Primitivas de shadcn/ui en `src/components/ui/shadcn/`, adaptadas a los tokens: Button,
 Input, Textarea, Select, Checkbox, Switch, Dialog, Sheet, Dropdown, Tabs, Table,
-Badge, Toast, Skeleton, Tooltip, Avatar y Card.
+Badge, Toast, Skeleton, Tooltip, Avatar y Card. Ya están Sidebar, Sheet, Dropdown,
+Tooltip, Avatar, Input, Label, NativeSelect (el select del sistema, cómodo en el
+celular), Checkbox, Popover y Calendar (R15). Las fechas se eligen con `DateField`:
+calendario en castellano, semana desde el lunes, días de 44 px y la hora al lado. Sus roles (`sidebar-*`, `popover`, `accent`, `muted`,
+`border`, `ring`) apuntan a los roles LCD en `globals.css`: no suman colores.
 
 **Regla:** una primitiva se agrega cuando la usa la primera pantalla real, no antes.
 
@@ -113,7 +117,7 @@ En `src/components/<dominio>/`. Cada uno documenta sus estados en `/dev/componen
 | **QR** | Código + nombre + código corto, listo para imprimir | normal · vista de impresión A4 |
 | **Extracción** | Ganador de una tirada del sorteo | sorteando · ganador · anulada |
 | **Selector de organización** | La org activa en el admin | una org · varias |
-| **Shell del admin** | Barra lateral (organización arriba, secciones, cuenta abajo) y barra superior con el título y la acción principal. En celular, la barra lateral es un bloque arriba con la cuenta al final de la fila de la marca | sección actual (celda invertida) · sin organización (marca) · varias organizaciones (se despliega) |
+| **Shell del admin** | Barra lateral (organización arriba, secciones con ícono pixel, cuenta abajo con foto, nombre y mail) y barra superior con el botón de la barra, el título y la acción principal. La barra colapsa a íconos (botón, borde o Ctrl/⌘ B) y lo recuerda en una cookie. En celular es un panel lateral que abre el mismo botón y se cierra al elegir una sección | sección actual (celda invertida) · colapsada (íconos con tooltip) · sin organización (marca) · varias organizaciones (menú con todas, la actual marcada) · sin foto (iniciales) · modo soporte (aviso sobre la página) |
 | **Métrica** | Una cifra de la organización o del evento | con valor · en cero |
 | **Filtros de eventos** | Buscador y fases con conteos, todo en la URL | fase actual · sin resultados |
 | **Tarjeta de evento** | Cuándo y dónde, stands/visitantes/medallas, recorrido promedio, Estadísticas y Gestionar. Sin métricas reales todavía (antes de R3 y R5) muestra solo cuándo, dónde y Gestionar: nunca ceros inventados | finalizado · en curso · borrador (tira punteada) · recorrido 0 y parcial · sin métricas |
