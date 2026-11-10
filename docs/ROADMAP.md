@@ -348,6 +348,19 @@ es lo que más tarda. Branch `feat/duplicar-evento`.
    tocar el original.
    `/code-review`: sin hallazgos. axe queda sin correr.
 
+## R14 · Tarjeta de visitante
+
+La colección del evento, con la cara de quien la juntó, lista para mostrar. Branch
+`feat/tarjeta-visitante`.
+
+1. ▶ **Tarjeta en Mis medallas.** `VisitorCard`, con la foto en la pantalla LCD; sin
+   cambios en la base.
+   *Listo cuando* desde la primera medalla la tarjeta encabeza `/mis-medallas` con datos
+   reales, y sin medallas la página sigue como antes.
+2. **Compartir.** Una imagen de 1080×1920 generada con sesión, Web Share con archivo y
+   descarga si el navegador no puede.
+   *Listo cuando* el visitante comparte su tarjeta como imagen desde el celular.
+
 ---
 
 ## ⏸ Estacionado
