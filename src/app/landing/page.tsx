@@ -103,7 +103,7 @@ export default function LandingPage() {
   return (
     <>
       <main>
-        <section className="bg-lcd-1">
+        <section className="overflow-clip bg-lcd-1">
           <div className="mx-auto grid max-w-[90rem] justify-items-center gap-x-10 gap-y-8 px-4 pt-6 sm:px-8 xl:min-h-[min(100svh,60rem)] xl:grid-cols-[minmax(0,1fr)_32.5rem_minmax(0,1fr)] xl:pt-10">
             <div className="grid content-start gap-5 justify-self-start xl:gap-16">
               <p className="font-display text-px-3">Eventdex</p>
@@ -123,8 +123,12 @@ export default function LandingPage() {
 
             <div className="hidden content-start justify-items-start gap-5 xl:grid xl:pt-32">
               <ul className="grid gap-5">
-                {QUICK_STEPS.map((step) => (
-                  <li key={step} className="font-display text-px-3">
+                {QUICK_STEPS.map((step, i) => (
+                  <li
+                    key={step}
+                    style={{ "--i": i } as CSSProperties}
+                    className="tick-in font-display text-px-3"
+                  >
                     {step}
                   </li>
                 ))}
@@ -237,7 +241,7 @@ export default function LandingPage() {
                     key={b.host}
                     style={brandStyle(b.color)}
                     data-scheme="light"
-                    className={`ramp-scope flex w-full items-center gap-4 border-2 border-lcd-3 bg-lcd-0 p-4 text-lcd-3 sm:grid sm:w-40 sm:justify-items-center sm:gap-3 ${b.offset}`}
+                    className={`ramp-scope drop-in flex w-full items-center gap-4 border-2 border-lcd-3 bg-lcd-0 p-4 text-lcd-3 sm:grid sm:w-40 sm:justify-items-center sm:gap-3 ${b.offset}`}
                   >
                     <Sprite type="stand" scale={8} label="Medalla de ejemplo" />
                     <span className="break-words font-display text-px-1 sm:w-full sm:text-center">
