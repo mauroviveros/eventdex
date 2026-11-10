@@ -3,6 +3,8 @@
 import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
+import { Checkbox } from "@/components/ui/shadcn/checkbox";
+import { Label } from "@/components/ui/shadcn/label";
 import { useFormFeedback } from "@/components/ui/useFormFeedback";
 import { addEventSpotAction, updateEventSpotAction } from "@/lib/actions/spots";
 
@@ -163,17 +165,12 @@ export function EditEventSpotForm({
         hint="Opcional."
         error={fields.descriptionOverride}
       />
-      <label className="flex min-h-11 items-center gap-3">
-        <input
-          type="checkbox"
-          name="isActive"
-          defaultChecked={spot.is_active}
-          className="size-5 accent-lcd-3"
-        />
+      <Label className="min-h-11 font-sans text-base">
+        <Checkbox name="isActive" defaultChecked={spot.is_active} />
         <span>
           Activo: su QR entrega medalla. Desactivalo si el stand no vino.
         </span>
-      </label>
+      </Label>
       <Button
         type="submit"
         pending={pending}

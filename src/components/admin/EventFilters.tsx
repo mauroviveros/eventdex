@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SearchIcon } from "@/components/pixel/SearchIcon";
+import { Input } from "@/components/ui/shadcn/input";
 
 export type PhaseFilter =
   | "todos"
@@ -40,22 +41,20 @@ export function EventFilters({ basePath, current, counts, query = "" }: Props) {
   return (
     <div className="flex flex-wrap items-stretch gap-3">
       <search className="flex min-w-64 flex-1">
-        <form
-          action={basePath}
-          method="get"
-          className="flex min-h-11 min-w-64 flex-1 items-center gap-2 border-2 border-lcd-3 px-3 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-lcd-3"
-        >
-          <SearchIcon />
+        <form action={basePath} method="get" className="relative flex-1">
+          <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2">
+            <SearchIcon />
+          </span>
           <label htmlFor="buscar-eventos" className="sr-only">
             Buscar eventos
           </label>
-          <input
+          <Input
             id="buscar-eventos"
             name="q"
             type="search"
             defaultValue={query}
             placeholder="Buscar por nombre o sede"
-            className="min-w-0 flex-1 bg-transparent py-2 placeholder:text-lcd-2 focus:outline-none"
+            className="pl-10"
           />
           {current !== "todos" && (
             <input type="hidden" name="fase" value={current} />

@@ -4,6 +4,8 @@ import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
 import { LogoField } from "@/components/ui/LogoField";
+import { Checkbox } from "@/components/ui/shadcn/checkbox";
+import { Label } from "@/components/ui/shadcn/label";
 import { useFormFeedback } from "@/components/ui/useFormFeedback";
 import { SPOT_TYPE_LABEL, SPOT_TYPES, type SpotType } from "@/domain/spots";
 import type { FormState } from "@/lib/actions/form";
@@ -87,14 +89,10 @@ export function SpotForm({
             alt="Logo actual"
             className="size-16 border-2 border-lcd-3 object-contain"
           />
-          <label className="flex min-h-11 items-center gap-3">
-            <input
-              type="checkbox"
-              name="removeLogo"
-              className="size-5 accent-lcd-3"
-            />
+          <Label className="min-h-11 font-sans text-base">
+            <Checkbox name="removeLogo" />
             <span>Quitar el logo</span>
-          </label>
+          </Label>
         </div>
       )}
       <Button

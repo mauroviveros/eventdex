@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
+import { DateField } from "@/components/ui/DateField";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
 import { useFormFeedback } from "@/components/ui/useFormFeedback";
 import { createInvoiceAction } from "@/lib/actions/platform";
@@ -65,12 +66,10 @@ export function NewInvoiceForm({ organizations, today }: Props) {
           <option value="ARS">Pesos (ARS)</option>
           <option value="USD">Dólares (USD)</option>
         </SelectField>
-        <Field
+        <DateField
           label="Fecha"
           name="issuedOn"
-          type="date"
           defaultValue={values.issuedOn ?? today}
-          required
           error={fields.issuedOn}
         />
       </div>
