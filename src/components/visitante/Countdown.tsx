@@ -32,7 +32,7 @@ export function Countdown({ state }: { state: CountdownState }) {
   return (
     <p className="grid justify-items-center gap-3">
       <span className="font-display text-px-2">Arranca en</span>
-      <span className="flex flex-wrap justify-center gap-2 sm:gap-3">
+      <span className="grid grid-cols-1 gap-2 min-[18rem]:grid-cols-3 sm:gap-3">
         {units.map(([value, unit]) => (
           <span
             key={unit}
