@@ -266,6 +266,25 @@
     animation: develop-logo 900ms steps(1, end) both;
   }
 
+  /* Landing hero: the handheld clicks up into place 8 px at a time, then the
+   * quick steps tick in one by one. Only transform and opacity, in steps. */
+  .boot {
+    animation: boot 400ms steps(4, end) both;
+  }
+  .tick-in {
+    animation: tick-in 200ms steps(1, end) both;
+    animation-delay: calc(400ms + var(--i, 0) * 200ms);
+  }
+  /* Brand cards drop into their stair as they scroll in: done once fully in
+   * view. Without scroll timelines they just sit there. */
+  @supports (animation-timeline: view()) {
+    .drop-in {
+      animation: drop-in steps(4, jump-start) both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 100%;
+    }
+  }
+
   /* Double-ruled panel, like a handheld dialog box. */
   .panel {
     border: 2px solid var(--lcd-3);
@@ -357,6 +376,22 @@
   }
   100% {
     filter: none;
+  }
+}
+@keyframes boot {
+  from {
+    transform: translateY(32px);
+  }
+}
+@keyframes tick-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-32px);
   }
 }
 @keyframes blink {
