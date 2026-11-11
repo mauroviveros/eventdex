@@ -11,10 +11,12 @@ import {
   formatScheduleTimes,
 } from "@/domain/events";
 import { deleteScheduleAction } from "@/lib/actions/events";
+import { listVenues } from "@/lib/data/events";
 import { coverUrl } from "@/lib/data/organizations";
+import { createClient } from "@/lib/supabase/server";
 import { CoverForm } from "./CoverForm";
 import { load } from "./load";
-import { AddScheduleForm, PublishButton } from "./ScheduleForms";
+import { AddScheduleForm, PublishButton, VenueForm } from "./ScheduleForms";
 
 export async function generateMetadata({
   params,
@@ -34,6 +36,7 @@ export default async function EventoPage({
   const draft = event.status === "draft";
   const editable = !support;
   const cover = coverUrl(event.cover_path);
+  const venues = editable ? await listVenues(await createClient(), org.id) : [];
 
   return (
     <>
@@ -130,6 +133,28 @@ export default async function EventoPage({
               eventId={event.id}
               ready={event.schedules.length > 0}
             />
+          </section>
+        )}
+
+        {editable && (
+          <section aria-labelledby="sede" className="grid max-w-3xl gap-4">
+            <h2 id="sede" className="text-px-2">
+              Sede
+            </h2>
+            {venues.length === 0 ? (
+              <p className="max-w-prose border-2 border-dashed border-lcd-2 px-6 py-8">
+                Todavía no cargaste sedes.{" "}
+                <Link href={`/${org.slug}/sedes`}>Cargá una</Link> y volvé para
+                elegirla.
+              </p>
+            ) : (
+              <VenueForm
+                org={org.slug}
+                eventId={event.id}
+                venueId={event.venue_id}
+                venues={venues}
+              />
+            )}
           </section>
         )}
 

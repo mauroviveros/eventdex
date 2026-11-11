@@ -3,9 +3,13 @@
 import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
 import { DateField } from "@/components/ui/DateField";
-import { Field, FormMessage } from "@/components/ui/Field";
+import { Field, FormMessage, SelectField } from "@/components/ui/Field";
 import { useFormFeedback } from "@/components/ui/useFormFeedback";
-import { addScheduleAction, publishEventAction } from "@/lib/actions/events";
+import {
+  addScheduleAction,
+  publishEventAction,
+  setEventVenueAction,
+} from "@/lib/actions/events";
 
 type Ids = { org: string; eventId: string };
 
@@ -95,6 +99,53 @@ export function PublishButton({
       {state && !state.ok && (
         <FormMessage tone="error">{state.error}</FormMessage>
       )}
+    </form>
+  );
+}
+
+/** Sets, changes or clears the event's venue. */
+export function VenueForm({
+  org,
+  eventId,
+  venueId,
+  venues,
+}: Ids & { venueId: string | null; venues: { id: string; name: string }[] }) {
+  const [state, action, pending] = useActionState(setEventVenueAction, null);
+  const { form, failed, fields, values } = useFormFeedback(
+    state,
+    "Sede guardada.",
+  );
+
+  return (
+    <form ref={form} action={action} className="grid gap-6" noValidate>
+      <input type="hidden" name="org" value={org} />
+      <input type="hidden" name="eventId" value={eventId} />
+      {failed && !failed.fieldErrors && (
+        <FormMessage tone="error">{failed.error}</FormMessage>
+      )}
+      <SelectField
+        label="Sede"
+        name="venueId"
+        defaultValue={values.venueId ?? venueId ?? ""}
+        hint="Los horarios del evento se muestran en la zona horaria de la sede."
+        error={fields.venueId}
+      >
+        <option value="">Sin sede</option>
+        {venues.map((v) => (
+          <option key={v.id} value={v.id}>
+            {v.name}
+          </option>
+        ))}
+      </SelectField>
+      <Button
+        type="submit"
+        variant="secondary"
+        pending={pending}
+        pendingLabel="Guardando…"
+        className="justify-self-start"
+      >
+        Guardar sede
+      </Button>
     </form>
   );
 }

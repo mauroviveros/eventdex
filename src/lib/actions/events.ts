@@ -9,6 +9,7 @@ import {
   duplicateEvent,
   publishEvent,
   removeCover,
+  setEventVenue,
   uploadCover,
 } from "@/lib/events";
 import { type FormState, runFormWrite, takeLogo } from "./form";
@@ -87,5 +88,13 @@ export async function publishEventAction(
   const r = await runFormWrite(formData, (supabase, v) =>
     publishEvent(supabase, v.eventId),
   );
+  return r.ok ? { ok: true } : r.state;
+}
+
+export async function setEventVenueAction(
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const r = await runFormWrite(formData, setEventVenue);
   return r.ok ? { ok: true } : r.state;
 }
