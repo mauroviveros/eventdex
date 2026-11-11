@@ -133,6 +133,45 @@ export async function createEvent(
   return { ok: true, data };
 }
 
+const venueChangeSchema = eventSchema
+  .pick({ venueId: true })
+  .extend({ eventId: z.guid() });
+
+/** Sets or clears the venue. With one, the event takes its zone; without, it keeps the one it had. */
+export async function setEventVenue(
+  supabase: Client,
+  input: unknown,
+): Promise<ActionResult<null>> {
+  const parsed = venueChangeSchema.safeParse(input);
+  if (!parsed.success) return invalid(parsed.error);
+  const { eventId, venueId } = parsed.data;
+
+  const change: { venue_id: string | null; timezone?: string } = {
+    venue_id: venueId,
+  };
+  if (venueId) {
+    const { data: venue, error } = await supabase
+      .from("venues")
+      .select("timezone")
+      .eq("id", venueId)
+      .is("deleted_at", null)
+      .maybeSingle();
+    if (error) return failed(error);
+    if (!venue) return failed({ code: "23503" }, EVENT_ERRORS);
+    change.timezone = venue.timezone;
+  }
+
+  const { data, error } = await supabase
+    .from("events")
+    .update(change)
+    .eq("id", eventId)
+    .select("id");
+  if (error) return failed(error, EVENT_ERRORS);
+  // RLS hides what isn't yours: nothing updated means no permission.
+  if (data.length === 0) return failed({ code: "42501" });
+  return { ok: true, data: null };
+}
+
 const duplicateSchema = eventSchema.extend({ sourceId: z.guid() });
 
 /** A new draft with the data typed in the form and the spots of `sourceId`. */

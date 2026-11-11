@@ -6,6 +6,7 @@ import {
   duplicateEvent,
   publishEvent,
   removeCover,
+  setEventVenue,
   uploadCover,
 } from "./events";
 import { fakeClient, inserted } from "./fake-supabase";
@@ -106,6 +107,52 @@ describe("createEvent", () => {
       ok: false,
       error: "Ya hay un evento con esa dirección en tu organización.",
     });
+  });
+});
+
+describe("setEventVenue", () => {
+  const VENUE = "0000000a-0000-4000-8000-000000000003";
+  const updated = (calls: { method: string; args: unknown[] }[]) =>
+    calls.find((c) => c.method === "update")?.args[0];
+
+  it("sets the venue and takes its zone", async () => {
+    const { client, calls } = fakeClient(
+      { data: { timezone: "America/Santiago" }, error: null },
+      { data: [{ id: EVENT }], error: null },
+    );
+    expect(
+      await setEventVenue(client, { eventId: EVENT, venueId: VENUE }),
+    ).toEqual({ ok: true, data: null });
+    expect(updated(calls)).toEqual({
+      venue_id: VENUE,
+      timezone: "America/Santiago",
+    });
+  });
+
+  it("clears the venue and leaves the zone alone", async () => {
+    const { client, calls } = fakeClient({
+      data: [{ id: EVENT }],
+      error: null,
+    });
+    expect(
+      await setEventVenue(client, { eventId: EVENT, venueId: "" }),
+    ).toEqual({ ok: true, data: null });
+    expect(updated(calls)).toEqual({ venue_id: null });
+  });
+
+  it("writes nothing for a venue it can't see", async () => {
+    const { client, calls } = fakeClient({ data: null, error: null });
+    expect(
+      await setEventVenue(client, { eventId: EVENT, venueId: VENUE }),
+    ).toEqual({ ok: false, error: "Elegí una sede de tu organización." });
+    expect(updated(calls)).toBeUndefined();
+  });
+
+  it("says no permission when RLS updated nothing", async () => {
+    const { client } = fakeClient({ data: [], error: null });
+    expect(
+      await setEventVenue(client, { eventId: EVENT, venueId: "" }),
+    ).toEqual({ ok: false, error: "No tenés permiso para hacer esto." });
   });
 });
 
