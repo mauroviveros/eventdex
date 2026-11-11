@@ -165,6 +165,7 @@ export async function setEventVenue(
     .from("events")
     .update(change)
     .eq("id", eventId)
+    .is("deleted_at", null)
     .select("id");
   if (error) return failed(error, EVENT_ERRORS);
   // RLS hides what isn't yours: nothing updated means no permission.

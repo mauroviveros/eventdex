@@ -144,8 +144,13 @@ export default async function EventoPage({
             {venues.length === 0 ? (
               <p className="max-w-prose border-2 border-dashed border-lcd-2 px-6 py-8">
                 Todavía no cargaste sedes.{" "}
-                <Link href={`/${org.slug}/sedes`}>Cargá una</Link> y volvé para
-                elegirla.
+                <Link
+                  href={`/${org.slug}/sedes`}
+                  className="underline decoration-2 underline-offset-4"
+                >
+                  Cargá una
+                </Link>{" "}
+                y volvé para elegirla.
               </p>
             ) : (
               <VenueForm
@@ -153,6 +158,7 @@ export default async function EventoPage({
                 eventId={event.id}
                 venueId={event.venue_id}
                 venues={venues}
+                hasSchedules={event.schedules.length > 0}
               />
             )}
           </section>
