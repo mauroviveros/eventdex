@@ -158,8 +158,7 @@ Los formularios además muestran:
   En el resto: transiciones cortas, menos de 200 ms, que acompañan el cambio de
   estado.
 - La landing tiene su propia entrada, también en pasos y solo con `transform` y
-  `opacity`: la consola sube a su lugar (400 ms), los pasos rápidos aparecen de a
-  uno y las tarjetas de marca caen a su escalón al entrar en pantalla. El título
+  `opacity`: la consola sube a su lugar (400 ms) y las tarjetas de marca caen a su escalón al entrar en pantalla. El título
   y el botón no se animan.
 - Con `prefers-reduced-motion`, la celebración se resuelve sin animación, y la
   landing aparece quieta y completa.

@@ -3,16 +3,7 @@
 import { useState } from "react";
 import { Chevron } from "@/components/pixel/Chevron";
 import { Sprite } from "@/components/pixel/Sprite";
-import type { SpotType } from "@/domain/spots";
-
-// Synthetic stands, only to try the mechanic.
-const STANDS: { code: string; name: string; type: SpotType }[] = [
-  { code: "A01", name: "Café de la Esquina", type: "stand" },
-  { code: "A02", name: "Rueda gigante", type: "attraction" },
-  { code: "A03", name: "Banco del Parque", type: "sponsor" },
-  { code: "A04", name: "Taller de cerámica", type: "activity" },
-  { code: "A05", name: "Dulces del Sur", type: "stand" },
-];
+import { STANDS } from "./stands";
 
 const STATUS = {
   new: "¡Medalla nueva!",
@@ -49,17 +40,24 @@ const PAD = [
 
 /** A handheld that plays the visitor's loop: walk to a stand, scan it, get the medal. */
 export function ConsoleDemo() {
-  const [selected, setSelected] = useState(2);
+  // Starts on a stand still to get: the first press of A is the reward.
+  const [selected, setSelected] = useState(3);
   const [claimed, setClaimed] = useState<ReadonlySet<number>>(
     new Set([0, 1, 2]),
   );
-  const [status, setStatus] = useState<keyof typeof STATUS>("new");
+  const [status, setStatus] = useState<keyof typeof STATUS>("pending");
   // Remounts the sprite so a new medal develops again.
   const [scans, setScans] = useState(0);
 
   const stand = STANDS[selected];
   if (!stand) return null;
   const owned = claimed.has(selected);
+  const complete = claimed.size === STANDS.length;
+  const hint = complete
+    ? "Así junta medallas tu público, stand por stand."
+    : owned
+      ? "Movete con la cruceta a un stand que te falte."
+      : "Tocá A para escanear este stand.";
 
   function move(step: number) {
     const next = (selected + step + STANDS.length) % STANDS.length;
@@ -83,7 +81,7 @@ export function ConsoleDemo() {
       className="boot w-full max-w-[32.5rem] border-2 border-b-0 border-lcd-3 bg-lcd-0 px-5 pt-5 pb-12 sm:px-10 sm:pt-10 sm:pb-20"
     >
       <div className="bg-lcd-2 p-4 sm:p-6">
-        <div className="grid min-h-[25rem] content-between justify-items-center gap-3 border-2 border-lcd-3 bg-lcd-0 p-4 text-center sm:p-6">
+        <div className="grid min-h-[22rem] sm:min-h-[25rem] content-between justify-items-center gap-3 border-2 border-lcd-3 bg-lcd-0 p-4 text-center sm:p-6">
           <p className="font-display text-px-1">
             {stand.code} · {stand.name}
           </p>
@@ -103,23 +101,26 @@ export function ConsoleDemo() {
             />
           </div>
           <p aria-live="polite" className="font-display text-px-3">
-            {STATUS[status]}
+            {complete ? "¡Entrás al sorteo!" : STATUS[status]}
             <span className="sr-only"> {stand.name}</span>
           </p>
           <div className="grid justify-items-center gap-2">
             <div aria-hidden className="flex gap-2">
               {STANDS.map((s, i) => (
-                <span
-                  key={s.code}
-                  className={`grid size-8 place-items-center border-2 sm:size-10 ${
-                    claimed.has(i)
-                      ? "border-lcd-3"
-                      : "border-dashed border-lcd-2"
-                  }`}
-                >
-                  {claimed.has(i) && (
-                    <Sprite type={s.type} scale={2} label="" />
-                  )}
+                <span key={s.code} className="grid justify-items-center gap-1">
+                  {/* Game cursor: which stand the screen is showing. */}
+                  <Chevron className={i === selected ? "" : "invisible"} />
+                  <span
+                    className={`grid size-8 place-items-center border-2 sm:size-10 ${
+                      claimed.has(i)
+                        ? "border-lcd-3"
+                        : "border-dashed border-lcd-2"
+                    }`}
+                  >
+                    {claimed.has(i) && (
+                      <Sprite type={s.type} scale={2} label="" />
+                    )}
+                  </span>
                 </span>
               ))}
             </div>
@@ -138,7 +139,7 @@ export function ConsoleDemo() {
               type="button"
               aria-label={arm.label}
               onClick={() => move(arm.step)}
-              className={`grid size-12 place-items-center bg-lcd-3 text-lcd-0 hover:bg-lcd-2 ${arm.cell}`}
+              className={`grid size-12 cursor-pointer place-items-center bg-lcd-3 text-lcd-0 hover:bg-lcd-2 active:translate-y-0.5 ${arm.cell}`}
             >
               <Chevron className={arm.icon} />
             </button>
@@ -153,7 +154,7 @@ export function ConsoleDemo() {
             type="button"
             onClick={scan}
             aria-label="Escanear el QR de este stand"
-            className="grid size-20 place-items-center border-2 border-lcd-3 bg-accent-red font-display text-px-3 text-lcd-0 hover:bg-lcd-3"
+            className="grid size-20 cursor-pointer place-items-center border-2 border-lcd-3 bg-accent-red font-display text-px-3 text-lcd-0 hover:bg-lcd-3 active:translate-y-0.5"
           >
             A
           </button>
@@ -162,6 +163,7 @@ export function ConsoleDemo() {
           </span>
         </div>
       </div>
+      <p className="mt-6 text-center sm:mt-8">{hint}</p>
     </section>
   );
 }
