@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { CSSProperties } from "react";
+import { QrCode } from "@/components/admin/QrCode";
 import { ConsoleDemo } from "@/components/landing/ConsoleDemo";
+import { STANDS } from "@/components/landing/stands";
 import { Sprite } from "@/components/pixel/Sprite";
 import { buttonClass } from "@/components/ui/Button";
 import { rampFromHex } from "@/domain/palette";
@@ -28,13 +30,48 @@ export const metadata: Metadata = {
   },
 };
 
-const CONTACT = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Quiero usar Eventdex en mi evento")}`;
+const CONTACT = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Quiero usar Eventdex en mi evento")}&body=${encodeURIComponent("Fecha:\nSede:\nCantidad de stands:\n")}`;
 
-const QUICK_STEPS = [
-  "Cargá los stands",
-  "Imprimí los QR",
-  "Sorteá al cierre",
-] as const;
+const SLOT = "grid size-10 place-items-center border-2";
+
+// A piece of the product next to each step, drawn with its real components.
+const PIECES = [
+  <ul
+    key="spots"
+    className="grid border-2 border-lcd-3 bg-lcd-0 font-display text-px-1"
+  >
+    {STANDS.slice(0, 2).map((s) => (
+      <li
+        key={s.code}
+        className="flex items-center gap-3 border-lcd-2 p-2 not-last:border-b-2"
+      >
+        <Sprite type={s.type} scale={2} label="" />
+        {s.code} · {s.name}
+      </li>
+    ))}
+  </ul>,
+  <div
+    key="qr"
+    className="grid w-fit justify-items-center gap-1 border-2 border-lcd-3 bg-lcd-0 p-2"
+  >
+    <QrCode value={ORIGIN} label="" className="size-24" />
+    <span className="font-display text-px-1">{STANDS[0]?.code}</span>
+  </div>,
+  <div key="medals" className="flex gap-2">
+    {STANDS.map((s, i) => (
+      <span
+        key={s.code}
+        className={`${SLOT} ${i < 3 ? "border-lcd-3" : "border-dashed border-lcd-2"}`}
+      >
+        {i < 3 && <Sprite type={s.type} scale={2} label="" />}
+      </span>
+    ))}
+  </div>,
+  <div key="raffle" className="panel grid gap-1 p-4">
+    <p className="font-display text-px-2">Extracción 1</p>
+    <p className="text-sm">Queda registrada con fecha y hora.</p>
+  </div>,
+];
 
 const STEPS = [
   {
@@ -74,6 +111,7 @@ const RESULTS = [
     medals: 268,
   },
 ] as const;
+const TOTAL_MEDALS = RESULTS.reduce((n, r) => n + r.medals, 0);
 
 // Synthetic brands, only to show the palette swap.
 const BRANDS = [
@@ -104,37 +142,22 @@ export default function LandingPage() {
     <>
       <main>
         <section className="overflow-clip bg-lcd-1">
-          <div className="mx-auto grid max-w-[90rem] justify-items-center gap-x-10 gap-y-8 px-4 pt-6 sm:px-8 xl:min-h-[min(100svh,60rem)] xl:grid-cols-[minmax(0,1fr)_32.5rem_minmax(0,1fr)] xl:pt-10">
-            <div className="grid content-start gap-5 justify-self-start xl:gap-16">
+          <div className="mx-auto grid max-w-6xl justify-items-center gap-x-10 gap-y-8 px-4 pt-6 sm:px-8 lg:min-h-[min(100svh,60rem)] lg:grid-cols-[minmax(0,1fr)_32.5rem] lg:pt-10">
+            <div className="grid content-start gap-5 justify-self-start lg:gap-16">
               <p className="font-display text-px-3">Eventdex</p>
               <div className="grid justify-items-start gap-5">
-                <h1 className="text-balance text-px-4 min-[1400px]:text-px-5">
+                <h1 className="text-balance text-px-4 max-sm:text-px-3 min-[1400px]:text-px-5">
                   Tu evento, jugado stand por stand.
                 </h1>
                 <p className="max-w-[28rem] text-xl">
                   Cada stand es una medalla: una razón para que tu público vaya
                   a todos.
                 </p>
-                <Contact className="xl:hidden" />
+                <Contact />
               </div>
             </div>
 
             <ConsoleDemo />
-
-            <div className="hidden content-start justify-items-start gap-5 xl:grid xl:pt-32">
-              <ul className="grid gap-5">
-                {QUICK_STEPS.map((step, i) => (
-                  <li
-                    key={step}
-                    style={{ "--i": i } as CSSProperties}
-                    className="tick-in font-display text-px-3"
-                  >
-                    {step}
-                  </li>
-                ))}
-              </ul>
-              <Contact className="mt-6" />
-            </div>
           </div>
         </section>
 
@@ -143,23 +166,30 @@ export default function LandingPage() {
           className="border-t-2 border-lcd-3 bg-lcd-0"
         >
           <div className="mx-auto grid max-w-5xl gap-10 px-4 py-16 sm:px-8 sm:py-24">
-            <h2 id="como" className="text-px-4">
+            <h2 id="como" className="text-px-3 sm:text-px-4">
               De la planilla al sorteo
             </h2>
             <ol className="grid border-t-2 border-lcd-3">
               {STEPS.map((step, i) => (
                 <li
                   key={step.title}
-                  className="grid gap-2 border-b-2 border-lcd-3 py-6 sm:grid-cols-[5rem_18rem_1fr] sm:items-baseline sm:gap-6"
+                  className="grid gap-2 border-b-2 border-lcd-3 py-6 sm:grid-cols-[5rem_18rem_1fr] sm:items-baseline sm:gap-6 lg:grid-cols-[5rem_15rem_1fr_17rem]"
                 >
                   <span aria-hidden className="font-display text-px-4">
                     {i + 1}
                   </span>
                   <h3 className="text-px-3">{step.title}</h3>
                   <p className="max-w-[34rem] text-lg">{step.text}</p>
+                  <div
+                    aria-hidden
+                    className="mt-2 sm:col-start-3 sm:self-start lg:col-start-4 lg:mt-0"
+                  >
+                    {PIECES[i]}
+                  </div>
                 </li>
               ))}
             </ol>
+            <p className="text-sm">Stands de ejemplo.</p>
           </div>
         </section>
 
@@ -168,13 +198,13 @@ export default function LandingPage() {
           className="border-t-2 border-lcd-3 bg-lcd-1"
         >
           <div className="mx-auto grid max-w-5xl gap-5 px-4 py-16 sm:px-8 sm:py-24">
-            <h2 id="quien" className="text-balance text-px-4">
-              Para quien organiza eventos con stands
+            <h2 id="quien" className="text-balance text-px-3 sm:text-px-4">
+              Al cierre, sabés quién participó
             </h2>
             <p className="max-w-[40rem] text-xl">
-              Productoras, municipios y organizadores de expos y ferias. Al
-              cierre ves quién participó y cuántas medallas juntó. No vende
-              entradas, y nadie instala una app.
+              Ves quién participó y cuántas medallas juntó. Es para productoras,
+              municipios y organizadores de expos y ferias. No vende entradas, y
+              nadie instala una app.
             </p>
           </div>
         </section>
@@ -182,12 +212,12 @@ export default function LandingPage() {
         <section aria-labelledby="prueba" className="bg-lcd-3 text-lcd-0">
           <div className="mx-auto grid max-w-5xl gap-10 px-4 py-16 sm:px-8 sm:py-24">
             <div className="grid gap-5">
-              <h2 id="prueba" className="text-balance text-px-4">
+              <h2 id="prueba" className="text-balance text-px-3 sm:text-px-4">
                 Lo de Charly TCG y Burning Tower Fest ya lo jugaron cuatro veces
               </h2>
               <p className="max-w-[40rem] text-xl">
                 Entre abril y agosto de 2026, 644 personas distintas juntaron
-                1649 medallas en sus eventos.
+                {TOTAL_MEDALS.toLocaleString("es-AR")} medallas en sus eventos.
               </p>
             </div>
             <table className="w-full border-collapse font-display tabular-nums">
@@ -226,7 +256,7 @@ export default function LandingPage() {
         <section aria-labelledby="marca" className="bg-lcd-0">
           <div className="mx-auto grid max-w-5xl items-start gap-12 px-4 py-16 sm:px-8 sm:py-24 lg:grid-cols-[1fr_auto]">
             <div className="grid gap-5">
-              <h2 id="marca" className="text-balance text-px-4">
+              <h2 id="marca" className="text-balance text-px-3 sm:text-px-4">
                 Tu dominio, tu color
               </h2>
               <p className="max-w-[34rem] text-lg">
@@ -260,11 +290,11 @@ export default function LandingPage() {
           className="border-t-2 border-lcd-3 bg-lcd-1"
         >
           <div className="mx-auto grid max-w-5xl justify-items-start gap-6 px-4 py-16 sm:px-8 sm:py-24">
-            <h2 id="contacto" className="text-balance text-px-4">
+            <h2 id="contacto" className="text-balance text-px-3 sm:text-px-4">
               Contanos de tu próximo evento
             </h2>
-            <p className="text-lg">
-              Escribinos a{" "}
+            <p className="max-w-[34rem] text-lg">
+              Contanos la fecha, la sede y cuántos stands tenés. Escribinos a{" "}
               <a href={CONTACT} className="underline underline-offset-4">
                 {CONTACT_EMAIL}
               </a>

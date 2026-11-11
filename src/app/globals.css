@@ -266,14 +266,10 @@
     animation: develop-logo 900ms steps(1, end) both;
   }
 
-  /* Landing hero: the handheld clicks up into place 8 px at a time, then the
-   * quick steps tick in one by one. Only transform and opacity, in steps. */
+  /* Landing hero: the handheld clicks up into place 8 px at a time. Only
+   * transform and opacity, in steps. */
   .boot {
     animation: boot 400ms steps(4, end) both;
-  }
-  .tick-in {
-    animation: tick-in 200ms steps(1, end) both;
-    animation-delay: calc(400ms + var(--i, 0) * 200ms);
   }
   /* Brand cards drop into their stair as they scroll in: done once fully in
    * view. Without scroll timelines they just sit there. */
@@ -381,11 +377,6 @@
 @keyframes boot {
   from {
     transform: translateY(32px);
-  }
-}
-@keyframes tick-in {
-  from {
-    opacity: 0;
   }
 }
 @keyframes drop-in {
