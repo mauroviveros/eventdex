@@ -224,7 +224,7 @@ export default function ComponentesPage() {
 
         <Section
           title="Consola de la landing"
-          note="La medalla de un stand, jugable: la cruceta cambia de stand y A escanea. Los stands son de ejemplo."
+          note="La medalla de un stand, jugable: la cruceta cambia de stand y A escanea; con las cinco, entrás al sorteo. Los stands son de ejemplo."
         >
           <ConsoleDemo />
         </Section>

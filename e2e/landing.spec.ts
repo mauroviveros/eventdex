@@ -8,12 +8,10 @@ test("the landing's console plays the visitor's loop", async ({ page }) => {
   const status = page.locator("p[aria-live]");
   const button = (name: string) => page.getByRole("button", { name });
 
-  await expect(status).toContainText("¡Medalla nueva!");
-  await expect(page.getByText("3 de 5 medallas")).toBeVisible();
-
-  await button("Bajar al stand siguiente").click();
   await expect(status).toContainText("Todavía no la tenés");
   await expect(status).toContainText("Taller de cerámica");
+  await expect(page.getByText("3 de 5 medallas")).toBeVisible();
+  await expect(page.getByText("Tocá A para escanear")).toBeVisible();
 
   await button("Escanear el QR de este stand").click();
   await expect(status).toContainText("¡Medalla nueva!");
@@ -22,6 +20,11 @@ test("the landing's console plays the visitor's loop", async ({ page }) => {
   await button("Escanear el QR de este stand").click();
   await expect(status).toContainText("Esta ya la tenías");
   await expect(page.getByText("4 de 5 medallas")).toBeVisible();
+
+  await button("Bajar al stand siguiente").click();
+  await button("Escanear el QR de este stand").click();
+  await expect(status).toContainText("¡Entrás al sorteo!");
+  await expect(page.getByText("5 de 5 medallas")).toBeVisible();
 
   await expect(
     page.getByRole("link", { name: "Escribinos" }).first(),
