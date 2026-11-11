@@ -109,7 +109,12 @@ export function VenueForm({
   eventId,
   venueId,
   venues,
-}: Ids & { venueId: string | null; venues: { id: string; name: string }[] }) {
+  hasSchedules,
+}: Ids & {
+  venueId: string | null;
+  venues: { id: string; name: string }[];
+  hasSchedules: boolean;
+}) {
   const [state, action, pending] = useActionState(setEventVenueAction, null);
   const { form, failed, fields, values } = useFormFeedback(
     state,
@@ -127,7 +132,11 @@ export function VenueForm({
         label="Sede"
         name="venueId"
         defaultValue={values.venueId ?? venueId ?? ""}
-        hint="Los horarios del evento se muestran en la zona horaria de la sede."
+        hint={
+          hasSchedules
+            ? "Los horarios se muestran en la zona horaria de la sede: si es otra, las jornadas ya cargadas se ven con la hora de esa zona."
+            : "Los horarios del evento se muestran en la zona horaria de la sede."
+        }
         error={fields.venueId}
       >
         <option value="">Sin sede</option>

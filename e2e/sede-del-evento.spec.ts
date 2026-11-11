@@ -34,7 +34,7 @@ test("an event created without a venue gets one later, and can drop it", async (
   await page.getByRole("button", { name: "Guardar sede" }).click();
   await expect(page.getByText("Sede guardada.")).toBeVisible();
   await page.reload();
-  await expect(sede).toHaveValue(/.+/);
+  await expect(sede.locator("option:checked")).toHaveText("Predio Ferial");
   await expect(
     page.getByRole("definition").getByText("Predio Ferial"),
   ).toBeVisible();
