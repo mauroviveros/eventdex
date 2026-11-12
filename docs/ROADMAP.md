@@ -400,6 +400,13 @@ cada uno revisado antes del siguiente. Branch `feat/admin-shadcn`.
    rutas `/spots` y `/visitantes` redirigen a su pestaña; QR y Sorteo siguen aparte.
    *Listo cuando* se cambia de pestaña, se ordena y pagina por URL, se agrega un spot
    con el buscador usando el teclado, y los e2e del panel pasan.
+6. ▶ **Cifras y acciones del evento.** Misma branch. Cada tarjeta del dashboard muestra
+   stands activos, visitantes, medallas y medallas por visitante, contados en la misma
+   lectura de eventos; arriba, Eventos · Visitantes · Medallas. Un ⋮ (`EventActions`)
+   junta Hoja de QR, Sorteo, Ver en el sitio, Publicar (con confirmación) y Duplicar,
+   en la tarjeta y en el encabezado del evento. Sin borrar.
+   *Listo cuando* las tarjetas muestran cifras reales, se duplica desde el menú de una
+   tarjeta y los e2e del panel pasan.
 
 ---
 

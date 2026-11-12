@@ -18,20 +18,36 @@ export async function listVenues(supabase: Supabase, organizationId: string) {
   return data;
 }
 
-/** The organization's events, newest first, with venue and schedules for phase and dates. */
+/**
+ * The organization's events, newest first, with venue and schedules for phase
+ * and dates, and how each went: active stands, registered visitors, medals.
+ */
 export async function listEvents(supabase: Supabase, organizationId: string) {
   const { data, error } = await supabase
     .from("events")
     .select(
       `id, slug, title, edition_label, status, visibility, timezone,
        venue:venues (name),
-       schedules:event_schedules (starts_at, ends_at)`,
+       schedules:event_schedules (starts_at, ends_at),
+       stands:event_spots (count),
+       visitors:event_registrations (count),
+       claims:event_spots (spot_claims (count))`,
     )
     .eq("organization_id", organizationId)
     .is("deleted_at", null)
+    // Only active spots count as stands: an inactive one gives no medal.
+    .eq("stands.is_active", true)
     .order("created_at", { ascending: false });
   if (error) throw error;
-  return data;
+  return data.map(({ stands, visitors, claims, ...e }) => ({
+    ...e,
+    stats: {
+      stands: stands[0]?.count ?? 0,
+      visitors: visitors[0]?.count ?? 0,
+      // Claims hang from the event's spots (any, active or not): add them up.
+      medals: claims.reduce((n, s) => n + (s.spot_claims[0]?.count ?? 0), 0),
+    },
+  }));
 }
 
 /** What the form to duplicate an event starts from. Null if hidden or missing. */
