@@ -1,11 +1,6 @@
-import { readTableQuery, sortAndPage } from "@/domain/table";
-import type { listEventVisitors } from "@/lib/data/claims";
+import { readTableQuery, type SearchParams, sortAndPage } from "@/domain/table";
 import { VISITOR_SORTS } from "./query";
-import { VisitorsTable } from "./VisitorsTable";
-
-type Params = Record<string, string | string[] | undefined>;
-
-const KEYS = Object.keys(VISITOR_SORTS) as (keyof typeof VISITOR_SORTS)[];
+import { type Visitor, VisitorsTable } from "./VisitorsTable";
 
 /**
  * Who registered in the event (their first medal), how many medals each has,
@@ -21,16 +16,16 @@ export function VisitorsTab({
   org: string;
   support: boolean;
   timezone: string;
-  visitors: Awaited<ReturnType<typeof listEventVisitors>>;
-  params: Params;
+  visitors: Visitor[];
+  params: SearchParams;
 }) {
   const blocked = visitors.filter((v) => v.blocked_at).length;
-  const query = readTableQuery(params, KEYS, { orden: "desde", dir: "desc" });
+  const query = readTableQuery(params, VISITOR_SORTS, "desde");
   // shortcut: sorts in memory, move to a view with the count and .range() past ~5000 visitors per event
   const { rows, page, pageCount } = sortAndPage(
     visitors,
     (v) =>
-      ({ nombre: v.name, medallas: v.medals, desde: v.created_at })[
+      ({ nombre: v.name, medallas: v.medals, desde: Date.parse(v.created_at) })[
         query.orden
       ],
     query,

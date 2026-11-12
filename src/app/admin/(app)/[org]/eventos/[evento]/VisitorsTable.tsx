@@ -11,7 +11,7 @@ import { setRegistrationBlockedAction } from "@/lib/actions/claims";
 import type { listEventVisitors } from "@/lib/data/claims";
 import { VISITOR_SORTS } from "./query";
 
-type Visitor = Awaited<ReturnType<typeof listEventVisitors>>[number];
+export type Visitor = Awaited<ReturnType<typeof listEventVisitors>>[number];
 
 const helper = createColumnHelper<typeof features, Visitor>();
 

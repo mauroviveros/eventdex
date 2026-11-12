@@ -11,22 +11,24 @@ export type TableQuery<K extends string> = {
 
 type Param = string | string[] | undefined;
 
+/** URL params as a page receives them. */
+export type SearchParams = Record<string, Param>;
+
 /**
- * Reads a table's sort and page from the URL (?orden=…&dir=…&pag=…). Anything
- * unknown or malformed falls back to the default, never to an error.
+ * Reads a table's sort and page from the URL (?orden=…&dir=…&pag=…). `sorts`
+ * maps each sortable column to the direction of its first click, which is
+ * also its direction when the URL names it without one. Anything unknown or
+ * malformed falls back to the default, never to an error.
  */
 export function readTableQuery<K extends string>(
-  params: { orden?: Param; dir?: Param; pag?: Param },
-  keys: readonly K[],
-  fallback: { orden: K; dir: SortDir },
+  params: SearchParams,
+  sorts: Record<K, SortDir>,
+  fallback: K,
 ): TableQuery<K> {
-  const orden = keys.find((k) => k === params.orden) ?? fallback.orden;
+  const keys = Object.keys(sorts) as K[];
+  const orden = keys.find((k) => k === params.orden) ?? fallback;
   const dir =
-    params.dir === "asc" || params.dir === "desc"
-      ? params.dir
-      : orden === fallback.orden
-        ? fallback.dir
-        : "asc";
+    params.dir === "asc" || params.dir === "desc" ? params.dir : sorts[orden];
   const pag = Number(params.pag);
   return { orden, dir, pag: Number.isInteger(pag) && pag > 1 ? pag : 1 };
 }
