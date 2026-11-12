@@ -89,7 +89,7 @@ export default async function OrgEventsPage({
       <PageBody>
         <h1 className="text-px-3 sm:text-px-4">{org.name}</h1>
 
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-2 sm:grid-cols-3 sm:gap-3">
           <StatTile
             label="Eventos"
             value={events.length}
