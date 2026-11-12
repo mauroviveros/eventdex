@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/shadcn/label";
 import { useFormFeedback } from "@/components/ui/useFormFeedback";
 import { addEventSpotAction, updateEventSpotAction } from "@/lib/actions/spots";
 
-/** Puts a catalog spot in the event with its code, booth and points. */
+/** Puts a catalog spot in the event with its booth and points; the code is generated. */
 export function AddEventSpotForm({
   org,
   eventId,
@@ -43,17 +43,7 @@ export function AddEventSpotForm({
         defaultValue={values.spotId}
         error={fields.spotId}
       />
-      <div className="grid gap-6 sm:grid-cols-2">
-        <Field
-          label="Código"
-          name="code"
-          defaultValue={values.code}
-          required
-          placeholder="A12"
-          autoCapitalize="characters"
-          hint="Se imprime con el QR."
-          error={fields.code}
-        />
+      <div className="grid gap-6 sm:grid-cols-[8rem_1fr]">
         <Field
           label="Puntos"
           name="points"
@@ -64,15 +54,15 @@ export function AddEventSpotForm({
           defaultValue={values.points ?? "1"}
           error={fields.points}
         />
+        <Field
+          label="Puesto"
+          name="booth"
+          defaultValue={values.booth}
+          placeholder="Pabellón A · 12"
+          hint="Opcional. Dónde está en el predio."
+          error={fields.booth}
+        />
       </div>
-      <Field
-        label="Puesto"
-        name="booth"
-        defaultValue={values.booth}
-        placeholder="Pabellón A · 12"
-        hint="Opcional. Dónde está en el predio."
-        error={fields.booth}
-      />
       <Button
         type="submit"
         pending={pending}
@@ -128,6 +118,7 @@ export function EditEventSpotForm({
           defaultValue={v("code", spot.code)}
           required
           autoCapitalize="characters"
+          hint="Se imprime con el QR."
           error={fields.code}
         />
         <Field

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { SPOT_TYPES } from "@/domain/spots";
+import { nextSpotCode, SPOT_TYPES } from "@/domain/spots";
 import { logoFile, storeLogo } from "@/lib/organizations";
 import {
   type ActionResult,
@@ -79,7 +79,6 @@ const points = z.preprocess(
 export const eventSpotSchema = z.object({
   eventId: z.guid(),
   spotId: z.guid("Elegí un spot del catálogo."),
-  code,
   booth: optionalText(60),
   points,
 });
@@ -94,11 +93,14 @@ export const eventSpotUpdateSchema = z.object({
   isActive: checkbox,
 });
 
-const EVENT_SPOT_MESSAGES = {
-  "23505":
-    "Ese código o ese spot ya están en el evento. Probá con otro código.",
+const ADD_EVENT_SPOT_MESSAGES = {
+  "23505": "Ese spot ya está en el evento.",
   "23514": "El spot está archivado: desarchivalo para usarlo en un evento.",
   "23503": "Elegí un spot de tu organización.",
+};
+
+const EVENT_SPOT_MESSAGES = {
+  "23505": "Ese código ya está en el evento. Probá con otro.",
 };
 
 export async function createSpot(
@@ -204,28 +206,34 @@ export async function addEventSpot(
   if (!parsed.success) return invalid(parsed.error);
 
   const s = parsed.data;
-  const { data: event, error: readError } = await supabase
-    .from("events")
-    .select("organization_id")
-    .eq("id", s.eventId)
-    .maybeSingle();
-  if (readError) return failed(readError);
-  if (!event) return failed({ code: "42501" });
+  // The code is generated, one past the event's highest.
+  // shortcut: code computed in the app with one retry, move it to the database if concurrent adds become common
+  for (let attempt = 1; ; attempt++) {
+    const { data: event, error: readError } = await supabase
+      .from("events")
+      .select("organization_id, spots:event_spots (code)")
+      .eq("id", s.eventId)
+      .maybeSingle();
+    if (readError) return failed(readError);
+    if (!event) return failed({ code: "42501" });
 
-  const { data, error } = await supabase
-    .from("event_spots")
-    .insert({
-      event_id: s.eventId,
-      organization_id: event.organization_id,
-      spot_id: s.spotId,
-      code: s.code,
-      booth: s.booth,
-      points: s.points,
-    })
-    .select("id")
-    .single();
-  if (error) return failed(error, EVENT_SPOT_MESSAGES);
-  return { ok: true, data };
+    const { data, error } = await supabase
+      .from("event_spots")
+      .insert({
+        event_id: s.eventId,
+        organization_id: event.organization_id,
+        spot_id: s.spotId,
+        code: nextSpotCode(event.spots.map((e) => e.code)),
+        booth: s.booth,
+        points: s.points,
+      })
+      .select("id")
+      .single();
+    // Someone may have taken that code in between: read again, once.
+    if (error?.code === "23505" && attempt === 1) continue;
+    if (error) return failed(error, ADD_EVENT_SPOT_MESSAGES);
+    return { ok: true, data };
+  }
 }
 
 export async function updateEventSpot(

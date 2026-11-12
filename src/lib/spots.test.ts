@@ -123,13 +123,17 @@ describe("spot logos", () => {
 });
 
 describe("addEventSpot", () => {
-  const valid = { eventId: EVENT, spotId: SPOT, code: " a12 ", points: "" };
+  const valid = { eventId: EVENT, spotId: SPOT, points: "" };
+  const event = (...codes: string[]) => ({
+    data: { organization_id: ORG, spots: codes.map((code) => ({ code })) },
+    error: null,
+  });
 
-  it("uppercases the code, defaults to 1 point and takes the event's org", async () => {
-    const { client, calls } = fakeClient(
-      { data: { organization_id: ORG }, error: null },
-      { data: { id: "es1" }, error: null },
-    );
+  it("generates the next code, defaults to 1 point and takes the event's org", async () => {
+    const { client, calls } = fakeClient(event("A01", "VIP"), {
+      data: { id: "es1" },
+      error: null,
+    });
     expect(await addEventSpot(client, valid)).toEqual({
       ok: true,
       data: { id: "es1" },
@@ -138,37 +142,46 @@ describe("addEventSpot", () => {
       event_id: EVENT,
       organization_id: ORG,
       spot_id: SPOT,
-      code: "A12",
+      code: "A02",
       booth: null,
       points: 1,
     });
   });
 
-  it("rejects codes with spaces or symbols", async () => {
-    const { client, calls } = fakeClient();
-    const result = await addEventSpot(client, { ...valid, code: "A 12!" });
-    expect(result.ok).toBe(false);
-    if (!result.ok) expect(result.fieldErrors?.code).toBeDefined();
-    expect(calls).toEqual([]);
+  it("reads the codes again when someone took the code in between", async () => {
+    const { client, calls } = fakeClient(
+      event("A01"),
+      { data: null, error: { code: "23505" } },
+      event("A01", "A02"),
+      { data: { id: "es1" }, error: null },
+    );
+    expect(await addEventSpot(client, valid)).toEqual({
+      ok: true,
+      data: { id: "es1" },
+    });
+    expect(
+      calls.filter((c) => c.method === "insert").map((c) => c.args[0]),
+    ).toMatchObject([{ code: "A02" }, { code: "A03" }]);
   });
 
-  it("explains a repeated code", async () => {
+  it("explains a spot already in the event", async () => {
     const { client } = fakeClient(
-      { data: { organization_id: ORG }, error: null },
+      event("A01"),
+      { data: null, error: { code: "23505" } },
+      event("A01"),
       { data: null, error: { code: "23505" } },
     );
     expect(await addEventSpot(client, valid)).toEqual({
       ok: false,
-      error:
-        "Ese código o ese spot ya están en el evento. Probá con otro código.",
+      error: "Ese spot ya está en el evento.",
     });
   });
 
   it("explains an archived spot", async () => {
-    const { client } = fakeClient(
-      { data: { organization_id: ORG }, error: null },
-      { data: null, error: { code: "23514" } },
-    );
+    const { client } = fakeClient(event(), {
+      data: null,
+      error: { code: "23514" },
+    });
     const result = await addEventSpot(client, valid);
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.error).toMatch(/archivado/);
@@ -176,6 +189,21 @@ describe("addEventSpot", () => {
 });
 
 describe("updateEventSpot", () => {
+  it("uppercases the code and rejects spaces or symbols", async () => {
+    const { client, calls } = fakeClient({ data: [{ id: SPOT }], error: null });
+    await updateEventSpot(client, { id: SPOT, code: " vip ", points: "1" });
+    expect(calls.find((c) => c.method === "update")?.args[0]).toMatchObject({
+      code: "VIP",
+    });
+    const result = await updateEventSpot(fakeClient().client, {
+      id: SPOT,
+      code: "A 12!",
+      points: "1",
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.fieldErrors?.code).toBeDefined();
+  });
+
   it("reads the active checkbox and rejects zero points", async () => {
     const { client } = fakeClient();
     const result = await updateEventSpot(client, {

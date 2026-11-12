@@ -28,13 +28,12 @@ test("spots are added one after another without the sheet closing", async ({
   const sheet = page.getByRole("dialog", { name: "Agregar desde el catálogo" });
 
   for (const [name, code] of [
-    ["Café de la Esquina", "B01"],
-    ["Rueda gigante", "B02"],
+    ["Café de la Esquina", "A01"],
+    ["Rueda gigante", "A02"],
   ] as const) {
-    await test.step(`adds ${name}, and the sheet stays open`, async () => {
+    await test.step(`adds ${name} as ${code}, and the sheet stays open`, async () => {
       await sheet.getByRole("button", { name: "Spot del catálogo" }).click();
       await page.getByRole("option", { name }).click();
-      await sheet.getByLabel("Código").fill(code);
       await sheet.getByRole("button", { name: "Agregar al evento" }).click();
       await expect(page.getByText(code, { exact: true })).toBeVisible();
       await expect(sheet).toBeVisible();

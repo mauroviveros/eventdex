@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { Constants } from "@/lib/supabase/database.types";
 import {
+  nextSpotCode,
   publicOrigin,
   resolvePublishedSpot,
   resolveSpot,
@@ -124,5 +125,14 @@ describe("resolvePublishedSpot", () => {
 
   it("leaves out a spot without a readable snapshot", () => {
     expect(resolvePublishedSpot({ ...none, snapshot: null })).toBeNull();
+  });
+});
+
+describe("nextSpotCode", () => {
+  it("starts at A01 and follows the highest A<n>", () => {
+    expect(nextSpotCode([])).toBe("A01");
+    expect(nextSpotCode(["A01", "A02"])).toBe("A03");
+    expect(nextSpotCode(["A07", "VIP", "B3", "A02"])).toBe("A08");
+    expect(nextSpotCode(["A99"])).toBe("A100");
   });
 });

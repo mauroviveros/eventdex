@@ -29,6 +29,9 @@ test("a spot's logo goes from the form to the visitor's medals", async ({
 
   await test.step("a spot imported from the v1 opens", async () => {
     await page.goto(`${admin}/spots/${seed.catalog[0]?.id}`);
+    await page
+      .getByRole("button", { name: "Editar Café de la Esquina" })
+      .click();
     await expect(page.getByLabel("Nombre")).toHaveValue("Café de la Esquina");
     await page.goto(`${admin}/spots/nuevo`);
   });
@@ -52,9 +55,10 @@ test("a spot's logo goes from the form to the visitor's medals", async ({
     });
     await add.getByRole("button", { name: "Spot del catálogo" }).click();
     await page.getByRole("option", { name: NAME }).click();
-    await add.getByLabel("Código").fill("L01");
     await add.getByRole("button", { name: /Agregar/ }).click();
-    await expect(page.getByText("L01", { exact: true })).toBeVisible();
+    // The code is generated, one past the event's last.
+    const code = `A${String(seed.spots.length + 1).padStart(2, "0")}`;
+    await expect(page.getByText(code, { exact: true })).toBeVisible();
   });
 
   const visitor = await browser.newPage();
@@ -82,6 +86,7 @@ test("a spot's logo goes from the form to the visitor's medals", async ({
   await test.step("removing it leaves the catalog without a logo", async () => {
     await page.goto(`${admin}/spots`);
     await page.getByRole("link", { name: new RegExp(NAME) }).click();
+    await page.getByRole("button", { name: `Editar ${NAME}` }).click();
     await expect(page.getByAltText("Logo actual")).toBeVisible();
     await page.getByLabel("Quitar el logo").check();
     await page.getByRole("button", { name: "Guardar" }).click();
