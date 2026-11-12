@@ -335,6 +335,8 @@ es una sola org y el skin no hacía falta. `07_copy_logos_back.mjs` (primero) y
   no cambia de dirección) y la sede unificada, Centro Metropolitano de Diseño.
 - `evento.lodecharlytcg.com` vuelve a ser el principal, y
   `eventdex-burningtowerfest.vercel.app` queda como secundario para no romper links.
+- Después del 08 se guarda Ajustes de Lo de Charly una vez: vacía la caché de dominio →
+  org, que si no manda los hosts de BT a la org borrada durante hasta 60 s.
 
 ## Preguntas abiertas
 
