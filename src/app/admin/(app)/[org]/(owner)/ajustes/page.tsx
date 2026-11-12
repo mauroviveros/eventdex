@@ -8,7 +8,6 @@ import { CONTACT_EMAIL } from "@/lib/contact";
 import { getOrganizationSettings, logoUrl } from "@/lib/data/organizations";
 import { requireOrgOwner } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
-import { skinFor } from "@/skins";
 import { BrandEditor } from "./SettingsForms";
 
 export async function generateMetadata({
@@ -28,7 +27,6 @@ export default async function AjustesPage({
   const logo = settings.logo_path ? logoUrl(settings.logo_path) : null;
   const color = settings.brand_color ?? EVENTDEX_COLOR;
   const ids = { org: org.slug, organizationId: org.id };
-  const skin = skinFor(org.slug);
 
   return (
     <>
@@ -41,12 +39,7 @@ export default async function AjustesPage({
             Marca
           </h2>
           {support ? (
-            <BrandPreview
-              color={color}
-              name={settings.name}
-              logo={logo}
-              skin={skin}
-            />
+            <BrandPreview color={color} name={settings.name} logo={logo} />
           ) : (
             <BrandEditor
               ids={ids}
@@ -57,7 +50,6 @@ export default async function AjustesPage({
               }}
               logo={logo}
               timezones={timeZoneOptions(settings.default_timezone)}
-              skin={skin}
             />
           )}
         </section>

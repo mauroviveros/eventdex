@@ -12,7 +12,6 @@ import {
   updateSettingsAction,
   uploadLogoAction,
 } from "@/lib/actions/settings";
-import type { Skin } from "@/skins/types";
 
 type Ids = { org: string; organizationId: string };
 
@@ -31,13 +30,11 @@ export function BrandEditor({
   settings,
   logo,
   timezones,
-  skin,
 }: {
   ids: Ids;
   settings: { name: string; color: string; timezone: string };
   logo: string | null;
   timezones: string[];
-  skin?: Skin;
 }) {
   const [state, action, pending] = useActionState(updateSettingsAction, null);
   const { form, failed, fields, values } = useFormFeedback(
@@ -63,25 +60,15 @@ export function BrandEditor({
             required
             error={fields.name}
           />
-          {skin ? (
-            <>
-              <input type="hidden" name="brandColor" value={color} />
-              <p>
-                Los colores y la tipografía vienen del diseño a medida de tu
-                organización.
-              </p>
-            </>
-          ) : (
-            <Field
-              label="Color de marca"
-              name="brandColor"
-              type="color"
-              value={color}
-              onChange={(e) => setColor(e.target.value)}
-              hint="Tomamos el tono y armamos cuatro con buen contraste: cualquier color sirve."
-              error={fields.brandColor}
-            />
-          )}
+          <Field
+            label="Color de marca"
+            name="brandColor"
+            type="color"
+            value={color}
+            onChange={(e) => setColor(e.target.value)}
+            hint="Tomamos el tono y armamos cuatro con buen contraste: cualquier color sirve."
+            error={fields.brandColor}
+          />
           <SelectField
             label="Zona horaria"
             name="defaultTimezone"
@@ -107,7 +94,7 @@ export function BrandEditor({
         <LogoForm ids={ids} hasLogo={logo !== null} />
       </div>
       <div className="min-w-0 xl:order-first">
-        <BrandPreview color={color} name={name} logo={logo} skin={skin} />
+        <BrandPreview color={color} name={name} logo={logo} />
       </div>
     </div>
   );
