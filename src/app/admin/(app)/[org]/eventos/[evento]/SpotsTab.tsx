@@ -42,7 +42,7 @@ export function SpotsTab({
   // remount the sheet, or it would close in the middle of loading spots.
   const variant = inEvent.length === 0 ? "primary" : "secondary";
   const addAction = support ? null : catalog.length === 0 ? (
-    <Link href={`/${org}/spots/nuevo`} className={buttonClass(variant)}>
+    <Link href={`/${org}/spots?nuevo`} className={buttonClass(variant)}>
       Cargá un spot
     </Link>
   ) : (
@@ -56,7 +56,7 @@ export function SpotsTab({
         <p className="border-2 border-dashed border-lcd-2 px-4 py-6">
           Todos los spots del catálogo ya están en el evento.{" "}
           <Link
-            href={`/${org}/spots/nuevo`}
+            href={`/${org}/spots?nuevo`}
             className="underline decoration-2 underline-offset-4"
           >
             Cargá un spot nuevo

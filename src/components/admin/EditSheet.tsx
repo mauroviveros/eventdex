@@ -25,6 +25,7 @@ export function EditSheet({
   variant = "secondary",
   ariaLabel,
   fallbackFocus,
+  defaultOpen,
   children,
 }: {
   label: string;
@@ -35,11 +36,13 @@ export function EditSheet({
   ariaLabel?: string;
   /** Id of what takes the focus if the button no longer exists on close. */
   fallbackFocus?: string;
+  /** Opens on load, for a link that leads straight to the sheet (?nuevo). */
+  defaultOpen?: boolean;
   children: ReactNode;
 }) {
   const trigger = useRef<HTMLButtonElement>(null);
   return (
-    <Sheet>
+    <Sheet defaultOpen={defaultOpen}>
       <SheetTrigger
         ref={trigger}
         className={buttonClass(variant)}

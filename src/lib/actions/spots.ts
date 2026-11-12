@@ -1,6 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import {
   addEventSpot,
   createSpot,
@@ -20,8 +19,7 @@ export async function createSpotAction(
   const r = await runFormWrite(formData, (supabase, v) =>
     createSpot(supabase, { ...v, logo }),
   );
-  if (!r.ok) return r.state;
-  redirect(`/${r.org}/spots`);
+  return r.ok ? { ok: true } : r.state;
 }
 
 export async function updateSpotAction(
