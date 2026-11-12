@@ -1,28 +1,27 @@
 import { describe, expect, it } from "vitest";
 import { readTableQuery, sortAndPage } from "./table";
 
-const KEYS = ["nombre", "medallas"] as const;
-const FALLBACK = { orden: "medallas", dir: "desc" } as const;
+const SORTS = { nombre: "asc", medallas: "desc" } as const;
 
 describe("readTableQuery", () => {
   it("falls back on empty or unknown params", () => {
-    expect(readTableQuery({}, KEYS, FALLBACK)).toEqual({
+    expect(readTableQuery({}, SORTS, "medallas")).toEqual({
       orden: "medallas",
       dir: "desc",
       pag: 1,
     });
     expect(
-      readTableQuery({ orden: "x", dir: "y", pag: "-3" }, KEYS, FALLBACK),
+      readTableQuery({ orden: "x", dir: "y", pag: "-3" }, SORTS, "medallas"),
     ).toEqual({ orden: "medallas", dir: "desc", pag: 1 });
-    expect(readTableQuery({ pag: "2.5" }, KEYS, FALLBACK).pag).toBe(1);
+    expect(readTableQuery({ pag: "2.5" }, SORTS, "medallas").pag).toBe(1);
   });
 
-  it("reads a valid query, ascending by default on another column", () => {
+  it("reads a valid query, each column with its own default direction", () => {
     expect(
-      readTableQuery({ orden: "nombre", pag: "3" }, KEYS, FALLBACK),
+      readTableQuery({ orden: "nombre", pag: "3" }, SORTS, "medallas"),
     ).toEqual({ orden: "nombre", dir: "asc", pag: 3 });
     expect(
-      readTableQuery({ orden: "nombre", dir: "desc" }, KEYS, FALLBACK).dir,
+      readTableQuery({ orden: "nombre", dir: "desc" }, SORTS, "medallas").dir,
     ).toBe("desc");
   });
 });
