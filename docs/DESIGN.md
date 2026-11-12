@@ -221,7 +221,7 @@ movimiento es por pasos, nunca suave: una medalla nueva se "revela" pasando por
 los tonos en cuadros discretos. En la app pública del visitante la pantalla
 suma lo que tenía el cartel de la vieja app: líneas de barrido sobre todo y dos
 acentos de marquesina, rojo para el título del evento y amarillo para lo que se
-lee de un vistazo. En las orgs sin skin, además, las placas se levantan del fondo
+lee de un vistazo. Además, las placas se levantan del fondo
 con una sombra dura. La landing es superficie propia de Eventdex: va con la rampa
 verde arveja, sin líneas de barrido. Rechaza el default de la categoría: tarjetas blancas de SaaS
 con acento azul y confeti, y el hero de evento con foto y botón.
@@ -231,7 +231,7 @@ con acento azul y confeti, y el hero de evento con foto y botón.
 - Fuera de la rampa, solo peligro (siempre con ícono) y, en la app pública, los dos acentos de marquesina (siempre sobre el fondo o la placa). La salvedad es el botón A rojo de la consola de la landing.
 - Logos tal cual son, en gris solo mientras la medalla está pendiente; sprites de 12×12 cuando no hay logo.
 - Jersey 10 en múltiplos de 10 px para títulos, contadores y códigos (sobre la marquesina de la app pública, Press Start 2P para títulos de página y contadores); Atkinson Hyperlegible Next para leer.
-- Esquinas rectas, filetes de 2 px, sin sombras suaves; líneas de barrido como textura en la app pública; en la app pública de las orgs sin skin, placas levantadas con sombra dura.
+- Esquinas rectas, filetes de 2 px, sin sombras suaves; líneas de barrido como textura en la app pública; en la app pública, placas levantadas con sombra dura.
 - Movimiento en pasos (`steps(1, end)`), apagado con `prefers-reduced-motion`.
 
 ## Colors
@@ -277,7 +277,7 @@ el ícono: peligro siempre lleva `AlertIcon`, un título nunca.
   seleccionada, estado deshabilitado, mensaje de éxito de un formulario y la
   jornada encendida.
 - **Placa de marquesina** (`plate`, y `plate-dark` en oscuro): solo en la app
-  pública sin skin. El fondo levantado apenas: pestañas y placa del cartel,
+  pública. El fondo levantado apenas: pestañas y placa del cartel,
   casillas, barra de progreso, medalla conseguida, botón secundario, menú del
   visitante.
 
@@ -296,12 +296,12 @@ contra su rampa.
 
 **Placa y marquesina.** La clase `.marquesina`
 (`src/components/visitante/marquesina.ts`), que el layout de la app pública pone
-en las orgs sin skin, prende cuatro tokens: `--plate` (el fondo con 4 % de blanco,
+prende cuatro tokens: `--plate` (el fondo con 4 % de blanco,
 `color-mix` en oklch), `--plate-rule` y `--cell-rule` (`--ramp-2`, el mismo tono
 medio en claro y en oscuro) y `--plate-cast` (el fondo al 72 % con negro). Afuera
 de esa clase caen a lo plano: `--plate` = `--lcd-0`, `--plate-rule` = `--lcd-2`,
-`--cell-rule` = `--lcd-3` y `--plate-cast` transparente, así que el admin, la
-landing y los skins se ven igual que siempre.
+`--cell-rule` = `--lcd-3` y `--plate-cast` transparente, así que el admin y la
+landing se ven igual que siempre.
 
 **Impresión.** Con `@media print` todo vuelve a los roles claros (también los
 acentos, peligro y la línea de barrido), aunque la pantalla esté en oscuro: el
@@ -324,15 +324,6 @@ están testeadas para los 36 matices de 10° en `palette.test.ts`:
 - tinta, secundario, peligro y los dos acentos sobre la placa de su esquema
   ≥ 4.5:1. El 4 % de `PLATE_LIFT` es lo máximo que deja en AA al rojo oscuro y a
   peligro en los 36 matices.
-
-### Skins por organización
-Una org con skin (`src/skins/`) no pasa por `rampFromHex`: define a mano sus cuatro
-tonos y acentos, y su test repite los pares de arriba. Redefine los roles, así que
-los componentes no cambian. Sus reglas valen dentro de su `data-skin`, y las de esta
-página para todo lo demás. **Burning Tower Fest** es el cartel: papel crema en claro
-y negro en oscuro, un solo rojo para título, fecha y sede, Anton en mayúsculas en vez
-de Jersey 10, recuadro de un filete de 4 px en vez del doble filete, y sin líneas de
-barrido.
 
 ### Named Rules
 **The Four Tones Rule.** Un componente se pinta solo con `--lcd-0..3`. Nunca
@@ -411,8 +402,7 @@ que se escanea, y una hiperlegible para todo lo que se lee.
 `tabular-nums`.
 
 Sin `.marquesina`, `font-wide` y los tamaños `text-title`, `text-title-lg` y
-`text-numeral` resuelven a Jersey 10 en 40, 60 y 40 px (en un skin, a la letra del
-skin). Con ella, Press Start 2P corta las palabras largas
+`text-numeral` resuelven a Jersey 10 en 40, 60 y 40 px. Con ella, Press Start 2P corta las palabras largas
 (`overflow-wrap: anywhere`) porque cada letra mide un em. Oraciones y resúmenes
 siguen en Atkinson; pestañas, etiquetas, títulos de sección y unidades, en
 Jersey 10.
@@ -454,7 +444,7 @@ secciones se separan con un filete de 2 px o con un cambio de fondo entre
 
 Plano. No hay sombras suaves ni capas que flotan: la profundidad se marca con
 filetes de 2 px en tinta y con el relleno (`--lcd-1`) para lo seleccionado,
-encendido o pendiente. La salvedad es la marquesina de la app pública sin skin,
+encendido o pendiente. La salvedad es la marquesina de la app pública,
 donde las placas se levantan del fondo con una sombra dura, sin difuminar. Fuera
 de ella, la única `box-shadow` del sistema es la del panel, y es un filete
 interno, no una sombra.
@@ -465,7 +455,7 @@ interno, no una sombra.
   pantalla de celebración, en la placa del título del cartel y en la jornada
   encendida (ahí sobre relleno).
 - **Sombra dura de la marquesina** (`shadow-plate`, `box-shadow: 4px 4px 0 var(--plate-cast)`):
-  solo se ve en la app pública sin skin; afuera `--plate-cast` es transparente.
+  solo se ve en la app pública; afuera `--plate-cast` es transparente.
   La llevan las pestañas del cartel, las casillas de la cuenta regresiva, la
   barra de progreso, la medalla conseguida, los botones (menos al presionarlos o
   deshabilitados), el menú del visitante, el link de ingreso y los eventos sin
@@ -486,8 +476,7 @@ landing no la lleva.
 **The Flat Screen Rule.** Una pantalla LCD no tiene sombras. La jerarquía sale
 de filetes, relleno y tamaño de letra; nunca de `box-shadow` difuso. La única
 salvedad es la sombra dura de la marquesina (`shadow-plate`): 4 px, sin
-difuminar, solo en la app pública sin skin. El admin, la landing y los skins
-siguen planos.
+difuminar, solo en la app pública. El admin y la landing siguen planos.
 
 **The Texture Not A Color Rule.** Las líneas de barrido son textura de
 pantalla, no un quinto color: no cargan significado, no se usan para marcar
@@ -685,7 +674,7 @@ separación.
 - **Do** dejar que la impresión vuelva a los roles claros y apague las líneas de barrido.
 
 ### Don't:
-- **Don't** usar `border-radius` ni sombras suaves, ni dejar que la sombra dura de la marquesina se vea fuera de la app pública sin skin.
+- **Don't** usar `border-radius` ni sombras suaves, ni dejar que la sombra dura de la marquesina se vea fuera de la app pública.
 - **Don't** usar texto pixelado debajo de 20 px, ni Jersey 10 fuera de su grilla de 10 px, ni Press Start 2P fuera de la suya de 8 px.
 - **Don't** agregar un color fuera de la rampa más allá de `danger` y los dos acentos de marquesina, ni usar el hex de la marca tal cual.
 - **Don't** poner un acento sobre relleno (`--lcd-1`) o tinta, ni usarlo para avisar un error: eso es `danger` con su ícono.

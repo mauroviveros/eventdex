@@ -314,10 +314,11 @@ organizaciones. Branch `feat/dominios-developer`.
    esos arreglos. Migración aplicada el 2026-11-09, con las políticas verificadas en
    producción.
 
-## R12 · Skins por organización
+## R12 · Marca por organización
 
-La marca de cada org pasa de un color a un look completo, definido en código. El
-primero es Burning Tower Fest. Va antes del evento del 29 de noviembre.
+Logos y banner a la vista. El skin a medida de Burning Tower Fest (bloques 3 y 4) se
+descartó: BT vuelve a ser parte de Lo de Charly TCG y usa su marca
+([ARQUITECTURA](./ARQUITECTURA.md#burning-tower-fest-separación-y-vuelta-atrás)).
 
 1. ✅ **Logos tal cual.** Branch `feat/logos-originales`. Se ven como se subieron, sin
    pasar a cuatro tonos; solo la medalla pendiente va en gris.
@@ -328,12 +329,10 @@ primero es Burning Tower Fest. Va antes del evento del 29 de noviembre.
    desde el panel y portada pública.
    *Listo cuando* el staff sube el banner y se ve en la portada; sin banner, todo igual.
    `/code-review`: sin hallazgos. axe queda sin correr.
-3. ▶ **Skin Burning Tower.** Branch `feat/skins`. Mapa `slug → skin` y el look de cartel
-   en toda su app pública.
-   *Listo cuando* todas sus pantallas públicas lo toman, en ambos esquemas, y otra org
-   sigue idéntica.
-4. **Portada Burning Tower.** Misma branch. Banner protagonista y llamas.
-   *Listo cuando* se parece al cartel en celular y escritorio, con todos los estados.
+3. ▶ **Vuelta atrás.** Branch `chore/unificar-burning-tower`. Sin `src/skins/`;
+   `07_copy_logos_back.mjs` y `08_merge_burning_tower.sql` juntan las dos orgs en PRD.
+   *Listo cuando* la org `burning-tower-fest` no existe, sus eventos, medallas y QR
+   andan bajo Lo de Charly, y la app pública se ve con la marca de Charly.
 
 ## R13 · Duplicar evento
 
@@ -360,8 +359,8 @@ La colección del evento, con la cara de quien la juntó, lista para mostrar. Br
 2. ▶ **Compartir.** Una imagen de 1080×1920 generada con sesión, Web Share con archivo y
    descarga si el navegador no puede.
    *Listo cuando* el visitante comparte su tarjeta como imagen desde el celular.
-   `/code-review`: 10 hallazgos, 8 resueltos; los 2 de limpieza quedan para cuando haya
-   otro skin. `/accessibility`: revisión manual sin hallazgos abiertos; axe queda sin correr.
+   `/code-review`: 10 hallazgos, 8 resueltos; los 2 de limpieza quedaron sin
+   objeto al sacar los skins. `/accessibility`: revisión manual sin hallazgos abiertos; axe queda sin correr.
 
 ## R15 · Panel con shadcn
 

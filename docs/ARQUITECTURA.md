@@ -171,19 +171,10 @@ carpetas nunca se alcanzan directo (`expo.com/admin` es un 404):
   principio se hace a mano desde el dashboard de Vercel; se automatiza con la API
   de dominios cuando haya más de un puñado de organizaciones.
 
-### Skins
-
-Una org puede tener un look a medida en vez del color de marca. Vive en
-`src/skins/<nombre>/` (paleta, CSS acotado por `data-skin` y fuente con `next/font`) y
-`skinFor(slug)`, en `src/skins/index.ts`, dice cuál le toca. **Shortcut**: va atado al
-slug y sale con un deploy, sin columna ni pantalla para elegirlo; se pasa a una columna
-si un owner lo tiene que elegir. Solo afecta su app pública y la vista previa de
-Ajustes: el admin sigue con la identidad de Eventdex.
-
 ### Imagen de la tarjeta
 
 `/mis-medallas/tarjeta` genera el PNG con `next/og`, que viene con Next. No lee CSS ni
-oklch: los colores se pasan a hex y cada skin declara su fuente en `image`. **Solo se
+oklch: los colores se pasan a hex y las fuentes se bajan de Google Fonts. **Solo se
 descargan fotos de Google** (`isGooglePhoto`), porque el visitante puede editar su
 `avatar_url` y sin ese filtro podría hacer que el servidor pida una dirección interna.
 **Shortcuts**: las fuentes se bajan de Google Fonts en tiempo de ejecución, una vez por
@@ -330,20 +321,20 @@ Conteos del backup del corte (2026-11-08).
 
 El script aborta sin escribir nada si la org `lodecharlytcg` no existe.
 
-### Separación de Burning Tower Fest
+### Burning Tower Fest: separación y vuelta atrás
 
-R10 colgó los cuatro eventos de `lodecharlytcg`, pero son de dos marcas.
-`scripts/migrate/05_split_burning_tower.sql` muda dos a la org `burning-tower-fest`, en
-una sola transacción, y `06_copy_burning_tower_logos.mjs` copia sus logos a la carpeta de
-la org nueva.
+El 2026-11-09 `05_split_burning_tower.sql` y `06_copy_burning_tower_logos.mjs` mudaron
+los dos eventos de Burning Tower Fest a su propia org, para darle un skin. Fue un error:
+es una sola org y el skin no hacía falta. `07_copy_logos_back.mjs` (primero) y
+`08_merge_burning_tower.sql` lo deshacen: todo vuelve a `lodecharlytcg` y la org
+`burning-tower-fest` se borra.
 
-- Los 5 spots del catálogo que usaban los dos grupos se duplican; el resto se muda.
-- El equipo de Lo de Charly se copia con los mismos roles.
-- `burning-tower-fest-2026` pasa a `burning-tower-fest-agosto-2026`, por la fecha de su
-  jornada, y sus dos sedes eran la misma: queda Centro Metropolitano de Diseño.
-- **Un host, una org**: `organization_domains.hostname` es único. Cada org tiene su alias
-  de Vercel como principal y `evento.lodecharlytcg.com` se puede prestar entre las dos,
-  solo entre eventos: mientras no sea suyo, los QR impresos con ese host dan 404.
+- Las 5 copias de spots vuelven a su original; el resto del catálogo se muda.
+- Quien ya era del equipo de Lo de Charly conserva su rol.
+- Quedan de la separación el slug `burning-tower-fest-agosto-2026` (un evento publicado
+  no cambia de dirección) y la sede unificada, Centro Metropolitano de Diseño.
+- `evento.lodecharlytcg.com` vuelve a ser el principal, y
+  `eventdex-burningtowerfest.vercel.app` queda como secundario para no romper links.
 
 ## Preguntas abiertas
 
