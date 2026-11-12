@@ -14,7 +14,7 @@
    explicación. Los textos se escanean de un vistazo.
 3. **La marca de la org vive en la superficie pública; Eventdex, en el resto.** Los
    componentes son los mismos; cambia la rampa de cuatro tonos (`--ramp-*`), que
-   sale del color de marca, o el skin entero si la org tiene uno a medida.
+   sale del color de marca.
 4. **Ningún estado queda sin diseñar.** Carga, vacío, error y éxito son parte del
    componente, no un agregado.
 5. **Densidad según la superficie.** Aire y tamaños grandes en la app pública;
@@ -57,10 +57,6 @@ Los valores los define [DESIGN](./DESIGN.md). Hay una sola paleta de cuatro tono
 - **Marca de la org:** del color de marca se toma solo el tono y la saturación;
   la luminosidad de cada tono es fija (`src/domain/palette.ts`). Por eso el
   contraste está garantizado para cualquier marca, sin validar nada al guardar.
-- **Skin de la org:** reemplaza la rampa, los acentos, la tipografía y las texturas
-  de su app pública, redefiniendo los mismos roles. Los componentes no cambian. Vive
-  en `src/skins/`, cada uno con su test de contraste, y el campo de color de Ajustes
-  no aparece.
 - **Modo oscuro:** sigue al sistema (`prefers-color-scheme`). Los roles se
   invierten (el fondo pasa a ser el tono más oscuro) y el contraste no cambia.
 - **Logos:** los de la org y los spots se ven tal cual son, sin filtro. La única
@@ -85,7 +81,7 @@ Los valores los define [DESIGN](./DESIGN.md). Dos voces:
 - **Esquinas rectas y sin sombras.** La profundidad la dan las reglas de 2 px y el
   panel de doble regla (`.panel`). Nada de `rounded-*` ni `shadow-*`. La única
   excepción es `shadow-plate`, la sombra dura del cartel, que solo se ve en la app
-  pública de una org sin skin.
+  pública.
 
 ## Componentes base
 
