@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { buttonClass } from "@/components/ui/Button";
+import { LinkLabel } from "@/components/ui/LinkLabel";
 import { PhaseBadge } from "@/components/visitante/PhaseBadge";
 import type { Phase } from "@/domain/events";
 
@@ -54,11 +55,13 @@ export function EventCard({
             href={stats.href}
             className={buttonClass("secondary", "no-underline")}
           >
-            Estadísticas
+            Estadísticas<span className="sr-only"> de {title}</span>
           </Link>
         )}
         <Link href={href} className={buttonClass("primary", "no-underline")}>
-          Gestionar
+          <LinkLabel label="Gestionar" pendingLabel="Abriendo…" />
+          {/* Each card's link says which event, for a list of links. */}
+          <span className="sr-only"> {title}</span>
         </Link>
       </div>
     </article>

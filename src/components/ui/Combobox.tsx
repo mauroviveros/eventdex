@@ -33,7 +33,8 @@ type Props = {
 
 /**
  * A select you can type into (Popover + Command), for lists too long for the
- * native one. It posts like a select: a hidden input with the chosen value.
+ * native one. The trigger is a button that opens a dialog (Radix sets
+ * aria-haspopup and aria-expanded); the combobox is the search inside it. It posts like a select: a hidden input with the chosen value.
  * A value that left the options (just added, say) goes back to empty.
  */
 export function Combobox({
@@ -62,8 +63,6 @@ export function Combobox({
           <PopoverTrigger asChild>
             <button
               type="button"
-              role="combobox"
-              aria-expanded={open}
               {...a11y}
               className={cn(
                 CONTROL,

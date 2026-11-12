@@ -14,7 +14,10 @@ export function TopBar({
   actions?: ReactNode;
 }) {
   return (
-    <header className="sticky top-0 z-10 border-b-2 border-lcd-3 bg-lcd-0 print:hidden">
+    <header
+      data-slot="topbar"
+      className="sticky top-0 z-10 border-b-2 border-lcd-3 bg-lcd-0 print:hidden"
+    >
       <div className="flex min-h-16 flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-2 sm:px-6">
         <div className="flex min-w-0 items-center gap-2">
           <SidebarTrigger className="-ml-2" />

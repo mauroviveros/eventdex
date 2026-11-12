@@ -191,6 +191,16 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* The admin's top bar is sticky: whatever gets focus or a #link stops below
+     it, not under it. On a phone its actions can take a second row. */
+  html:has([data-slot="topbar"]) {
+    scroll-padding-top: 8rem;
+
+    @variant sm {
+      scroll-padding-top: 5.5rem;
+    }
+  }
+
   ::selection {
     background: var(--lcd-3);
     color: var(--lcd-0);
