@@ -14,6 +14,7 @@ import { TopBar } from "@/components/admin/TopBar";
 import { ConsoleDemo } from "@/components/landing/ConsoleDemo";
 import { ActionButton } from "@/components/ui/ActionButton";
 import { Button } from "@/components/ui/Button";
+import { Combobox } from "@/components/ui/Combobox";
 import { DateField } from "@/components/ui/DateField";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
 import { GoogleSignIn } from "@/components/ui/GoogleSignIn";
@@ -31,6 +32,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/shadcn/table";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/shadcn/tabs";
 import { Celebration } from "@/components/visitante/Celebration";
 import { Countdown } from "@/components/visitante/Countdown";
 import {
@@ -53,6 +60,7 @@ import ceramica from "./logos/ceramica.svg";
 import retrato from "./logos/retrato.png";
 import { PaletteScope } from "./PaletteScope";
 import { Replay } from "./Replay";
+import { TableDemo } from "./TableDemo";
 import { ToastDemo } from "./ToastDemo";
 
 /** A sample admin frame: its fixed sidebar is held inside the box (transform makes the box its containing block). */
@@ -583,6 +591,35 @@ export default function ComponentesPage() {
         </Section>
 
         <Section
+          title="Panel: pestañas y tabla con orden"
+          note="Tabs de shadcn como la tira de filtros: la activa en tinta, 44 px. DataTable arma columnas con TanStack Table; el orden y la página van en la URL (?orden, ?pag) y los resuelve el server. Debajo de 640 px cada fila es una tarjeta con el nombre de cada columna."
+        >
+          <Tabs defaultValue="visitantes">
+            <TabsList aria-label="Ejemplo de pestañas">
+              <TabsTrigger value="general">General</TabsTrigger>
+              <TabsTrigger value="spots">
+                Spots <span className="tabular-nums opacity-80">12</span>
+              </TabsTrigger>
+              <TabsTrigger value="visitantes">
+                Visitantes <span className="tabular-nums opacity-80">3</span>
+              </TabsTrigger>
+              <TabsTrigger value="sorteo" disabled>
+                Deshabilitada
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="general">
+              <p>Datos del evento.</p>
+            </TabsContent>
+            <TabsContent value="spots">
+              <p>Spots del evento.</p>
+            </TabsContent>
+            <TabsContent value="visitantes">
+              <TableDemo />
+            </TabsContent>
+          </Tabs>
+        </Section>
+
+        <Section
           title="Panel: tabla y estados"
           note="Table de shadcn: regla de tinta bajo el encabezado y líneas punteadas entre filas; en el celular se corre de costado. Badge con un tono por estado; el rojo es solo para algo que anda mal."
         >
@@ -804,7 +841,7 @@ export default function ComponentesPage() {
 
         <Section
           title="Campos"
-          note="Input, NativeSelect, Checkbox y Calendar de shadcn en el marco de Field. El error aparece al lado del campo y dice cómo resolverlo. La fecha abre un calendario y manda lo mismo que un input nativo."
+          note="Input, NativeSelect, Combobox (Popover + Command), Checkbox y Calendar de shadcn en el marco de Field. El error aparece al lado del campo y dice cómo resolverlo. La fecha abre un calendario y manda lo mismo que un input nativo."
         >
           <div className="grid max-w-md gap-6">
             <Field
@@ -830,6 +867,34 @@ export default function ComponentesPage() {
               <option value="">Sin sede por ahora</option>
               <option value="norte">Predio Norte</option>
             </SelectField>
+            <Combobox
+              label="Spot del catálogo"
+              name="spot"
+              options={[
+                { value: "a", label: "Café de la Esquina" },
+                { value: "b", label: "Rueda gigante" },
+                { value: "c", label: "Taller de cerámica" },
+              ]}
+              placeholder="Elegí un spot"
+              empty="Ningún spot del catálogo se llama así."
+              hint="Se busca escribiendo. Probá con algo que no esté."
+            />
+            <Combobox
+              label="Spot del catálogo"
+              name="spot-elegido"
+              options={[{ value: "b", label: "Rueda gigante" }]}
+              placeholder="Elegí un spot"
+              empty="Ningún spot del catálogo se llama así."
+              defaultValue="b"
+            />
+            <Combobox
+              label="Spot del catálogo"
+              name="spot-error"
+              options={[{ value: "b", label: "Rueda gigante" }]}
+              placeholder="Elegí un spot"
+              empty="Ningún spot del catálogo se llama así."
+              error="Elegí un spot del catálogo."
+            />
             <DateField label="Empieza" name="empieza" time />
             <DateField
               label="Termina"
