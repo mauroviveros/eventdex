@@ -45,6 +45,7 @@ export async function listEvents(supabase: Supabase, organizationId: string) {
       stands: stands[0]?.count ?? 0,
       visitors: visitors[0]?.count ?? 0,
       // Claims hang from the event's spots (any, active or not): add them up.
+      // shortcut: one count row per spot, move to a count grouped by event_id past ~50 spots per event
       medals: claims.reduce((n, s) => n + (s.spot_claims[0]?.count ?? 0), 0),
     },
   }));

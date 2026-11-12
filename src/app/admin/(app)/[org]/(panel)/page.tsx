@@ -103,12 +103,13 @@ export default async function OrgEventsPage({
           <StatTile
             label="Visitantes"
             value={total("visitors")}
-            caption="registrados en todos"
+            // Registrations add up per event: someone at two events counts twice.
+            caption="sumando cada evento"
           />
           <StatTile
             label="Medallas"
             value={total("medals")}
-            caption="entregadas en todos"
+            caption="sumando cada evento"
           />
         </div>
 
