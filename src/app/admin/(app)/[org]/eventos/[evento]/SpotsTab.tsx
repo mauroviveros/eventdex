@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { EditSheet } from "@/components/admin/EditSheet";
+import { buttonClass } from "@/components/ui/Button";
 import { readTableQuery, type SearchParams, sortAndPage } from "@/domain/table";
 import type { listSpots } from "@/lib/data/spots";
 import { SPOT_SORTS } from "./query";
@@ -37,18 +38,23 @@ export function SpotsTab({
     query,
   );
 
-  const addSheet = !support && (
+  // One instance in one place: an add that changes the empty state must not
+  // remount the sheet, or it would close in the middle of loading spots.
+  const variant = inEvent.length === 0 ? "primary" : "secondary";
+  const addAction = support ? null : catalog.length === 0 ? (
+    <Link href={`/${org}/spots/nuevo`} className={buttonClass(variant)}>
+      Cargá un spot
+    </Link>
+  ) : (
     <EditSheet
       label="Agregar spots"
       title="Agregar desde el catálogo"
       description="Cada spot del evento tiene su código y su QR. El QR no cambia aunque edites el código o el nombre."
-      variant={inEvent.length === 0 ? "primary" : "secondary"}
+      variant={variant}
     >
       {available.length === 0 ? (
         <p className="border-2 border-dashed border-lcd-2 px-4 py-6">
-          {catalog.length === 0
-            ? "El catálogo está vacío."
-            : "Todos los spots del catálogo ya están en el evento."}{" "}
+          Todos los spots del catálogo ya están en el evento.{" "}
           <Link
             href={`/${org}/spots/nuevo`}
             className="underline decoration-2 underline-offset-4"
@@ -69,18 +75,20 @@ export function SpotsTab({
         <h2 id="en-el-evento" tabIndex={-1} className="text-px-2">
           En el evento ({inEvent.length})
         </h2>
-        {inEvent.length > 0 && addSheet}
+        {addAction}
       </div>
       {inEvent.length === 0 ? (
-        <div className="grid max-w-prose justify-items-start gap-3 border-2 border-dashed border-lcd-2 px-6 py-8">
+        <div className="grid gap-2 border-2 border-dashed border-lcd-2 px-6 py-8 *:max-w-prose">
           <p className="font-display text-px-2">
             Todavía no hay spots en este evento
           </p>
           <p>
-            Agregalos desde el catálogo. Sin spots, el evento se puede publicar,
-            pero no hay medallas para juntar.
+            {catalog.length === 0
+              ? "Primero cargá los spots en el catálogo de la organización."
+              : "Agregalos desde el catálogo."}{" "}
+            Sin spots, el evento se puede publicar, pero no hay medallas para
+            juntar.
           </p>
-          {addSheet}
         </div>
       ) : (
         <SpotsTable

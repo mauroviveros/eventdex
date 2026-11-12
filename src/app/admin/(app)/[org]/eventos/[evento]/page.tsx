@@ -358,16 +358,15 @@ function General({
           <h2 id="jornadas" className="text-px-2">
             Jornadas
           </h2>
-          {event.schedules.length > 0 && schedulesSheet}
+          {schedulesSheet}
         </div>
         {event.schedules.length === 0 ? (
-          <div className="grid max-w-prose justify-items-start gap-3 border-2 border-dashed border-lcd-2 px-6 py-8">
+          <div className="grid gap-2 border-2 border-dashed border-lcd-2 px-6 py-8 *:max-w-prose">
             <p className="font-display text-px-2">Todavía no hay jornadas</p>
             <p>
               Cada jornada es un día del evento, con su horario. De ellas sale
               si el evento es próximo, está en curso o terminó.
             </p>
-            {schedulesSheet}
           </div>
         ) : (
           <ol className="grid gap-2">
