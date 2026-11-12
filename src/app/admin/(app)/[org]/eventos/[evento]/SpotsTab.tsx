@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { EditSheet } from "@/components/admin/EditSheet";
 import { readTableQuery, type SearchParams, sortAndPage } from "@/domain/table";
 import type { listSpots } from "@/lib/data/spots";
 import { SPOT_SORTS } from "./query";
@@ -36,64 +37,61 @@ export function SpotsTab({
     query,
   );
 
-  return (
-    <>
-      <p className="max-w-prose">
-        Cada spot del evento tiene su código y su QR. El QR no cambia aunque
-        edites el código o el nombre.
-      </p>
-
-      <div className="grid grid-cols-1 gap-10 xl:grid-cols-[1fr_28rem] xl:items-start">
-        <section
-          aria-labelledby="en-el-evento"
-          className="grid min-w-0 content-start gap-4"
-        >
-          <h2 id="en-el-evento" tabIndex={-1} className="text-px-2">
-            En el evento ({inEvent.length})
-          </h2>
-          {inEvent.length === 0 ? (
-            <div className="grid max-w-prose gap-2 border-2 border-dashed border-lcd-2 px-6 py-8">
-              <p className="font-display text-px-2">
-                Todavía no hay spots en este evento
-              </p>
-              <p>
-                Agregalos desde el catálogo. Sin spots, el evento se puede
-                publicar, pero no hay medallas para juntar.
-              </p>
-            </div>
-          ) : (
-            <SpotsTable
-              org={org}
-              support={support}
-              rows={rows}
-              sort={query}
-              page={page}
-              pageCount={pageCount}
-            />
-          )}
-        </section>
-
-        {!support && (
-          <section
-            aria-labelledby="agregar-spot"
-            className="panel grid gap-6 p-6"
+  const addSheet = !support && (
+    <EditSheet
+      label="Agregar spots"
+      title="Agregar desde el catálogo"
+      description="Cada spot del evento tiene su código y su QR. El QR no cambia aunque edites el código o el nombre."
+      variant={inEvent.length === 0 ? "primary" : "secondary"}
+    >
+      {available.length === 0 ? (
+        <p className="border-2 border-dashed border-lcd-2 px-4 py-6">
+          {catalog.length === 0
+            ? "El catálogo está vacío."
+            : "Todos los spots del catálogo ya están en el evento."}{" "}
+          <Link
+            href={`/${org}/spots/nuevo`}
+            className="underline decoration-2 underline-offset-4"
           >
-            <h2 id="agregar-spot" className="text-px-2">
-              Agregar desde el catálogo
-            </h2>
-            {available.length === 0 ? (
-              <p>
-                {catalog.length === 0
-                  ? "El catálogo está vacío."
-                  : "Todos los spots del catálogo ya están en el evento."}{" "}
-                <Link href={`/${org}/spots/nuevo`}>Cargá un spot nuevo</Link>.
-              </p>
-            ) : (
-              <AddEventSpotForm org={org} eventId={eventId} spots={available} />
-            )}
-          </section>
-        )}
+            Cargá un spot nuevo
+          </Link>
+          .
+        </p>
+      ) : (
+        <AddEventSpotForm org={org} eventId={eventId} spots={available} />
+      )}
+    </EditSheet>
+  );
+
+  return (
+    <section aria-labelledby="en-el-evento" className="grid min-w-0 gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 id="en-el-evento" tabIndex={-1} className="text-px-2">
+          En el evento ({inEvent.length})
+        </h2>
+        {inEvent.length > 0 && addSheet}
       </div>
-    </>
+      {inEvent.length === 0 ? (
+        <div className="grid max-w-prose justify-items-start gap-3 border-2 border-dashed border-lcd-2 px-6 py-8">
+          <p className="font-display text-px-2">
+            Todavía no hay spots en este evento
+          </p>
+          <p>
+            Agregalos desde el catálogo. Sin spots, el evento se puede publicar,
+            pero no hay medallas para juntar.
+          </p>
+          {addSheet}
+        </div>
+      ) : (
+        <SpotsTable
+          org={org}
+          support={support}
+          rows={rows}
+          sort={query}
+          page={page}
+          pageCount={pageCount}
+        />
+      )}
+    </section>
   );
 }

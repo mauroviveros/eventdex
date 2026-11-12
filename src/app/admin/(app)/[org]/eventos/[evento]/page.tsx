@@ -5,7 +5,6 @@ import { EventActions } from "@/components/admin/EventActions";
 import { StatTile } from "@/components/admin/StatTile";
 import { PageBody, TopBar } from "@/components/admin/TopBar";
 import { ActionButton } from "@/components/ui/ActionButton";
-import { buttonClass } from "@/components/ui/Button";
 import { EventCover } from "@/components/visitante/EventHome";
 import { PhaseBadge } from "@/components/visitante/PhaseBadge";
 import {
@@ -68,125 +67,104 @@ export default async function EventoPage({
     editable ? listVenues(supabase, org.id) : [],
     getPrimaryHostname(supabase, org.id),
   ]);
-  const base = `/${org.slug}/eventos/${event.slug}`;
   const cover = coverUrl(event.cover_path);
 
   return (
     <>
       <TopBar
-        title="Eventos"
+        title={event.title}
+        crumbs={[{ label: "Eventos", href: `/${org.slug}` }]}
         actions={
           <>
-            <Link
-              href={`/${org.slug}`}
-              className="flex min-h-11 items-center font-display text-px-1"
-            >
-              Volver a eventos
-            </Link>
-            {inEvent.length > 0 && (
-              <Link
-                href={`${base}/qr`}
-                className={buttonClass("primary", "no-underline")}
+            {editable && (
+              <EditSheet
+                label="Editar"
+                ariaLabel={`Editar ${event.title}`}
+                title={`Editar ${event.title}`}
+                description="Datos, sede y banner del evento. Las jornadas se editan desde la pestaña General."
               >
-                Hoja de QR
-              </Link>
+                <EventDataForm
+                  org={org.slug}
+                  event={{
+                    id: event.id,
+                    slug: event.slug,
+                    title: event.title,
+                    editionLabel: event.edition_label,
+                    summary: event.summary,
+                    draft,
+                  }}
+                />
+                <section aria-labelledby="sede" className="grid gap-4">
+                  <h3 id="sede" className="text-px-2">
+                    Sede
+                  </h3>
+                  {venues.length === 0 ? (
+                    <p className="border-2 border-dashed border-lcd-2 px-4 py-6">
+                      Todavía no cargaste sedes.{" "}
+                      <Link
+                        href={`/${org.slug}/sedes`}
+                        className="underline decoration-2 underline-offset-4"
+                      >
+                        Cargá una
+                      </Link>{" "}
+                      y volvé para elegirla.
+                    </p>
+                  ) : (
+                    <VenueForm
+                      org={org.slug}
+                      eventId={event.id}
+                      venueId={event.venue_id}
+                      venues={venues}
+                      hasSchedules={event.schedules.length > 0}
+                    />
+                  )}
+                </section>
+                <section aria-labelledby="banner-editar" className="grid gap-4">
+                  <h3 id="banner-editar" className="text-px-2">
+                    Banner
+                  </h3>
+                  {cover && <EventCover src={cover} alt="Banner actual" />}
+                  <CoverForm
+                    ids={{
+                      org: org.slug,
+                      organizationId: org.id,
+                      eventId: event.id,
+                    }}
+                    hasCover={cover !== undefined}
+                  />
+                </section>
+              </EditSheet>
             )}
+            <EventActions
+              org={org.slug}
+              event={{
+                id: event.id,
+                slug: event.slug,
+                title: event.title,
+                draft,
+              }}
+              hasSpots={inEvent.length > 0}
+              ready={event.schedules.length > 0}
+              publicUrl={
+                event.status === "published" && hostname
+                  ? `${publicOrigin(hostname)}/eventos/${event.slug}`
+                  : null
+              }
+              support={support}
+            />
           </>
         }
       />
       <PageBody>
-        <header className="grid max-w-3xl gap-3">
-          <div className="flex items-start gap-3">
-            <div className="flex min-w-0 flex-1 flex-wrap items-center gap-3">
-              <h1 className="text-px-3 sm:text-px-4">{event.title}</h1>
-              <PhaseBadge phase={phase} />
-            </div>
-            <div className="flex gap-2">
-              {editable && (
-                <EditSheet
-                  label="Editar"
-                  ariaLabel={`Editar ${event.title}`}
-                  title={`Editar ${event.title}`}
-                  description="Datos, sede y banner del evento. Las jornadas se editan desde la pestaña General."
-                >
-                  <EventDataForm
-                    org={org.slug}
-                    event={{
-                      id: event.id,
-                      slug: event.slug,
-                      title: event.title,
-                      editionLabel: event.edition_label,
-                      summary: event.summary,
-                      draft,
-                    }}
-                  />
-                  <section aria-labelledby="sede" className="grid gap-4">
-                    <h3 id="sede" className="text-px-2">
-                      Sede
-                    </h3>
-                    {venues.length === 0 ? (
-                      <p className="border-2 border-dashed border-lcd-2 px-4 py-6">
-                        Todavía no cargaste sedes.{" "}
-                        <Link
-                          href={`/${org.slug}/sedes`}
-                          className="underline decoration-2 underline-offset-4"
-                        >
-                          Cargá una
-                        </Link>{" "}
-                        y volvé para elegirla.
-                      </p>
-                    ) : (
-                      <VenueForm
-                        org={org.slug}
-                        eventId={event.id}
-                        venueId={event.venue_id}
-                        venues={venues}
-                        hasSchedules={event.schedules.length > 0}
-                      />
-                    )}
-                  </section>
-                  <section
-                    aria-labelledby="banner-editar"
-                    className="grid gap-4"
-                  >
-                    <h3 id="banner-editar" className="text-px-2">
-                      Banner
-                    </h3>
-                    {cover && <EventCover src={cover} alt="Banner actual" />}
-                    <CoverForm
-                      ids={{
-                        org: org.slug,
-                        organizationId: org.id,
-                        eventId: event.id,
-                      }}
-                      hasCover={cover !== undefined}
-                    />
-                  </section>
-                </EditSheet>
-              )}
-              <EventActions
-                org={org.slug}
-                event={{
-                  id: event.id,
-                  slug: event.slug,
-                  title: event.title,
-                  draft,
-                }}
-                hasSpots={inEvent.length > 0}
-                ready={event.schedules.length > 0}
-                publicUrl={
-                  event.status === "published" && hostname
-                    ? `${publicOrigin(hostname)}/eventos/${event.slug}`
-                    : null
-                }
-                support={support}
-              />
-            </div>
+        <header className="grid gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="text-px-3 sm:text-px-4">{event.title}</h1>
+            <PhaseBadge phase={phase} />
           </div>
           {event.summary && <p className="max-w-prose">{event.summary}</p>}
         </header>
 
-        <dl className="grid max-w-3xl border-2 border-lcd-3 sm:grid-cols-3">
+        <dl className="grid border-2 border-lcd-3 sm:grid-cols-3">
           {(
             [
               [
@@ -356,7 +334,7 @@ function General({
       )}
 
       {!draft && (
-        <div className="grid max-w-3xl gap-2 sm:grid-cols-3 sm:gap-3">
+        <div className="grid gap-2 sm:grid-cols-3 sm:gap-3">
           <StatTile
             label="Visitantes"
             value={stats.visitors}
@@ -375,7 +353,7 @@ function General({
         </div>
       )}
 
-      <section aria-labelledby="jornadas" className="grid max-w-3xl gap-4">
+      <section aria-labelledby="jornadas" className="grid gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 id="jornadas" className="text-px-2">
             Jornadas
