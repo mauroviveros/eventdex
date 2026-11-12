@@ -1,7 +1,7 @@
 "use client";
 
 import { createColumnHelper } from "@tanstack/react-table";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { DataTable, type features } from "@/components/admin/DataTable";
 import { Sprite } from "@/components/pixel/Sprite";
 import { ActionButton } from "@/components/ui/ActionButton";
@@ -22,7 +22,7 @@ import type { listEventSpots } from "@/lib/data/spots";
 import { SPOT_SORTS } from "./query";
 import { EditEventSpotForm } from "./spots/EventSpotForms";
 
-type Spot = Awaited<ReturnType<typeof listEventSpots>>[number];
+export type Spot = Awaited<ReturnType<typeof listEventSpots>>[number];
 
 const helper = createColumnHelper<typeof features, Spot>();
 
@@ -118,15 +118,27 @@ export function SpotsTable({
 }
 
 function SpotSheet({ org, spot: s }: { org: string; spot: Spot }) {
+  const trigger = useRef<HTMLButtonElement>(null);
+
   return (
     <Sheet>
       <SheetTrigger
+        ref={trigger}
         className={buttonClass("secondary")}
         aria-label={`Editar ${s.shown.name}`}
       >
         Editar
       </SheetTrigger>
-      <SheetContent className="w-full gap-8 overflow-y-auto p-6 sm:max-w-lg">
+      <SheetContent
+        className="w-full gap-8 overflow-y-auto p-6 sm:max-w-lg"
+        onCloseAutoFocus={(e) => {
+          // Removing the spot takes its row, and this "Editar", with it:
+          // hand the focus to the table's heading instead of the page top.
+          if (trigger.current?.isConnected) return;
+          e.preventDefault();
+          document.getElementById("en-el-evento")?.focus();
+        }}
+      >
         <div className="flex items-start justify-between gap-4">
           <div className="grid gap-1">
             <SheetTitle className="text-px-2">

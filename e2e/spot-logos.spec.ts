@@ -49,7 +49,7 @@ test("a spot's logo goes from the form to the visitor's medals", async ({
     const add = page.locator("form", {
       has: page.getByLabel("Spot del catálogo"),
     });
-    await add.getByRole("combobox", { name: "Spot del catálogo" }).click();
+    await add.getByRole("button", { name: "Spot del catálogo" }).click();
     await page.getByRole("option", { name: NAME }).click();
     await add.getByLabel("Código").fill("L01");
     await add.getByRole("button", { name: /Agregar/ }).click();

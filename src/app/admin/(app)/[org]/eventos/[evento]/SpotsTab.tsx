@@ -1,13 +1,9 @@
 import Link from "next/link";
-import { readTableQuery, sortAndPage } from "@/domain/table";
-import type { listEventSpots, listSpots } from "@/lib/data/spots";
+import { readTableQuery, type SearchParams, sortAndPage } from "@/domain/table";
+import type { listSpots } from "@/lib/data/spots";
 import { SPOT_SORTS } from "./query";
-import { SpotsTable } from "./SpotsTable";
+import { type Spot, SpotsTable } from "./SpotsTable";
 import { AddEventSpotForm } from "./spots/EventSpotForms";
-
-type Params = Record<string, string | string[] | undefined>;
-
-const KEYS = Object.keys(SPOT_SORTS) as (keyof typeof SPOT_SORTS)[];
 
 /** The event's spots: which catalog spots are in it, with their code, booth and points. */
 export function SpotsTab({
@@ -21,13 +17,13 @@ export function SpotsTab({
   org: string;
   eventId: string;
   support: boolean;
-  inEvent: Awaited<ReturnType<typeof listEventSpots>>;
+  inEvent: Spot[];
   catalog: Awaited<ReturnType<typeof listSpots>>;
-  params: Params;
+  params: SearchParams;
 }) {
   const used = new Set(inEvent.map((s) => s.spotId));
   const available = catalog.filter((s) => !s.archived_at && !used.has(s.id));
-  const query = readTableQuery(params, KEYS, { orden: "codigo", dir: "asc" });
+  const query = readTableQuery(params, SPOT_SORTS, "codigo");
   const { rows, page, pageCount } = sortAndPage(
     inEvent,
     (s) =>
@@ -47,12 +43,12 @@ export function SpotsTab({
         edites el código o el nombre.
       </p>
 
-      <div className="grid grid-cols-1 gap-10 xl:grid-cols-[1fr_24rem] xl:items-start">
+      <div className="grid grid-cols-1 gap-10 xl:grid-cols-[1fr_28rem] xl:items-start">
         <section
           aria-labelledby="en-el-evento"
           className="grid min-w-0 content-start gap-4"
         >
-          <h2 id="en-el-evento" className="text-px-2">
+          <h2 id="en-el-evento" tabIndex={-1} className="text-px-2">
             En el evento ({inEvent.length})
           </h2>
           {inEvent.length === 0 ? (
