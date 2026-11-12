@@ -59,7 +59,12 @@ export function AccountMenu({ account }: { account: Account }) {
 
   return (
     <>
-      <form ref={signOut} action="/auth/salir" method="post" hidden />
+      <form
+        ref={signOut}
+        action="/auth/salir?next=/ingresar"
+        method="post"
+        hidden
+      />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <SidebarMenuButton size="lg" className="px-1.5">

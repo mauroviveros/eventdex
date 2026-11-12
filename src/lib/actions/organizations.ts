@@ -25,10 +25,10 @@ export async function createOrganizationAction(
   const result = await createOrganization(supabase, values);
   // React resets the form after the action: send the values back so nothing typed is lost.
   if (!result.ok) return { ...result, values };
-  revalidatePath("/admin/plataforma/organizaciones");
+  revalidatePath("/panel/plataforma/organizaciones");
   // Its domain resolves right away on the public app.
   invalidateOrganizations();
-  redirect("/plataforma/organizaciones?creada=1");
+  redirect("/panel/plataforma/organizaciones?creada=1");
 }
 
 /** Developer opened an organization in support mode: one audit row per visit. */

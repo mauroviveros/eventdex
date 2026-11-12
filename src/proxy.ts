@@ -1,16 +1,17 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
-import { ADMIN_HOST, env } from "@/lib/env";
+import { env } from "@/lib/env";
 import { internalPath, surfaceFor } from "@/lib/surface";
 
 /**
  * Two jobs on every request:
- * 1. Rewrite the path to the surface the host serves (landing, admin, publica).
+ * 1. Send an organization's host to its public site (publica/[host]); the root
+ *    host (landing, /ingresar, /panel) keeps its path.
  * 2. Refresh the Supabase session, so Server Components read a valid token.
  */
 export async function proxy(request: NextRequest) {
   const host = request.headers.get("host") ?? env.NEXT_PUBLIC_ROOT_DOMAIN;
-  const surface = surfaceFor(host, env.NEXT_PUBLIC_ROOT_DOMAIN, ADMIN_HOST, [
+  const surface = surfaceFor(host, env.NEXT_PUBLIC_ROOT_DOMAIN, [
     process.env.VERCEL_URL,
     process.env.VERCEL_BRANCH_URL,
   ]);

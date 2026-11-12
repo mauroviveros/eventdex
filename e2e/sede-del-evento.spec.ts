@@ -15,7 +15,7 @@ test.afterAll(async () => {
 test("an event created without a venue gets one later, and can drop it", async ({
   page,
 }) => {
-  const panel = `http://app.localhost:3000/${seed.org.slug}`;
+  const panel = `http://localhost:3000/panel/${seed.org.slug}`;
   const sede = page.getByRole("combobox", { name: "Sede" });
   // The venue is changed from the event's Editar sheet.
   const edit = () =>

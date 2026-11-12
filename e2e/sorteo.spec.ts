@@ -45,7 +45,7 @@ test("staff draws, voids and publishes; the visitor sees the winner", async ({
 
   await test.step("the event leads to a raffle page, empty at first", async () => {
     await staff.goto(
-      `http://app.localhost:3000/${seed.org.slug}/eventos/${seed.event.slug}`,
+      `http://localhost:3000/panel/${seed.org.slug}/eventos/${seed.event.slug}`,
     );
     await signInByMail(staff, seed.ownerEmail);
     await staff.getByRole("button", { name: /^Acciones de / }).click();

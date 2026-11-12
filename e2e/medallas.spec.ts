@@ -113,7 +113,7 @@ test("a visitor scans a QR, signs in, collects, and staff can block them", async
     // Another browser: the admin's session lives on its own domain.
     const staff = await browser.newPage();
     await staff.goto(
-      `http://app.localhost:3000/${seed.org.slug}/eventos/${seed.event.slug}?tab=visitantes`,
+      `http://localhost:3000/panel/${seed.org.slug}/eventos/${seed.event.slug}?tab=visitantes`,
     );
     await signInByMail(staff, seed.ownerEmail);
 

@@ -33,7 +33,7 @@ export function safeNext(next: string | null | undefined, fallback = "/") {
 }
 
 /**
- * The origin the browser actually used (`http://app.localhost:3000`), from the
+ * The origin the browser actually used (`http://expo.localhost:3000`), from the
  * forwarded headers. Next's request.nextUrl.origin reports the server's own
  * host, which breaks the per-host redirects of the auth flow.
  */

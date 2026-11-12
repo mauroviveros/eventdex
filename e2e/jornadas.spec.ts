@@ -28,7 +28,7 @@ test("a schedule is added with the calendar, and a wrong one keeps what was type
   page,
 }) => {
   await page.goto(
-    `http://app.localhost:3000/${seed.org.slug}/eventos/${seed.event.slug}`,
+    `http://localhost:3000/panel/${seed.org.slug}/eventos/${seed.event.slug}`,
   );
   await signInByMail(page, seed.ownerEmail);
   // The schedules are edited in their own sheet, from the General tab.

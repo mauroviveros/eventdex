@@ -16,7 +16,7 @@ test.afterAll(async () => {
 test("spots are added one after another without the sheet closing", async ({
   page,
 }) => {
-  const url = `http://app.localhost:3000/${seed.org.slug}/eventos/feria-borrador?tab=spots`;
+  const url = `http://localhost:3000/panel/${seed.org.slug}/eventos/feria-borrador?tab=spots`;
   await page.goto(url);
   await signInByMail(page, seed.ownerEmail);
   await page.goto(url);

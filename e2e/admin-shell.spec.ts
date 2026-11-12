@@ -12,7 +12,7 @@ test.afterAll(async () => {
   await seed?.cleanup();
 });
 
-const admin = () => `http://app.localhost:3000/${seed.org.slug}`;
+const admin = () => `http://localhost:3000/panel/${seed.org.slug}`;
 const TOGGLE = "Mostrar u ocultar el menú";
 
 test("on a phone the menu is a sheet that closes after choosing a section", async ({

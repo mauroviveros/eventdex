@@ -13,7 +13,7 @@ test.afterAll(async () => {
 });
 
 test("an event is duplicated into a draft with its spots", async ({ page }) => {
-  const admin = `http://app.localhost:3000/${seed.org.slug}`;
+  const admin = `http://localhost:3000/panel/${seed.org.slug}`;
   await page.goto(admin);
   await signInByMail(page, seed.ownerEmail);
 

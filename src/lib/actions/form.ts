@@ -47,6 +47,6 @@ export async function runFormWrite(
   }
   const result = await write(await createClient(), values);
   if (!result.ok) return { ok: false, state: { ...result, values } };
-  revalidatePath(`/admin/${org}`, "layout");
+  revalidatePath(`/panel/${org}`, "layout");
   return { ok: true, org, data: result.data };
 }

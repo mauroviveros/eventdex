@@ -1,5 +1,5 @@
 -- Local data only (pnpm db:reset). Gives the whole circuit something to show:
--- admin on app.localhost:3000, public site on expo.localhost:3000.
+-- panel on localhost:3000/panel, public site on expo.localhost:3000.
 -- Sign in by mail (magic link) and read it in Mailpit: http://127.0.0.1:54424
 --   dev@eventdex.test      developer of the platform (sees every org)
 --   owner@eventdex.test    owner of "Expo Local" and of "Cámara Demo"

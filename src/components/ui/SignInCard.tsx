@@ -1,0 +1,50 @@
+import { redirect } from "next/navigation";
+import type { ReactNode } from "react";
+import { AlertIcon } from "@/components/pixel/AlertIcon";
+import { EmailSignIn } from "@/components/ui/EmailSignIn";
+import { GoogleSignIn } from "@/components/ui/GoogleSignIn";
+import { getSessionUser } from "@/lib/session";
+import { createClient } from "@/lib/supabase/server";
+
+type Props = {
+  /** Where to go after signing in (already checked with safeNext). */
+  next: string;
+  /** The provider sent back an error (`?error=auth`). */
+  failed: boolean;
+  title: ReactNode;
+  /** Who this sign-in is for, in a sentence or two. */
+  children: ReactNode;
+};
+
+/**
+ * The sign-in of the panel and of an org's site: each page lives on its own
+ * host so the session cookie lands there. Someone already signed in goes on
+ * to `next`. Mail sign-in only exists in development.
+ */
+export async function SignInCard({ next, failed, title, children }: Props) {
+  if (await getSessionUser(await createClient())) redirect(next);
+
+  return (
+    <div className="panel grid w-full max-w-sm gap-6 px-6 py-8">
+      <div className="grid gap-2">
+        <h1 className="font-wide text-title">{title}</h1>
+        <p>{children}</p>
+      </div>
+
+      {failed && (
+        <p role="alert" className="flex items-start gap-2 text-danger">
+          <span className="mt-1">
+            <AlertIcon />
+          </span>
+          No pudimos completar el ingreso. Probá de nuevo.
+        </p>
+      )}
+
+      <GoogleSignIn next={next} className="w-full">
+        Ingresar con Google
+      </GoogleSignIn>
+
+      {process.env.NODE_ENV !== "production" && <EmailSignIn next={next} />}
+    </div>
+  );
+}
