@@ -125,6 +125,7 @@ En `src/components/<dominio>/`. Cada uno documenta sus estados en `/dev/componen
 | **Selector de organización** | La org activa en el admin | una org · varias |
 | **Shell del admin** | Barra lateral (organización arriba, secciones con ícono pixel, cuenta abajo con foto, nombre y mail) y barra superior con el botón de la barra, el título y las acciones de la pantalla. Una página que depende de otra (evento, sorteo, Hoja de QR, spot, alta) lleva migas en vez de título y de un link de volver: la sección como link y la página actual en tinta. En el celular queda solo el tramo de arriba, como «‹ Eventos». La barra colapsa a íconos (botón, borde o Ctrl/⌘ B) y lo recuerda en una cookie. En celular es un panel lateral que abre el mismo botón y se cierra al elegir una sección | sección actual (celda invertida) · con migas · colapsada (íconos con tooltip) · sin organización (marca) · varias organizaciones (menú con todas, la actual marcada) · sin foto (iniciales) · modo soporte (aviso sobre la página) |
 | **Métrica** | Una cifra de la plataforma o del evento | con valor · en cero |
+| **Franja de cifras** | `StatStrip`: las cifras de un evento en celdas regladas, cuatro en fila y dos por dos en el celular (stands, visitantes, medallas y medallas por visitante). La usan el evento activo y General | con valores · sin visitantes ("–" por visitante) |
 | **Filtros de eventos** | Buscador y fases con conteos, todo en la URL | fase actual · sin resultados |
 
 ## Estados

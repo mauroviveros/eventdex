@@ -481,7 +481,16 @@ revisada antes de la siguiente.
    datos reales en escritorio y celular, y los e2e del panel pasan.
    axe (WCAG 2.2 AA): 0 violaciones en el dashboard (claro y oscuro, 375 y 1280 px) y
    en `/dev/componentes`.
-3. **Detalle del evento y sorteo.**
+3. ▶ **Detalle del evento y sorteo.** Misma branch. El encabezado sigue al dashboard: la
+   edición en el título, cuándo y dónde en una línea, y en General la misma franja de
+   cifras (`StatStrip`, compartida con `ActiveEvent`) en vez de tres cajas. Un borrador
+   muestra en Publicación lo que le falta (`DraftSteps`). El sorteo pasa a ser la
+   pestaña Sorteo (`?tab=sorteo`), y `/sorteo` redirige; la Hoja de QR sigue aparte
+   porque va al papel. En el celular las pestañas van de borde a borde, como los
+   filtros. Sin cambios en la base.
+   *Listo cuando* se sortea desde la pestaña, un link viejo a `/sorteo` cae en ella, un
+   borrador dice qué le falta, y los e2e del panel pasan.
+   axe (WCAG 2.2 AA): 0 violaciones en General, Sorteo y un borrador, a 375 y 1280 px.
 4. **Catálogo de spots y sedes**, con las tablas pasadas a tarjetas en el celular.
 5. **Equipo y ajustes.**
 6. **Plataforma e `/ingresar`.**
@@ -491,6 +500,11 @@ revisada antes de la siguiente.
 ## ⏸ Estacionado
 
 Fuera de esta versión; vuelve solo con una decisión explícita.
+
+- **Sorteo en la página pública del evento**, para proyectarlo en el escenario: la
+  extracción con animación y los participantes a la vista, como en la v1 (tag
+  `v1.0.0`, `apps/event/src/app/raffle/`: `raffle-panel`, `participants-panel`,
+  `winner-panel` y `use-raffle-draw`). Hoy se sortea desde la pestaña Sorteo del panel.
 
 - Panel del expositor.
 - Roles por evento (`event_members`).
