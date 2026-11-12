@@ -4,8 +4,8 @@ import { Dialog as SheetPrimitive } from "radix-ui";
 import type * as React from "react";
 import { cn } from "@/lib/utils";
 
-// shadcn/ui sheet, cut to what the mobile sidebar uses: no close button (the
-// overlay and Esc close it), no animation, a 2 px rule on the open edge.
+// shadcn/ui sheet, cut to what the panel uses: no built-in close button (the
+// overlay, Esc or a SheetClose the screen draws close it), no animation, a 2 px rule on the open edge.
 
 function Sheet(props: React.ComponentProps<typeof SheetPrimitive.Root>) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />;
@@ -41,6 +41,16 @@ function SheetContent({
   );
 }
 
+function SheetTrigger(
+  props: React.ComponentProps<typeof SheetPrimitive.Trigger>,
+) {
+  return <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />;
+}
+
+function SheetClose(props: React.ComponentProps<typeof SheetPrimitive.Close>) {
+  return <SheetPrimitive.Close data-slot="sheet-close" {...props} />;
+}
+
 function SheetTitle(props: React.ComponentProps<typeof SheetPrimitive.Title>) {
   return <SheetPrimitive.Title data-slot="sheet-title" {...props} />;
 }
@@ -53,4 +63,11 @@ function SheetDescription(
   );
 }
 
-export { Sheet, SheetContent, SheetDescription, SheetTitle };
+export {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+  SheetTrigger,
+};
