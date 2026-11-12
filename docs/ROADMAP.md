@@ -422,6 +422,21 @@ cada uno revisado antes del siguiente. Branch `feat/admin-shadcn`.
    General queda de solo lectura.
    *Listo cuando* se edita un evento y una jornada desde las hojas, un publicado no
    cambia de dirección, y los e2e del panel pasan.
+8. ▶ **Migas y ancho del evento.** Branch `feat/evento-layout`, salida de un
+   `/impeccable critique` del detalle del evento. La barra superior lleva migas
+   (`Breadcrumb`) en vez de título y link de volver en las seis pantallas que dependen
+   de otra; en el celular queda solo el tramo de arriba. Editar y el ⋮ suben a la
+   barra; Hoja de QR queda solo en el ⋮. El detalle ocupa todo el ancho (el texto
+   conserva su medida) y Agregar spots abre una `EditSheet` junto al título de la
+   sección, como Jornadas.
+   *Listo cuando* se vuelve por las migas en escritorio y celular, se agregan varios
+   spots seguidos a un evento vacío sin que la hoja se cierre, y los e2e del panel pasan.
+   `/code-review`: 6 hallazgos, 5 resueltos (la hoja se cerraba al agregar el primer
+   spot o la primera jornada, con su e2e; el catálogo vacío detrás de una hoja; la
+   página actual oculta a lectores en el celular; la galería sin el caso de dos
+   tramos) y 1 que queda (clases de link repetidas en los estados vacíos).
+   `/accessibility`: revisión manual (contraste AA, foco, orden, objetivos de 44 px,
+   foco de la hoja) sin hallazgos; axe queda sin correr.
 
 ---
 
