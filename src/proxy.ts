@@ -10,7 +10,10 @@ import { internalPath, surfaceFor } from "@/lib/surface";
  */
 export async function proxy(request: NextRequest) {
   const host = request.headers.get("host") ?? env.NEXT_PUBLIC_ROOT_DOMAIN;
-  const surface = surfaceFor(host, env.NEXT_PUBLIC_ROOT_DOMAIN, ADMIN_HOST);
+  const surface = surfaceFor(host, env.NEXT_PUBLIC_ROOT_DOMAIN, ADMIN_HOST, [
+    process.env.VERCEL_URL,
+    process.env.VERCEL_BRANCH_URL,
+  ]);
   const url = request.nextUrl.clone();
   url.pathname = internalPath(surface, request.nextUrl.pathname);
 
