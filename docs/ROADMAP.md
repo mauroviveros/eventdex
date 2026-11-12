@@ -437,6 +437,21 @@ cada uno revisado antes del siguiente. Branch `feat/admin-shadcn`.
    tramos) y 1 que queda (clases de link repetidas en los estados vacíos).
    `/accessibility`: revisión manual (contraste AA, foco, orden, objetivos de 44 px,
    foco de la hoja) sin hallazgos; axe queda sin correr.
+9. ▶ **Catálogo de spots.** Branch `feat/spots-catalogo`. El catálogo es una `DataTable`
+   (tipo, en cuántos eventos está, estado) con orden y páginas en la URL. Nuevo spot y
+   Editar abren una `EditSheet`; la de alta queda abierta para cargar el siguiente y
+   `?nuevo` la abre al entrar (reemplaza a `/spots/nuevo`). El detalle distingue los
+   eventos del mismo nombre por edición, fechas y fase. Al agregar un spot a un evento
+   el código se genera (`A01`, `A02`…); se puede cambiar desde su hoja.
+   *Listo cuando* se crean varios spots seguidos desde la hoja, se ordena el catálogo
+   por URL, se agrega un spot a un evento sin escribir código, y los e2e del panel pasan.
+   e2e: 19 de 19. `/code-review`: 7 hallazgos, sin resolver todavía (cualquier
+   `23505` se reintenta y se informa como spot repetido; `?nuevo` queda en la URL y
+   reabre la hoja; `/spots/nuevo` borrada sin redirección; los usos del spot sin orden;
+   el link de cada fila repite el tipo; el catálogo vacío sin botón propio;
+   `CatalogTable` sin entrada en `/dev/componentes`). `/accessibility`: revisión manual
+   (hojas con nombre y foco que vuelve al botón, `aria-sort`, objetivos de 44 px, orden
+   de títulos); solo el hallazgo del link que repite el tipo. axe queda sin correr.
 
 ---
 
