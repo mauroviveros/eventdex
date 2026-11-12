@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { AccountMenu } from "@/components/admin/AccountMenu";
+import { ActiveEvent } from "@/components/admin/ActiveEvent";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { BrandPreview } from "@/components/admin/BrandPreview";
+import { DraftChecklist } from "@/components/admin/DraftChecklist";
 import { EditSheet } from "@/components/admin/EditSheet";
 import { EventActions } from "@/components/admin/EventActions";
-import { EventCard } from "@/components/admin/EventCard";
 import { EventFilters } from "@/components/admin/EventFilters";
 import { OrgSwitcher } from "@/components/admin/OrgSwitcher";
 import { QrCode } from "@/components/admin/QrCode";
@@ -781,7 +782,7 @@ export default function ComponentesPage() {
 
         <Section
           title="Panel: métricas y filtros"
-          note="Las cifras de la organización y el buscador con filtros por fase. Los filtros viven en la URL."
+          note="Las cifras de un área (la plataforma, un evento) y el buscador con filtros por fase. Los filtros viven en la URL."
         >
           <div className="grid gap-6">
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -841,65 +842,72 @@ export default function ComponentesPage() {
         </Section>
 
         <Section
-          title="Panel: tarjeta de evento"
-          note="Cuándo y dónde, cómo le fue (stands activos, visitantes, medallas y medallas por visitante) y por dónde se entra. El ⋮ abre las acciones del evento; cada una aparece solo si tiene sentido. Un borrador muestra solo sus stands, con la tira punteada."
+          title="Panel: evento activo"
+          note="Arriba del dashboard: el evento en curso o, si no hay, el próximo, con sus cifras y los atajos del día. Hoja de QR aparece con stands; Sorteo, solo en curso; Ver en el sitio, publicado."
         >
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            <EventCard
-              title="Expo de ejemplo 2026"
-              phase="finalizado"
-              dateLabel="Mayo 2026"
-              venue="Predio Norte"
-              href="/dev/componentes"
-              stats={{ stands: 48, visitors: 92, medals: 178 }}
-              actions={
-                <EventActions
-                  org="dev"
-                  event={{
-                    id: "demo-1",
-                    slug: "componentes",
-                    title: "Expo de ejemplo 2026",
-                    draft: false,
-                  }}
-                  hasSpots
-                  ready
-                  publicUrl="/dev/componentes"
-                  support={false}
-                />
-              }
+          <div className="grid gap-6">
+            <ActiveEvent
+              org="dev"
+              event={{
+                slug: "componentes",
+                title: "Feria de ejemplo",
+                edition: "2026",
+                phase: "en-curso",
+                dates: "sáb 14 al dom 15 de nov",
+                venue: "Pabellón A",
+                stats: { stands: 12, visitors: 340, medals: 980 },
+              }}
+              publicUrl="/dev/componentes"
             />
-            <EventCard
-              title="Feria de ejemplo"
-              phase="en-curso"
-              dateLabel="sáb 14 de nov"
-              venue="Pabellón A"
-              href="/dev/componentes"
-              stats={{ stands: 10, visitors: 0, medals: 0 }}
-            />
-            <EventCard
-              title="Edición de invierno"
-              phase="borrador"
-              dateLabel={null}
-              venue={null}
-              href="/dev/componentes"
-              stats={{ stands: 3, visitors: 0, medals: 0 }}
-              actions={
-                <EventActions
-                  org="dev"
-                  event={{
-                    id: "demo-2",
-                    slug: "componentes",
-                    title: "Edición de invierno",
-                    draft: true,
-                  }}
-                  hasSpots
-                  ready
-                  publicUrl={null}
-                  support={false}
-                />
-              }
+            <ActiveEvent
+              org="dev"
+              event={{
+                slug: "componentes",
+                title: "Edición de invierno",
+                edition: null,
+                phase: "proximo",
+                dates: "sáb, 20 jun",
+                venue: null,
+                stats: { stands: 0, visitors: 0, medals: 0 },
+              }}
+              publicUrl={null}
             />
           </div>
+        </Section>
+
+        <Section
+          title="Panel: para publicar"
+          note="Los borradores con lo que les falta y el siguiente paso. Jornadas es lo que pide publicar; la sede es opcional."
+        >
+          <DraftChecklist
+            org="dev"
+            drafts={[
+              {
+                slug: "componentes",
+                title: "Edición de invierno",
+                edition: null,
+                hasSchedules: false,
+                hasSpots: false,
+                hasVenue: false,
+              },
+              {
+                slug: "componentes",
+                title: "Expo de ejemplo",
+                edition: "2027",
+                hasSchedules: true,
+                hasSpots: false,
+                hasVenue: true,
+              },
+              {
+                slug: "componentes",
+                title: "Feria de primavera",
+                edition: null,
+                hasSchedules: true,
+                hasSpots: true,
+                hasVenue: true,
+              },
+            ]}
+          />
         </Section>
 
         <Section

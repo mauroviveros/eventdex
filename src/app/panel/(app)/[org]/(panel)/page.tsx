@@ -1,20 +1,25 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { EventActions } from "@/components/admin/EventActions";
-import { EventCard } from "@/components/admin/EventCard";
+import { ActiveEvent } from "@/components/admin/ActiveEvent";
+import { DraftChecklist } from "@/components/admin/DraftChecklist";
 import {
   EventFilters,
   type PhaseFilter,
 } from "@/components/admin/EventFilters";
-import { StatTile } from "@/components/admin/StatTile";
 import { PageBody, TopBar } from "@/components/admin/TopBar";
 import { buttonClass } from "@/components/ui/Button";
-import { eventPhase, formatEventDates } from "@/domain/events";
+import {
+  activeEvent,
+  eventPhase,
+  formatEventDates,
+  sortForPanel,
+} from "@/domain/events";
 import { publicOrigin } from "@/domain/spots";
 import { listEvents } from "@/lib/data/events";
 import { getPrimaryHostname } from "@/lib/data/organizations";
 import { requireOrg } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
+import { type EventRow, EventsTable } from "./EventsTable";
 
 const FILTERS: PhaseFilter[] = [
   "todos",
@@ -38,7 +43,10 @@ export async function generateMetadata({
   return { title: `Eventos · ${org.name}` };
 }
 
-/** The organization's dashboard: headline figures and its events, filterable by phase. */
+/**
+ * The organization's dashboard: the event that matters today, the drafts with
+ * what they lack, and every event in a table, filterable by phase and search.
+ */
 export default async function OrgEventsPage({
   params,
   searchParams,
@@ -53,30 +61,47 @@ export default async function OrgEventsPage({
     listEvents(supabase, org.id),
     getPrimaryHostname(supabase, org.id),
   ]);
-  const total = (key: "visitors" | "medals") =>
-    events.reduce((n, e) => n + e.stats[key], 0);
 
   const now = new Date();
-  const cards = events.map((e) => ({
-    ...e,
-    phase: eventPhase(e.status, e.schedules, now),
-  }));
-  // Counts follow the search, so each filter says how many cards it shows.
+  const rows = sortForPanel(
+    events.map((e) => ({
+      id: e.id,
+      slug: e.slug,
+      title: e.title,
+      edition: e.edition_label,
+      phase: eventPhase(e.status, e.schedules, now),
+      schedules: e.schedules,
+      dates: formatEventDates(e.schedules, e.timezone, now),
+      venue: e.venue?.name ?? null,
+      stats: e.stats,
+      draft: e.status === "draft",
+      ready: e.schedules.length > 0,
+      publicUrl:
+        e.status === "published" && hostname
+          ? `${publicOrigin(hostname)}/eventos/${e.slug}`
+          : null,
+    })) satisfies (EventRow & { schedules: unknown })[],
+  );
+  const active = activeEvent(rows);
+  const drafts = rows.filter((r) => r.draft);
+
+  // Counts follow the search, so each filter says how many rows it shows.
   const needle = fold(query);
-  const matching = cards.filter(
-    (c) =>
-      !needle || fold(`${c.title} ${c.venue?.name ?? ""}`).includes(needle),
+  const matching = rows.filter(
+    (r) =>
+      !needle ||
+      fold(`${r.title} ${r.edition ?? ""} ${r.venue ?? ""}`).includes(needle),
   );
   const counts = Object.fromEntries(
     FILTERS.map((f) => [
       f,
       f === "todos"
         ? matching.length
-        : matching.filter((c) => c.phase === f).length,
+        : matching.filter((r) => r.phase === f).length,
     ]),
   ) as Record<PhaseFilter, number>;
   const shown = matching.filter(
-    (c) => current === "todos" || c.phase === current,
+    (r) => current === "todos" || r.phase === current,
   );
 
   const newEvent = !support && (
@@ -92,28 +117,10 @@ export default async function OrgEventsPage({
     <>
       <TopBar title="Eventos" actions={newEvent} />
       <PageBody>
-        <h1 className="text-px-3 sm:text-px-4">{org.name}</h1>
+        {/* The org's name is in the sidebar; the bar says the section. */}
+        <h1 className="sr-only">Eventos de {org.name}</h1>
 
-        <div className="grid gap-2 sm:grid-cols-3 sm:gap-3">
-          <StatTile
-            label="Eventos"
-            value={events.length}
-            caption="en la organización"
-          />
-          <StatTile
-            label="Visitantes"
-            value={total("visitors")}
-            // Registrations add up per event: someone at two events counts twice.
-            caption="sumando cada evento"
-          />
-          <StatTile
-            label="Medallas"
-            value={total("medals")}
-            caption="sumando cada evento"
-          />
-        </div>
-
-        {events.length === 0 ? (
+        {rows.length === 0 ? (
           <section className="grid max-w-prose gap-3 border-2 border-dashed border-lcd-2 px-6 py-8">
             <h2 className="text-px-2">Todavía no hay eventos</h2>
             <p>
@@ -123,65 +130,57 @@ export default async function OrgEventsPage({
             {newEvent && <div>{newEvent}</div>}
           </section>
         ) : (
-          <section
-            aria-labelledby="lista-eventos"
-            className="grid grid-cols-1 gap-6"
-          >
-            <h2 id="lista-eventos" className="sr-only">
-              Eventos de la organización
-            </h2>
-            <EventFilters
-              basePath={`/panel/${org.slug}`}
-              current={current}
-              counts={counts}
-              query={query}
-            />
-            {shown.length === 0 ? (
-              <div className="grid max-w-prose gap-2 border-2 border-dashed border-lcd-2 px-6 py-8">
-                <p className="font-display text-px-2">Ningún evento coincide</p>
-                <p>
-                  Probá con otra búsqueda o{" "}
-                  <Link href={`/panel/${org.slug}`}>
-                    mirá todos los eventos
-                  </Link>
-                  .
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-3">
-                {shown.map((e) => (
-                  <EventCard
-                    key={e.id}
-                    title={e.title}
-                    phase={e.phase}
-                    dateLabel={formatEventDates(e.schedules, e.timezone, now)}
-                    venue={e.venue?.name ?? null}
-                    href={`/panel/${org.slug}/eventos/${e.slug}`}
-                    stats={e.stats}
-                    actions={
-                      <EventActions
-                        org={org.slug}
-                        event={{
-                          id: e.id,
-                          slug: e.slug,
-                          title: e.title,
-                          draft: e.status === "draft",
-                        }}
-                        hasSpots={e.stats.stands > 0}
-                        ready={e.schedules.length > 0}
-                        publicUrl={
-                          e.status === "published" && hostname
-                            ? `${publicOrigin(hostname)}/eventos/${e.slug}`
-                            : null
-                        }
-                        support={support}
-                      />
-                    }
-                  />
-                ))}
-              </div>
+          <>
+            {active && (
+              <ActiveEvent
+                org={org.slug}
+                event={active}
+                publicUrl={active.publicUrl}
+              />
             )}
-          </section>
+
+            {drafts.length > 0 && (
+              <DraftChecklist
+                org={org.slug}
+                drafts={drafts.map((d) => ({
+                  slug: d.slug,
+                  title: d.title,
+                  edition: d.edition,
+                  hasSchedules: d.ready,
+                  hasSpots: d.stats.stands > 0,
+                  hasVenue: d.venue !== null,
+                }))}
+              />
+            )}
+
+            <section aria-labelledby="todos-los-eventos" className="grid gap-4">
+              <h2 id="todos-los-eventos" className="text-px-2">
+                Todos los eventos
+              </h2>
+              <EventFilters
+                basePath={`/panel/${org.slug}`}
+                current={current}
+                counts={counts}
+                query={query}
+              />
+              {shown.length === 0 ? (
+                <div className="grid max-w-prose gap-2 border-2 border-dashed border-lcd-2 px-6 py-8">
+                  <p className="font-display text-px-2">
+                    Ningún evento coincide
+                  </p>
+                  <p>
+                    Probá con otra búsqueda o{" "}
+                    <Link href={`/panel/${org.slug}`}>
+                      mirá todos los eventos
+                    </Link>
+                    .
+                  </p>
+                </div>
+              ) : (
+                <EventsTable org={org.slug} rows={shown} support={support} />
+              )}
+            </section>
+          </>
         )}
       </PageBody>
     </>

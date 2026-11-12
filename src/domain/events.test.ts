@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  activeEvent,
   countdownState,
   eventPhase,
   eventSlug,
@@ -9,6 +10,7 @@ import {
   instantToLocal,
   isTimeZone,
   localToInstant,
+  sortForPanel,
 } from "./events";
 
 const BA = "America/Argentina/Buenos_Aires";
@@ -230,5 +232,65 @@ describe("eventSlug", () => {
       eventSlug("Expo — ", "2026 ·"),
     ])
       expect(slug).toMatch(SLUG);
+  });
+});
+
+describe("sortForPanel", () => {
+  const ev = (
+    name: string,
+    phase: Parameters<typeof sortForPanel>[0][number]["phase"],
+    start?: string,
+  ) => ({
+    name,
+    phase,
+    schedules: start ? [day(start, start)] : [],
+  });
+
+  it("puts live first, then the next ones by date, drafts, undated and the finished latest first", () => {
+    const sorted = sortForPanel([
+      ev("viejo", "finalizado", "2026-01-10T12:00:00Z"),
+      ev("borrador", "borrador"),
+      ev("lejos", "proximo", "2026-12-20T12:00:00Z"),
+      ev("ahora", "en-curso", "2026-11-14T12:00:00Z"),
+      ev("reciente", "finalizado", "2026-10-10T12:00:00Z"),
+      ev("sin fecha", "sin-fecha"),
+      ev("cerca", "proximo", "2026-11-20T12:00:00Z"),
+    ]);
+    expect(sorted.map((e) => e.name)).toEqual([
+      "ahora",
+      "cerca",
+      "lejos",
+      "borrador",
+      "sin fecha",
+      "reciente",
+      "viejo",
+    ]);
+  });
+
+  it("keeps drafts in the order they came", () => {
+    const sorted = sortForPanel([ev("b", "borrador"), ev("a", "borrador")]);
+    expect(sorted.map((e) => e.name)).toEqual(["b", "a"]);
+  });
+});
+
+describe("activeEvent", () => {
+  const ev = (
+    phase: Parameters<typeof activeEvent>[0][number]["phase"],
+    start = "2026-11-20T12:00:00Z",
+  ) => ({ phase, schedules: [day(start, start)] });
+
+  it("is the event in course, over the next one", () => {
+    const live = ev("en-curso");
+    expect(activeEvent([ev("proximo"), live])).toBe(live);
+  });
+
+  it("is the soonest upcoming event when none is in course", () => {
+    const soon = ev("proximo", "2026-11-16T12:00:00Z");
+    expect(activeEvent([ev("proximo"), soon, ev("finalizado")])).toBe(soon);
+  });
+
+  it("is none with only drafts and finished events", () => {
+    expect(activeEvent([ev("borrador"), ev("finalizado")])).toBeNull();
+    expect(activeEvent([])).toBeNull();
   });
 });

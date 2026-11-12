@@ -38,6 +38,11 @@ type Props<T extends RowData> = {
   pageCount: number;
   /** Extra classes per row (a blocked visitor, an inactive spot). */
   rowClassName?: (row: T) => string | undefined;
+  /**
+   * Phone cards with the first column on its own line and the rest flowing
+   * side by side, for rows of short values (the dashboard's events).
+   */
+  compactCards?: boolean;
 };
 
 /**
@@ -56,6 +61,7 @@ export function DataTable<T extends RowData>({
   page,
   pageCount,
   rowClassName,
+  compactCards = false,
 }: Props<T>) {
   const table = useTable({
     features: features,
@@ -137,7 +143,10 @@ export function DataTable<T extends RowData>({
             <TableRow
               key={row.id}
               className={cn(
-                "align-middle max-sm:grid max-sm:gap-2 max-sm:border-2 max-sm:border-solid max-sm:border-lcd-3 max-sm:p-4",
+                "align-middle max-sm:border-2 max-sm:border-solid max-sm:border-lcd-3 max-sm:p-4",
+                compactCards
+                  ? "max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:gap-x-5 max-sm:gap-y-2"
+                  : "max-sm:grid max-sm:gap-2",
                 rowClassName?.(row.original),
               )}
             >
@@ -147,7 +156,12 @@ export function DataTable<T extends RowData>({
                   <TableCell
                     key={cell.id}
                     data-label={typeof header === "string" ? header : undefined}
-                    className="max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:gap-x-3 max-sm:p-0 max-sm:data-label:before:font-display max-sm:data-label:before:text-px-1 max-sm:data-label:before:text-muted-foreground max-sm:data-label:before:content-[attr(data-label)]"
+                    className={cn(
+                      "max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:gap-x-3 max-sm:p-0 max-sm:data-label:before:font-display max-sm:data-label:before:text-px-1 max-sm:data-label:before:text-muted-foreground max-sm:data-label:before:content-[attr(data-label)]",
+                      // The first column is the row's name: alone on its line, without its label.
+                      compactCards &&
+                        "max-sm:first:basis-full max-sm:first:before:hidden max-sm:last:ml-auto",
+                    )}
                   >
                     <table.FlexRender cell={cell} />
                   </TableCell>
