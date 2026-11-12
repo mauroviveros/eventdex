@@ -314,7 +314,7 @@ organizaciones. Branch `feat/dominios-developer`.
    esos arreglos. Migración aplicada el 2026-11-09, con las políticas verificadas en
    producción.
 
-## R12 · Marca por organización
+## R12 · Marca por organización ✅
 
 Logos y banner a la vista. El skin a medida de Burning Tower Fest (bloques 3 y 4) se
 descartó: BT vuelve a ser parte de Lo de Charly TCG y usa su marca
@@ -329,10 +329,11 @@ descartó: BT vuelve a ser parte de Lo de Charly TCG y usa su marca
    desde el panel y portada pública.
    *Listo cuando* el staff sube el banner y se ve en la portada; sin banner, todo igual.
    `/code-review`: sin hallazgos. axe queda sin correr.
-3. ▶ **Vuelta atrás.** Branch `chore/unificar-burning-tower`. Sin `src/skins/`;
+3. ✅ **Vuelta atrás.** Branch `chore/unificar-burning-tower`. Sin `src/skins/`;
    `07_copy_logos_back.mjs` y `08_merge_burning_tower.sql` juntan las dos orgs en PRD.
    *Listo cuando* la org `burning-tower-fest` no existe, sus eventos, medallas y QR
    andan bajo Lo de Charly, y la app pública se ve con la marca de Charly.
+   `/code-review`: 3 hallazgos, 3 resueltos. 07 y 08 corridos en producción el 2026-11-12.
 
 ## R13 · Duplicar evento
 
