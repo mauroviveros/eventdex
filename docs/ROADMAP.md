@@ -455,6 +455,28 @@ cada uno revisado antes del siguiente. Branch `feat/admin-shadcn`.
    vuelve al botón, `aria-sort`, objetivos de 44 px, orden de títulos); solo el link
    que repetía el tipo. axe queda sin correr.
 
+## R16 · Panel unificado
+
+El panel se muda al dominio de la landing, bajo `/panel`, y se rediseña por zonas
+con las primitivas de shadcn adaptadas al mundo LCD. Una zona por bloque, cada una
+revisada antes de la siguiente.
+
+1. ▶ **Un solo host.** Branch `feat/panel-unificado`. `eventdex.vercel.app/panel/…` sirve
+   el panel y la plataforma, y `/ingresar` el login del staff; el host aparte del admin
+   (`eventdex-admin.vercel.app`, `app.localhost`) desaparece, sin redirección: no
+   llegó a producción. Las carpetas de `src/app/` pasan a ser las URLs (`(landing)/`,
+   `ingresar/`, `panel/`) y el proxy solo reescribe los hosts de las orgs. La landing
+   suma Ingresar en su cabecera y sigue estática. Sin cambios en la base.
+   *Listo cuando* se entra por `/ingresar` y se cae en `/panel/[org]`, salir vuelve a
+   `/ingresar` y los e2e del panel pasan.
+2. **Shell y dashboard de la org.** `/impeccable critique` primero. El evento activo con
+   sus cifras y accesos, los borradores con lo que les falta para publicar, y los
+   eventos en `DataTable` (tarjetas bajo 640 px). Solo datos que ya existen.
+3. **Detalle del evento y sorteo.**
+4. **Catálogo de spots y sedes**, con las tablas pasadas a tarjetas en el celular.
+5. **Equipo y ajustes.**
+6. **Plataforma e `/ingresar`.**
+
 ---
 
 ## ⏸ Estacionado

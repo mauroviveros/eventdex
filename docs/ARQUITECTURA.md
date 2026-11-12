@@ -48,10 +48,11 @@ algún día la app pública pesa demasiado, se mide primero y recién ahí se re
 ```
 src/
 ├── app/
-│   ├── publica/[host]/  App del evento, por dominio de la org
-│   ├── admin/           Admin de la organización
-│   │   └── plataforma/  Panel del developer
-│   ├── landing/         eventdex.com
+│   ├── (landing)/       eventdex.vercel.app: /, /privacidad, /terminos
+│   ├── ingresar/        Login del staff
+│   ├── panel/           Panel de la organización (/panel/[org])
+│   │   └── (app)/plataforma/  Panel del developer
+│   ├── publica/[host]/  App del evento, por dominio de la org (solo por el proxy)
 │   ├── auth/            Callback y salida, compartidos
 │   └── dev/             Rutas solo de desarrollo (/dev/componentes)
 ├── components/
@@ -63,7 +64,7 @@ src/
 │   ├── data/            Lecturas por entidad (una función por consulta)
 │   └── actions/         Server Actions con validación Zod
 ├── domain/              Lógica pura: fase, elegibilidad, resolución de spots
-├── proxy.ts             Host → superficie y organización
+├── proxy.ts             Host de una org → publica/[host], y la sesión
 supabase/
 ├── migrations/          Fuente de verdad del esquema
 ├── tests/               pgTAP: permisos por tabla y rol
@@ -127,11 +128,11 @@ que se prueba sin mocks.
 - **Supabase Auth con Google OAuth.** Si se suma otro método para el visitante,
   se decide en la rebanada correspondiente ([PROYECTO](./PROYECTO.md#preguntas-abiertas)).
 - **La sesión es por dominio.** El visitante inicia sesión en el dominio de la
-  organización, y el staff en el del admin. Cada dominio tiene su cookie; no se
-  comparte sesión entre dominios.
+  organización, y el staff en el dominio raíz (el panel vive en `/panel`). Cada
+  dominio tiene su cookie; no se comparte sesión entre dominios.
 - La URL de callback es siempre `/auth/callback` en el host actual. En Supabase,
   las Redirect URLs llevan cada dominio de organización (se agrega al dar de alta
-  el dominio) más el del admin.
+  el dominio) más el dominio raíz.
 - **Modo soporte:** el developer puede abrir el panel de cualquier org. Es solo
   lectura porque RLS no le da políticas de escritura sobre los datos de las orgs
   (solo dominios, invitaciones y facturación), y cada apertura queda en
@@ -143,17 +144,19 @@ que se prueba sin mocks.
 
 ## Multi-tenancy
 
-`proxy.ts` lee el `Host` y reescribe la ruta a la carpeta de su superficie
-(`src/lib/surface.ts`, con tests). Son carpetas y no grupos `( )` porque las
-cuatro superficies tienen su propia `/`. Como todo pasa por el proxy, esas
-carpetas nunca se alcanzan directo (`expo.com/admin` es un 404):
+`proxy.ts` lee el `Host` (`src/lib/surface.ts`, con tests). En el dominio raíz las
+carpetas de `app/` son las URLs tal cual, así que `PageProps`, `revalidatePath` y
+los links usan la misma ruta. Solo el host de una organización se reescribe, a
+`publica/[host]/`: esa carpeta tiene su propia `/`, por eso no es un grupo `( )`.
 
-| Host | Superficie |
+| Host | Carpeta |
 |------|-----------|
-| `NEXT_PUBLIC_ROOT_DOMAIN` (y `www.`) | `landing/` |
-| `NEXT_PUBLIC_ADMIN_HOST`, o `app.` + el dominio raíz | `admin/` |
-| el host del admin + `/plataforma` | `admin/plataforma/`, solo para developers |
+| `NEXT_PUBLIC_ROOT_DOMAIN` (y `www.`) | `(landing)/`, `ingresar/` y `panel/` (`panel/(app)/plataforma/` solo para developers) |
 | cualquier otro | `publica/[host]/`, con la organización resuelta por `organization_domains` |
+
+- En el dominio raíz, `/publica/*` es un 404: esa carpeta solo se alcanza desde el
+  host de su organización. En el host de una org, `/panel` también es un 404.
+- `robots.txt` no menciona `/panel`; sus páginas llevan `noindex` y piden sesión.
 
 - El mapeo host → organización es una función SQL (`resolve_organization`, una sola
   consulta; un host desconocido o una org suspendida no devuelven nada). La llama el
@@ -165,7 +168,7 @@ carpetas nunca se alcanzan directo (`expo.com/admin` es un 404):
   ve en menos de un minuto. Se lee con un cliente
   anónimo sin sesión (`src/lib/supabase/public.ts`), igual para todos.
 - **En local** se usan subdominios de `localhost`, que los navegadores resuelven
-  solos: `localhost:3000` es la landing, `app.localhost:3000` el admin y
+  solos: `localhost:3000` es la landing y el panel (`/panel`), y
   `expo.localhost:3000` una organización de seed. No hay que tocar `/etc/hosts`.
 - En Vercel, cada dominio de organización se agrega al proyecto. **Shortcut**: al
   principio se hace a mano desde el dashboard de Vercel; se automatiza con la API
@@ -201,7 +204,6 @@ instancia, y un logo en webp sale con su sprite porque `next/og` no lo decodific
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Todos | Respeta RLS |
 | `SUPABASE_SECRET_KEY` | Servidor | Se saltea RLS. Solo en `lib/supabase/service.ts` |
 | `NEXT_PUBLIC_ROOT_DOMAIN` | Todos | `eventdex.vercel.app` en prod, `localhost:3000` en local |
-| `NEXT_PUBLIC_ADMIN_HOST` | Producción | `eventdex-admin.vercel.app`. Opcional: sin ella, `app.` + el dominio raíz |
 
 - `.env.example` documenta todas, sin valores reales. `.env.local` no se commitea.
 - Las variables se validan al arrancar con Zod: si falta una, falla el arranque y
@@ -238,10 +240,9 @@ pueda levantar Supabase completo (auth y Mailpit) y la app.
 ## Hosting
 
 - **Vercel**, un proyecto, con `main` como producción.
-- Dominios: `eventdex.vercel.app` (landing), `eventdex-admin.vercel.app` (admin y
-  plataforma) y uno o más por organización. Un `*.vercel.app` no admite subdominios,
-  por eso el admin va aparte. Al comprar un dominio propio solo cambian las dos
-  variables.
+- Dominios: `eventdex.vercel.app` (landing, y el panel y la plataforma bajo
+  `/panel`) y uno o más por organización. Al comprar un dominio propio solo cambia
+  `NEXT_PUBLIC_ROOT_DOMAIN`.
 - Las URLs propias de Vercel para cada deployment y branch (`VERCEL_URL`,
   `VERCEL_BRANCH_URL`) muestran la landing, para que la miniatura del dashboard y
   los previews no den 404. Las de las orgs en `*.vercel.app` no cambian: se

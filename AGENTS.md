@@ -130,7 +130,7 @@ formato:
 
 | Comando | Qué hace |
 |---|---|
-| `pnpm dev` | Servidor de desarrollo (`localhost:3000`, `app.localhost:3000`, `expo.localhost:3000`) |
+| `pnpm dev` | Servidor de desarrollo (`localhost:3000` con el panel en `/panel`, `expo.localhost:3000`) |
 | `pnpm build` | Build de producción |
 | `pnpm lint` | Biome: lint y formato, sin escribir |
 | `pnpm format` | Biome: aplica los arreglos |

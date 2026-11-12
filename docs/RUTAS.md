@@ -1,6 +1,6 @@
 # Eventdex — Rutas
 
-`v0.1 · 2026-11-06` · Relacionados: [ARQUITECTURA](./ARQUITECTURA.md#multi-tenancy) · [PROYECTO](./PROYECTO.md#módulos) · [ROADMAP](./ROADMAP.md) · [DESIGN_SYSTEM](./DESIGN_SYSTEM.md)
+`v0.2 · 2026-11-12` · Relacionados: [ARQUITECTURA](./ARQUITECTURA.md#multi-tenancy) · [PROYECTO](./PROYECTO.md#módulos) · [ROADMAP](./ROADMAP.md) · [DESIGN_SYSTEM](./DESIGN_SYSTEM.md)
 
 > Decide qué pantallas existen. Una pantalla nueva se agrega acá en el mismo
 > cambio que la crea. La columna **Rebanada** apunta al [ROADMAP](./ROADMAP.md).
@@ -37,14 +37,17 @@ el visitante.
 | `/ingresar` | Login con Google y la marca de la org; vuelve a `next` (el QR escaneado). En producción el botón Ingresar de la cabecera va directo a Google sin pasar por acá; en desarrollo pasa por acá, que suma el link por mail | Público | R5 |
 | `/robots.txt`, `/sitemap.xml` | SEO por dominio. `/s/*` queda fuera del índice | — | R4 |
 
-## Admin · `eventdex-admin.vercel.app`
+## Panel · `eventdex.vercel.app/panel`
 
-`app.localhost:3000` en local. Desktop para preparar y mobile para operar. Usuarios:
-staff y owner.
+`localhost:3000/panel` en local. Comparte host con la landing. Desktop para preparar
+y mobile para operar. Usuarios: staff y owner.
+
+Las rutas de esta tabla van **bajo `/panel`** (`/[org]` es `/panel/[org]`), salvo
+`/ingresar`, que queda en la raíz. Salir del panel vuelve a `/ingresar`.
 
 | Ruta | Vista | Acceso | Rebanada |
 |------|-------|--------|----------|
-| `/ingresar` | Login del equipo con Google. En desarrollo suma un link por mail que llega al visor local | Público | R1 |
+| `/ingresar` (en la raíz) | Login del equipo con Google; sin `next`, vuelve a `/panel`. La landing lo linkea desde su cabecera. En desarrollo suma un link por mail que llega al visor local | Público | R1 |
 | `/` | Sin pantalla: acepta las invitaciones abiertas para tu mail y te lleva a tu lugar. Developer → `/plataforma/organizaciones`; miembro → `/[org]` de su primera org; nadie más → `/sin-acceso` | Usuario con sesión | R2 · 0 |
 | `/sin-acceso` | Cuenta sin organización ni invitación: lo explica, muestra el mail y deja salir para probar con otra. Sin barra lateral | Usuario con sesión | R2 · 0 |
 | `/[org]` | Dashboard de la organización: eventos, visitantes y medallas de todos sus eventos, búsqueda y filtro por fase en la URL (`?q=…&fase=…`) y una tarjeta por evento con sus stands, visitantes, medallas y medallas por visitante, Gestionar y el menú de acciones. Un no miembro recibe 404; el developer entra en modo soporte, solo lectura (sin formularios ni botones de alta), y queda en la auditoría | Miembro · developer en soporte | R2 · R15 |
@@ -62,9 +65,9 @@ staff y owner.
 | `/[org]/equipo` | Miembros, invitaciones y roles. Sin mails: quien invita avisa, y la invitación se acepta al entrar con esa cuenta. Nadie se cambia ni se quita a sí mismo desde acá | Owner (developer: solo lectura) | R7 |
 | `/[org]/ajustes` | Nombre, zona horaria, marca (logo y color, con vista previa en claro y oscuro). Los dominios se ven, pero los configura el developer | Owner (developer: solo lectura) | R7 |
 
-## Plataforma · `eventdex-admin.vercel.app/plataforma`
+## Plataforma · `eventdex.vercel.app/panel/plataforma`
 
-Mismo host que el admin. Desktop. Usuario: el developer. Cualquier otro rol recibe
+Dentro del panel: las rutas de esta tabla van bajo `/panel`. Desktop. Usuario: el developer. Cualquier otro rol recibe
 un 404, no un 403: la ruta no existe para él.
 
 | Ruta | Vista | Acceso | Rebanada |
@@ -78,7 +81,7 @@ un 404, no un 403: la ruta no existe para él.
 
 ## Landing · `eventdex.vercel.app`
 
-`localhost:3000` en local. Usuario: un posible cliente.
+`localhost:3000` en local. Usuario: un posible cliente. Mismo host que el panel.
 
 | Ruta | Vista | Acceso | Rebanada |
 |------|-------|--------|----------|
