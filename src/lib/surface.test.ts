@@ -33,6 +33,35 @@ describe("surfaceFor", () => {
     });
   });
 
+  it("serves the landing on Vercel's deployment and branch URLs only", () => {
+    const root = "eventdex.vercel.app";
+    const admin = "eventdex-admin.vercel.app";
+    const deployment = [
+      "eventdex-1bqgspuqb-mauroviveros.vercel.app",
+      "eventdex-git-main-mauroviveros.vercel.app",
+      undefined,
+    ];
+    expect(
+      surfaceFor(
+        "eventdex-1bqgspuqb-mauroviveros.vercel.app",
+        root,
+        admin,
+        deployment,
+      ).kind,
+    ).toBe("landing");
+    expect(
+      surfaceFor(
+        "eventdex-git-main-mauroviveros.vercel.app",
+        root,
+        admin,
+        deployment,
+      ).kind,
+    ).toBe("landing");
+    expect(
+      surfaceFor("eventdex-demo.vercel.app", root, admin, deployment),
+    ).toEqual({ kind: "publica", host: "eventdex-demo.vercel.app" });
+  });
+
   it("treats any other host as an organization domain", () => {
     expect(surfaceFor("expo.localhost:3000", root, admin)).toEqual({
       kind: "publica",

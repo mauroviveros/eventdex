@@ -251,6 +251,10 @@ pueda levantar Supabase completo (auth y Mailpit) y la app.
   plataforma) y uno o más por organización. Un `*.vercel.app` no admite subdominios,
   por eso el admin va aparte. Al comprar un dominio propio solo cambian las dos
   variables.
+- Las URLs propias de Vercel para cada deployment y branch (`VERCEL_URL`,
+  `VERCEL_BRANCH_URL`) muestran la landing, para que la miniatura del dashboard y
+  los previews no den 404. Las de las orgs en `*.vercel.app` no cambian: se
+  comparan contra esas dos URLs exactas, no contra un patrón.
 - Las imágenes (logos, portadas, avatares de spots) van en **Supabase Storage**, en
   buckets con políticas por organización. `org-logos` es público para leer, solo
   el owner escribe bajo la carpeta `{organization_id}/`, hasta 1 MiB y sin SVG (un
