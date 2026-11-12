@@ -27,39 +27,33 @@ test("an event is duplicated into a draft with its spots", async ({ page }) => {
     await expect(page.getByLabel("Nombre")).toHaveValue("Feria E2E");
   });
 
-  await test.step("a slug in use is explained, and nothing typed is lost", async () => {
-    await page.getByLabel("Dirección en el panel").fill("feria");
+  await test.step("the copy is a draft without schedules, its address from name and edition", async () => {
+    await expect(page.getByLabel("Dirección en el panel")).toHaveCount(0);
     await page.getByLabel("Edición").fill("Noviembre");
     await page.getByRole("button", { name: "Duplicar evento" }).click();
-    await expect(
-      page.getByText("Ya hay un evento con esa dirección"),
-    ).toBeVisible();
-    await expect(page.getByLabel("Edición")).toHaveValue("Noviembre");
-  });
-
-  await test.step("the copy is a draft without schedules", async () => {
-    await page.getByLabel("Dirección en el panel").fill("feria-noviembre");
-    await page.getByRole("button", { name: "Duplicar evento" }).click();
-    await expect(page).toHaveURL(/\/eventos\/feria-noviembre$/);
+    await expect(page).toHaveURL(/\/eventos\/feria-e2e-noviembre$/);
     await expect(page.getByText("Todavía no hay jornadas")).toBeVisible();
     await expect(page.getByText("Es un borrador")).toBeVisible();
   });
 
   await test.step("and keeps the spots, each with its code", async () => {
-    await page.goto(`${admin}/eventos/feria-noviembre?tab=spots`);
+    await page.goto(`${admin}/eventos/feria-e2e-noviembre?tab=spots`);
     await expect(page.getByText("A01", { exact: true })).toBeVisible();
     await expect(page.getByText("A02", { exact: true })).toBeVisible();
   });
 
-  await test.step("a draft's name and address change from Editar, and the page follows", async () => {
+  await test.step("renaming from Editar keeps the address", async () => {
     await page.getByRole("button", { name: "Editar Feria E2E" }).click();
     const sheet = page.getByRole("dialog", { name: "Editar Feria E2E" });
     await sheet.getByLabel("Nombre").fill("Feria de Noviembre");
-    await sheet.getByLabel("Dirección en el panel").fill("feria-nov");
     await sheet.getByRole("button", { name: "Guardar cambios" }).click();
-    await expect(page).toHaveURL(/\/eventos\/feria-nov$/);
+    await expect(
+      page.getByRole("dialog", { name: "Editar Feria de Noviembre" }),
+    ).toBeVisible();
+    await page.keyboard.press("Escape");
     await expect(
       page.getByRole("heading", { level: 1, name: "Feria de Noviembre" }),
     ).toBeVisible();
+    await expect(page).toHaveURL(/\/eventos\/feria-e2e-noviembre\?tab=spots$/);
   });
 });

@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PageBody, TopBar } from "@/components/admin/TopBar";
-import { getEventToDuplicate, listVenues } from "@/lib/data/events";
+import {
+  getEventToDuplicate,
+  getLastEventTitle,
+  listVenues,
+} from "@/lib/data/events";
 import { requireOrg } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
 import { NewEventForm } from "./NewEventForm";
@@ -30,8 +34,9 @@ export default async function NuevoEventoPage({
   if (support) notFound();
   const { desde } = await searchParams;
   const supabase = await createClient();
-  const [venues, source] = await Promise.all([
+  const [venues, lastTitle, source] = await Promise.all([
     listVenues(supabase, org.id),
+    getLastEventTitle(supabase, org.id),
     typeof desde === "string"
       ? getEventToDuplicate(supabase, org.id, desde)
       : null,
@@ -76,6 +81,7 @@ export default async function NuevoEventoPage({
               timezone: org.default_timezone,
             }}
             venues={venues}
+            defaultTitle={lastTitle ?? org.name}
             source={source ?? undefined}
           />
         </div>

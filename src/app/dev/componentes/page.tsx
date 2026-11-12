@@ -824,10 +824,9 @@ export default function ComponentesPage() {
             >
               <Field label="Nombre" defaultValue="Expo de ejemplo 2026" />
               <Field
-                label="Dirección en el panel"
-                defaultValue="expo-2026"
-                disabled
-                hint="Queda fija una vez publicado: el link a la portada ya puede estar compartido."
+                label="Edición"
+                defaultValue="2026"
+                hint="Opcional. Distingue esta edición de las anteriores."
               />
             </EditSheet>
             <EditSheet
