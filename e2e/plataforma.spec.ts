@@ -17,7 +17,7 @@ test.afterAll(async () => {
   await developer?.cleanup();
 });
 
-const ADMIN = "http://app.localhost:3000/plataforma";
+const ADMIN = "http://localhost:3000/panel/plataforma";
 
 test("the developer bills an org, suspends it and sees it all audited", async ({
   page,
@@ -93,7 +93,7 @@ test("the developer bills an org, suspends it and sees it all audited", async ({
 });
 
 test("the platform does not exist for an owner", async ({ page }) => {
-  await page.goto(`http://app.localhost:3000/${seed.org.slug}`);
+  await page.goto(`http://localhost:3000/panel/${seed.org.slug}`);
   await signInByMail(page, seed.ownerEmail);
   await expect(
     page.getByRole("heading", { level: 1, name: seed.org.name }),

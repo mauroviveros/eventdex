@@ -22,7 +22,7 @@ test("the owner runs the team and the brand shows on the public app", async ({
   page,
   browser,
 }) => {
-  await page.goto(`http://app.localhost:3000/${seed.org.slug}/ajustes`);
+  await page.goto(`http://localhost:3000/panel/${seed.org.slug}/ajustes`);
   await signInByMail(page, seed.ownerEmail);
   await expect(page.getByRole("heading", { name: "Ajustes" })).toBeVisible();
 
@@ -74,7 +74,7 @@ test("the owner runs the team and the brand shows on the public app", async ({
   });
 
   await test.step("an invitation is listed and revoked", async () => {
-    await page.goto(`http://app.localhost:3000/${seed.org.slug}/equipo`);
+    await page.goto(`http://localhost:3000/panel/${seed.org.slug}/equipo`);
     const email = `nueva-${seed.org.slug}@e2e.local`;
     await page.getByLabel("Mail").fill(email);
     await page.getByRole("button", { name: "Invitar", exact: true }).click();
@@ -92,12 +92,12 @@ test("the owner runs the team and the brand shows on the public app", async ({
     await page.getByRole("button", { name: "Invitar", exact: true }).click();
     await expect(page.getByText(email)).toBeVisible();
 
-    await visitor.goto("http://app.localhost:3000/");
+    await visitor.goto("http://localhost:3000/panel");
     await signInByMail(visitor, email);
     await expect(visitor).toHaveURL(new RegExp(`/${seed.org.slug}$`));
     await expect(visitor.getByRole("link", { name: "Equipo" })).toHaveCount(0);
     const denied = await visitor.goto(
-      `http://app.localhost:3000/${seed.org.slug}/equipo`,
+      `http://localhost:3000/panel/${seed.org.slug}/equipo`,
     );
     expect(denied?.status()).toBe(404);
 

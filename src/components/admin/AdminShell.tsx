@@ -75,7 +75,7 @@ export async function AdminShell({
             <OrgSwitcher current={org.current} all={org.all} />
           ) : (
             <SidebarMenuButton asChild size="lg" className="px-1">
-              <Link href="/">
+              <Link href="/panel">
                 <Monogram text="Eventdex" />
                 <span className="font-display text-px-2">Eventdex</span>
               </Link>

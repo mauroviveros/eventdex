@@ -10,8 +10,8 @@ export function adminLanding({
   isDeveloper: boolean;
   organizations: { slug: string }[];
 }): string {
-  if (isDeveloper) return "/plataforma/organizaciones";
+  if (isDeveloper) return "/panel/plataforma/organizaciones";
   const first = organizations[0];
-  if (first) return `/${first.slug}`;
-  return "/sin-acceso";
+  if (first) return `/panel/${first.slug}`;
+  return "/panel/sin-acceso";
 }

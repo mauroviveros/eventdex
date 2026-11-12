@@ -50,7 +50,7 @@ export function EventActions({
   const [asking, setAsking] = useState(false);
   const [pending, setPending] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
-  const base = `/${org}/eventos/${event.slug}`;
+  const base = `/panel/${org}/eventos/${event.slug}`;
 
   return (
     <>
@@ -87,7 +87,7 @@ export function EventActions({
           )}
           {!support && (
             <DropdownMenuItem asChild>
-              <Link href={`/${org}/eventos/nuevo?desde=${event.slug}`}>
+              <Link href={`/panel/${org}/eventos/nuevo?desde=${event.slug}`}>
                 Duplicar
               </Link>
             </DropdownMenuItem>

@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
-import { AlertIcon } from "@/components/pixel/AlertIcon";
-import { EmailSignIn } from "@/components/ui/EmailSignIn";
-import { GoogleSignIn } from "@/components/ui/GoogleSignIn";
-import { getSessionUser, safeNext } from "@/lib/session";
-import { createClient } from "@/lib/supabase/server";
+import { SignInCard } from "@/components/ui/SignInCard";
+import { safeNext } from "@/lib/session";
 import { requireHostOrganization } from "../organization";
 
 export const metadata: Metadata = {
@@ -23,39 +19,19 @@ export default async function IngresarPage({
   const [{ host }, query] = await Promise.all([params, searchParams]);
   const { org } = await requireHostOrganization(host);
   const next = safeNext(typeof query.next === "string" ? query.next : null);
-  const failed = query.error === "auth";
-  const fromQr = next.startsWith("/s/");
-
-  if (await getSessionUser(await createClient())) redirect(next);
 
   return (
     <main className="mx-auto grid w-full max-w-3xl place-items-center px-4 py-10 sm:px-6">
-      <div className="panel grid w-full max-w-sm gap-6 px-6 py-8">
-        <div className="grid gap-2">
-          <h1 className="font-wide text-title">
-            {fromQr ? "Ingresá para sumar la medalla" : "Ingresá"}
-          </h1>
-          <p>
-            Tus medallas quedan guardadas en tu cuenta de {org.name}. Entrás una
-            vez y seguís escaneando.
-          </p>
-        </div>
-
-        {failed && (
-          <p role="alert" className="flex items-start gap-2 text-danger">
-            <span className="mt-1">
-              <AlertIcon />
-            </span>
-            No pudimos completar el ingreso. Probá de nuevo.
-          </p>
-        )}
-
-        <GoogleSignIn next={next} className="w-full">
-          Ingresar con Google
-        </GoogleSignIn>
-
-        {process.env.NODE_ENV !== "production" && <EmailSignIn next={next} />}
-      </div>
+      <SignInCard
+        next={next}
+        failed={query.error === "auth"}
+        title={
+          next.startsWith("/s/") ? "Ingresá para sumar la medalla" : "Ingresá"
+        }
+      >
+        Tus medallas quedan guardadas en tu cuenta de {org.name}. Entrás una vez
+        y seguís escaneando.
+      </SignInCard>
     </main>
   );
 }

@@ -24,7 +24,7 @@ async function runPlatformWrite(
   const values = Object.fromEntries(formData) as Record<string, string>;
   const result = await write(await createClient(), values);
   if (!result.ok) return { ...result, values };
-  revalidatePath("/admin/plataforma", "layout");
+  revalidatePath("/panel/plataforma", "layout");
   return { ok: true };
 }
 
@@ -54,7 +54,7 @@ export async function setOrganizationStatusAction(
 
 /** Domains show on the org's own settings and resolve on the public app. */
 function refreshDomains() {
-  revalidatePath("/admin", "layout");
+  revalidatePath("/panel", "layout");
   invalidateOrganizations();
 }
 

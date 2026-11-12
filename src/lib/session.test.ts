@@ -22,8 +22,8 @@ describe("safeNext", () => {
 
 describe("requestOrigin", () => {
   it("uses the host the browser asked for", () => {
-    expect(requestOrigin(new Headers({ host: "app.localhost:3000" }))).toBe(
-      "http://app.localhost:3000",
+    expect(requestOrigin(new Headers({ host: "expo.localhost:3000" }))).toBe(
+      "http://expo.localhost:3000",
     );
   });
 

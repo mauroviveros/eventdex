@@ -23,7 +23,7 @@ test("a spot's logo goes from the form to the visitor's medals", async ({
   page,
   browser,
 }) => {
-  const admin = `http://app.localhost:3000/${seed.org.slug}`;
+  const admin = `http://localhost:3000/panel/${seed.org.slug}`;
   await page.goto(`${admin}/spots`);
   await signInByMail(page, seed.ownerEmail);
 

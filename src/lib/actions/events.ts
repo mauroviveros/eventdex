@@ -24,7 +24,7 @@ export async function duplicateEventAction(
   const r = await runFormWrite(formData, duplicateEvent);
   if (!r.ok) return r.state;
   const { slug } = r.data as { slug: string };
-  redirect(`/${r.org}/eventos/${slug}`);
+  redirect(`/panel/${r.org}/eventos/${slug}`);
 }
 
 export async function uploadCoverAction(
@@ -62,7 +62,7 @@ export async function createEventAction(
   const r = await runFormWrite(formData, createEvent);
   if (!r.ok) return r.state;
   const { slug } = r.data as { slug: string };
-  redirect(`/${r.org}/eventos/${slug}`);
+  redirect(`/panel/${r.org}/eventos/${slug}`);
 }
 
 export async function addScheduleAction(

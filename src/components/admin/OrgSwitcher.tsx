@@ -67,7 +67,7 @@ export function OrgSwitcher({ current, all }: { current: Org; all: Org[] }) {
           {all.map((org) => (
             <DropdownMenuItem key={org.slug} asChild>
               <Link
-                href={`/${org.slug}`}
+                href={`/panel/${org.slug}`}
                 aria-current={org.slug === current.slug ? "page" : undefined}
               >
                 <Monogram text={org.name} size="sm" />

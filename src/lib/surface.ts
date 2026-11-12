@@ -1,18 +1,15 @@
-export type Surface =
-  | { kind: "landing" }
-  | { kind: "admin" }
-  | { kind: "publica"; host: string };
+export type Surface = { kind: "landing" } | { kind: "publica"; host: string };
 
 /**
  * Decides which surface serves a request from its Host header.
  * `rootDomain` includes the port in local development (`localhost:3000`).
- * `deploymentHosts` are Vercel's own URLs for this deployment and branch: they show
- * the landing, so the dashboard thumbnail and previews are not a 404.
+ * It serves the landing and, under /panel, the admin.
+ * `deploymentHosts` are Vercel's own URLs for this deployment and branch: they
+ * behave like the root, so the dashboard thumbnail and previews are not a 404.
  */
 export function surfaceFor(
   host: string,
   rootDomain: string,
-  adminHost: string,
   deploymentHosts: (string | undefined)[] = [],
 ): Surface {
   const h = host.toLowerCase();
@@ -21,15 +18,22 @@ export function surfaceFor(
   if (deploymentHosts.some((d) => d?.toLowerCase() === h)) {
     return { kind: "landing" };
   }
-  if (h === adminHost.toLowerCase()) return { kind: "admin" };
   return { kind: "publica", host: h };
 }
 
-/** Internal path the proxy rewrites to. These folders are never reached directly. */
+/**
+ * Path the proxy rewrites to. The root host serves its folders as they are
+ * (`(landing)/`, `ingresar/`, `panel/`); an organization's host goes to
+ * `publica/[host]/`, which the root host must not reach directly.
+ */
 export function internalPath(surface: Surface, pathname: string): string {
-  const rest = pathname === "/" ? "" : pathname;
   if (surface.kind === "publica") {
+    const rest = pathname === "/" ? "" : pathname;
     return `/publica/${encodeURIComponent(surface.host)}${rest}`;
   }
-  return `/${surface.kind}${rest}`;
+  // A folder starting with _ is private in the app router: always a 404.
+  if (pathname === "/publica" || pathname.startsWith("/publica/")) {
+    return "/_publica";
+  }
+  return pathname;
 }

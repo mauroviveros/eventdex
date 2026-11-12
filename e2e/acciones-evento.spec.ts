@@ -16,7 +16,7 @@ test.afterAll(async () => {
 test("a ready draft is published from its card's menu, after confirming", async ({
   page,
 }) => {
-  await page.goto(`http://app.localhost:3000/${seed.org.slug}`);
+  await page.goto(`http://localhost:3000/panel/${seed.org.slug}`);
   await signInByMail(page, seed.ownerEmail);
   const card = page.getByRole("article").filter({ hasText: "Feria Borrador" });
   const menu = page.getByRole("button", { name: "Acciones de Feria Borrador" });
