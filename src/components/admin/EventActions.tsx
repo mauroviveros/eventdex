@@ -116,7 +116,7 @@ export function EventActions({
             org={org}
             event={event}
             onPending={setPending}
-            onDone={() => setAsking(false)}
+            onDone={setAsking}
           />
         </AlertDialogContent>
       </AlertDialog>
@@ -136,15 +136,16 @@ function PublishForm({
 }: {
   org: string;
   event: Props["event"];
+  /** Stable (a state setter): the effect below must not re-run on renders. */
   onPending: (pending: boolean) => void;
-  onDone: () => void;
+  onDone: (open: false) => void;
 }) {
   const [state, publish, pending] = useActionState(publishEventAction, null);
 
   useEffect(() => onPending(pending), [pending, onPending]);
   useEffect(() => {
     if (state?.ok) {
-      onDone();
+      onDone(false);
       toast.success(`${event.title} está publicado.`);
     }
   }, [state, event.title, onDone]);
