@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { DraftSteps } from "@/components/admin/DraftChecklist";
 import { EditSheet } from "@/components/admin/EditSheet";
 import { EventActions } from "@/components/admin/EventActions";
-import { StatTile } from "@/components/admin/StatTile";
+import { eventCells, StatStrip } from "@/components/admin/StatStrip";
 import { PageBody, TopBar } from "@/components/admin/TopBar";
 import { ActionButton } from "@/components/ui/ActionButton";
 import { EventCover } from "@/components/visitante/EventHome";
@@ -17,12 +18,14 @@ import { deleteScheduleAction } from "@/lib/actions/events";
 import { listEventVisitors } from "@/lib/data/claims";
 import { listVenues } from "@/lib/data/events";
 import { coverUrl, getPrimaryHostname } from "@/lib/data/organizations";
+import { listEventRaffles } from "@/lib/data/raffles";
 import { listEventSpots, listSpots } from "@/lib/data/spots";
 import { createClient } from "@/lib/supabase/server";
 import { CoverForm } from "./CoverForm";
 import { EventTabs } from "./EventTabs";
 import { load } from "./load";
 import { EVENT_TABS } from "./query";
+import { RaffleTab } from "./RaffleTab";
 import {
   AddScheduleForm,
   EditScheduleForm,
@@ -42,9 +45,9 @@ export async function generateMetadata({
 }
 
 /**
- * One event, in tabs (?tab=): General (data, venue, banner, schedules and
- * publishing), Spots and Visitantes. The print sheet and the raffle keep their
- * own pages: one goes to paper, the other on stage.
+ * One event, in tabs (?tab=): General (figures, publishing, schedules and
+ * banner), Spots, Visitantes and Sorteo. The print sheet keeps its own page:
+ * it goes to paper.
  */
 export default async function EventoPage({
   params,
@@ -60,13 +63,16 @@ export default async function EventoPage({
   const supabase = await createClient();
   // Spots and visitors feed the tab counts and the figures in General; the
   // catalog only the Spots tab, the venues only the Editar sheet.
-  const [inEvent, visitors, catalog, venues, hostname] = await Promise.all([
-    listEventSpots(supabase, event.id),
-    listEventVisitors(supabase, event.id),
-    editable && tab === "spots" ? listSpots(supabase, org.id) : [],
-    editable ? listVenues(supabase, org.id) : [],
-    getPrimaryHostname(supabase, org.id),
-  ]);
+  const [inEvent, visitors, catalog, venues, hostname, raffles] =
+    await Promise.all([
+      listEventSpots(supabase, event.id),
+      listEventVisitors(supabase, event.id),
+      editable && tab === "spots" ? listSpots(supabase, org.id) : [],
+      editable ? listVenues(supabase, org.id) : [],
+      getPrimaryHostname(supabase, org.id),
+      // Each raffle counts its eligible visitors: only on its own tab.
+      tab === "sorteo" ? listEventRaffles(supabase, event.id) : [],
+    ]);
   const cover = coverUrl(event.cover_path);
 
   return (
@@ -154,37 +160,27 @@ export default async function EventoPage({
         }
       />
       <PageBody>
-        <header className="grid gap-3">
+        <header className="grid gap-2">
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-px-3 sm:text-px-4">{event.title}</h1>
+            <h1 className="text-px-3 text-balance sm:text-px-4">
+              {event.title}
+              {event.edition_label && (
+                <span className="text-muted-foreground">
+                  {" "}
+                  {event.edition_label}
+                </span>
+              )}
+            </h1>
             <PhaseBadge phase={phase} />
           </div>
+          <p className="text-muted-foreground">
+            {[
+              formatEventDates(event.schedules, event.timezone) ?? "Sin fecha",
+              event.venue?.name ?? "Sin sede",
+            ].join(" · ")}
+          </p>
           {event.summary && <p className="max-w-prose">{event.summary}</p>}
         </header>
-
-        <dl className="grid border-2 border-lcd-3 sm:grid-cols-3">
-          {(
-            [
-              [
-                "Fechas",
-                formatEventDates(event.schedules, event.timezone) ??
-                  "Sin fecha",
-              ],
-              ["Sede", event.venue?.name ?? "Sin sede"],
-              ["Edición", event.edition_label ?? "—"],
-            ] as const
-          ).map(([label, value]) => (
-            <div
-              key={label}
-              className="grid gap-1 px-4 py-3 not-last:border-b-2 not-last:border-lcd-3 sm:not-last:border-r-2 sm:not-last:border-b-0"
-            >
-              <dt className="font-display text-px-1 text-muted-foreground">
-                {label}
-              </dt>
-              <dd>{value}</dd>
-            </div>
-          ))}
-        </dl>
 
         <EventTabs
           value={tab}
@@ -198,6 +194,14 @@ export default async function EventoPage({
               inEvent={inEvent}
               catalog={catalog}
               params={query}
+            />
+          ) : tab === "sorteo" ? (
+            <RaffleTab
+              org={org}
+              eventId={event.id}
+              timezone={event.timezone}
+              raffles={raffles}
+              support={support}
             />
           ) : tab === "visitantes" ? (
             <VisitorsTab
@@ -215,10 +219,11 @@ export default async function EventoPage({
               editable={editable}
               draft={draft}
               stats={{
+                stands: inEvent.filter((s) => s.is_active).length,
                 visitors: visitors.length,
                 medals: visitors.reduce((n, v) => n + v.medals, 0),
-                activeSpots: inEvent.filter((s) => s.is_active).length,
               }}
+              hasSpots={inEvent.length > 0}
             />
           )}
         </EventTabs>
@@ -241,13 +246,15 @@ function General({
   editable,
   draft,
   stats,
+  hasSpots,
 }: {
   org: Loaded["org"];
   event: Loaded["event"];
   cover: string | undefined;
   editable: boolean;
   draft: boolean;
-  stats: { visitors: number; medals: number; activeSpots: number };
+  stats: { stands: number; visitors: number; medals: number };
+  hasSpots: boolean;
 }) {
   const label = (s: { label: string | null }, i: number) =>
     s.label ?? `Jornada ${i + 1}`;
@@ -323,6 +330,13 @@ function General({
             Es un borrador: solo lo ve tu equipo. Al publicarlo aparece en el
             dominio de la organización.
           </p>
+          <DraftSteps
+            draft={{
+              hasSchedules: event.schedules.length > 0,
+              hasSpots,
+              hasVenue: event.venue !== null,
+            }}
+          />
           <PublishButton
             org={org.slug}
             eventId={event.id}
@@ -331,25 +345,7 @@ function General({
         </section>
       )}
 
-      {!draft && (
-        <div className="grid gap-2 sm:grid-cols-3 sm:gap-3">
-          <StatTile
-            label="Visitantes"
-            value={stats.visitors}
-            caption="registrados"
-          />
-          <StatTile
-            label="Medallas"
-            value={stats.medals}
-            caption="entregadas"
-          />
-          <StatTile
-            label="Spots activos"
-            value={stats.activeSpots}
-            caption="entregan medalla"
-          />
-        </div>
-      )}
+      {!draft && <StatStrip cells={eventCells(stats)} />}
 
       <section aria-labelledby="jornadas" className="grid gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3">

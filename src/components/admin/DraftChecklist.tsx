@@ -49,11 +49,7 @@ export function DraftChecklist({
                   <span className="text-muted-foreground"> {d.edition}</span>
                 )}
               </p>
-              <ul className="flex flex-wrap gap-x-4 gap-y-1">
-                <Step done={d.hasSchedules} label="Jornadas" />
-                <Step done={d.hasSpots} label="Spots" />
-                <Step done={d.hasVenue} label="Sede" optional />
-              </ul>
+              <DraftSteps draft={d} />
               <Link
                 href={next.href}
                 className="flex min-h-11 items-center font-display text-px-1"
@@ -66,6 +62,21 @@ export function DraftChecklist({
         })}
       </ul>
     </section>
+  );
+}
+
+/** What a draft has and lacks: schedules and spots, and the optional venue. */
+export function DraftSteps({
+  draft,
+}: {
+  draft: Pick<Draft, "hasSchedules" | "hasSpots" | "hasVenue">;
+}) {
+  return (
+    <ul className="flex flex-wrap gap-x-4 gap-y-1">
+      <Step done={draft.hasSchedules} label="Jornadas" />
+      <Step done={draft.hasSpots} label="Spots" />
+      <Step done={draft.hasVenue} label="Sede" optional />
+    </ul>
   );
 }
 

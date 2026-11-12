@@ -14,6 +14,7 @@ const LABEL: Record<EventTab, string> = {
   general: "General",
   spots: "Spots",
   visitantes: "Visitantes",
+  sorteo: "Sorteo",
 };
 
 /**
@@ -54,7 +55,11 @@ export function EventTabs({
         })
       }
     >
-      <TabsList aria-label="Secciones del evento">
+      <TabsList
+        aria-label="Secciones del evento"
+        // On a phone it runs to the screen edges, like the phase filters: a tab cut at the edge reads as "scroll".
+        className="max-sm:-mx-4 max-sm:w-auto max-sm:max-w-none max-sm:border-x-0"
+      >
         {EVENT_TABS.map((tab) => (
           <TabsTrigger key={tab} value={tab}>
             {LABEL[tab]}
