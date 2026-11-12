@@ -97,3 +97,17 @@ export function resolvePublishedSpot(eventSpot: EventSpotFields) {
     type: snap.type,
   });
 }
+
+/**
+ * The next code for a spot added to an event: A01, A02… one past the highest
+ * A<n> already there. Codes typed by hand that don't follow it (VIP, B3) are
+ * left alone.
+ */
+export function nextSpotCode(existing: readonly string[]) {
+  let max = 0;
+  for (const code of existing) {
+    const n = /^A(\d+)$/.exec(code)?.[1];
+    if (n) max = Math.max(max, Number(n));
+  }
+  return `A${String(max + 1).padStart(2, "0")}`;
+}

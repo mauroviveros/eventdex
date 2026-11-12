@@ -49,7 +49,7 @@ export function SpotsTab({
     <EditSheet
       label="Agregar spots"
       title="Agregar desde el catálogo"
-      description="Cada spot del evento tiene su código y su QR. El QR no cambia aunque edites el código o el nombre."
+      description="Cada spot del evento tiene su código, que se genera solo, y su QR. El QR no cambia aunque después edites el código o el nombre."
       variant={variant}
     >
       {available.length === 0 ? (
