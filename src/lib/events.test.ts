@@ -379,6 +379,20 @@ describe("updateEvent", () => {
     expect(updated(moved.calls)).toBeUndefined();
   });
 
+  it("refuses a new address if the event got published since the read", async () => {
+    const { client, calls } = fakeClient(
+      { data: { slug: "expo-2026", status: "draft" }, error: null },
+      { data: [], error: null },
+    );
+    const result = await updateEvent(client, valid);
+    expect(result.ok).toBe(false);
+    if (!result.ok)
+      expect(result.fieldErrors?.slug).toBe(
+        "La dirección queda fija una vez publicado el evento.",
+      );
+    expect(calls).toContainEqual({ method: "eq", args: ["status", "draft"] });
+  });
+
   it("explains an address already in use", async () => {
     const { client } = fakeClient(
       { data: { slug: "expo-2026", status: "draft" }, error: null },

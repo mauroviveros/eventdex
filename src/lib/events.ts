@@ -160,17 +160,17 @@ export async function updateEvent(
   if (readError) return failed(readError);
   if (!current) return failed({ code: "42501" });
   const slug = e.slug ?? current.slug;
-  if (slug !== current.slug && current.status !== "draft") {
-    return {
-      ok: false,
-      error: "Revisá los datos marcados.",
-      fieldErrors: {
-        slug: "La dirección queda fija una vez publicado el evento.",
-      },
-    };
-  }
+  const moves = slug !== current.slug;
+  const fixedAddress = {
+    ok: false as const,
+    error: "Revisá los datos marcados.",
+    fieldErrors: {
+      slug: "La dirección queda fija una vez publicado el evento.",
+    },
+  };
+  if (moves && current.status !== "draft") return fixedAddress;
 
-  const { data, error } = await supabase
+  let update = supabase
     .from("events")
     .update({
       title: e.title,
@@ -178,10 +178,13 @@ export async function updateEvent(
       edition_label: e.editionLabel,
       summary: e.summary,
     })
-    .eq("id", e.eventId)
-    .select("slug");
+    .eq("id", e.eventId);
+  // If it got published since the read, a moving address must not land.
+  if (moves) update = update.eq("status", "draft");
+  const { data, error } = await update.select("slug");
   if (error) return failed(error, EVENT_ERRORS);
-  if (data.length === 0) return failed({ code: "42501" });
+  if (data.length === 0)
+    return moves ? fixedAddress : failed({ code: "42501" });
   return { ok: true, data: { slug: String(data[0]?.slug) } };
 }
 

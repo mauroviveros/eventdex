@@ -400,6 +400,9 @@ cada uno revisado antes del siguiente. Branch `feat/admin-shadcn`.
    rutas `/spots` y `/visitantes` redirigen a su pestaña; QR y Sorteo siguen aparte.
    *Listo cuando* se cambia de pestaña, se ordena y pagina por URL, se agrega un spot
    con el buscador usando el teclado, y los e2e del panel pasan.
+   `/code-review`: 7 hallazgos, 5 resueltos, 1 descartado (la hoja no bloquea el panel)
+   y 1 que queda (el panel de la pestaña se nombra antes de cargar). `/accessibility`:
+   revisión manual (contraste AA, teclado, foco de la hoja); axe queda sin correr.
 6. ▶ **Cifras y acciones del evento.** Misma branch. Cada tarjeta del dashboard muestra
    stands activos, visitantes, medallas y medallas por visitante, contados en la misma
    lectura de eventos; arriba, Eventos · Visitantes · Medallas. Un ⋮ (`EventActions`)
@@ -407,6 +410,11 @@ cada uno revisado antes del siguiente. Branch `feat/admin-shadcn`.
    en la tarjeta y en el encabezado del evento. Sin borrar.
    *Listo cuando* las tarjetas muestran cifras reales, se duplica desde el menú de una
    tarjeta y los e2e del panel pasan.
+   `/code-review` (con el bloque 7): 8 hallazgos, 3 resueltos (total de visitantes
+   rotulado, error viejo al reabrir Publicar, carrera al cambiar la dirección) y 5 que
+   quedan: la dirección fija sin trigger en la base, conteos de medallas por spot (con
+   `shortcut`), conteos que paga la plataforma, la hoja de spots sin `EditSheet` y
+   Publicar desde el menú sin e2e. `/accessibility`: revisión manual sin hallazgos.
 7. ▶ **Editar el evento.** Misma branch. Un botón Editar en el encabezado abre una
    hoja lateral (`EditSheet`) con nombre, dirección (solo en borradores), edición,
    resumen, sede y banner; las jornadas tienen su propia hoja, donde además se corrigen.

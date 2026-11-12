@@ -48,16 +48,9 @@ export function EventActions({
   support,
 }: Props) {
   const [asking, setAsking] = useState(false);
+  const [pending, setPending] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
-  const [state, publish, pending] = useActionState(publishEventAction, null);
   const base = `/${org}/eventos/${event.slug}`;
-
-  useEffect(() => {
-    if (state?.ok) {
-      setAsking(false);
-      toast.success(`${event.title} está publicado.`);
-    }
-  }, [state, event.title]);
 
   return (
     <>
@@ -119,23 +112,60 @@ export function EventActions({
             Aparece en el dominio de la organización y ya no vuelve a ser
             borrador.
           </AlertDialogDescription>
-          {state && !state.ok && (
-            <FormMessage tone="error">{state.error}</FormMessage>
-          )}
-          <form action={publish} className="flex flex-wrap gap-2">
-            <input type="hidden" name="org" value={org} />
-            <input type="hidden" name="eventId" value={event.id} />
-            <Button type="submit" pending={pending} pendingLabel="Publicando…">
-              Sí, publicar
-            </Button>
-            <AlertDialogCancel asChild>
-              <Button variant="secondary" disabled={pending}>
-                Cancelar
-              </Button>
-            </AlertDialogCancel>
-          </form>
+          <PublishForm
+            org={org}
+            event={event}
+            onPending={setPending}
+            onDone={() => setAsking(false)}
+          />
         </AlertDialogContent>
       </AlertDialog>
+    </>
+  );
+}
+
+/**
+ * The dialog's form. It mounts each time the dialog opens, so an error from a
+ * previous try doesn't greet the next one.
+ */
+function PublishForm({
+  org,
+  event,
+  onPending,
+  onDone,
+}: {
+  org: string;
+  event: Props["event"];
+  onPending: (pending: boolean) => void;
+  onDone: () => void;
+}) {
+  const [state, publish, pending] = useActionState(publishEventAction, null);
+
+  useEffect(() => onPending(pending), [pending, onPending]);
+  useEffect(() => {
+    if (state?.ok) {
+      onDone();
+      toast.success(`${event.title} está publicado.`);
+    }
+  }, [state, event.title, onDone]);
+
+  return (
+    <>
+      {state && !state.ok && (
+        <FormMessage tone="error">{state.error}</FormMessage>
+      )}
+      <form action={publish} className="flex flex-wrap gap-2">
+        <input type="hidden" name="org" value={org} />
+        <input type="hidden" name="eventId" value={event.id} />
+        <Button type="submit" pending={pending} pendingLabel="Publicando…">
+          Sí, publicar
+        </Button>
+        <AlertDialogCancel asChild>
+          <Button variant="secondary" disabled={pending}>
+            Cancelar
+          </Button>
+        </AlertDialogCancel>
+      </form>
     </>
   );
 }
