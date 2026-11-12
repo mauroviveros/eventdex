@@ -210,6 +210,29 @@ export async function seedLiveEvent() {
         }),
       );
     },
+    /** A draft with one upcoming schedule: ready to publish. */
+    async addDraft() {
+      const draft = must(
+        await admin
+          .from("events")
+          .insert({
+            organization_id: org.id,
+            slug: "feria-borrador",
+            title: "Feria Borrador",
+          })
+          .select("id, slug")
+          .single(),
+      );
+      must(
+        await admin.from("event_schedules").insert({
+          event_id: draft.id,
+          organization_id: org.id,
+          starts_at: new Date(Date.now() + 48 * hour).toISOString(),
+          ends_at: new Date(Date.now() + 56 * hour).toISOString(),
+        }),
+      );
+      return draft;
+    },
     async cleanup() {
       // Medals restrict deleting their spots: they go first.
       await admin.from("spot_claims").delete().eq("organization_id", org.id);
