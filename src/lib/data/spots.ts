@@ -41,6 +41,8 @@ export async function getSpot(
     .eq("organization_id", organizationId)
     .eq("id", id)
     .is("uses.event.deleted_at", null)
+    // Newest first: same-named editions keep a stable order.
+    .order("created_at", { referencedTable: "uses", ascending: false })
     .maybeSingle();
   if (error) throw error;
   return data;

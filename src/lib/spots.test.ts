@@ -122,6 +122,8 @@ describe("spot logos", () => {
   });
 });
 
+const CODE_TAKEN = `duplicate key value violates unique constraint "event_spots_event_id_code_key"`;
+
 describe("addEventSpot", () => {
   const valid = { eventId: EVENT, spotId: SPOT, points: "" };
   const event = (...codes: string[]) => ({
@@ -151,7 +153,7 @@ describe("addEventSpot", () => {
   it("reads the codes again when someone took the code in between", async () => {
     const { client, calls } = fakeClient(
       event("A01"),
-      { data: null, error: { code: "23505" } },
+      { data: null, error: { code: "23505", message: CODE_TAKEN } },
       event("A01", "A02"),
       { data: { id: "es1" }, error: null },
     );
@@ -164,17 +166,27 @@ describe("addEventSpot", () => {
     ).toMatchObject([{ code: "A02" }, { code: "A03" }]);
   });
 
-  it("explains a spot already in the event", async () => {
-    const { client } = fakeClient(
-      event("A01"),
-      { data: null, error: { code: "23505" } },
-      event("A01"),
-      { data: null, error: { code: "23505" } },
-    );
+  it("explains a spot already in the event, without retrying", async () => {
+    const { client, calls } = fakeClient(event("A01"), {
+      data: null,
+      error: {
+        code: "23505",
+        message: `duplicate key value violates unique constraint "event_spots_event_id_spot_id_key"`,
+      },
+    });
     expect(await addEventSpot(client, valid)).toEqual({
       ok: false,
       error: "Ese spot ya está en el evento.",
     });
+    expect(calls.filter((c) => c.method === "insert")).toHaveLength(1);
+  });
+
+  it("gives up after the code is taken twice", async () => {
+    const taken = { data: null, error: { code: "23505", message: CODE_TAKEN } };
+    const { client } = fakeClient(event("A01"), taken, event("A01"), taken);
+    const result = await addEventSpot(client, valid);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error).toMatch(/Probá de nuevo/);
   });
 
   it("explains an archived spot", async () => {
