@@ -5,6 +5,7 @@ import {
   formatEventDates,
   formatMoment,
   formatScheduleTimes,
+  instantToLocal,
   isTimeZone,
   localToInstant,
 } from "./events";
@@ -196,5 +197,17 @@ describe("countdownState", () => {
       kind: "finalizado",
     });
     expect(countdownState([], BA, now)).toEqual({ kind: "finalizado" });
+  });
+});
+
+describe("instantToLocal", () => {
+  it("is the form's wall-clock time in the event's zone, and round-trips", () => {
+    expect(instantToLocal("2026-11-14T13:00:00Z", BA)).toBe("2026-11-14T10:00");
+    expect(instantToLocal("2026-07-10T08:00:00+00:00", "Europe/Madrid")).toBe(
+      "2026-07-10T10:00",
+    );
+    expect(
+      instantToLocal(localToInstant("2026-11-14T23:30", BA).toISOString(), BA),
+    ).toBe("2026-11-14T23:30");
   });
 });

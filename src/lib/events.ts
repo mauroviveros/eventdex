@@ -133,6 +133,58 @@ export async function createEvent(
   return { ok: true, data };
 }
 
+const eventEditSchema = eventSchema
+  .pick({ title: true, slug: true, editionLabel: true, summary: true })
+  // A published event's address is fixed: its form doesn't send it.
+  .partial({ slug: true })
+  .extend({ eventId: z.guid() });
+
+/**
+ * Changes the event's own data. The address (slug) only changes while it is a
+ * draft: once published, the link to its home may already be out there.
+ */
+export async function updateEvent(
+  supabase: Client,
+  input: unknown,
+): Promise<ActionResult<{ slug: string }>> {
+  const parsed = eventEditSchema.safeParse(input);
+  if (!parsed.success) return invalid(parsed.error);
+  const e = parsed.data;
+
+  const { data: current, error: readError } = await supabase
+    .from("events")
+    .select("slug, status")
+    .eq("id", e.eventId)
+    .is("deleted_at", null)
+    .maybeSingle();
+  if (readError) return failed(readError);
+  if (!current) return failed({ code: "42501" });
+  const slug = e.slug ?? current.slug;
+  if (slug !== current.slug && current.status !== "draft") {
+    return {
+      ok: false,
+      error: "Revisá los datos marcados.",
+      fieldErrors: {
+        slug: "La dirección queda fija una vez publicado el evento.",
+      },
+    };
+  }
+
+  const { data, error } = await supabase
+    .from("events")
+    .update({
+      title: e.title,
+      slug,
+      edition_label: e.editionLabel,
+      summary: e.summary,
+    })
+    .eq("id", e.eventId)
+    .select("slug");
+  if (error) return failed(error, EVENT_ERRORS);
+  if (data.length === 0) return failed({ code: "42501" });
+  return { ok: true, data: { slug: String(data[0]?.slug) } };
+}
+
 const venueChangeSchema = eventSchema
   .pick({ venueId: true })
   .extend({ eventId: z.guid() });
@@ -227,6 +279,41 @@ export async function addSchedule(
     .single();
   if (error) return failed(error);
   return { ok: true, data };
+}
+
+const scheduleEditSchema = scheduleSchema.safeExtend({ id: z.guid() });
+
+/** Corrects a schedule: its name and times, read in the event's zone. */
+export async function updateSchedule(
+  supabase: Client,
+  input: unknown,
+): Promise<ActionResult<null>> {
+  const parsed = scheduleEditSchema.safeParse(input);
+  if (!parsed.success) return invalid(parsed.error);
+
+  const s = parsed.data;
+  const { data: event, error: readError } = await supabase
+    .from("events")
+    .select("timezone")
+    .eq("id", s.eventId)
+    .maybeSingle();
+  if (readError) return failed(readError);
+  if (!event) return failed({ code: "42501" });
+
+  const { data, error } = await supabase
+    .from("event_schedules")
+    .update({
+      label: s.label,
+      starts_at: localToInstant(s.startsAt, event.timezone).toISOString(),
+      ends_at: localToInstant(s.endsAt, event.timezone).toISOString(),
+    })
+    .eq("id", s.id)
+    .eq("event_id", s.eventId)
+    .select("id");
+  if (error) return failed(error);
+  // RLS hides what isn't yours: nothing updated means no permission.
+  if (data.length === 0) return failed({ code: "42501" });
+  return { ok: true, data: null };
 }
 
 export async function deleteSchedule(

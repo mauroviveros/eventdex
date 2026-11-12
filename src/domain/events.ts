@@ -150,6 +150,13 @@ export function localToInstant(local: string, timeZone: string) {
   return new Date(guess);
 }
 
+/** The other way: an instant as the form's "2026-11-14T10:00" in the event's zone. */
+export function instantToLocal(iso: string, timeZone: string) {
+  return new Date(wallClock(Date.parse(iso), timeZone))
+    .toISOString()
+    .slice(0, 16);
+}
+
 /** What the countdown shows: time to the next schedule, the one running now, or done. */
 export type CountdownState =
   | { kind: "faltan"; days: number; hours: number; minutes: number }
