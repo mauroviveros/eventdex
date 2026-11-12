@@ -182,6 +182,8 @@ export async function updateEvent(
   // If it got published since the read, a moving address must not land.
   if (moves) update = update.eq("status", "draft");
   const { data, error } = await update.select("slug");
+  // The database holds the same rule (events_keep_published_slug).
+  if (error?.code === "23514" && moves) return fixedAddress;
   if (error) return failed(error, EVENT_ERRORS);
   if (data.length === 0)
     return moves ? fixedAddress : failed({ code: "42501" });

@@ -393,6 +393,19 @@ describe("updateEvent", () => {
     expect(calls).toContainEqual({ method: "eq", args: ["status", "draft"] });
   });
 
+  it("explains the database's fixed address on its field", async () => {
+    const { client } = fakeClient(
+      { data: { slug: "expo-2026", status: "draft" }, error: null },
+      { data: null, error: { code: "23514" } },
+    );
+    const result = await updateEvent(client, valid);
+    expect(result.ok).toBe(false);
+    if (!result.ok)
+      expect(result.fieldErrors?.slug).toBe(
+        "La dirección queda fija una vez publicado el evento.",
+      );
+  });
+
   it("explains an address already in use", async () => {
     const { client } = fakeClient(
       { data: { slug: "expo-2026", status: "draft" }, error: null },
