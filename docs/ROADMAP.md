@@ -445,13 +445,15 @@ cada uno revisado antes del siguiente. Branch `feat/admin-shadcn`.
    el código se genera (`A01`, `A02`…); se puede cambiar desde su hoja.
    *Listo cuando* se crean varios spots seguidos desde la hoja, se ordena el catálogo
    por URL, se agrega un spot a un evento sin escribir código, y los e2e del panel pasan.
-   e2e: 19 de 19. `/code-review`: 7 hallazgos, sin resolver todavía (cualquier
-   `23505` se reintenta y se informa como spot repetido; `?nuevo` queda en la URL y
-   reabre la hoja; `/spots/nuevo` borrada sin redirección; los usos del spot sin orden;
-   el link de cada fila repite el tipo; el catálogo vacío sin botón propio;
-   `CatalogTable` sin entrada en `/dev/componentes`). `/accessibility`: revisión manual
-   (hojas con nombre y foco que vuelve al botón, `aria-sort`, objetivos de 44 px, orden
-   de títulos); solo el hallazgo del link que repite el tipo. axe queda sin correr.
+   e2e: 19 de 19; `equipo.spec.ts` falla a veces, también sin esta branch.
+   `/code-review`: 7 hallazgos, 6 resueltos (solo se reintenta el choque de código,
+   con su mensaje; `?nuevo` sale de la URL al abrir la hoja y también la abre desde
+   un link; `/spots/nuevo` redirige; los usos del spot van del más nuevo al más viejo;
+   el link de cada fila ya no repite el tipo; el catálogo vacío vuelve a tener botón) y
+   1 descartado (`/dev/componentes` muestra `DataTable` en general, como con las
+   tablas del evento). `/accessibility`: revisión manual (hojas con nombre y foco que
+   vuelve al botón, `aria-sort`, objetivos de 44 px, orden de títulos); solo el link
+   que repetía el tipo. axe queda sin correr.
 
 ---
 
