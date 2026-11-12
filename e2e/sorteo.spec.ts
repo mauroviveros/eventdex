@@ -48,7 +48,8 @@ test("staff draws, voids and publishes; the visitor sees the winner", async ({
       `http://app.localhost:3000/${seed.org.slug}/eventos/${seed.event.slug}`,
     );
     await signInByMail(staff, seed.ownerEmail);
-    await staff.getByRole("link", { name: "Sorteo", exact: true }).click();
+    await staff.getByRole("button", { name: /^Acciones de / }).click();
+    await staff.getByRole("menuitem", { name: "Sorteo" }).click();
     await expect(
       staff.getByText("Todavía no hay sorteos", { exact: true }),
     ).toBeVisible();

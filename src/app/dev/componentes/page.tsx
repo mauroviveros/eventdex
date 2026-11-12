@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { AccountMenu } from "@/components/admin/AccountMenu";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { BrandPreview } from "@/components/admin/BrandPreview";
+import { EventActions } from "@/components/admin/EventActions";
 import { EventCard } from "@/components/admin/EventCard";
 import { EventFilters } from "@/components/admin/EventFilters";
 import { OrgSwitcher } from "@/components/admin/OrgSwitcher";
@@ -778,7 +779,7 @@ export default function ComponentesPage() {
 
         <Section
           title="Panel: tarjeta de evento"
-          note="Cuándo y dónde, cómo le fue y por dónde se entra. Recorrido promedio: qué parte de los stands visitó cada visitante. Sin métricas todavía (antes de R3 y R5), la tarjeta muestra solo la entrada."
+          note="Cuándo y dónde, cómo le fue (stands activos, visitantes, medallas y medallas por visitante) y por dónde se entra. El ⋮ abre las acciones del evento; cada una aparece solo si tiene sentido. Un borrador muestra solo sus stands, con la tira punteada."
         >
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             <EventCard
@@ -787,13 +788,22 @@ export default function ComponentesPage() {
               dateLabel="Mayo 2026"
               venue="Predio Norte"
               href="/dev/componentes"
-              stats={{
-                stands: 48,
-                visitors: 92,
-                claims: 178,
-                completion: 0.04,
-                href: "/dev/componentes",
-              }}
+              stats={{ stands: 48, visitors: 92, medals: 178 }}
+              actions={
+                <EventActions
+                  org="dev"
+                  event={{
+                    id: "demo-1",
+                    slug: "componentes",
+                    title: "Expo de ejemplo 2026",
+                    draft: false,
+                  }}
+                  hasSpots
+                  ready
+                  publicUrl="/dev/componentes"
+                  support={false}
+                />
+              }
             />
             <EventCard
               title="Feria de ejemplo"
@@ -801,13 +811,7 @@ export default function ComponentesPage() {
               dateLabel="sáb 14 de nov"
               venue="Pabellón A"
               href="/dev/componentes"
-              stats={{
-                stands: 10,
-                visitors: 198,
-                claims: 354,
-                completion: 0.53,
-                href: "/dev/componentes",
-              }}
+              stats={{ stands: 10, visitors: 0, medals: 0 }}
             />
             <EventCard
               title="Edición de invierno"
@@ -815,6 +819,22 @@ export default function ComponentesPage() {
               dateLabel={null}
               venue={null}
               href="/dev/componentes"
+              stats={{ stands: 3, visitors: 0, medals: 0 }}
+              actions={
+                <EventActions
+                  org="dev"
+                  event={{
+                    id: "demo-2",
+                    slug: "componentes",
+                    title: "Edición de invierno",
+                    draft: true,
+                  }}
+                  hasSpots
+                  ready
+                  publicUrl={null}
+                  support={false}
+                />
+              }
             />
           </div>
         </Section>

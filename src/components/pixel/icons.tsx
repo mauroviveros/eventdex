@@ -116,6 +116,17 @@ export const ICONS = {
     "#......#",
     "########",
   ],
+  // More actions on something (an event's menu).
+  acciones: [
+    "...##...",
+    "...##...",
+    "........",
+    "...##...",
+    "...##...",
+    "........",
+    "...##...",
+    "...##...",
+  ],
   // The sidebar's own control.
   panel: [
     "########",

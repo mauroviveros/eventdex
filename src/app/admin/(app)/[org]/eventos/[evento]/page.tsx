@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { EventActions } from "@/components/admin/EventActions";
 import { StatTile } from "@/components/admin/StatTile";
 import { PageBody, TopBar } from "@/components/admin/TopBar";
 import { ActionButton } from "@/components/ui/ActionButton";
@@ -11,10 +12,11 @@ import {
   formatEventDates,
   formatScheduleTimes,
 } from "@/domain/events";
+import { publicOrigin } from "@/domain/spots";
 import { deleteScheduleAction } from "@/lib/actions/events";
 import { listEventVisitors } from "@/lib/data/claims";
 import { listVenues } from "@/lib/data/events";
-import { coverUrl } from "@/lib/data/organizations";
+import { coverUrl, getPrimaryHostname } from "@/lib/data/organizations";
 import { listEventSpots, listSpots } from "@/lib/data/spots";
 import { createClient } from "@/lib/supabase/server";
 import { CoverForm } from "./CoverForm";
@@ -52,11 +54,12 @@ export default async function EventoPage({
   const supabase = await createClient();
   // Spots and visitors feed the tab counts and the figures in General; the
   // catalog and the venues only the tab that shows them.
-  const [inEvent, visitors, catalog, venues] = await Promise.all([
+  const [inEvent, visitors, catalog, venues, hostname] = await Promise.all([
     listEventSpots(supabase, event.id),
     listEventVisitors(supabase, event.id),
     editable && tab === "spots" ? listSpots(supabase, org.id) : [],
     editable && tab === "general" ? listVenues(supabase, org.id) : [],
+    getPrimaryHostname(supabase, org.id),
   ]);
   const base = `/${org.slug}/eventos/${event.slug}`;
 
@@ -84,28 +87,33 @@ export default async function EventoPage({
         }
       />
       <PageBody>
-        <header className="grid gap-3">
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-px-3 sm:text-px-4">{event.title}</h1>
-            <PhaseBadge phase={phase} />
+        <header className="grid max-w-3xl gap-3">
+          <div className="flex items-start gap-3">
+            <div className="flex min-w-0 flex-1 flex-wrap items-center gap-3">
+              <h1 className="text-px-3 sm:text-px-4">{event.title}</h1>
+              <PhaseBadge phase={phase} />
+            </div>
+            <div>
+              <EventActions
+                org={org.slug}
+                event={{
+                  id: event.id,
+                  slug: event.slug,
+                  title: event.title,
+                  draft,
+                }}
+                hasSpots={inEvent.length > 0}
+                ready={event.schedules.length > 0}
+                publicUrl={
+                  event.status === "published" && hostname
+                    ? `${publicOrigin(hostname)}/eventos/${event.slug}`
+                    : null
+                }
+                support={support}
+              />
+            </div>
           </div>
           {event.summary && <p className="max-w-prose">{event.summary}</p>}
-          <nav aria-label="Del evento" className="flex flex-wrap gap-2">
-            <Link
-              href={`${base}/sorteo`}
-              className={buttonClass("secondary", "no-underline")}
-            >
-              Sorteo
-            </Link>
-            {editable && (
-              <Link
-                href={`/${org.slug}/eventos/nuevo?desde=${event.slug}`}
-                className={buttonClass("secondary", "no-underline")}
-              >
-                Duplicar
-              </Link>
-            )}
-          </nav>
         </header>
 
         <dl className="grid max-w-3xl border-2 border-lcd-3 sm:grid-cols-3">

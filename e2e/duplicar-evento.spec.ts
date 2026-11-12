@@ -14,11 +14,12 @@ test.afterAll(async () => {
 
 test("an event is duplicated into a draft with its spots", async ({ page }) => {
   const admin = `http://app.localhost:3000/${seed.org.slug}`;
-  await page.goto(`${admin}/eventos/feria`);
+  await page.goto(admin);
   await signInByMail(page, seed.ownerEmail);
 
-  await test.step("the form starts from the original", async () => {
-    await page.getByRole("link", { name: "Duplicar" }).click();
+  await test.step("the form starts from the original, from its card's menu", async () => {
+    await page.getByRole("button", { name: "Acciones de Feria E2E" }).click();
+    await page.getByRole("menuitem", { name: "Duplicar" }).click();
     await expect(
       page.getByRole("heading", { name: "Duplicar evento" }),
     ).toBeVisible();

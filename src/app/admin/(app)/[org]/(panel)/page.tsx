@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { EventActions } from "@/components/admin/EventActions";
 import { EventCard } from "@/components/admin/EventCard";
 import {
   EventFilters,
@@ -9,7 +10,9 @@ import { StatTile } from "@/components/admin/StatTile";
 import { PageBody, TopBar } from "@/components/admin/TopBar";
 import { buttonClass } from "@/components/ui/Button";
 import { eventPhase, formatEventDates } from "@/domain/events";
-import { listEvents, listVenues } from "@/lib/data/events";
+import { publicOrigin } from "@/domain/spots";
+import { listEvents } from "@/lib/data/events";
+import { getPrimaryHostname } from "@/lib/data/organizations";
 import { requireOrg } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
 
@@ -46,10 +49,12 @@ export default async function OrgEventsPage({
   const query = typeof q === "string" ? q.trim() : "";
 
   const supabase = await createClient();
-  const [events, venues] = await Promise.all([
+  const [events, hostname] = await Promise.all([
     listEvents(supabase, org.id),
-    listVenues(supabase, org.id),
+    getPrimaryHostname(supabase, org.id),
   ]);
+  const total = (key: "visitors" | "medals") =>
+    events.reduce((n, e) => n + e.stats[key], 0);
 
   const now = new Date();
   const cards = events.map((e) => ({
@@ -96,11 +101,15 @@ export default async function OrgEventsPage({
             caption="en la organización"
           />
           <StatTile
-            label="Publicados"
-            value={events.filter((e) => e.status === "published").length}
-            caption="visibles en tu dominio"
+            label="Visitantes"
+            value={total("visitors")}
+            caption="registrados en todos"
           />
-          <StatTile label="Sedes" value={venues.length} caption="cargadas" />
+          <StatTile
+            label="Medallas"
+            value={total("medals")}
+            caption="entregadas en todos"
+          />
         </div>
 
         {events.length === 0 ? (
@@ -144,6 +153,26 @@ export default async function OrgEventsPage({
                     dateLabel={formatEventDates(e.schedules, e.timezone, now)}
                     venue={e.venue?.name ?? null}
                     href={`/${org.slug}/eventos/${e.slug}`}
+                    stats={e.stats}
+                    actions={
+                      <EventActions
+                        org={org.slug}
+                        event={{
+                          id: e.id,
+                          slug: e.slug,
+                          title: e.title,
+                          draft: e.status === "draft",
+                        }}
+                        hasSpots={e.stats.stands > 0}
+                        ready={e.schedules.length > 0}
+                        publicUrl={
+                          e.status === "published" && hostname
+                            ? `${publicOrigin(hostname)}/eventos/${e.slug}`
+                            : null
+                        }
+                        support={support}
+                      />
+                    }
                   />
                 ))}
               </div>
