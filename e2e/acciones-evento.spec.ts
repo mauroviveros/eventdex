@@ -13,12 +13,15 @@ test.afterAll(async () => {
   await seed?.cleanup();
 });
 
-test("a ready draft is published from its card's menu, after confirming", async ({
+test("a ready draft is published from its row's menu, after confirming", async ({
   page,
 }) => {
   await page.goto(`http://localhost:3000/panel/${seed.org.slug}`);
   await signInByMail(page, seed.ownerEmail);
-  const card = page.getByRole("article").filter({ hasText: "Feria Borrador" });
+  const card = page
+    .getByRole("table", { name: "Eventos" })
+    .getByRole("row")
+    .filter({ hasText: "Feria Borrador" });
   const menu = page.getByRole("button", { name: "Acciones de Feria Borrador" });
 
   await test.step("cancelling leaves it a draft, and the focus back on ⋮", async () => {

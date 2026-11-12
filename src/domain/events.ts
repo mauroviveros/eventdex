@@ -43,6 +43,40 @@ export function eventPhase(
   return "en-curso";
 }
 
+// The panel lists what needs attention first: live, then next, then drafts.
+const PANEL_ORDER: Record<Phase, number> = {
+  "en-curso": 0,
+  proximo: 1,
+  borrador: 2,
+  "sin-fecha": 3,
+  finalizado: 4,
+};
+
+/**
+ * Events in the panel's order: in course, upcoming (soonest first), drafts,
+ * undated, and finished (latest first). Ties keep the order they came in.
+ */
+export function sortForPanel<
+  T extends { phase: Phase; schedules: readonly Schedule[] },
+>(events: readonly T[]): T[] {
+  const start = (e: T) => scheduleRange(e.schedules)?.start.getTime() ?? 0;
+  return [...events].sort(
+    (a, b) =>
+      PANEL_ORDER[a.phase] - PANEL_ORDER[b.phase] ||
+      (a.phase === "finalizado" ? start(b) - start(a) : start(a) - start(b)),
+  );
+}
+
+/** The event the panel puts first: the one in course, or else the next one. */
+export function activeEvent<
+  T extends { phase: Phase; schedules: readonly Schedule[] },
+>(events: readonly T[]): (T & { phase: "en-curso" | "proximo" }) | null {
+  const first = sortForPanel(events)[0];
+  return first && (first.phase === "en-curso" || first.phase === "proximo")
+    ? (first as T & { phase: "en-curso" | "proximo" })
+    : null;
+}
+
 /**
  * "sáb, 14 nov", "sáb 14 al dom 15 de nov". The year shows only when the event
  * is not in the current one.
