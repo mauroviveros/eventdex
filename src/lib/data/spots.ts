@@ -35,7 +35,8 @@ export async function getSpot(
     .from("spots")
     .select(
       `id, name, description, type, logo_path, archived_at,
-       uses:event_spots (id, code, event:events!inner (title, slug, status))`,
+       uses:event_spots (id, code, event:events!inner (title, slug, status, edition_label, timezone,
+         schedules:event_schedules (starts_at, ends_at)))`,
     )
     .eq("organization_id", organizationId)
     .eq("id", id)
