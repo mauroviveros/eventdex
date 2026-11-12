@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageBody, TopBar } from "@/components/admin/TopBar";
-import { Sprite } from "@/components/pixel/Sprite";
 import { buttonClass } from "@/components/ui/Button";
 import { SPOT_TYPE_LABEL } from "@/domain/spots";
+import { readTableQuery, sortAndPage } from "@/domain/table";
 import { listSpots } from "@/lib/data/spots";
 import { requireOrg } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
+import { CatalogTable } from "./CatalogTable";
+import { CATALOG_SORTS } from "./query";
 
 export async function generateMetadata({
   params,
@@ -18,9 +20,27 @@ export async function generateMetadata({
 /** The org's spot catalog: reused from one edition to the next. */
 export default async function SpotsPage({
   params,
+  searchParams,
 }: PageProps<"/admin/[org]/spots">) {
   const { org, support } = await requireOrg((await params).org);
   const spots = await listSpots(await createClient(), org.id);
+  // By default the order the read gives: active first, each group by name.
+  const query = readTableQuery(await searchParams, CATALOG_SORTS, "estado");
+  // shortcut: sorts in memory, move to .order() and .range() past ~500 spots per org
+  const table = {
+    ...sortAndPage(
+      spots,
+      (s) =>
+        ({
+          nombre: s.name,
+          tipo: SPOT_TYPE_LABEL[s.type],
+          eventos: s.uses,
+          estado: s.archived_at ? 1 : 0,
+        })[query.orden],
+      query,
+    ),
+    sort: query,
+  };
 
   const newSpot = !support && (
     <Link
@@ -53,45 +73,7 @@ export default async function SpotsPage({
             {newSpot && <div>{newSpot}</div>}
           </section>
         ) : (
-          <ul className="grid grid-cols-1 gap-2 md:grid-cols-2 2xl:grid-cols-3">
-            {spots.map((spot) => (
-              <li key={spot.id}>
-                <Link
-                  href={`/${org.slug}/spots/${spot.id}`}
-                  className={`flex items-center gap-4 border-2 px-4 py-3 no-underline hover:bg-lcd-1 ${
-                    spot.archived_at
-                      ? "border-dashed border-lcd-2 text-lcd-2"
-                      : "border-lcd-3"
-                  }`}
-                >
-                  <Sprite
-                    type={spot.type}
-                    mode={spot.archived_at ? "inactivo" : "lleno"}
-                    scale={4}
-                    label={SPOT_TYPE_LABEL[spot.type]}
-                  />
-                  <span className="grid min-w-0 gap-1">
-                    <span className="truncate font-display text-px-2">
-                      {spot.name}
-                    </span>
-                    <span className="text-sm">
-                      {[
-                        SPOT_TYPE_LABEL[spot.type],
-                        spot.uses === 0
-                          ? "Sin eventos"
-                          : spot.uses === 1
-                            ? "En 1 evento"
-                            : `En ${spot.uses.toLocaleString("es-AR")} eventos`,
-                        spot.archived_at && "Archivado",
-                      ]
-                        .filter(Boolean)
-                        .join(" · ")}
-                    </span>
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <CatalogTable org={org.slug} {...table} />
         )}
       </PageBody>
     </>
