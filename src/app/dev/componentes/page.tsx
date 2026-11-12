@@ -709,6 +709,16 @@ export default function ComponentesPage() {
                 }
               />
             </div>
+            <div className="border-2 border-lcd-3">
+              <TopBar
+                title="Hoja de QR"
+                crumbs={[
+                  { label: "Eventos", href: "/dev/componentes" },
+                  { label: "Expo de ejemplo", href: "/dev/componentes#evento" },
+                ]}
+                actions={<Button>Imprimir</Button>}
+              />
+            </div>
           </SidebarProvider>
         </Section>
 

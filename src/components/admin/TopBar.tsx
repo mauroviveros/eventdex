@@ -55,7 +55,7 @@ export function TopBar({
                     </Fragment>
                   );
                 })}
-                <BreadcrumbItem className="max-sm:hidden">
+                <BreadcrumbItem className="max-sm:sr-only">
                   <BreadcrumbPage>{title}</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
