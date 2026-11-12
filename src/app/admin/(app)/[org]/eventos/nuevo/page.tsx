@@ -34,12 +34,12 @@ export default async function NuevoEventoPage({
   if (support) notFound();
   const { desde } = await searchParams;
   const supabase = await createClient();
+  const duplicating = typeof desde === "string";
   const [venues, lastTitle, source] = await Promise.all([
     listVenues(supabase, org.id),
-    getLastEventTitle(supabase, org.id),
-    typeof desde === "string"
-      ? getEventToDuplicate(supabase, org.id, desde)
-      : null,
+    // A copy starts from its source's title instead.
+    duplicating ? null : getLastEventTitle(supabase, org.id),
+    duplicating ? getEventToDuplicate(supabase, org.id, desde) : null,
   ]);
   if (desde !== undefined && !source) notFound();
 

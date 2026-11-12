@@ -56,4 +56,16 @@ test("an event is duplicated into a draft with its spots", async ({ page }) => {
     ).toBeVisible();
     await expect(page).toHaveURL(/\/eventos\/feria-e2e-noviembre\?tab=spots$/);
   });
+
+  await test.step("a new event starts from the latest name, and a repeat is refused", async () => {
+    await page.goto(`${admin}/eventos/nuevo`);
+    await expect(page.getByLabel("Nombre")).toHaveValue("Feria de Noviembre");
+    await page.getByLabel("Nombre").fill("Feria E2E");
+    await page.getByLabel("Edición").fill("Noviembre");
+    await page.getByRole("button", { name: "Crear evento" }).click();
+    await expect(
+      page.getByText("Ya hay un evento con este nombre y edición."),
+    ).toBeVisible();
+    await expect(page.getByLabel("Nombre")).toHaveValue("Feria E2E");
+  });
 });

@@ -51,7 +51,6 @@ export async function listEvents(supabase: Supabase, organizationId: string) {
   }));
 }
 
-/** What the form to duplicate an event starts from. Null if hidden or missing. */
 /** The title of the org's latest event, to start the next one from. */
 export async function getLastEventTitle(
   supabase: Supabase,
@@ -69,6 +68,7 @@ export async function getLastEventTitle(
   return data?.title ?? null;
 }
 
+/** What the form to duplicate an event starts from. Null if hidden or missing. */
 export async function getEventToDuplicate(
   supabase: Supabase,
   organizationId: string,

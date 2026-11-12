@@ -221,16 +221,12 @@ describe("eventSlug", () => {
     );
   });
 
-  it("adds a suffix for a taken address", () => {
-    expect(eventSlug("Expo", "2026", 3)).toBe("expo-2026-3");
-  });
-
   it("always matches the address format, even from odd names", () => {
     const SLUG = /^[a-z0-9][a-z0-9-]{1,62}$/;
     for (const slug of [
       eventSlug("!!", null),
       eventSlug("X", null),
-      eventSlug("a".repeat(160), "Noviembre", 12),
+      eventSlug("a".repeat(160), "Noviembre"),
       eventSlug("Expo — ", "2026 ·"),
     ])
       expect(slug).toMatch(SLUG);
