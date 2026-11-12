@@ -114,7 +114,9 @@ En `src/components/<dominio>/`. Cada uno documenta sus estados en `/dev/componen
 | **Celebración** | La pantalla de `/s/[id]` al reclamar. Las fechas, en la zona del evento | medalla nueva · ya la tenías · spot inactivo · evento no en curso (todavía no arrancó / terminó) · bloqueado |
 | **Countdown** | Tiempo hasta la próxima jornada | días · horas · en curso · finalizado |
 | **Fase** | Badge de próximo / en curso / finalizado / borrador | uno por fase + `sin fecha` |
-| **Tarjeta de evento** | Cuándo y dónde; stands activos, visitantes y medallas, y las medallas por visitante (un número, no un porcentaje: el público junta de 2 a 3). Abajo, Gestionar y el ⋮ de acciones del evento | finalizado · en curso · borrador (tira punteada, solo stands) · sin visitantes ("Todavía sin visitantes") |
+| **Evento activo** | `ActiveEvent`: arriba del dashboard, el evento en curso o, si no hay, el próximo. Fase, nombre y edición, cuándo y dónde; stands, visitantes, medallas y medallas por visitante (un número, no un porcentaje: el público junta de 2 a 3); Gestionar y los atajos del día | en curso (con Sorteo) · próximo · sin stands (sin Hoja de QR) · sin publicar (sin Ver en el sitio) · sin visitantes ("–" por visitante) |
+| **Para publicar** | `DraftChecklist`: los borradores con lo que les falta (jornadas, spots, sede opcional) y el siguiente paso como link. Una casilla punteada vacía es lo que falta | sin nada · con jornadas · listo para publicar |
+| **Lista de eventos** | `EventsTable` sobre `DataTable`: nombre y edición (el link), fase, fechas, sede, cifras y el ⋮. Ordenada por atención: en curso, próximos, borradores, sin fecha y finalizados (apagados). Bajo 640 px, tarjetas compactas: el nombre arriba y el resto seguido | con eventos · sin coincidencias |
 | **Acciones del evento** | `EventActions`: un ⋮ que abre Hoja de QR (si hay spots), Sorteo, Ver en el sitio (si está publicado), Publicar (borrador con jornadas, con confirmación: no vuelve a borrador) y Duplicar. Cada acción aparece solo si tiene sentido; en soporte, solo las que no cambian nada. Sin borrar. Está en la tarjeta y en la barra superior del evento, al lado de Editar | con todo · borrador listo · soporte |
 | **Hoja de edición** | `EditSheet`: un botón que abre una Sheet lateral con formularios, para editar sin salir de la página (Editar evento, Jornadas, Agregar spots del catálogo). Cada formulario guarda por su cuenta y avisa con un toast; la hoja sigue abierta | con formularios · campo fijo con su porqué |
 | **Tarjeta de spot** | Nombre, código, tipo, puntos | activa · inactiva · archivada · override de esta edición |
@@ -122,9 +124,8 @@ En `src/components/<dominio>/`. Cada uno documenta sus estados en `/dev/componen
 | **Extracción** | Ganador de una tirada del sorteo | sorteando · ganador · anulada |
 | **Selector de organización** | La org activa en el admin | una org · varias |
 | **Shell del admin** | Barra lateral (organización arriba, secciones con ícono pixel, cuenta abajo con foto, nombre y mail) y barra superior con el botón de la barra, el título y las acciones de la pantalla. Una página que depende de otra (evento, sorteo, Hoja de QR, spot, alta) lleva migas en vez de título y de un link de volver: la sección como link y la página actual en tinta. En el celular queda solo el tramo de arriba, como «‹ Eventos». La barra colapsa a íconos (botón, borde o Ctrl/⌘ B) y lo recuerda en una cookie. En celular es un panel lateral que abre el mismo botón y se cierra al elegir una sección | sección actual (celda invertida) · con migas · colapsada (íconos con tooltip) · sin organización (marca) · varias organizaciones (menú con todas, la actual marcada) · sin foto (iniciales) · modo soporte (aviso sobre la página) |
-| **Métrica** | Una cifra de la organización o del evento | con valor · en cero |
+| **Métrica** | Una cifra de la plataforma o del evento | con valor · en cero |
 | **Filtros de eventos** | Buscador y fases con conteos, todo en la URL | fase actual · sin resultados |
-| **Tarjeta de evento** | Cuándo y dónde, stands/visitantes/medallas, recorrido promedio, Estadísticas y Gestionar. Sin métricas reales todavía (antes de R3 y R5) muestra solo cuándo, dónde y Gestionar: nunca ceros inventados | finalizado · en curso · borrador (tira punteada) · recorrido 0 y parcial · sin métricas |
 
 ## Estados
 
