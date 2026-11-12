@@ -28,15 +28,8 @@ export default async function SpotPage({
   return (
     <>
       <TopBar
-        title="Spots"
-        actions={
-          <Link
-            href={`/${org.slug}/spots`}
-            className="flex min-h-11 items-center font-display text-px-1"
-          >
-            Volver al catálogo
-          </Link>
-        }
+        title={spot.name}
+        crumbs={[{ label: "Spots", href: `/${org.slug}/spots` }]}
       />
       <PageBody>
         <header className="flex flex-wrap items-center gap-4">

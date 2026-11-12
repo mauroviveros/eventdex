@@ -676,7 +676,7 @@ export default function ComponentesPage() {
 
         <Section
           title="Panel: barra superior"
-          note="El botón que muestra u oculta la barra lateral y dónde estás a la izquierda; la única acción principal de la pantalla a la derecha. Queda fija al scrollear."
+          note="El botón que muestra u oculta la barra lateral y dónde estás a la izquierda; las acciones de la pantalla a la derecha. Una página que depende de otra muestra la ruta para volver (migas); en el celular, solo el tramo de arriba. Queda fija al scrollear."
         >
           <SidebarProvider className="grid min-h-0 gap-4">
             <div className="border-2 border-lcd-3">
@@ -684,6 +684,30 @@ export default function ComponentesPage() {
             </div>
             <div className="border-2 border-lcd-3">
               <TopBar title="Eventos" actions={<Button>Nuevo evento</Button>} />
+            </div>
+            <div className="border-2 border-lcd-3">
+              <TopBar
+                title="Expo de ejemplo con un nombre bastante largo"
+                crumbs={[{ label: "Eventos", href: "/dev/componentes" }]}
+                actions={
+                  <>
+                    <Button variant="secondary">Editar</Button>
+                    <EventActions
+                      org="dev"
+                      event={{
+                        id: "demo-topbar",
+                        slug: "componentes",
+                        title: "Expo de ejemplo",
+                        draft: false,
+                      }}
+                      hasSpots
+                      ready
+                      publicUrl="/dev/componentes"
+                      support={false}
+                    />
+                  </>
+                }
+              />
             </div>
           </SidebarProvider>
         </Section>

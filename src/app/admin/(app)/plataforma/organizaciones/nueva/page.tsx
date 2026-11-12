@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { PageBody, TopBar } from "@/components/admin/TopBar";
 import { platformMetadata } from "@/lib/data/viewer";
 import { ADMIN_HOST } from "@/lib/env";
@@ -13,15 +12,10 @@ export default function NuevaOrganizacionPage() {
   return (
     <>
       <TopBar
-        title="Plataforma"
-        actions={
-          <Link
-            href="/plataforma/organizaciones"
-            className="flex min-h-11 items-center font-display text-px-1"
-          >
-            Volver a organizaciones
-          </Link>
-        }
+        title="Nueva organización"
+        crumbs={[
+          { label: "Organizaciones", href: "/plataforma/organizaciones" },
+        ]}
       />
       <PageBody>
         <div className="grid max-w-xl gap-8">

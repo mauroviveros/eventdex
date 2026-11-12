@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { RaffleDraw } from "@/components/admin/RaffleDraw";
 import { PageBody, TopBar } from "@/components/admin/TopBar";
 import { ActionButton } from "@/components/ui/ActionButton";
@@ -34,15 +33,11 @@ export default async function SorteoPage({
   return (
     <>
       <TopBar
-        title="Eventos"
-        actions={
-          <Link
-            href={`/${org.slug}/eventos/${event.slug}`}
-            className="flex min-h-11 items-center font-display text-px-1"
-          >
-            Volver al evento
-          </Link>
-        }
+        title="Sorteo"
+        crumbs={[
+          { label: "Eventos", href: `/${org.slug}` },
+          { label: event.title, href: `/${org.slug}/eventos/${event.slug}` },
+        ]}
       />
       <PageBody>
         <div className="grid gap-2">
