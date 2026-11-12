@@ -1,6 +1,11 @@
 import { z } from "zod";
-import { COVER_MAX_BYTES, isTimeZone, localToInstant } from "@/domain/events";
-import { LOGO_TYPES, SLUG, storeLogo } from "@/lib/organizations";
+import {
+  COVER_MAX_BYTES,
+  eventSlug,
+  isTimeZone,
+  localToInstant,
+} from "@/domain/events";
+import { LOGO_TYPES, storeLogo } from "@/lib/organizations";
 import {
   type ActionResult,
   failed,
@@ -45,14 +50,6 @@ export const eventSchema = z.object({
     .trim()
     .min(2, "Poné un nombre de al menos 2 letras.")
     .max(160, "El nombre puede tener hasta 160 caracteres."),
-  slug: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .regex(
-      SLUG,
-      "Usá minúsculas, números y guiones, sin espacios. Ej.: expo-2026.",
-    ),
   // An empty select means "no venue yet".
   venueId: z
     .union([z.literal(""), z.guid()])
@@ -104,9 +101,28 @@ export async function createVenue(
 }
 
 const EVENT_ERRORS = {
-  "23505": "Ya hay un evento con esa dirección en tu organización.",
+  "23505":
+    "Ya hay varios eventos con ese nombre y edición. Cambiá alguno de los dos.",
   "23503": "Elegí una sede de tu organización.",
 };
+
+/**
+ * The address comes from the name and edition. If another event of the org
+ * already has it, tries again with -2, -3… up to five times.
+ */
+async function withFreeSlug<T>(
+  e: { title: string; editionLabel: string | null },
+  write: (
+    slug: string,
+  ) => PromiseLike<{ data: T | null; error: { code?: string } | null }>,
+): Promise<ActionResult<T>> {
+  for (let n = 1; ; n++) {
+    const { data, error } = await write(eventSlug(e.title, e.editionLabel, n));
+    if (error?.code === "23505" && n < 5) continue;
+    if (error || data === null) return failed(error, EVENT_ERRORS);
+    return { ok: true, data };
+  }
+}
 
 export async function createEvent(
   supabase: Client,
@@ -116,78 +132,53 @@ export async function createEvent(
   if (!parsed.success) return invalid(parsed.error);
 
   const e = parsed.data;
-  const { data, error } = await supabase
-    .from("events")
-    .insert({
-      organization_id: e.organizationId,
-      venue_id: e.venueId,
-      slug: e.slug,
-      title: e.title,
-      edition_label: e.editionLabel,
-      summary: e.summary,
-      timezone: e.timezone,
-    })
-    .select("id, slug")
-    .single();
-  if (error) return failed(error, EVENT_ERRORS);
-  return { ok: true, data };
+  return withFreeSlug(e, (slug) =>
+    supabase
+      .from("events")
+      .insert({
+        organization_id: e.organizationId,
+        venue_id: e.venueId,
+        slug,
+        title: e.title,
+        edition_label: e.editionLabel,
+        summary: e.summary,
+        timezone: e.timezone,
+      })
+      .select("id, slug")
+      .single(),
+  );
 }
 
 const eventEditSchema = eventSchema
-  .pick({ title: true, slug: true, editionLabel: true, summary: true })
-  // A published event's address is fixed: its form doesn't send it.
-  .partial({ slug: true })
+  .pick({ title: true, editionLabel: true, summary: true })
   .extend({ eventId: z.guid() });
 
 /**
- * Changes the event's own data. The address (slug) only changes while it is a
- * draft: once published, the link to its home may already be out there.
+ * Changes the event's own data. The address (slug) stays the one it got when
+ * it was created: renaming doesn't move its page or its public link.
  */
 export async function updateEvent(
   supabase: Client,
   input: unknown,
-): Promise<ActionResult<{ slug: string }>> {
+): Promise<ActionResult<null>> {
   const parsed = eventEditSchema.safeParse(input);
   if (!parsed.success) return invalid(parsed.error);
   const e = parsed.data;
 
-  const { data: current, error: readError } = await supabase
-    .from("events")
-    .select("slug, status")
-    .eq("id", e.eventId)
-    .is("deleted_at", null)
-    .maybeSingle();
-  if (readError) return failed(readError);
-  if (!current) return failed({ code: "42501" });
-  const slug = e.slug ?? current.slug;
-  const moves = slug !== current.slug;
-  const fixedAddress = {
-    ok: false as const,
-    error: "Revisá los datos marcados.",
-    fieldErrors: {
-      slug: "La dirección queda fija una vez publicado el evento.",
-    },
-  };
-  if (moves && current.status !== "draft") return fixedAddress;
-
-  let update = supabase
+  const { data, error } = await supabase
     .from("events")
     .update({
       title: e.title,
-      slug,
       edition_label: e.editionLabel,
       summary: e.summary,
     })
-    .eq("id", e.eventId);
-  // If it got published since the read, a moving address must not land.
-  if (moves) update = update.eq("status", "draft");
-  const { data, error } = await update.select("slug");
-  // The database holds the same rule (events_keep_published_slug).
-  if (error?.code === "23514" && moves) return fixedAddress;
+    .eq("id", e.eventId)
+    .is("deleted_at", null)
+    .select("id");
   if (error) return failed(error, EVENT_ERRORS);
-  if (data.length === 0)
-    return moves ? fixedAddress : failed({ code: "42501" });
-  return { ok: true, data: { slug: String(data[0]?.slug) } };
+  // RLS hides what isn't yours: nothing updated means no permission.
+  if (data.length === 0) return failed({ code: "42501" });
+  return { ok: true, data: null };
 }
 
 const venueChangeSchema = eventSchema
@@ -241,17 +232,18 @@ export async function duplicateEvent(
   if (!parsed.success) return invalid(parsed.error);
 
   const e = parsed.data;
-  const { data, error } = await supabase.rpc("duplicate_event", {
-    p_source_id: e.sourceId,
-    p_slug: e.slug,
-    p_title: e.title,
-    p_timezone: e.timezone,
-    p_edition_label: e.editionLabel ?? undefined,
-    p_summary: e.summary ?? undefined,
-    p_venue_id: e.venueId ?? undefined,
-  });
-  if (error) return failed(error, EVENT_ERRORS);
-  return { ok: true, data: { slug: data } };
+  const r = await withFreeSlug(e, (slug) =>
+    supabase.rpc("duplicate_event", {
+      p_source_id: e.sourceId,
+      p_slug: slug,
+      p_title: e.title,
+      p_timezone: e.timezone,
+      p_edition_label: e.editionLabel ?? undefined,
+      p_summary: e.summary ?? undefined,
+      p_venue_id: e.venueId ?? undefined,
+    }),
+  );
+  return r.ok ? { ok: true, data: { slug: r.data } } : r;
 }
 
 /** The form sends wall-clock times; they are read in the event's zone. */

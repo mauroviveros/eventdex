@@ -101,18 +101,12 @@ export async function setEventVenueAction(
   return r.ok ? { ok: true } : r.state;
 }
 
-/** A new address moves the page: land on it, since the old one is gone. */
 export async function updateEventAction(
   _prev: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  const before = String(formData.get("currentSlug") ?? "");
-  formData.delete("currentSlug");
   const r = await runFormWrite(formData, updateEvent);
-  if (!r.ok) return r.state;
-  const { slug } = r.data as { slug: string };
-  if (slug !== before) redirect(`/${r.org}/eventos/${slug}`);
-  return { ok: true };
+  return r.ok ? { ok: true } : r.state;
 }
 
 export async function updateScheduleAction(

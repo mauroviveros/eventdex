@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   countdownState,
   eventPhase,
+  eventSlug,
   formatEventDates,
   formatMoment,
   formatScheduleTimes,
@@ -209,5 +210,29 @@ describe("instantToLocal", () => {
     expect(
       instantToLocal(localToInstant("2026-11-14T23:30", BA).toISOString(), BA),
     ).toBe("2026-11-14T23:30");
+  });
+});
+
+describe("eventSlug", () => {
+  it("joins name and edition without accents or symbols", () => {
+    expect(eventSlug("Expo Ubbe", "2026")).toBe("expo-ubbe-2026");
+    expect(eventSlug("  Feria Navideña ¡Única!  ", null)).toBe(
+      "feria-navidena-unica",
+    );
+  });
+
+  it("adds a suffix for a taken address", () => {
+    expect(eventSlug("Expo", "2026", 3)).toBe("expo-2026-3");
+  });
+
+  it("always matches the address format, even from odd names", () => {
+    const SLUG = /^[a-z0-9][a-z0-9-]{1,62}$/;
+    for (const slug of [
+      eventSlug("!!", null),
+      eventSlug("X", null),
+      eventSlug("a".repeat(160), "Noviembre", 12),
+      eventSlug("Expo — ", "2026 ·"),
+    ])
+      expect(slug).toMatch(SLUG);
   });
 });

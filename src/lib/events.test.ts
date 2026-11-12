@@ -18,7 +18,6 @@ describe("duplicateEvent", () => {
     organizationId: "0000000a-0000-4000-8000-000000000001",
     sourceId: "0000000a-0000-4000-8000-000000000002",
     title: " Fest ",
-    slug: "Fest-Nov",
     venueId: "",
     editionLabel: "Noviembre",
     summary: "",
@@ -26,14 +25,14 @@ describe("duplicateEvent", () => {
   };
 
   it("normalizes the input and calls the database function", async () => {
-    const { client, rpc } = fakeClient({ data: "fest-nov", error: null });
+    const { client, rpc } = fakeClient({ data: "fest-noviembre", error: null });
     expect(await duplicateEvent(client, valid)).toEqual({
       ok: true,
-      data: { slug: "fest-nov" },
+      data: { slug: "fest-noviembre" },
     });
     expect(rpc).toHaveBeenCalledWith("duplicate_event", {
       p_source_id: valid.sourceId,
-      p_slug: "fest-nov",
+      p_slug: "fest-noviembre",
       p_title: "Fest",
       p_timezone: valid.timezone,
       p_edition_label: "Noviembre",
@@ -42,12 +41,19 @@ describe("duplicateEvent", () => {
     });
   });
 
-  it("explains a slug already in use", async () => {
-    const { client } = fakeClient({ data: null, error: { code: "23505" } });
+  it("tries the next address when the first one is taken", async () => {
+    const { client, rpc } = fakeClient(
+      { data: null, error: { code: "23505" } },
+      { data: "fest-noviembre-2", error: null },
+    );
     expect(await duplicateEvent(client, valid)).toEqual({
-      ok: false,
-      error: "Ya hay un evento con esa dirección en tu organización.",
+      ok: true,
+      data: { slug: "fest-noviembre-2" },
     });
+    expect(rpc).toHaveBeenLastCalledWith(
+      "duplicate_event",
+      expect.objectContaining({ p_slug: "fest-noviembre-2" }),
+    );
   });
 
   it("calls nothing without a source event", async () => {
@@ -65,7 +71,6 @@ describe("createEvent", () => {
   const valid = {
     organizationId: ORG,
     title: " Expo 2026 ",
-    slug: "Expo-2026",
     venueId: "",
     editionLabel: "",
     summary: "",
@@ -103,11 +108,26 @@ describe("createEvent", () => {
     expect(calls).toEqual([]);
   });
 
-  it("explains a taken slug", async () => {
-    const { client } = fakeClient({ data: null, error: { code: "23505" } });
+  it("tries -2, -3… while the address is taken, up to five times", async () => {
+    const taken = { data: null, error: { code: "23505" } };
+    const { client, calls } = fakeClient(taken, taken, {
+      data: { id: EVENT, slug: "expo-2026-3" },
+      error: null,
+    });
     expect(await createEvent(client, valid)).toEqual({
+      ok: true,
+      data: { id: EVENT, slug: "expo-2026-3" },
+    });
+    const slugs = calls
+      .filter((c) => c.method === "insert")
+      .map((c) => (c.args[0] as { slug: string }).slug);
+    expect(slugs).toEqual(["expo-2026", "expo-2026-2", "expo-2026-3"]);
+
+    const full = fakeClient(taken, taken, taken, taken, taken);
+    expect(await createEvent(full.client, valid)).toEqual({
       ok: false,
-      error: "Ya hay un evento con esa dirección en tu organización.",
+      error:
+        "Ya hay varios eventos con ese nombre y edición. Cambiá alguno de los dos.",
     });
   });
 });
@@ -329,96 +349,30 @@ describe("updateEvent", () => {
   const valid = {
     eventId: EVENT,
     title: " Expo Primavera ",
-    slug: "Expo-2027",
     editionLabel: "",
     summary: "Tres días",
   };
   const updated = (calls: { method: string; args: unknown[] }[]) =>
     calls.find((c) => c.method === "update")?.args[0];
 
-  it("normalizes the data and changes a draft's address", async () => {
-    const { client, calls } = fakeClient(
-      { data: { slug: "expo-2026", status: "draft" }, error: null },
-      { data: [{ slug: "expo-2027" }], error: null },
-    );
-    expect(await updateEvent(client, valid)).toEqual({
+  it("normalizes the data and leaves the address alone", async () => {
+    const { client, calls } = fakeClient({
+      data: [{ id: EVENT }],
+      error: null,
+    });
+    expect(await updateEvent(client, { ...valid, slug: "otra" })).toEqual({
       ok: true,
-      data: { slug: "expo-2027" },
+      data: null,
     });
     expect(updated(calls)).toEqual({
       title: "Expo Primavera",
-      slug: "expo-2027",
       edition_label: null,
       summary: "Tres días",
     });
   });
 
-  it("keeps a published event's address, and refuses a new one on its field", async () => {
-    const published = {
-      data: { slug: "expo-2026", status: "published" },
-      error: null,
-    };
-    const kept = fakeClient(published, {
-      data: [{ slug: "expo-2026" }],
-      error: null,
-    });
-    const { slug: _, ...noSlug } = valid;
-    expect(await updateEvent(kept.client, noSlug)).toEqual({
-      ok: true,
-      data: { slug: "expo-2026" },
-    });
-    expect(updated(kept.calls)).toMatchObject({ slug: "expo-2026" });
-
-    const moved = fakeClient(published);
-    const result = await updateEvent(moved.client, valid);
-    expect(result.ok).toBe(false);
-    if (!result.ok)
-      expect(result.fieldErrors?.slug).toBe(
-        "La dirección queda fija una vez publicado el evento.",
-      );
-    expect(updated(moved.calls)).toBeUndefined();
-  });
-
-  it("refuses a new address if the event got published since the read", async () => {
-    const { client, calls } = fakeClient(
-      { data: { slug: "expo-2026", status: "draft" }, error: null },
-      { data: [], error: null },
-    );
-    const result = await updateEvent(client, valid);
-    expect(result.ok).toBe(false);
-    if (!result.ok)
-      expect(result.fieldErrors?.slug).toBe(
-        "La dirección queda fija una vez publicado el evento.",
-      );
-    expect(calls).toContainEqual({ method: "eq", args: ["status", "draft"] });
-  });
-
-  it("explains the database's fixed address on its field", async () => {
-    const { client } = fakeClient(
-      { data: { slug: "expo-2026", status: "draft" }, error: null },
-      { data: null, error: { code: "23514" } },
-    );
-    const result = await updateEvent(client, valid);
-    expect(result.ok).toBe(false);
-    if (!result.ok)
-      expect(result.fieldErrors?.slug).toBe(
-        "La dirección queda fija una vez publicado el evento.",
-      );
-  });
-
-  it("explains an address already in use", async () => {
-    const { client } = fakeClient(
-      { data: { slug: "expo-2026", status: "draft" }, error: null },
-      { data: null, error: { code: "23505" } },
-    );
-    expect(await updateEvent(client, valid)).toEqual({
-      ok: false,
-      error: "Ya hay un evento con esa dirección en tu organización.",
-    });
-  });
-
   it("says no permission when the event isn't visible", async () => {
-    const { client } = fakeClient({ data: null, error: null });
+    const { client } = fakeClient({ data: [], error: null });
     expect(await updateEvent(client, valid)).toEqual({
       ok: false,
       error: "No tenés permiso para hacer esto.",
