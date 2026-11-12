@@ -41,7 +41,8 @@ export function CatalogTable({
                 type={s.type}
                 mode={s.archived_at ? "inactivo" : "lleno"}
                 scale={3}
-                label={SPOT_TYPE_LABEL[s.type]}
+                // Decorative: the type has its own column.
+                label=""
               />
               <span className="font-display text-px-1">{s.name}</span>
             </Link>

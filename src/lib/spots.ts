@@ -229,8 +229,15 @@ export async function addEventSpot(
       })
       .select("id")
       .single();
-    // Someone may have taken that code in between: read again, once.
-    if (error?.code === "23505" && attempt === 1) continue;
+    // Someone took that code in between: read again, once. A repeated spot
+    // breaks the other unique key and goes straight to its message.
+    if (error?.message?.includes("event_spots_event_id_code_key")) {
+      if (attempt === 1) continue;
+      return {
+        ok: false,
+        error: "Justo se agregó otro spot con ese código. Probá de nuevo.",
+      };
+    }
     if (error) return failed(error, ADD_EVENT_SPOT_MESSAGES);
     return { ok: true, data };
   }

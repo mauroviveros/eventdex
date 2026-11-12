@@ -1,6 +1,7 @@
 "use client";
 
-import { type ReactNode, useRef } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { buttonClass, type Variant } from "@/components/ui/Button";
 import {
   Sheet,
@@ -25,7 +26,7 @@ export function EditSheet({
   variant = "secondary",
   ariaLabel,
   fallbackFocus,
-  defaultOpen,
+  openParam,
   children,
 }: {
   label: string;
@@ -36,13 +37,32 @@ export function EditSheet({
   ariaLabel?: string;
   /** Id of what takes the focus if the button no longer exists on close. */
   fallbackFocus?: string;
-  /** Opens on load, for a link that leads straight to the sheet (?nuevo). */
-  defaultOpen?: boolean;
+  /**
+   * A URL param that opens the sheet (?nuevo), on load or from a link. It
+   * leaves the URL once open, so a reload or a shared link doesn't reopen it.
+   */
+  openParam?: string;
   children: ReactNode;
 }) {
   const trigger = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState(false);
+  const params = useSearchParams();
+  const pathname = usePathname();
+  useEffect(() => {
+    if (!openParam || !params.has(openParam)) return;
+    setOpen(true);
+    const next = new URLSearchParams(params);
+    next.delete(openParam);
+    // Next keeps its router in step with replaceState, without a new render.
+    window.history.replaceState(
+      null,
+      "",
+      next.size ? `${pathname}?${next}` : pathname,
+    );
+  }, [openParam, params, pathname]);
+
   return (
-    <Sheet defaultOpen={defaultOpen}>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger
         ref={trigger}
         className={buttonClass(variant)}
