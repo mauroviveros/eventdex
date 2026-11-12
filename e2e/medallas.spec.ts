@@ -113,11 +113,18 @@ test("a visitor scans a QR, signs in, collects, and staff can block them", async
     // Another browser: the admin's session lives on its own domain.
     const staff = await browser.newPage();
     await staff.goto(
-      `http://app.localhost:3000/${seed.org.slug}/eventos/${seed.event.slug}/visitantes`,
+      `http://app.localhost:3000/${seed.org.slug}/eventos/${seed.event.slug}?tab=visitantes`,
     );
     await signInByMail(staff, seed.ownerEmail);
 
-    const row = staff.getByRole("listitem").filter({
+    // The table sorts by medals through the URL.
+    await staff.getByRole("link", { name: "Medallas" }).click();
+    await expect(staff).toHaveURL(/orden=medallas&dir=desc/);
+    await expect(
+      staff.getByRole("columnheader", { name: "Medallas" }),
+    ).toHaveAttribute("aria-sort", "descending");
+
+    const row = staff.getByRole("row").filter({
       hasText: seed.visitorEmail,
     });
     await expect(row).toContainText("1");

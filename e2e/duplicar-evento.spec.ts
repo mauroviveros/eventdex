@@ -45,7 +45,7 @@ test("an event is duplicated into a draft with its spots", async ({ page }) => {
   });
 
   await test.step("and keeps the spots, each with its code", async () => {
-    await page.goto(`${admin}/eventos/feria-noviembre/spots`);
+    await page.goto(`${admin}/eventos/feria-noviembre?tab=spots`);
     await expect(page.getByText("A01", { exact: true })).toBeVisible();
     await expect(page.getByText("A02", { exact: true })).toBeVisible();
   });

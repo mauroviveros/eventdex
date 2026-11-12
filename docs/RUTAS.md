@@ -50,10 +50,10 @@ staff y owner.
 | `/[org]` | Dashboard de la organización: métricas (eventos, publicados, sedes; stands, visitantes y medallas se suman en R3 y R5), búsqueda y filtro por fase en la URL (`?q=…&fase=…`) y una tarjeta por evento. Un no miembro recibe 404; el developer entra en modo soporte, solo lectura (sin formularios ni botones de alta), y queda en la auditoría | Miembro · developer en soporte | R2 |
 | `/[org]/eventos` | Redirige a `/[org]` con los mismos filtros: la lista de eventos es el dashboard | Miembro | R2 |
 | `/[org]/eventos/nuevo` | Alta de evento: nace como borrador y lleva a su página. Con `?desde=<slug>`, lo duplica: el formulario arranca con sus datos y copia sus spots (no las jornadas ni el banner). En modo soporte, 404 | Miembro | R2 · R13 |
-| `/[org]/eventos/[evento]` | Datos del evento, sede (elegir, cambiar o quitar; el evento toma la zona horaria de la sede), banner (subir, cambiar y quitar), jornadas (agregar y quitar, en la zona del evento) y publicación. Desde acá se duplica | Miembro | R2 |
-| `/[org]/eventos/[evento]/spots` | Spots del evento: agregar desde el catálogo, código, puntos, activo/inactivo | Miembro | R3 |
+| `/[org]/eventos/[evento]` | El evento en pestañas (`?tab=general\|spots\|visitantes`; sin `tab`, General). Arriba, sus datos y los accesos a Sorteo, Duplicar y Hoja de QR. **General**: visitantes, medallas y spots activos; sede (elegir, cambiar o quitar; el evento toma la zona horaria de la sede), banner (subir, cambiar y quitar), jornadas (agregar y quitar, en la zona del evento) y publicación. **Spots**: tabla con orden y páginas en la URL (`?orden=…&dir=…&pag=…`), agregar desde el catálogo con un buscador, y editar o quitar en una hoja lateral. **Visitantes**: tabla de registrados con sus medallas, ordenable y paginada igual, y bloquear | Miembro | R2 · R3 · R5 · R15 |
+| `/[org]/eventos/[evento]/spots` | Redirige a la pestaña Spots del evento (`?tab=spots`) | Miembro | R3 · R15 |
 | `/[org]/eventos/[evento]/qr` | Hoja de QR para imprimir: una tarjeta por spot activo, 3 por fila en A4, para recortar. Impresa sale siempre en tonos claros, sin la barra del panel | Miembro | R3 |
-| `/[org]/eventos/[evento]/visitantes` | Registrados, medallas por visitante, bloquear | Miembro | R5 |
+| `/[org]/eventos/[evento]/visitantes` | Redirige a la pestaña Visitantes del evento (`?tab=visitantes`) | Miembro | R5 · R15 |
 | `/[org]/eventos/[evento]/sorteo` | Sorteos, elegibles, extraer y anular | Miembro | R6 |
 | `/[org]/spots` | Catálogo de spots de la organización | Miembro | R3 |
 | `/[org]/spots/nuevo` | Alta de spot | Miembro | R3 |

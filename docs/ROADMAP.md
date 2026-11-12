@@ -393,6 +393,13 @@ cada uno revisado antes del siguiente. Branch `feat/admin-shadcn`.
    formulario.
    *Listo cuando* las confirmaciones y los avisos del panel usan las primitivas, y la
    suite e2e pasa.
+5. ▶ **Detalle del evento.** Branch `feat/evento-pestanas`. Una página con Tabs (General ·
+   Spots · Visitantes) en `?tab=`; Spots y Visitantes son `DataTable` (TanStack Table)
+   con orden y páginas en la URL, resueltos en el server, y tarjetas bajo 640 px. El
+   spot del catálogo se elige con `Combobox` (Command); se edita en una `Sheet`. Las
+   rutas `/spots` y `/visitantes` redirigen a su pestaña; QR y Sorteo siguen aparte.
+   *Listo cuando* se cambia de pestaña, se ordena y pagina por URL, se agrega un spot
+   con el buscador usando el teclado, y los e2e del panel pasan.
 
 ---
 
