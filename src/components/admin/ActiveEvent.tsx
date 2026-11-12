@@ -3,6 +3,7 @@ import { buttonClass } from "@/components/ui/Button";
 import { LinkLabel } from "@/components/ui/LinkLabel";
 import { PhaseBadge } from "@/components/visitante/PhaseBadge";
 import type { Phase } from "@/domain/events";
+import { eventCells, StatStrip } from "./StatStrip";
 
 type Props = {
   org: string;
@@ -20,21 +21,13 @@ type Props = {
   publicUrl: string | null;
 };
 
-const perVisitor = new Intl.NumberFormat("es-AR", { maximumFractionDigits: 1 });
-
 /**
  * The event that matters today, first in the dashboard: the one in course or
  * the next one, with how it's going and the moves of the day one tap away.
  */
 export function ActiveEvent({ org, event, publicUrl }: Props) {
   const base = `/panel/${org}/eventos/${event.slug}`;
-  const { stands, visitors, medals } = event.stats;
-  const cells: [string, string][] = [
-    ["Stands", stands.toLocaleString("es-AR")],
-    ["Visitantes", visitors.toLocaleString("es-AR")],
-    ["Medallas", medals.toLocaleString("es-AR")],
-    ["Por visitante", visitors ? perVisitor.format(medals / visitors) : "–"],
-  ];
+  const { stands } = event.stats;
 
   return (
     <section className="panel grid gap-5 p-6">
@@ -51,22 +44,7 @@ export function ActiveEvent({ org, event, publicUrl }: Props) {
         </p>
       </header>
 
-      {/* Two by two on a phone, one row from sm; the rules follow the grid. */}
-      <dl className="grid grid-cols-2 border-2 border-lcd-3 sm:grid-cols-4">
-        {cells.map(([label, value], i) => (
-          <div
-            key={label}
-            className={`grid gap-1 px-4 py-3 ${i % 2 === 0 ? "border-r-2 border-lcd-3" : ""} ${
-              i > 1 ? "border-t-2 border-lcd-3 sm:border-t-0" : ""
-            } ${i < 3 ? "sm:border-r-2" : ""}`}
-          >
-            <dt className="font-display text-px-1 text-muted-foreground">
-              {label}
-            </dt>
-            <dd className="font-display text-px-3 tabular-nums">{value}</dd>
-          </div>
-        ))}
-      </dl>
+      <StatStrip cells={eventCells(event.stats)} />
 
       <div className="flex flex-wrap gap-2">
         <Link href={base} className={buttonClass("primary", "no-underline")}>
@@ -82,7 +60,7 @@ export function ActiveEvent({ org, event, publicUrl }: Props) {
         )}
         {event.phase === "en-curso" && (
           <Link
-            href={`${base}/sorteo`}
+            href={`${base}?tab=sorteo`}
             className={buttonClass("secondary", "no-underline")}
           >
             Sorteo

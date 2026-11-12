@@ -4,7 +4,7 @@ import type { SortDir } from "@/domain/table";
 // columns with the direction of their first click (?orden=). Shared by the
 // server, which reads them, and the client components, which draw the links.
 
-export const EVENT_TABS = ["general", "spots", "visitantes"] as const;
+export const EVENT_TABS = ["general", "spots", "visitantes", "sorteo"] as const;
 export type EventTab = (typeof EVENT_TABS)[number];
 
 export const SPOT_SORTS = {

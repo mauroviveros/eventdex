@@ -70,7 +70,7 @@ export function EventActions({
             </DropdownMenuItem>
           )}
           <DropdownMenuItem asChild>
-            <Link href={`${base}/sorteo`}>Sorteo</Link>
+            <Link href={`${base}?tab=sorteo`}>Sorteo</Link>
           </DropdownMenuItem>
           {publicUrl && (
             <DropdownMenuItem asChild>
