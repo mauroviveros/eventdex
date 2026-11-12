@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { AccountMenu } from "@/components/admin/AccountMenu";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { BrandPreview } from "@/components/admin/BrandPreview";
+import { EditSheet } from "@/components/admin/EditSheet";
 import { EventActions } from "@/components/admin/EventActions";
 import { EventCard } from "@/components/admin/EventCard";
 import { EventFilters } from "@/components/admin/EventFilters";
@@ -774,6 +775,35 @@ export default function ComponentesPage() {
                 borrador: 1,
               }}
             />
+          </div>
+        </Section>
+
+        <Section
+          title="Panel: hoja de edición"
+          note="EditSheet: un botón que abre una Sheet lateral con formularios, para editar sin salir de la página. Se desplaza sola; Cerrar, Escape o el fondo la cierran y el foco vuelve al botón."
+        >
+          <div className="flex flex-wrap gap-2">
+            <EditSheet
+              label="Editar"
+              title="Editar Expo de ejemplo 2026"
+              description="Datos, sede y banner del evento."
+            >
+              <Field label="Nombre" defaultValue="Expo de ejemplo 2026" />
+              <Field
+                label="Dirección en el panel"
+                defaultValue="expo-2026"
+                disabled
+                hint="Queda fija una vez publicado: el link a la portada ya puede estar compartido."
+              />
+            </EditSheet>
+            <EditSheet
+              label="Agregar jornadas"
+              title="Jornadas"
+              description="Cada jornada es un día del evento, con su horario."
+              variant="primary"
+            >
+              <p>Todavía no hay jornadas.</p>
+            </EditSheet>
           </div>
         </Section>
 

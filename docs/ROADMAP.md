@@ -407,6 +407,12 @@ cada uno revisado antes del siguiente. Branch `feat/admin-shadcn`.
    en la tarjeta y en el encabezado del evento. Sin borrar.
    *Listo cuando* las tarjetas muestran cifras reales, se duplica desde el menú de una
    tarjeta y los e2e del panel pasan.
+7. ▶ **Editar el evento.** Misma branch. Un botón Editar en el encabezado abre una
+   hoja lateral (`EditSheet`) con nombre, dirección (solo en borradores), edición,
+   resumen, sede y banner; las jornadas tienen su propia hoja, donde además se corrigen.
+   General queda de solo lectura.
+   *Listo cuando* se edita un evento y una jornada desde las hojas, un publicado no
+   cambia de dirección, y los e2e del panel pasan.
 
 ---
 

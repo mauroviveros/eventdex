@@ -17,9 +17,13 @@ test("an event created without a venue gets one later, and can drop it", async (
 }) => {
   const panel = `http://app.localhost:3000/${seed.org.slug}`;
   const sede = page.getByRole("combobox", { name: "Sede" });
+  // The venue is changed from the event's Editar sheet.
+  const edit = () =>
+    page.getByRole("button", { name: "Editar Feria E2E" }).click();
 
   await page.goto(`${panel}/eventos/${seed.event.slug}`);
   await signInByMail(page, seed.ownerEmail);
+  await edit();
   await expect(page.getByText("Todavía no cargaste sedes.")).toBeVisible();
 
   await page.getByRole("link", { name: "Cargá una" }).click();
@@ -30,18 +34,21 @@ test("an event created without a venue gets one later, and can drop it", async (
   await expect(page.getByText("Sede creada.")).toBeVisible();
 
   await page.goto(`${panel}/eventos/${seed.event.slug}`);
+  await edit();
   await sede.selectOption({ label: "Predio Ferial" });
   await page.getByRole("button", { name: "Guardar sede" }).click();
   await expect(page.getByText("Sede guardada.")).toBeVisible();
   await page.reload();
-  await expect(sede.locator("option:checked")).toHaveText("Predio Ferial");
   await expect(
     page.getByRole("definition").getByText("Predio Ferial"),
   ).toBeVisible();
+  await edit();
+  await expect(sede.locator("option:checked")).toHaveText("Predio Ferial");
 
   await sede.selectOption({ label: "Sin sede" });
   await page.getByRole("button", { name: "Guardar sede" }).click();
   await expect(page.getByText("Sede guardada.")).toBeVisible();
+  await page.keyboard.press("Escape");
   await expect(
     page.getByRole("definition").getByText("Sin sede"),
   ).toBeVisible();

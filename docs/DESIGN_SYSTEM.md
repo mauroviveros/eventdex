@@ -120,6 +120,7 @@ En `src/components/<dominio>/`. Cada uno documenta sus estados en `/dev/componen
 | **Fase** | Badge de próximo / en curso / finalizado / borrador | uno por fase + `sin fecha` |
 | **Tarjeta de evento** | Cuándo y dónde; stands activos, visitantes y medallas, y las medallas por visitante (un número, no un porcentaje: el público junta de 2 a 3). Abajo, Gestionar y el ⋮ de acciones del evento | finalizado · en curso · borrador (tira punteada, solo stands) · sin visitantes ("Todavía sin visitantes") |
 | **Acciones del evento** | `EventActions`: un ⋮ que abre Hoja de QR (si hay spots), Sorteo, Ver en el sitio (si está publicado), Publicar (borrador con jornadas, con confirmación: no vuelve a borrador) y Duplicar. Cada acción aparece solo si tiene sentido; en soporte, solo las que no cambian nada. Sin borrar. Está en la tarjeta y en el encabezado del evento | con todo · borrador listo · soporte |
+| **Hoja de edición** | `EditSheet`: un botón que abre una Sheet lateral con formularios, para editar sin salir de la página (Editar evento, Jornadas). Cada formulario guarda por su cuenta y avisa con un toast; la hoja sigue abierta | con formularios · campo fijo con su porqué |
 | **Tarjeta de spot** | Nombre, código, tipo, puntos | activa · inactiva · archivada · override de esta edición |
 | **QR** | Código + nombre + código corto, listo para imprimir | normal · vista de impresión A4 |
 | **Extracción** | Ganador de una tirada del sorteo | sorteando · ganador · anulada |
