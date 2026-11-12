@@ -5,10 +5,13 @@ import { Button } from "@/components/ui/Button";
 import { DateField } from "@/components/ui/DateField";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
 import { useFormFeedback } from "@/components/ui/useFormFeedback";
+import { instantToLocal } from "@/domain/events";
 import {
   addScheduleAction,
   publishEventAction,
   setEventVenueAction,
+  updateEventAction,
+  updateScheduleAction,
 } from "@/lib/actions/events";
 
 type Ids = { org: string; eventId: string };
@@ -154,6 +157,154 @@ export function VenueForm({
         className="justify-self-start"
       >
         Guardar sede
+      </Button>
+    </form>
+  );
+}
+
+/**
+ * The event's own data. The address only changes while it's a draft: once
+ * published, the link to its home may already be shared.
+ */
+export function EventDataForm({
+  org,
+  event,
+}: {
+  org: string;
+  event: {
+    id: string;
+    slug: string;
+    title: string;
+    editionLabel: string | null;
+    summary: string | null;
+    draft: boolean;
+  };
+}) {
+  const [state, action, pending] = useActionState(updateEventAction, null);
+  const { form, failed, fields, values } = useFormFeedback(
+    state,
+    "Cambios guardados.",
+  );
+
+  return (
+    <form ref={form} action={action} className="grid gap-6" noValidate>
+      <input type="hidden" name="org" value={org} />
+      <input type="hidden" name="eventId" value={event.id} />
+      <input type="hidden" name="currentSlug" value={event.slug} />
+      {failed && !failed.fieldErrors && (
+        <FormMessage tone="error">{failed.error}</FormMessage>
+      )}
+      <Field
+        label="Nombre"
+        name="title"
+        defaultValue={values.title ?? event.title}
+        required
+        error={fields.title}
+      />
+      <Field
+        label="Dirección en el panel"
+        // Disabled fields aren't sent: a published event keeps its address.
+        name="slug"
+        defaultValue={values.slug ?? event.slug}
+        required
+        disabled={!event.draft}
+        hint={
+          event.draft
+            ? `Queda en /${org}/eventos/… y en el link público. Minúsculas, números y guiones.`
+            : "Queda fija una vez publicado: el link a la portada ya puede estar compartido."
+        }
+        error={fields.slug}
+      />
+      <Field
+        label="Edición"
+        name="editionLabel"
+        defaultValue={values.editionLabel ?? event.editionLabel ?? ""}
+        placeholder="Noviembre 2026"
+        hint="Opcional. Distingue esta edición de las anteriores."
+        error={fields.editionLabel}
+      />
+      <Field
+        label="Resumen"
+        name="summary"
+        defaultValue={values.summary ?? event.summary ?? ""}
+        hint="Opcional. Una línea que aparece al compartir el link."
+        error={fields.summary}
+      />
+      <Button
+        type="submit"
+        pending={pending}
+        pendingLabel="Guardando…"
+        className="justify-self-start"
+      >
+        Guardar cambios
+      </Button>
+    </form>
+  );
+}
+
+/** Corrects a schedule's name and times, typed in the event's zone. */
+export function EditScheduleForm({
+  org,
+  eventId,
+  timezone,
+  schedule,
+}: Ids & {
+  timezone: string;
+  schedule: {
+    id: string;
+    label: string | null;
+    starts_at: string;
+    ends_at: string;
+  };
+}) {
+  const [state, action, pending] = useActionState(updateScheduleAction, null);
+  const { form, failed, fields, values } = useFormFeedback(
+    state,
+    "Jornada guardada.",
+  );
+
+  return (
+    <form ref={form} action={action} className="grid gap-5" noValidate>
+      <input type="hidden" name="org" value={org} />
+      <input type="hidden" name="eventId" value={eventId} />
+      <input type="hidden" name="id" value={schedule.id} />
+      {failed && !failed.fieldErrors && (
+        <FormMessage tone="error">{failed.error}</FormMessage>
+      )}
+      <Field
+        label="Nombre"
+        name="label"
+        defaultValue={values.label ?? schedule.label ?? ""}
+        placeholder="Día 1"
+        hint="Opcional."
+        error={fields.label}
+      />
+      <DateField
+        label="Empieza"
+        name="startsAt"
+        time
+        defaultValue={
+          values.startsAt ?? instantToLocal(schedule.starts_at, timezone)
+        }
+        error={fields.startsAt}
+      />
+      <DateField
+        label="Termina"
+        name="endsAt"
+        time
+        defaultValue={
+          values.endsAt ?? instantToLocal(schedule.ends_at, timezone)
+        }
+        error={fields.endsAt}
+      />
+      <Button
+        type="submit"
+        variant="secondary"
+        pending={pending}
+        pendingLabel="Guardando…"
+        className="justify-self-start"
+      >
+        Guardar jornada
       </Button>
     </form>
   );

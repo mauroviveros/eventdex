@@ -33,15 +33,19 @@ test("an event's banner goes from the panel to the public home", async ({
     await expect(cover).toHaveCount(0);
   });
 
+  // The banner is changed from the event's Editar sheet.
+  const sheet = page.getByRole("dialog", { name: /^Editar / });
+
   await test.step("the owner uploads it", async () => {
-    await page.locator('input[type="file"]').setInputFiles({
+    await page.getByRole("button", { name: "Editar Feria E2E" }).click();
+    await sheet.locator('input[type="file"]').setInputFiles({
       name: "banner.png",
       mimeType: "image/png",
       buffer: PNG,
     });
-    await page.getByRole("button", { name: "Subir banner" }).click();
+    await sheet.getByRole("button", { name: "Subir banner" }).click();
     await expect(page.getByText("Banner actualizado.")).toBeVisible();
-    await expect(page.getByAltText("Banner actual")).toBeVisible();
+    await expect(sheet.getByAltText("Banner actual")).toBeVisible();
   });
 
   await test.step("the home shows it, and the file is served", async () => {
@@ -53,8 +57,10 @@ test("an event's banner goes from the panel to the public home", async ({
   });
 
   await test.step("removing it leaves the home as it was", async () => {
-    await page.getByRole("button", { name: "Quitar banner" }).click();
+    await sheet.getByRole("button", { name: "Quitar banner" }).click();
     await page.getByRole("button", { name: "Sí, quitar" }).click();
+    await expect(sheet.getByAltText("Banner actual")).toHaveCount(0);
+    await page.keyboard.press("Escape");
     await expect(page.getByText("Todavía no hay banner")).toBeVisible();
     await visitor.reload();
     await expect(cover).toHaveCount(0);

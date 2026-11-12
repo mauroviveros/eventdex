@@ -50,4 +50,16 @@ test("an event is duplicated into a draft with its spots", async ({ page }) => {
     await expect(page.getByText("A01", { exact: true })).toBeVisible();
     await expect(page.getByText("A02", { exact: true })).toBeVisible();
   });
+
+  await test.step("a draft's name and address change from Editar, and the page follows", async () => {
+    await page.getByRole("button", { name: "Editar Feria E2E" }).click();
+    const sheet = page.getByRole("dialog", { name: "Editar Feria E2E" });
+    await sheet.getByLabel("Nombre").fill("Feria de Noviembre");
+    await sheet.getByLabel("Dirección en el panel").fill("feria-nov");
+    await sheet.getByRole("button", { name: "Guardar cambios" }).click();
+    await expect(page).toHaveURL(/\/eventos\/feria-nov$/);
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Feria de Noviembre" }),
+    ).toBeVisible();
+  });
 });
