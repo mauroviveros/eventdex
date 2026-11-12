@@ -1,20 +1,12 @@
 "use client";
 
 import { createColumnHelper } from "@tanstack/react-table";
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { DataTable, type features } from "@/components/admin/DataTable";
+import { EditSheet } from "@/components/admin/EditSheet";
 import { Sprite } from "@/components/pixel/Sprite";
 import { ActionButton } from "@/components/ui/ActionButton";
-import { buttonClass } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/shadcn/badge";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/shadcn/sheet";
 import { SPOT_TYPE_LABEL } from "@/domain/spots";
 import type { SortDir } from "@/domain/table";
 import { removeEventSpotAction } from "@/lib/actions/spots";
@@ -118,51 +110,27 @@ export function SpotsTable({
 }
 
 function SpotSheet({ org, spot: s }: { org: string; spot: Spot }) {
-  const trigger = useRef<HTMLButtonElement>(null);
-
   return (
-    <Sheet>
-      <SheetTrigger
-        ref={trigger}
-        className={buttonClass("secondary")}
-        aria-label={`Editar ${s.shown.name}`}
-      >
-        Editar
-      </SheetTrigger>
-      <SheetContent
-        className="w-full gap-8 overflow-y-auto p-6 sm:max-w-lg"
-        onCloseAutoFocus={(e) => {
-          // Removing the spot takes its row, and this "Editar", with it:
-          // hand the focus to the table's heading instead of the page top.
-          if (trigger.current?.isConnected) return;
-          e.preventDefault();
-          document.getElementById("en-el-evento")?.focus();
+    <EditSheet
+      label="Editar"
+      ariaLabel={`Editar ${s.shown.name}`}
+      title={`${s.code} · ${s.shown.name}`}
+      description="Lo que cambies acá vale solo para este evento. El QR no cambia."
+      // Removing the spot takes its row, and this "Editar", with it.
+      fallbackFocus="en-el-evento"
+    >
+      <EditEventSpotForm org={org} spot={s} catalogName={s.defaultName} />
+      <ActionButton
+        action={removeEventSpotAction}
+        fields={{ org, id: s.id }}
+        label="Quitar del evento"
+        pendingLabel="Quitando…"
+        ariaLabel={`Quitar ${s.shown.name} del evento`}
+        confirm={{
+          message: `Su QR deja de funcionar, también el que ya esté impreso. Si volvés a agregarlo, tiene un QR nuevo. Si el stand no vino, mejor desactivalo.`,
+          label: `Quitar ${s.code}`,
         }}
-      >
-        <div className="flex items-start justify-between gap-4">
-          <div className="grid gap-1">
-            <SheetTitle className="text-px-2">
-              {s.code} · {s.shown.name}
-            </SheetTitle>
-            <SheetDescription>
-              Lo que cambies acá vale solo para este evento. El QR no cambia.
-            </SheetDescription>
-          </div>
-          <SheetClose className={buttonClass("secondary")}>Cerrar</SheetClose>
-        </div>
-        <EditEventSpotForm org={org} spot={s} catalogName={s.defaultName} />
-        <ActionButton
-          action={removeEventSpotAction}
-          fields={{ org, id: s.id }}
-          label="Quitar del evento"
-          pendingLabel="Quitando…"
-          ariaLabel={`Quitar ${s.shown.name} del evento`}
-          confirm={{
-            message: `Su QR deja de funcionar, también el que ya esté impreso. Si volvés a agregarlo, tiene un QR nuevo. Si el stand no vino, mejor desactivalo.`,
-            label: `Quitar ${s.code}`,
-          }}
-        />
-      </SheetContent>
-    </Sheet>
+      />
+    </EditSheet>
   );
 }

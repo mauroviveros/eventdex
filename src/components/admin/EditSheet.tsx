@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { type ReactNode, useRef } from "react";
 import { buttonClass, type Variant } from "@/components/ui/Button";
 import {
   Sheet,
@@ -14,7 +14,9 @@ import {
 /**
  * A button that opens a side sheet with forms: how the panel edits something
  * without leaving the page. The sheet scrolls on its own; Cerrar, Escape or
- * the overlay close it, and the focus goes back to the button.
+ * the overlay close it, and the focus goes back to the button. If the button
+ * is gone (what it edited was removed from the sheet), the focus goes to
+ * `fallbackFocus` instead of the top of the page.
  */
 export function EditSheet({
   label,
@@ -22,6 +24,7 @@ export function EditSheet({
   description,
   variant = "secondary",
   ariaLabel,
+  fallbackFocus,
   children,
 }: {
   label: string;
@@ -30,14 +33,28 @@ export function EditSheet({
   variant?: Variant;
   /** Accessible name when the button needs context ("Editar Expo 2026"). */
   ariaLabel?: string;
+  /** Id of what takes the focus if the button no longer exists on close. */
+  fallbackFocus?: string;
   children: ReactNode;
 }) {
+  const trigger = useRef<HTMLButtonElement>(null);
   return (
     <Sheet>
-      <SheetTrigger className={buttonClass(variant)} aria-label={ariaLabel}>
+      <SheetTrigger
+        ref={trigger}
+        className={buttonClass(variant)}
+        aria-label={ariaLabel}
+      >
         {label}
       </SheetTrigger>
-      <SheetContent className="w-full gap-8 overflow-y-auto p-6 sm:max-w-lg">
+      <SheetContent
+        className="w-full gap-8 overflow-y-auto p-6 sm:max-w-lg"
+        onCloseAutoFocus={(e) => {
+          if (!fallbackFocus || trigger.current?.isConnected) return;
+          e.preventDefault();
+          document.getElementById(fallbackFocus)?.focus();
+        }}
+      >
         <div className="flex items-start justify-between gap-4">
           <div className="grid gap-1">
             <SheetTitle className="text-px-2">{title}</SheetTitle>
