@@ -461,7 +461,7 @@ El panel se muda al dominio de la landing, bajo `/panel`, y se rediseña por zon
 con las primitivas de shadcn adaptadas al mundo LCD. Una zona por bloque, cada una
 revisada antes de la siguiente.
 
-1. ▶ **Un solo host.** Branch `feat/panel-unificado`. `eventdex.vercel.app/panel/…` sirve
+1. ✅ **Un solo host.** Branch `feat/panel-unificado`. `eventdex.vercel.app/panel/…` sirve
    el panel y la plataforma, y `/ingresar` el login del staff; el host aparte del admin
    (`eventdex-admin.vercel.app`, `app.localhost`) desaparece, sin redirección: no
    llegó a producción. Las carpetas de `src/app/` pasan a ser las URLs (`(landing)/`,
@@ -469,9 +469,18 @@ revisada antes de la siguiente.
    suma Ingresar en su cabecera y sigue estática. Sin cambios en la base.
    *Listo cuando* se entra por `/ingresar` y se cae en `/panel/[org]`, salir vuelve a
    `/ingresar` y los e2e del panel pasan.
-2. **Shell y dashboard de la org.** `/impeccable critique` primero. El evento activo con
-   sus cifras y accesos, los borradores con lo que les falta para publicar, y los
-   eventos en `DataTable` (tarjetas bajo 640 px). Solo datos que ya existen.
+2. ▶ **Dashboard de la org.** Misma branch. `/impeccable critique`: 25/40, sin hallazgos
+   del detector; los problemas eran de jerarquía (totales que no deciden nada, ningún
+   atajo al evento del día, borradores sin decir qué les falta, eventos del mismo nombre
+   sin edición). Arriba, el evento activo (`ActiveEvent`: en curso o el próximo, con sus
+   cifras y atajos); después, «Para publicar» (`DraftChecklist`); abajo, la tabla de
+   eventos (`EventsTable` sobre `DataTable`, con tarjetas compactas bajo 640 px) ordenada
+   por atención (`sortForPanel`, con tests). Salen los totales de la org y `EventCard`.
+   Sin cambios en la base. El shell queda como está.
+   *Listo cuando* el dashboard muestra el evento activo, los borradores y la tabla con
+   datos reales en escritorio y celular, y los e2e del panel pasan.
+   axe (WCAG 2.2 AA): 0 violaciones en el dashboard (claro y oscuro, 375 y 1280 px) y
+   en `/dev/componentes`.
 3. **Detalle del evento y sorteo.**
 4. **Catálogo de spots y sedes**, con las tablas pasadas a tarjetas en el celular.
 5. **Equipo y ajustes.**
