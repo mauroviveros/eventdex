@@ -204,23 +204,18 @@ export function countdownState(
 
 /**
  * The event's address, built from its name and edition: "Expo Ubbe" + "2026"
- * → "expo-ubbe-2026". `n` > 1 adds a suffix for when that address is taken.
- * Always matches SLUG (lowercase, digits and dashes, 2 to 63 characters).
+ * → "expo-ubbe-2026". Always matches SLUG (lowercase, digits and dashes, 2 to
+ * 63 characters).
  */
-export function eventSlug(
-  title: string,
-  editionLabel: string | null,
-  n = 1,
-): string {
-  const suffix = n > 1 ? `-${n}` : "";
-  const base =
+export function eventSlug(title: string, editionLabel: string | null): string {
+  const slug =
     [title, editionLabel ?? ""]
       .join(" ")
       .normalize("NFD")
       .replace(/\p{Diacritic}/gu, "")
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
-      .slice(0, 63 - suffix.length)
+      .slice(0, 63)
       .replace(/^-+|-+$/g, "") || "evento";
-  return base.length < 2 ? `evento-${base}${suffix}` : `${base}${suffix}`;
+  return slug.length < 2 ? `evento-${slug}` : slug;
 }

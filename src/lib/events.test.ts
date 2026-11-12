@@ -41,19 +41,33 @@ describe("duplicateEvent", () => {
     });
   });
 
-  it("tries the next address when the first one is taken", async () => {
-    const { client, rpc } = fakeClient(
-      { data: null, error: { code: "23505" } },
-      { data: "fest-noviembre-2", error: null },
-    );
-    expect(await duplicateEvent(client, valid)).toEqual({
-      ok: true,
-      data: { slug: "fest-noviembre-2" },
+  it("refuses a repeated name and edition on the edition field", async () => {
+    const { client } = fakeClient({
+      data: null,
+      error: {
+        code: "23505",
+        message:
+          'duplicate key value violates unique constraint "events_org_slug_unique"',
+      },
     });
-    expect(rpc).toHaveBeenLastCalledWith(
-      "duplicate_event",
-      expect.objectContaining({ p_slug: "fest-noviembre-2" }),
-    );
+    expect(await duplicateEvent(client, valid)).toEqual({
+      ok: false,
+      error: "Revisá los datos marcados.",
+      fieldErrors: {
+        editionLabel:
+          "Ya hay un evento con este nombre y edición. Poné otra edición.",
+      },
+    });
+  });
+
+  it("doesn't blame the edition for other duplicates", async () => {
+    const { client } = fakeClient({
+      data: null,
+      error: { code: "23505", message: "event_spots_event_code_key" },
+    });
+    const result = await duplicateEvent(client, valid);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.fieldErrors).toBeUndefined();
   });
 
   it("calls nothing without a source event", async () => {
@@ -108,26 +122,22 @@ describe("createEvent", () => {
     expect(calls).toEqual([]);
   });
 
-  it("tries -2, -3… while the address is taken, up to five times", async () => {
-    const taken = { data: null, error: { code: "23505" } };
-    const { client, calls } = fakeClient(taken, taken, {
-      data: { id: EVENT, slug: "expo-2026-3" },
-      error: null,
+  it("refuses a repeated name and edition on the edition field", async () => {
+    const { client } = fakeClient({
+      data: null,
+      error: {
+        code: "23505",
+        message:
+          'duplicate key value violates unique constraint "events_org_slug_unique"',
+      },
     });
     expect(await createEvent(client, valid)).toEqual({
-      ok: true,
-      data: { id: EVENT, slug: "expo-2026-3" },
-    });
-    const slugs = calls
-      .filter((c) => c.method === "insert")
-      .map((c) => (c.args[0] as { slug: string }).slug);
-    expect(slugs).toEqual(["expo-2026", "expo-2026-2", "expo-2026-3"]);
-
-    const full = fakeClient(taken, taken, taken, taken, taken);
-    expect(await createEvent(full.client, valid)).toEqual({
       ok: false,
-      error:
-        "Ya hay varios eventos con ese nombre y edición. Cambiá alguno de los dos.",
+      error: "Revisá los datos marcados.",
+      fieldErrors: {
+        editionLabel:
+          "Ya hay un evento con este nombre y edición. Poné otra edición.",
+      },
     });
   });
 });

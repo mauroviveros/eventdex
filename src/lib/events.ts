@@ -100,28 +100,26 @@ export async function createVenue(
   return { ok: true, data };
 }
 
-const EVENT_ERRORS = {
-  "23505":
-    "Ya hay varios eventos con ese nombre y edición. Cambiá alguno de los dos.",
-  "23503": "Elegí una sede de tu organización.",
-};
+const EVENT_ERRORS = { "23503": "Elegí una sede de tu organización." };
 
 /**
- * The address comes from the name and edition. If another event of the org
- * already has it, tries again with -2, -3… up to five times.
+ * The address comes from the name and edition, so a taken one means the org
+ * already has an event with both: likely a repeat, so it's refused.
  */
-async function withFreeSlug<T>(
-  e: { title: string; editionLabel: string | null },
-  write: (
-    slug: string,
-  ) => PromiseLike<{ data: T | null; error: { code?: string } | null }>,
-): Promise<ActionResult<T>> {
-  for (let n = 1; ; n++) {
-    const { data, error } = await write(eventSlug(e.title, e.editionLabel, n));
-    if (error?.code === "23505" && n < 5) continue;
-    if (error || data === null) return failed(error, EVENT_ERRORS);
-    return { ok: true, data };
-  }
+function eventWriteFailed(error: { code?: string; message?: string }) {
+  if (
+    error.code === "23505" &&
+    error.message?.includes("events_org_slug_unique")
+  )
+    return {
+      ok: false as const,
+      error: "Revisá los datos marcados.",
+      fieldErrors: {
+        editionLabel:
+          "Ya hay un evento con este nombre y edición. Poné otra edición.",
+      },
+    };
+  return failed(error, EVENT_ERRORS);
 }
 
 export async function createEvent(
@@ -132,21 +130,21 @@ export async function createEvent(
   if (!parsed.success) return invalid(parsed.error);
 
   const e = parsed.data;
-  return withFreeSlug(e, (slug) =>
-    supabase
-      .from("events")
-      .insert({
-        organization_id: e.organizationId,
-        venue_id: e.venueId,
-        slug,
-        title: e.title,
-        edition_label: e.editionLabel,
-        summary: e.summary,
-        timezone: e.timezone,
-      })
-      .select("id, slug")
-      .single(),
-  );
+  const { data, error } = await supabase
+    .from("events")
+    .insert({
+      organization_id: e.organizationId,
+      venue_id: e.venueId,
+      slug: eventSlug(e.title, e.editionLabel),
+      title: e.title,
+      edition_label: e.editionLabel,
+      summary: e.summary,
+      timezone: e.timezone,
+    })
+    .select("id, slug")
+    .single();
+  if (error) return eventWriteFailed(error);
+  return { ok: true, data };
 }
 
 const eventEditSchema = eventSchema
@@ -175,7 +173,7 @@ export async function updateEvent(
     .eq("id", e.eventId)
     .is("deleted_at", null)
     .select("id");
-  if (error) return failed(error, EVENT_ERRORS);
+  if (error) return failed(error);
   // RLS hides what isn't yours: nothing updated means no permission.
   if (data.length === 0) return failed({ code: "42501" });
   return { ok: true, data: null };
@@ -232,18 +230,17 @@ export async function duplicateEvent(
   if (!parsed.success) return invalid(parsed.error);
 
   const e = parsed.data;
-  const r = await withFreeSlug(e, (slug) =>
-    supabase.rpc("duplicate_event", {
-      p_source_id: e.sourceId,
-      p_slug: slug,
-      p_title: e.title,
-      p_timezone: e.timezone,
-      p_edition_label: e.editionLabel ?? undefined,
-      p_summary: e.summary ?? undefined,
-      p_venue_id: e.venueId ?? undefined,
-    }),
-  );
-  return r.ok ? { ok: true, data: { slug: r.data } } : r;
+  const { data, error } = await supabase.rpc("duplicate_event", {
+    p_source_id: e.sourceId,
+    p_slug: eventSlug(e.title, e.editionLabel),
+    p_title: e.title,
+    p_timezone: e.timezone,
+    p_edition_label: e.editionLabel ?? undefined,
+    p_summary: e.summary ?? undefined,
+    p_venue_id: e.venueId ?? undefined,
+  });
+  if (error) return eventWriteFailed(error);
+  return { ok: true, data: { slug: data } };
 }
 
 /** The form sends wall-clock times; they are read in the event's zone. */
