@@ -2,7 +2,8 @@
 
 import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
-import { Field, FormMessage, SelectField } from "@/components/ui/Field";
+import { Combobox } from "@/components/ui/Combobox";
+import { Field, FormMessage } from "@/components/ui/Field";
 import { Checkbox } from "@/components/ui/shadcn/checkbox";
 import { Label } from "@/components/ui/shadcn/label";
 import { useFormFeedback } from "@/components/ui/useFormFeedback";
@@ -32,22 +33,16 @@ export function AddEventSpotForm({
       {failed && !failed.fieldErrors && (
         <FormMessage tone="error">{failed.error}</FormMessage>
       )}
-      <SelectField
+      <Combobox
+        key={values.spotId}
         label="Spot del catálogo"
         name="spotId"
-        defaultValue={values.spotId ?? ""}
-        required
+        options={spots.map((s) => ({ value: s.id, label: s.name }))}
+        placeholder="Elegí un spot"
+        empty="Ningún spot del catálogo se llama así."
+        defaultValue={values.spotId}
         error={fields.spotId}
-      >
-        <option value="" disabled>
-          Elegí un spot
-        </option>
-        {spots.map((s) => (
-          <option key={s.id} value={s.id}>
-            {s.name}
-          </option>
-        ))}
-      </SelectField>
+      />
       <div className="grid gap-6 sm:grid-cols-2">
         <Field
           label="Código"

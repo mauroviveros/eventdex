@@ -45,11 +45,12 @@ test("a spot's logo goes from the form to the visitor's medals", async ({
   });
 
   await test.step("and puts it in the published event", async () => {
-    await page.goto(`${admin}/eventos/feria/spots`);
+    await page.goto(`${admin}/eventos/feria?tab=spots`);
     const add = page.locator("form", {
       has: page.getByLabel("Spot del catálogo"),
     });
-    await add.getByLabel("Spot del catálogo").selectOption({ label: NAME });
+    await add.getByRole("combobox", { name: "Spot del catálogo" }).click();
+    await page.getByRole("option", { name: NAME }).click();
     await add.getByLabel("Código").fill("L01");
     await add.getByRole("button", { name: /Agregar/ }).click();
     await expect(page.getByText("L01", { exact: true })).toBeVisible();

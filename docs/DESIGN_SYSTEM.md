@@ -93,8 +93,11 @@ Primitivas de shadcn/ui en `src/components/ui/shadcn/`, adaptadas a los tokens: 
 Input, Textarea, Select, Checkbox, Switch, Dialog, Sheet, Dropdown, Tabs, Table,
 Badge, Toast, Skeleton, Tooltip, Avatar y Card. Ya están Sidebar, Sheet, Dropdown,
 Tooltip, Avatar, Input, Label, NativeSelect (el select del sistema, cómodo en el
-celular), Checkbox, Popover, Calendar, Table, Badge, Button, AlertDialog y Toast (Sonner)
-(R15). Badge tiene una variante por tono
+celular), Checkbox, Popover, Calendar, Table, Badge, Button, AlertDialog, Toast (Sonner),
+Tabs y Command (R15). Tabs es la tira de los filtros: reglas de 2 px y la activa en
+tinta. `Combobox` (Popover + Command) es el select en el que se escribe, para listas
+largas como el catálogo de spots; manda su valor en un input oculto, igual que un
+select. `DataTable` arma las tablas del panel con orden y páginas en la URL. Badge tiene una variante por tono
 (tinta, relleno, regla, secundario) más `destructive`, que es solo para algo que anda
 mal. Las fechas se eligen con `DateField`:
 calendario en castellano, semana desde el lunes, días de 44 px y la hora al lado. Sus roles (`sidebar-*`, `popover`, `accent`, `muted`,
@@ -147,7 +150,9 @@ Los formularios además muestran:
   desktop primero, pero todo se puede operar desde el celular.
 - Las acciones principales del visitante quedan al alcance del pulgar (mitad
   inferior) y miden al menos 44×44 px.
-- En el admin, las tablas pasan a lista de tarjetas por debajo de 640 px.
+- En el admin, las tablas pasan a lista de tarjetas por debajo de 640 px. `DataTable` ya
+  lo hace (cada celda lleva el nombre de su columna); las de la plataforma todavía se
+  corren de costado.
 - Sin hover como única forma de llegar a algo.
 - Contemplar la red lenta: las mutaciones muestran el resultado optimista solo
   cuando revertirlo es seguro (nunca en el reclamo de medallas ni en el sorteo).
