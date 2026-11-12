@@ -2,14 +2,12 @@
 
 import { type CSSProperties, type ReactNode, useState } from "react";
 import { EVENTDEX_HUE, ramp, rampFromHex } from "@/domain/palette";
-import { burningTower } from "@/skins/burning-tower/skin";
 
 // Synthetic organizations, only to show the palette swap.
 const PRESETS = [
   { id: "eventdex", name: "Eventdex", ramp: ramp(EVENTDEX_HUE) },
   { id: "magenta", name: "Expo de ejemplo", ramp: rampFromHex("#d6336c") },
   { id: "azul", name: "Feria de ejemplo", ramp: rampFromHex("#1e66f5") },
-  { id: burningTower.name, name: "Burning Tower", ramp: burningTower.ramp },
 ] as const;
 
 /** Applies a four-tone ramp to everything inside and lets you swap it. */
@@ -22,18 +20,15 @@ export function PaletteScope({ children }: { children: ReactNode }) {
       ? rampFromHex(custom)
       : (PRESETS.find((p) => p.id === selected) ?? PRESETS[0]).ramp;
 
-  const skin = selected === burningTower.name ? burningTower : undefined;
-  const style = {
-    ...Object.fromEntries(tones.map((tone, i) => [`--ramp-${i}`, tone])),
-    ...skin?.vars,
-  } as CSSProperties;
+  const style = Object.fromEntries(
+    tones.map((tone, i) => [`--ramp-${i}`, tone]),
+  ) as CSSProperties;
 
   return (
     <div
       style={style}
       data-scheme={scheme === "system" ? undefined : scheme}
-      data-skin={skin?.name}
-      className={`ramp-scope min-h-dvh bg-lcd-0 text-lcd-3 ${skin?.fontClass ?? ""}`}
+      className="ramp-scope min-h-dvh bg-lcd-0 text-lcd-3"
     >
       {/* Sticky only where the switcher fits on one row; on phones it would eat the screen. */}
       <header className="z-10 border-b-2 border-lcd-3 bg-lcd-0 lg:sticky lg:top-0">

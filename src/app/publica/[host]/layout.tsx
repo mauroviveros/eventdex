@@ -8,7 +8,6 @@ import { SignInLink, VisitorMenu } from "@/components/visitante/VisitorMenu";
 import { EVENTDEX_HUE, ramp, rampFromHex } from "@/domain/palette";
 import { logoUrl } from "@/lib/data/organizations";
 import { getVisitorAccount } from "@/lib/data/viewer";
-import { skinFor } from "@/skins";
 import { requireHostOrganization } from "./organization";
 
 export async function generateMetadata({
@@ -19,8 +18,8 @@ export async function generateMetadata({
 }
 
 /**
- * The public app of one organization, painted with its own ramp or its skin: the
- * brand leads, Eventdex stays out of sight. An unknown host (or a suspended org) is a
+ * The public app of one organization, painted with its own ramp: the brand
+ * leads, Eventdex stays out of sight. An unknown host (or a suspended org) is a
  * 404 before anything renders; no loading boundary sits above this, so the
  * status is a real 404.
  */
@@ -29,20 +28,17 @@ export default async function PublicaLayout({
   params,
 }: LayoutProps<"/publica/[host]">) {
   const { org } = await requireHostOrganization((await params).host);
-  const skin = skinFor(org.slug);
-  const tones =
-    skin?.ramp ??
-    (org.brand_color ? rampFromHex(org.brand_color) : ramp(EVENTDEX_HUE));
-  const style = {
-    ...Object.fromEntries(tones.map((tone, i) => [`--ramp-${i}`, tone])),
-    ...skin?.vars,
-  } as CSSProperties;
+  const tones = org.brand_color
+    ? rampFromHex(org.brand_color)
+    : ramp(EVENTDEX_HUE);
+  const style = Object.fromEntries(
+    tones.map((tone, i) => [`--ramp-${i}`, tone]),
+  ) as CSSProperties;
 
   return (
     <div
       style={style}
-      data-skin={skin?.name}
-      className={`ramp-scope min-h-dvh bg-lcd-0 text-lcd-3 ${skin ? skin.fontClass : `scanlines ${MARQUESINA}`}`}
+      className={`ramp-scope scanlines min-h-dvh bg-lcd-0 text-lcd-3 ${MARQUESINA}`}
     >
       <header className="border-b-2 border-lcd-3">
         <div className="mx-auto flex min-h-16 max-w-3xl items-center justify-between gap-4 px-4 sm:px-6">

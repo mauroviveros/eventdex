@@ -27,7 +27,6 @@ import { logoUrl, spotLogoUrl } from "@/lib/data/organizations";
 import { getPublicEvent } from "@/lib/data/public";
 import { requireVisitor } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
-import { skinFor } from "@/skins";
 import { requireHostOrganization } from "../../organization";
 
 // shortcut: fonts come from Google at runtime once per instance, commit the TTFs if it ever fails in production
@@ -109,20 +108,18 @@ export async function GET(
   const medals = event.spots.filter((s) => claimed.has(s.id));
   if (medals.length === 0) notFound();
 
-  const skin = skinFor(org.slug);
   const tones = (
-    skin?.ramp ??
-    (org.brand_color ? rampFromHex(org.brand_color) : ramp(EVENTDEX_HUE))
+    org.brand_color ? rampFromHex(org.brand_color) : ramp(EVENTDEX_HUE)
   ).map(toHex);
   const theme: CardImageTheme = {
     tones,
-    red: toHex(skin?.image.accent ?? ACCENT.red.light),
-    yellow: toHex(skin?.image.accent ?? ACCENT.yellow.light),
-    font: skin?.image.font ?? "Jersey 10",
-    titleFont: skin?.image.font ?? "Press Start 2P",
-    charWidth: skin?.image.charWidth ?? 1,
-    maxTitleSize: skin ? 104 : 72,
-    uppercase: Boolean(skin),
+    red: toHex(ACCENT.red.light),
+    yellow: toHex(ACCENT.yellow.light),
+    font: "Jersey 10",
+    titleFont: "Press Start 2P",
+    charWidth: 1,
+    maxTitleSize: 72,
+    uppercase: false,
   };
 
   const families = [...new Set([theme.font, theme.titleFont])];
