@@ -4,6 +4,9 @@
 --
 -- No hay conteos fijos (puede haber datos nuevos desde la separación): al final se
 -- revisa toda tabla con organization_id y aborta si algo quedó colgado de BT.
+--
+-- Después: guardá Ajustes de Lo de Charly una vez. Vacía la caché de dominio → org
+-- (60 s), que si no sigue mandando los hosts de BT a una org que ya no existe (404).
 
 begin;
 
