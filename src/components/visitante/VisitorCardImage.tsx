@@ -5,18 +5,15 @@ export const CARD_IMAGE = { width: 1080, height: 1920 };
 const CONTENT_WIDTH = 876;
 // Two lines at the name's size, in the widest font. The renderer's own clamp misaligns.
 const MAX_NAME = 30;
+// Google Fonts families, loaded by the route: the renderer can't read the CSS.
+export const CARD_FONTS = { text: "Jersey 10", title: "Press Start 2P" };
+const MAX_TITLE_SIZE = 72;
 
 export type CardImageTheme = {
   /** Lightest to darkest, as hex: images are always on the light tones. */
   tones: readonly string[];
   red: string;
   yellow: string;
-  font: string;
-  titleFont: string;
-  /** Average character width of the title font, over its size. */
-  charWidth: number;
-  maxTitleSize: number;
-  uppercase: boolean;
 };
 
 type Props = {
@@ -32,11 +29,14 @@ type Props = {
   orgLogo: string | null;
 };
 
-/** The largest multiple of 8 where the longest word still fits on one line. */
-function titleSize(title: string, theme: CardImageTheme) {
+/**
+ * The largest multiple of 8 where the longest word still fits on one line.
+ * Press Start 2P is monospaced: each letter is one em wide.
+ */
+function titleSize(title: string) {
   const longest = Math.max(...title.split(/\s+/).map((w) => w.length));
-  const fit = Math.floor(CONTENT_WIDTH / (longest * theme.charWidth) / 8) * 8;
-  return Math.max(24, Math.min(theme.maxTitleSize, fit));
+  const fit = Math.floor(CONTENT_WIDTH / longest / 8) * 8;
+  return Math.max(24, Math.min(MAX_TITLE_SIZE, fit));
 }
 
 function shortened(name: string) {
@@ -119,9 +119,8 @@ export function VisitorCardImage({
           background: ground,
           border: `6px solid ${ink}`,
           color: ink,
-          fontFamily: theme.font,
+          fontFamily: CARD_FONTS.text,
           textAlign: "center",
-          textTransform: theme.uppercase ? "uppercase" : "none",
         }}
       >
         <div
@@ -135,8 +134,8 @@ export function VisitorCardImage({
           <div
             style={{
               display: "block",
-              fontFamily: theme.titleFont,
-              fontSize: titleSize(title, theme),
+              fontFamily: CARD_FONTS.title,
+              fontSize: titleSize(title),
               lineHeight: 1.25,
               color: theme.red,
             }}
