@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageBody, TopBar } from "@/components/admin/TopBar";
 import { createSpotAction } from "@/lib/actions/spots";
@@ -23,15 +22,8 @@ export default async function NuevoSpotPage({
   return (
     <>
       <TopBar
-        title="Spots"
-        actions={
-          <Link
-            href={`/${org.slug}/spots`}
-            className="flex min-h-11 items-center font-display text-px-1"
-          >
-            Volver al catálogo
-          </Link>
-        }
+        title="Nuevo spot"
+        crumbs={[{ label: "Spots", href: `/${org.slug}/spots` }]}
       />
       <PageBody>
         <div className="grid max-w-xl gap-8">

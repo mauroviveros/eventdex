@@ -40,18 +40,12 @@ export default async function QrSheetPage({
       {/* A4 with a margin every printer can reach. */}
       <style>{"@page { size: A4; margin: 10mm; }"}</style>
       <TopBar
-        title="Eventos"
-        actions={
-          <>
-            <Link
-              href={`${base}/spots`}
-              className="flex min-h-11 items-center font-display text-px-1"
-            >
-              Volver a los spots
-            </Link>
-            {hostname && active.length > 0 && <PrintButton />}
-          </>
-        }
+        title="Hoja de QR"
+        crumbs={[
+          { label: "Eventos", href: `/${org.slug}` },
+          { label: event.title, href: `${base}?tab=spots` },
+        ]}
+        actions={hostname && active.length > 0 && <PrintButton />}
       />
       <PageBody>
         <div className="grid gap-2 print:hidden">
