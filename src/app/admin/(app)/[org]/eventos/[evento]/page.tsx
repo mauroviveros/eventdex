@@ -87,11 +87,9 @@ export default async function EventoPage({
                   org={org.slug}
                   event={{
                     id: event.id,
-                    slug: event.slug,
                     title: event.title,
                     editionLabel: event.edition_label,
                     summary: event.summary,
-                    draft,
                   }}
                 />
                 <section aria-labelledby="sede" className="grid gap-4">

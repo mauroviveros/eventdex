@@ -10,6 +10,8 @@ import { createEventAction, duplicateEventAction } from "@/lib/actions/events";
 type Props = {
   org: { id: string; slug: string; timezone: string };
   venues: { id: string; name: string; timezone: string }[];
+  /** The org's latest event title, or its name: most editions repeat it. */
+  defaultTitle: string;
   /** The event being duplicated: the form starts from its data. */
   source?: {
     id: string;
@@ -19,7 +21,7 @@ type Props = {
   };
 };
 
-export function NewEventForm({ org, venues, source }: Props) {
+export function NewEventForm({ org, venues, defaultTitle, source }: Props) {
   const [state, action, pending] = useActionState(
     source ? duplicateEventAction : createEventAction,
     null,
@@ -45,19 +47,10 @@ export function NewEventForm({ org, venues, source }: Props) {
       <Field
         label="Nombre"
         name="title"
-        defaultValue={values.title ?? source?.title}
+        defaultValue={values.title ?? source?.title ?? defaultTitle}
         required
         placeholder="Expo de Ejemplo 2026"
         error={fields.title}
-      />
-      <Field
-        label="Dirección en el panel"
-        name="slug"
-        defaultValue={values.slug}
-        required
-        placeholder="expo-2026"
-        hint={`Queda en /${org.slug}/eventos/… y en el link público. Minúsculas, números y guiones.`}
-        error={fields.slug}
       />
       <Field
         label="Edición"

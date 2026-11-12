@@ -162,10 +162,7 @@ export function VenueForm({
   );
 }
 
-/**
- * The event's own data. The address only changes while it's a draft: once
- * published, the link to its home may already be shared.
- */
+/** The event's own data. Its address is set when it's created and stays. */
 export function EventDataForm({
   org,
   event,
@@ -173,11 +170,9 @@ export function EventDataForm({
   org: string;
   event: {
     id: string;
-    slug: string;
     title: string;
     editionLabel: string | null;
     summary: string | null;
-    draft: boolean;
   };
 }) {
   const [state, action, pending] = useActionState(updateEventAction, null);
@@ -190,7 +185,6 @@ export function EventDataForm({
     <form ref={form} action={action} className="grid gap-6" noValidate>
       <input type="hidden" name="org" value={org} />
       <input type="hidden" name="eventId" value={event.id} />
-      <input type="hidden" name="currentSlug" value={event.slug} />
       {failed && !failed.fieldErrors && (
         <FormMessage tone="error">{failed.error}</FormMessage>
       )}
@@ -200,20 +194,6 @@ export function EventDataForm({
         defaultValue={values.title ?? event.title}
         required
         error={fields.title}
-      />
-      <Field
-        label="Dirección en el panel"
-        // Disabled fields aren't sent: a published event keeps its address.
-        name="slug"
-        defaultValue={values.slug ?? event.slug}
-        required
-        disabled={!event.draft}
-        hint={
-          event.draft
-            ? `Queda en /${org}/eventos/… y en el link público. Minúsculas, números y guiones.`
-            : "Queda fija una vez publicado: el link a la portada ya puede estar compartido."
-        }
-        error={fields.slug}
       />
       <Field
         label="Edición"

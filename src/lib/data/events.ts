@@ -52,6 +52,23 @@ export async function listEvents(supabase: Supabase, organizationId: string) {
 }
 
 /** What the form to duplicate an event starts from. Null if hidden or missing. */
+/** The title of the org's latest event, to start the next one from. */
+export async function getLastEventTitle(
+  supabase: Supabase,
+  organizationId: string,
+) {
+  const { data, error } = await supabase
+    .from("events")
+    .select("title")
+    .eq("organization_id", organizationId)
+    .is("deleted_at", null)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error) throw error;
+  return data?.title ?? null;
+}
+
 export async function getEventToDuplicate(
   supabase: Supabase,
   organizationId: string,
