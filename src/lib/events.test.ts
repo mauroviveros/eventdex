@@ -7,6 +7,8 @@ import {
   publishEvent,
   removeCover,
   setEventVenue,
+  updateEvent,
+  updateSchedule,
   uploadCover,
 } from "./events";
 import { fakeClient, inserted } from "./fake-supabase";
@@ -320,5 +322,116 @@ describe("event cover", () => {
     );
     expect(await removeCover(client, ref)).toEqual({ ok: true, data: null });
     expect(remove).toHaveBeenCalledWith([`${ORG}/old.png`]);
+  });
+});
+
+describe("updateEvent", () => {
+  const valid = {
+    eventId: EVENT,
+    title: " Expo Primavera ",
+    slug: "Expo-2027",
+    editionLabel: "",
+    summary: "Tres días",
+  };
+  const updated = (calls: { method: string; args: unknown[] }[]) =>
+    calls.find((c) => c.method === "update")?.args[0];
+
+  it("normalizes the data and changes a draft's address", async () => {
+    const { client, calls } = fakeClient(
+      { data: { slug: "expo-2026", status: "draft" }, error: null },
+      { data: [{ slug: "expo-2027" }], error: null },
+    );
+    expect(await updateEvent(client, valid)).toEqual({
+      ok: true,
+      data: { slug: "expo-2027" },
+    });
+    expect(updated(calls)).toEqual({
+      title: "Expo Primavera",
+      slug: "expo-2027",
+      edition_label: null,
+      summary: "Tres días",
+    });
+  });
+
+  it("keeps a published event's address, and refuses a new one on its field", async () => {
+    const published = {
+      data: { slug: "expo-2026", status: "published" },
+      error: null,
+    };
+    const kept = fakeClient(published, {
+      data: [{ slug: "expo-2026" }],
+      error: null,
+    });
+    const { slug: _, ...noSlug } = valid;
+    expect(await updateEvent(kept.client, noSlug)).toEqual({
+      ok: true,
+      data: { slug: "expo-2026" },
+    });
+    expect(updated(kept.calls)).toMatchObject({ slug: "expo-2026" });
+
+    const moved = fakeClient(published);
+    const result = await updateEvent(moved.client, valid);
+    expect(result.ok).toBe(false);
+    if (!result.ok)
+      expect(result.fieldErrors?.slug).toBe(
+        "La dirección queda fija una vez publicado el evento.",
+      );
+    expect(updated(moved.calls)).toBeUndefined();
+  });
+
+  it("explains an address already in use", async () => {
+    const { client } = fakeClient(
+      { data: { slug: "expo-2026", status: "draft" }, error: null },
+      { data: null, error: { code: "23505" } },
+    );
+    expect(await updateEvent(client, valid)).toEqual({
+      ok: false,
+      error: "Ya hay un evento con esa dirección en tu organización.",
+    });
+  });
+
+  it("says no permission when the event isn't visible", async () => {
+    const { client } = fakeClient({ data: null, error: null });
+    expect(await updateEvent(client, valid)).toEqual({
+      ok: false,
+      error: "No tenés permiso para hacer esto.",
+    });
+  });
+});
+
+describe("updateSchedule", () => {
+  const valid = {
+    id: "0000000a-0000-4000-8000-000000000009",
+    eventId: EVENT,
+    label: "",
+    startsAt: "2026-11-14T10:00",
+    endsAt: "2026-11-14T18:00",
+  };
+
+  it("stores the corrected times as instants in the event's zone", async () => {
+    const { client, calls } = fakeClient(
+      { data: { timezone: "America/Argentina/Buenos_Aires" }, error: null },
+      { data: [{ id: valid.id }], error: null },
+    );
+    expect(await updateSchedule(client, valid)).toEqual({
+      ok: true,
+      data: null,
+    });
+    expect(calls.find((c) => c.method === "update")?.args[0]).toEqual({
+      label: null,
+      starts_at: "2026-11-14T13:00:00.000Z",
+      ends_at: "2026-11-14T21:00:00.000Z",
+    });
+  });
+
+  it("says no permission when RLS updated nothing", async () => {
+    const { client } = fakeClient(
+      { data: { timezone: "America/Argentina/Buenos_Aires" }, error: null },
+      { data: [], error: null },
+    );
+    expect(await updateSchedule(client, valid)).toEqual({
+      ok: false,
+      error: "No tenés permiso para hacer esto.",
+    });
   });
 });

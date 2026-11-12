@@ -10,6 +10,8 @@ import {
   publishEvent,
   removeCover,
   setEventVenue,
+  updateEvent,
+  updateSchedule,
   uploadCover,
 } from "@/lib/events";
 import { type FormState, runFormWrite, takeLogo } from "./form";
@@ -96,5 +98,27 @@ export async function setEventVenueAction(
   formData: FormData,
 ): Promise<FormState> {
   const r = await runFormWrite(formData, setEventVenue);
+  return r.ok ? { ok: true } : r.state;
+}
+
+/** A new address moves the page: land on it, since the old one is gone. */
+export async function updateEventAction(
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const before = String(formData.get("currentSlug") ?? "");
+  formData.delete("currentSlug");
+  const r = await runFormWrite(formData, updateEvent);
+  if (!r.ok) return r.state;
+  const { slug } = r.data as { slug: string };
+  if (slug !== before) redirect(`/${r.org}/eventos/${slug}`);
+  return { ok: true };
+}
+
+export async function updateScheduleAction(
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const r = await runFormWrite(formData, updateSchedule);
   return r.ok ? { ok: true } : r.state;
 }
