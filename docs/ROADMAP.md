@@ -411,10 +411,11 @@ cada uno revisado antes del siguiente. Branch `feat/admin-shadcn`.
    *Listo cuando* las tarjetas muestran cifras reales, se duplica desde el menú de una
    tarjeta y los e2e del panel pasan.
    `/code-review` (con el bloque 7): 8 hallazgos, 3 resueltos (total de visitantes
-   rotulado, error viejo al reabrir Publicar, carrera al cambiar la dirección) y 5 que
-   quedan: la dirección fija sin trigger en la base, conteos de medallas por spot (con
-   `shortcut`), conteos que paga la plataforma, la hoja de spots sin `EditSheet` y
-   Publicar desde el menú sin e2e. `/accessibility`: revisión manual sin hallazgos.
+   rotulado, error viejo al reabrir Publicar, carrera al cambiar la dirección). Después,
+   3 más: la dirección fija también en la base (trigger `events_keep_published_slug`,
+   con pgTAP), Publicar desde el menú con su e2e (que encontró un toast doble) y la hoja
+   de spots sobre `EditSheet`. Quedan 2: conteos de medallas por spot (con `shortcut`)
+   y conteos que paga la plataforma. `/accessibility`: revisión manual sin hallazgos.
 7. ▶ **Editar el evento.** Misma branch. Un botón Editar en el encabezado abre una
    hoja lateral (`EditSheet`) con nombre, dirección (solo en borradores), edición,
    resumen, sede y banner; las jornadas tienen su propia hoja, donde además se corrigen.
