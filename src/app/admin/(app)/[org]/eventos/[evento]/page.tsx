@@ -50,10 +50,13 @@ export default async function EventoPage({
   const draft = event.status === "draft";
   const editable = !support;
   const supabase = await createClient();
-  // Both lists feed the tab counts and the figures in General.
-  const [inEvent, visitors] = await Promise.all([
+  // Spots and visitors feed the tab counts and the figures in General; the
+  // catalog and the venues only the tab that shows them.
+  const [inEvent, visitors, catalog, venues] = await Promise.all([
     listEventSpots(supabase, event.id),
     listEventVisitors(supabase, event.id),
+    editable && tab === "spots" ? listSpots(supabase, org.id) : [],
+    editable && tab === "general" ? listVenues(supabase, org.id) : [],
   ]);
   const base = `/${org.slug}/eventos/${event.slug}`;
 
@@ -139,7 +142,7 @@ export default async function EventoPage({
               eventId={event.id}
               support={support}
               inEvent={inEvent}
-              catalog={editable ? await listSpots(supabase, org.id) : []}
+              catalog={catalog}
               params={query}
             />
           ) : tab === "visitantes" ? (
@@ -154,6 +157,7 @@ export default async function EventoPage({
             <General
               org={org}
               event={event}
+              venues={venues}
               editable={editable}
               draft={draft}
               stats={{
@@ -172,38 +176,25 @@ export default async function EventoPage({
 type Loaded = Awaited<ReturnType<typeof load>>;
 
 /** The event's own data: figures, publishing, venue, banner and schedules. */
-async function General({
+function General({
   org,
   event,
+  venues,
   editable,
   draft,
   stats,
 }: {
   org: Loaded["org"];
+  venues: Awaited<ReturnType<typeof listVenues>>;
   event: Loaded["event"];
   editable: boolean;
   draft: boolean;
   stats: { visitors: number; medals: number; activeSpots: number };
 }) {
   const cover = coverUrl(event.cover_path);
-  const venues = editable ? await listVenues(await createClient(), org.id) : [];
 
   return (
     <>
-      <div className="grid max-w-3xl gap-3 sm:grid-cols-3">
-        <StatTile
-          label="Visitantes"
-          value={stats.visitors}
-          caption="registrados"
-        />
-        <StatTile label="Medallas" value={stats.medals} caption="entregadas" />
-        <StatTile
-          label="Spots activos"
-          value={stats.activeSpots}
-          caption="entregan medalla"
-        />
-      </div>
-
       {draft && editable && (
         <section aria-labelledby="publicar" className="grid gap-3">
           <h2 id="publicar" className="text-px-2">
@@ -219,6 +210,26 @@ async function General({
             ready={event.schedules.length > 0}
           />
         </section>
+      )}
+
+      {!draft && (
+        <div className="grid max-w-3xl gap-2 sm:grid-cols-3 sm:gap-3">
+          <StatTile
+            label="Visitantes"
+            value={stats.visitors}
+            caption="registrados"
+          />
+          <StatTile
+            label="Medallas"
+            value={stats.medals}
+            caption="entregadas"
+          />
+          <StatTile
+            label="Spots activos"
+            value={stats.activeSpots}
+            caption="entregan medalla"
+          />
+        </div>
       )}
 
       {editable && (

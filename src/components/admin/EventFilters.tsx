@@ -39,7 +39,7 @@ export function EventFilters({ basePath, current, counts, query = "" }: Props) {
   };
 
   return (
-    <div className="flex flex-wrap items-stretch gap-3">
+    <div className="flex flex-wrap items-stretch gap-3 max-sm:grid">
       <search className="flex min-w-64 flex-1">
         <form action={basePath} method="get" className="relative flex-1">
           <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2">
@@ -64,7 +64,8 @@ export function EventFilters({ basePath, current, counts, query = "" }: Props) {
 
       <nav
         aria-label="Filtrar por fase"
-        className="flex overflow-x-auto border-2 border-lcd-3"
+        // On a phone it runs to the screen edges: a filter cut at the edge reads as "scroll".
+        className="flex overflow-x-auto border-2 border-lcd-3 max-sm:-mx-4 max-sm:border-x-0"
       >
         {(Object.keys(LABEL) as PhaseFilter[]).map((fase) => (
           <Link
