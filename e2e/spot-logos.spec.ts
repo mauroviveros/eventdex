@@ -24,7 +24,7 @@ test("a spot's logo goes from the form to the visitor's medals", async ({
   browser,
 }) => {
   const admin = `http://app.localhost:3000/${seed.org.slug}`;
-  await page.goto(`${admin}/spots/nuevo`);
+  await page.goto(`${admin}/spots`);
   await signInByMail(page, seed.ownerEmail);
 
   await test.step("a spot imported from the v1 opens", async () => {
@@ -33,18 +33,23 @@ test("a spot's logo goes from the form to the visitor's medals", async ({
       .getByRole("button", { name: "Editar Café de la Esquina" })
       .click();
     await expect(page.getByLabel("Nombre")).toHaveValue("Café de la Esquina");
-    await page.goto(`${admin}/spots/nuevo`);
   });
 
+  // ?nuevo is how the event's Spots tab links here: the sheet opens on load.
+  await page.goto(`${admin}/spots?nuevo`);
+  const sheet = page.getByRole("dialog", { name: "Nuevo spot" });
+
   await test.step("the owner creates a spot with its logo", async () => {
-    await page.getByLabel("Nombre").fill(NAME);
-    await page.getByLabel("Logo").setInputFiles({
+    await sheet.getByLabel("Nombre").fill(NAME);
+    await sheet.getByLabel("Logo").setInputFiles({
       name: "logo.png",
       mimeType: "image/png",
       buffer: PNG,
     });
-    await page.getByRole("button", { name: "Crear spot" }).click();
-    await expect(page).toHaveURL(new RegExp(`/${seed.org.slug}/spots$`));
+    await sheet.getByRole("button", { name: "Crear spot" }).click();
+    await expect(page.getByText("Spot creado.")).toBeVisible();
+    // The sheet stays open, empty, to load the next one.
+    await expect(sheet.getByLabel("Nombre")).toHaveValue("");
   });
 
   await test.step("and puts it in the published event", async () => {

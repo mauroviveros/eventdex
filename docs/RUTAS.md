@@ -55,8 +55,7 @@ staff y owner.
 | `/[org]/eventos/[evento]/qr` | Hoja de QR para imprimir: una tarjeta por spot activo, 3 por fila en A4, para recortar. Impresa sale siempre en tonos claros, sin la barra del panel | Miembro | R3 |
 | `/[org]/eventos/[evento]/visitantes` | Redirige a la pestaña Visitantes del evento (`?tab=visitantes`) | Miembro | R5 · R15 |
 | `/[org]/eventos/[evento]/sorteo` | Sorteos, elegibles, extraer y anular | Miembro | R6 |
-| `/[org]/spots` | Catálogo de spots de la organización: tabla con tipo, en cuántos eventos está y estado, con orden y páginas en la URL (`?orden=…&dir=…&pag=…`) | Miembro | R3 · R15 |
-| `/[org]/spots/nuevo` | Alta de spot | Miembro | R3 |
+| `/[org]/spots` | Catálogo de spots de la organización: tabla con tipo, en cuántos eventos está y estado, con orden y páginas en la URL (`?orden=…&dir=…&pag=…`). **Nuevo spot** (hoja lateral) da de alta y queda abierta para cargar el siguiente; `?nuevo` la abre al entrar (así linkea la pestaña Spots del evento) | Miembro | R3 · R15 |
 | `/[org]/spots/[spot]` | En qué eventos se usa (con edición, fechas y fase, para distinguir eventos del mismo nombre). **Editar** (hoja lateral): datos, logo y archivar. `[spot]` es el `id`: un spot no tiene slug, para no pedir uno por cada stand | Miembro | R3 · R15 |
 | `/[org]/sedes` | Sedes: lista y alta en la misma vista. La edición llega cuando haga falta | Miembro | R2 |
 | `/[org]/equipo` | Miembros, invitaciones y roles. Sin mails: quien invita avisa, y la invitación se acepta al entrar con esa cuenta. Nadie se cambia ni se quita a sí mismo desde acá | Owner (developer: solo lectura) | R7 |
