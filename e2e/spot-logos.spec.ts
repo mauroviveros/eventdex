@@ -46,8 +46,9 @@ test("a spot's logo goes from the form to the visitor's medals", async ({
 
   await test.step("and puts it in the published event", async () => {
     await page.goto(`${admin}/eventos/feria?tab=spots`);
-    const add = page.locator("form", {
-      has: page.getByLabel("Spot del catálogo"),
+    await page.getByRole("button", { name: "Agregar spots" }).click();
+    const add = page.getByRole("dialog", {
+      name: "Agregar desde el catálogo",
     });
     await add.getByRole("button", { name: "Spot del catálogo" }).click();
     await page.getByRole("option", { name: NAME }).click();
