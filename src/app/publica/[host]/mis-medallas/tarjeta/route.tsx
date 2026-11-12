@@ -3,6 +3,7 @@ import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
 import { SPRITES } from "@/components/pixel/sprites";
 import {
+  CARD_FONTS,
   CARD_IMAGE,
   type CardImageTheme,
   VisitorCardImage,
@@ -115,14 +116,9 @@ export async function GET(
     tones,
     red: toHex(ACCENT.red.light),
     yellow: toHex(ACCENT.yellow.light),
-    font: "Jersey 10",
-    titleFont: "Press Start 2P",
-    charWidth: 1,
-    maxTitleSize: 72,
-    uppercase: false,
   };
 
-  const families = [...new Set([theme.font, theme.titleFont])];
+  const families = Object.values(CARD_FONTS);
   const [fontData, photo, orgLogo, medalImages] = await Promise.all([
     Promise.all(families.map(loadFont)),
     visitor.avatarUrl && isGooglePhoto(visitor.avatarUrl)
