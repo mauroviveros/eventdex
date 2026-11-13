@@ -235,7 +235,7 @@ Playwright corre en local, antes de cerrar cada rebanada (`pnpm test:e2e`, con
 `pnpm db:start`). Cada recorrido siembra su propia org en un host nuevo
 (`e2e-<id>.localhost:3000`) con la clave secreta local, entra con el link por mail
 de desarrollo (leído de Mailpit) y la borra al terminar. Pasa a CI cuando el job
-pueda levantar Supabase completo (auth y Mailpit) y la app.
+pueda levantar Supabase completo (auth y Mailpit) y la app. Dos proyectos: `mobile` (Pixel 7) corre todos los recorridos, y `desktop` solo `escritorio.spec.ts`, con lo que existe desde 640 px (los encabezados que ordenan).
 
 ## Hosting
 

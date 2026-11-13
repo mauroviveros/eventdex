@@ -528,6 +528,14 @@ revisada antes de la siguiente.
    de la landing, con vuelta al inicio. Sin cambios en la base.
    *Listo cuando* se factura, se marca pagada y se suma un dominio desde las hojas y los
    ⋮, y pasan los e2e.
+   `/code-review` de la branch: 9 hallazgos, 9 resueltos. El aviso de éxito sale con la
+   respuesta de la acción (`announce`), no de un efecto, y ya no se pierde al publicar
+   desde General; una sola confirmación (`ConfirmDialog`) con foco de respaldo cuando
+   la fila desaparece; `SignInCard` y `PublishButton` en `/dev/componentes`; un proyecto
+   `desktop` de Playwright para ordenar por encabezados; el conteo de eventos por sede
+   solo en Sedes; la última columna de una tarjeta se alinea a la derecha solo si es el
+   ⋮; y nombres que no se repiten («Guardar marca», las acciones de cada factura).
+   axe (WCAG 2.2 AA): 0 violaciones en `/ingresar` y `/dev/componentes`.
 
 ---
 
