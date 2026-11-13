@@ -127,6 +127,8 @@ test("the owner runs the team and the brand shows on the public app", async ({
 
     await rowAction(email, "Quitar");
     await page.getByRole("button", { name: "Sí, quitar" }).click();
+    // The row is gone: the focus stays in the list's section, not at the top.
+    await expect(page.getByRole("heading", { name: "Miembros" })).toBeFocused();
     await expect(
       page.getByRole("main").getByRole("listitem").filter({ hasText: email }),
     ).toHaveCount(0);

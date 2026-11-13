@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
 import { DateField } from "@/components/ui/DateField";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
-import { useFormFeedback } from "@/components/ui/useFormFeedback";
+import { announce, useFormFeedback } from "@/components/ui/useFormFeedback";
 import { instantToLocal } from "@/domain/events";
 import {
   addScheduleAction,
@@ -21,11 +21,11 @@ export function AddScheduleForm({
   eventId,
   timezone,
 }: Ids & { timezone: string }) {
-  const [state, action, pending] = useActionState(addScheduleAction, null);
-  const { form, failed, fields, values } = useFormFeedback(
-    state,
-    "Jornada agregada.",
+  const [state, action, pending] = useActionState(
+    announce(addScheduleAction, "Jornada agregada."),
+    null,
   );
+  const { form, failed, fields, values } = useFormFeedback(state);
 
   return (
     <form ref={form} action={action} className="grid gap-6" noValidate>
@@ -83,11 +83,11 @@ export function VenueForm({
   venues: { id: string; name: string }[];
   hasSchedules: boolean;
 }) {
-  const [state, action, pending] = useActionState(setEventVenueAction, null);
-  const { form, failed, fields, values } = useFormFeedback(
-    state,
-    "Sede guardada.",
+  const [state, action, pending] = useActionState(
+    announce(setEventVenueAction, "Sede guardada."),
+    null,
   );
+  const { form, failed, fields, values } = useFormFeedback(state);
 
   return (
     <form ref={form} action={action} className="grid gap-6" noValidate>
@@ -140,11 +140,11 @@ export function EventDataForm({
     summary: string | null;
   };
 }) {
-  const [state, action, pending] = useActionState(updateEventAction, null);
-  const { form, failed, fields, values } = useFormFeedback(
-    state,
-    "Cambios guardados.",
+  const [state, action, pending] = useActionState(
+    announce(updateEventAction, "Cambios guardados."),
+    null,
   );
+  const { form, failed, fields, values } = useFormFeedback(state);
 
   return (
     <form ref={form} action={action} className="grid gap-6" noValidate>
@@ -202,11 +202,11 @@ export function EditScheduleForm({
     ends_at: string;
   };
 }) {
-  const [state, action, pending] = useActionState(updateScheduleAction, null);
-  const { form, failed, fields, values } = useFormFeedback(
-    state,
-    "Jornada guardada.",
+  const [state, action, pending] = useActionState(
+    announce(updateScheduleAction, "Jornada guardada."),
+    null,
   );
+  const { form, failed, fields, values } = useFormFeedback(state);
 
   return (
     <form ref={form} action={action} className="grid gap-5" noValidate>

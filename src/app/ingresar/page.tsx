@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { SignInCard } from "@/components/ui/SignInCard";
-import { safeNext } from "@/lib/session";
+import { getSessionUser, safeNext } from "@/lib/session";
+import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "Ingresar · Eventdex",
@@ -17,6 +19,7 @@ export default async function IngresarPage({
     typeof query.next === "string" ? query.next : null,
     "/panel",
   );
+  if (await getSessionUser(await createClient())) redirect(next);
 
   return (
     // The landing's ground and wordmark: signing in is part of the site.

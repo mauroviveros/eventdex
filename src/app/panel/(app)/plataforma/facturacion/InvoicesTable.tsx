@@ -81,7 +81,8 @@ export function InvoicesTable({ rows }: { rows: InvoiceRow[] }) {
           cell: ({ row: { original: i } }) =>
             i.status !== "void" && (
               <RowActions
-                name={i.concept}
+                // Concepts repeat ("Expo 2026"): the name says whose and when.
+                name={`${i.concept}, ${i.organization}, ${i.issued}`}
                 actions={[
                   ...(i.status === "pending"
                     ? [

@@ -211,14 +211,19 @@ export async function seedLiveEvent() {
       );
     },
     /** A draft with one upcoming schedule: ready to publish. */
-    async addDraft() {
+    /** A draft with a schedule, ready to publish. */
+    async addDraft(title = "Feria Borrador") {
       const draft = must(
         await admin
           .from("events")
           .insert({
             organization_id: org.id,
-            slug: "feria-borrador",
-            title: "Feria Borrador",
+            slug: title
+              .toLowerCase()
+              .normalize("NFD")
+              .replace(/\p{Diacritic}/gu, "")
+              .replace(/[^a-z0-9]+/g, "-"),
+            title,
           })
           .select("id, slug")
           .single(),

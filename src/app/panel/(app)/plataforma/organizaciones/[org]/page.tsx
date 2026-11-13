@@ -105,7 +105,9 @@ export default async function PlataformaOrganizacionPage({
 
         <section className="grid gap-4">
           <div className="flex max-w-3xl flex-wrap items-center justify-between gap-3">
-            <h2 className="text-px-2">Dominios</h2>
+            <h2 id="dominios" className="text-px-2">
+              Dominios
+            </h2>
             <EditSheet
               label="Sumar dominio"
               title="Sumar un dominio"
@@ -132,6 +134,7 @@ export default async function PlataformaOrganizacionPage({
                   {!d.is_primary && (
                     <RowActions
                       name={d.hostname}
+                      fallbackFocus="dominios"
                       actions={[
                         {
                           label: "Hacer principal",

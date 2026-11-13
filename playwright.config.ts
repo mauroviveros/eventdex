@@ -23,8 +23,18 @@ export default defineConfig({
     timezoneId: "America/Argentina/Buenos_Aires",
   },
   projects: [
-    // The visitor scans with a phone.
-    { name: "mobile", use: { ...devices["Pixel 7"] } },
+    // The visitor scans with a phone, and the staff runs the event day from one.
+    {
+      name: "mobile",
+      use: { ...devices["Pixel 7"] },
+      testIgnore: /escritorio\.spec\.ts/,
+    },
+    // What only exists from 640 px: table headers that sort.
+    {
+      name: "desktop",
+      use: { ...devices["Desktop Chrome"] },
+      testMatch: /escritorio\.spec\.ts/,
+    },
   ],
   webServer: {
     command: "pnpm dev",

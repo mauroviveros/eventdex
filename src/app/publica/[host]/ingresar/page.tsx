@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { SignInCard } from "@/components/ui/SignInCard";
-import { safeNext } from "@/lib/session";
+import { getSessionUser, safeNext } from "@/lib/session";
+import { createClient } from "@/lib/supabase/server";
 import { requireHostOrganization } from "../organization";
 
 export const metadata: Metadata = {
@@ -19,6 +21,7 @@ export default async function IngresarPage({
   const [{ host }, query] = await Promise.all([params, searchParams]);
   const { org } = await requireHostOrganization(host);
   const next = safeNext(typeof query.next === "string" ? query.next : null);
+  if (await getSessionUser(await createClient())) redirect(next);
 
   return (
     <main className="mx-auto grid w-full max-w-3xl place-items-center px-4 py-10 sm:px-6">

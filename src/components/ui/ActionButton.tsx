@@ -1,17 +1,10 @@
 "use client";
 
-import { useActionState, useEffect, useId, useState } from "react";
+import { useActionState, useRef, useState } from "react";
 import type { FormState } from "@/lib/actions/form";
 import { Button, type Variant } from "./Button";
+import { ConfirmDialog } from "./ConfirmDialog";
 import { FormMessage } from "./Field";
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "./shadcn/alert-dialog";
 
 type Props = {
   action: (prev: FormState, formData: FormData) => Promise<FormState>;
@@ -23,10 +16,12 @@ type Props = {
   /** Accessible name when the visible label needs context ("Quitar Día 1"). */
   ariaLabel?: string;
   /**
-   * Ask before acting, for what can't be undone: a dialog titled with the
-   * action and its object, the consequence, and an explicit button.
+   * Ask before acting, for what can't be undone: a ConfirmDialog titled with
+   * the action and its object, the consequence, and an explicit button.
    */
   confirm?: { message: string; label: string };
+  /** Id of what takes the focus if confirming removes this button. */
+  fallbackFocus?: string;
 };
 
 /** One action, one button: hidden fields, pending state, and the error under it. */
@@ -38,65 +33,53 @@ export function ActionButton({
   variant = "secondary",
   ariaLabel,
   confirm,
+  fallbackFocus,
 }: Props) {
   const [state, action, pending] = useActionState(run, null);
   const [asking, setAsking] = useState(false);
-  const id = useId();
+  const button = useRef<HTMLButtonElement>(null);
 
-  // The dialog stays up while the action runs and closes when it's done; an
-  // error then shows under the button, where the focus comes back.
-  useEffect(() => {
-    if (!pending) setAsking(false);
-  }, [pending]);
-
-  const button = (
-    <Button
-      type={confirm ? "button" : "submit"}
-      variant={variant}
-      pending={pending}
-      pendingLabel={pendingLabel}
-      aria-label={ariaLabel}
-    >
-      {label}
-    </Button>
-  );
+  if (confirm) {
+    return (
+      <>
+        <Button
+          ref={button}
+          variant={variant}
+          aria-label={ariaLabel}
+          onClick={() => setAsking(true)}
+        >
+          {label}
+        </Button>
+        <ConfirmDialog
+          open={asking}
+          onOpenChange={setAsking}
+          opener={button}
+          fallbackFocus={fallbackFocus}
+          title={ariaLabel ?? label}
+          message={confirm.message}
+          label={confirm.label}
+          pendingLabel={pendingLabel}
+          action={run}
+          fields={fields}
+        />
+      </>
+    );
+  }
 
   return (
-    <form id={id} action={action} className="grid justify-items-start gap-2">
+    <form action={action} className="grid justify-items-start gap-2">
       {Object.entries(fields).map(([name, value]) => (
         <input key={name} type="hidden" name={name} value={value} />
       ))}
-      {confirm ? (
-        <AlertDialog
-          open={asking}
-          // Escape can't close it mid-action: it would look cancelled.
-          onOpenChange={(open) => pending || setAsking(open)}
-        >
-          <AlertDialogTrigger asChild>{button}</AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogTitle>{ariaLabel ?? label}</AlertDialogTitle>
-            <AlertDialogDescription>{confirm.message}</AlertDialogDescription>
-            <div className="flex flex-wrap gap-2">
-              <Button
-                type="submit"
-                form={id}
-                variant="danger"
-                pending={pending}
-                pendingLabel={pendingLabel}
-              >
-                {confirm.label}
-              </Button>
-              <AlertDialogCancel asChild>
-                <Button variant="secondary" disabled={pending}>
-                  Cancelar
-                </Button>
-              </AlertDialogCancel>
-            </div>
-          </AlertDialogContent>
-        </AlertDialog>
-      ) : (
-        button
-      )}
+      <Button
+        type="submit"
+        variant={variant}
+        pending={pending}
+        pendingLabel={pendingLabel}
+        aria-label={ariaLabel}
+      >
+        {label}
+      </Button>
       {state && !state.ok && (
         <FormMessage tone="error">{state.error}</FormMessage>
       )}

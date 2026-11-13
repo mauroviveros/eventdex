@@ -6,7 +6,7 @@ import { ActionButton } from "@/components/ui/ActionButton";
 import { Button } from "@/components/ui/Button";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
 import { LogoField } from "@/components/ui/LogoField";
-import { useFormFeedback } from "@/components/ui/useFormFeedback";
+import { announce, useFormFeedback } from "@/components/ui/useFormFeedback";
 import {
   removeLogoAction,
   updateSettingsAction,
@@ -49,7 +49,12 @@ export function SettingsEditor({
         <h2 id="organizacion" className="text-px-2">
           Organización
         </h2>
-        <SettingsForm ids={ids} saved={settings} done="Datos guardados.">
+        <SettingsForm
+          ids={ids}
+          saved={settings}
+          done="Datos guardados."
+          submit="Guardar organización"
+        >
           {({ fields, values }) => (
             <>
               <Field
@@ -84,7 +89,12 @@ export function SettingsEditor({
         </h2>
         <div className="grid gap-10 xl:grid-cols-[1fr_28rem] xl:items-start">
           <div className="panel grid gap-8 p-6">
-            <SettingsForm ids={ids} saved={settings} done="Color guardado.">
+            <SettingsForm
+              ids={ids}
+              saved={settings}
+              done="Color guardado."
+              submit="Guardar marca"
+            >
               {({ fields }) => (
                 <Field
                   label="Color de marca"
@@ -118,15 +128,21 @@ function SettingsForm({
   ids,
   saved,
   done,
+  submit,
   children,
 }: {
   ids: Ids;
   saved: { name: string; color: string; timezone: string };
   done: string;
+  /** The button's full name ("Guardar marca"): the page has two Guardar. */
+  submit: string;
   children: (feedback: Pick<Feedback, "fields" | "values">) => ReactNode;
 }) {
-  const [state, action, pending] = useActionState(updateSettingsAction, null);
-  const { form, failed, fields, values } = useFormFeedback(state, done);
+  const [state, action, pending] = useActionState(
+    announce(updateSettingsAction, done),
+    null,
+  );
+  const { form, failed, fields, values } = useFormFeedback(state);
   return (
     <form ref={form} action={action} className="grid gap-6" noValidate>
       <Hidden ids={ids} />
@@ -142,6 +158,7 @@ function SettingsForm({
         pending={pending}
         pendingLabel="Guardando…"
         className="justify-self-start"
+        aria-label={submit}
       >
         Guardar
       </Button>
@@ -150,8 +167,11 @@ function SettingsForm({
 }
 
 function LogoForm({ ids, hasLogo }: { ids: Ids; hasLogo: boolean }) {
-  const [state, action, pending] = useActionState(uploadLogoAction, null);
-  const { form, failed, fields } = useFormFeedback(state, "Logo actualizado.");
+  const [state, action, pending] = useActionState(
+    announce(uploadLogoAction, "Logo actualizado."),
+    null,
+  );
+  const { form, failed, fields } = useFormFeedback(state);
 
   return (
     <div className="grid gap-4 border-t-2 border-lcd-3 pt-6">

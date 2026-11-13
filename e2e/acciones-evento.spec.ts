@@ -7,33 +7,46 @@ let seed: Awaited<ReturnType<typeof seedLiveEvent>>;
 test.beforeAll(async () => {
   seed = await seedLiveEvent();
   await seed.addDraft();
+  await seed.addDraft("Feria General");
 });
 
 test.afterAll(async () => {
   await seed?.cleanup();
 });
 
-test("the event's General asks the same question before publishing", async ({
+test("the event's General asks before publishing, and publishes", async ({
   page,
 }) => {
   await page.goto(
-    `http://localhost:3000/panel/${seed.org.slug}/eventos/feria-borrador`,
+    `http://localhost:3000/panel/${seed.org.slug}/eventos/feria-general`,
   );
   await signInByMail(page, seed.ownerEmail);
   const publish = page
     .getByRole("region", { name: "Publicación" })
     .getByRole("button", { name: "Publicar" });
-
-  await publish.click();
   const confirm = page.getByRole("alertdialog", {
-    name: "Publicar Feria Borrador",
+    name: "Publicar Feria General",
   });
-  await expect(confirm.getByRole("button", { name: "Cancelar" })).toBeFocused();
-  await confirm.getByRole("button", { name: "Cancelar" }).click();
-  await expect(publish).toBeFocused();
-  await expect(
-    page.getByText("Borrador", { exact: true }).first(),
-  ).toBeVisible();
+
+  await test.step("cancelling leaves it a draft, the focus on Publicar", async () => {
+    await publish.click();
+    await expect(
+      confirm.getByRole("button", { name: "Cancelar" }),
+    ).toBeFocused();
+    await confirm.getByRole("button", { name: "Cancelar" }).click();
+    await expect(publish).toBeFocused();
+  });
+
+  await test.step("confirming publishes it, says so, and keeps the focus on the page", async () => {
+    await publish.click();
+    await confirm.getByRole("button", { name: "Sí, publicar" }).click();
+    // The section goes away with the draft; the toast still comes.
+    await expect(page.getByText("Feria General está publicado.")).toBeVisible();
+    await expect(page.getByRole("region", { name: "Publicación" })).toHaveCount(
+      0,
+    );
+    await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
+  });
 });
 
 test("a ready draft is published from its row's menu, after confirming", async ({
