@@ -1,1 +1,1 @@
-export { default } from "../(panel)/loading";
+export { default } from "../(secciones)/loading";

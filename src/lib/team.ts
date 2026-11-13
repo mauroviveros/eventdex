@@ -9,7 +9,7 @@ import type { Supabase } from "@/lib/supabase/server";
 
 const role = z.enum(["owner", "staff"], "Elegí un rol.");
 
-export const inviteSchema = z.object({
+const inviteSchema = z.object({
   organizationId: z.guid(),
   email: z.string().trim().toLowerCase().pipe(z.email("Revisá el mail.")),
   role,

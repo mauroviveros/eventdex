@@ -11,7 +11,7 @@ type Client = Pick<Supabase, "from" | "rpc">;
 
 const NOT_ALLOWED = { code: "42501" };
 
-export const raffleSchema = z.object({
+const raffleSchema = z.object({
   organizationId: z.guid(),
   eventId: z.guid(),
   title: z
@@ -26,7 +26,7 @@ export const raffleSchema = z.object({
     .max(999, "Puede ser hasta 999 medallas."),
 });
 
-export const voidDrawSchema = z.object({
+const voidDrawSchema = z.object({
   drawId: z.guid(),
   reason: z
     .string()

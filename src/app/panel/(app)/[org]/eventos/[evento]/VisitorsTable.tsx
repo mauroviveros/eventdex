@@ -2,7 +2,7 @@
 
 import { createColumnHelper } from "@tanstack/react-table";
 import { useMemo } from "react";
-import { DataTable, type features } from "@/components/admin/DataTable";
+import { DataTable, type features } from "@/components/panel/DataTable";
 import { ActionButton } from "@/components/ui/ActionButton";
 import { Badge } from "@/components/ui/shadcn/badge";
 import { formatMoment } from "@/domain/events";

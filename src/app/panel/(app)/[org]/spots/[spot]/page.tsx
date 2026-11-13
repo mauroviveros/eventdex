@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { EditSheet } from "@/components/admin/EditSheet";
-import { PageBody, TopBar } from "@/components/admin/TopBar";
+import { EditSheet } from "@/components/panel/EditSheet";
+import { PageBody, TopBar } from "@/components/panel/TopBar";
 import { Sprite } from "@/components/pixel/Sprite";
 import { ActionButton } from "@/components/ui/ActionButton";
 import { PhaseBadge } from "@/components/visitante/PhaseBadge";

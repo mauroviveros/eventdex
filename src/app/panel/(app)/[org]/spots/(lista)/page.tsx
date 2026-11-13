@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { EditSheet } from "@/components/admin/EditSheet";
-import { PageBody, TopBar } from "@/components/admin/TopBar";
+import { EditSheet } from "@/components/panel/EditSheet";
+import { PageBody, TopBar } from "@/components/panel/TopBar";
 import { buttonClass } from "@/components/ui/Button";
 import { SPOT_TYPE_LABEL } from "@/domain/spots";
 import { readTableQuery, sortAndPage } from "@/domain/table";

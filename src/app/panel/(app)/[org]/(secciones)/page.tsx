@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ActiveEvent } from "@/components/admin/ActiveEvent";
-import { DraftChecklist } from "@/components/admin/DraftChecklist";
+import { ActiveEvent } from "@/components/panel/ActiveEvent";
+import { DraftChecklist } from "@/components/panel/DraftChecklist";
 import {
   EventFilters,
   type PhaseFilter,
-} from "@/components/admin/EventFilters";
-import { PageBody, TopBar } from "@/components/admin/TopBar";
+} from "@/components/panel/EventFilters";
+import { PageBody, TopBar } from "@/components/panel/TopBar";
 import { buttonClass } from "@/components/ui/Button";
 import {
   activeEvent,

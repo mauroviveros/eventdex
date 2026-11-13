@@ -1,13 +1,13 @@
 ---
 version: 1
 slug: "src-app-landing-page-tsx"
-primary_target: "src/app/landing/page.tsx"
+primary_target: "src/app/(landing)/page.tsx"
 related_targets: []
 ---
 
 # Landing de Eventdex
 
-Scope: `/` de la landing (`src/app/landing/page.tsx`). Mode: Persuade. Dentro del mundo LCD establecido (DESIGN.md), con la rampa propia de Eventdex.
+Scope: `/` de la landing (`src/app/(landing)/page.tsx`). Mode: Persuade. Dentro del mundo LCD establecido (DESIGN.md), con la rampa propia de Eventdex.
 
 Audience: productoras, municipios y organizadores de expos que todavía no son clientes. Job: entender en segundos la mecánica y creerla. Action: escribir por mail. Proof: datos reales de Lo de Charly TCG, autorizados por el dueño del producto: 4 eventos, 644 visitantes, 1649 medallas.
 

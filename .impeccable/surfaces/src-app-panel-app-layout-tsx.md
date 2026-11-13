@@ -1,11 +1,11 @@
 ---
 version: 1
-slug: "src-app-admin-app-layout-tsx"
-primary_target: "src/app/admin/(app)/layout.tsx"
-related_targets: ["src/components/admin/AdminShell.tsx"]
+slug: "src-app-panel-app-layout-tsx"
+primary_target: "src/app/panel/(app)/layout.tsx"
+related_targets: ["src/components/panel/PanelShell.tsx"]
 ---
 
-# Admin shell (app.eventdex.com)
+# Panel shell (eventdex.vercel.app/panel)
 
 Scope: the frame every admin and platform screen lives in, plus the event-dashboard pieces R2 will assemble. Mode: Operate. Inside the established LCD world (DESIGN.md); nothing in the world changes.
 

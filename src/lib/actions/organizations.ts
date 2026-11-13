@@ -9,7 +9,7 @@ import type { ActionResult } from "@/lib/results";
 import { createClient } from "@/lib/supabase/server";
 import { invalidateOrganizations } from "./invalidate";
 
-export type CreateOrganizationState =
+type CreateOrganizationState =
   | (Extract<ActionResult<never>, { ok: false }> & {
       values: Record<string, string>;
     })

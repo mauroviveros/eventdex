@@ -1,9 +1,9 @@
-export type Surface = { kind: "landing" } | { kind: "publica"; host: string };
+type Surface = { kind: "raiz" } | { kind: "publica"; host: string };
 
 /**
  * Decides which surface serves a request from its Host header.
  * `rootDomain` includes the port in local development (`localhost:3000`).
- * It serves the landing and, under /panel, the admin.
+ * The root (`raiz`) serves the landing, /ingresar and, under /panel, the panel.
  * `deploymentHosts` are Vercel's own URLs for this deployment and branch: they
  * behave like the root, so the dashboard thumbnail and previews are not a 404.
  */
@@ -14,9 +14,9 @@ export function surfaceFor(
 ): Surface {
   const h = host.toLowerCase();
   const root = rootDomain.toLowerCase();
-  if (h === root || h === `www.${root}`) return { kind: "landing" };
+  if (h === root || h === `www.${root}`) return { kind: "raiz" };
   if (deploymentHosts.some((d) => d?.toLowerCase() === h)) {
-    return { kind: "landing" };
+    return { kind: "raiz" };
   }
   return { kind: "publica", host: h };
 }

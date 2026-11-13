@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
-import { AccountMenu } from "@/components/admin/AccountMenu";
-import { ActiveEvent } from "@/components/admin/ActiveEvent";
-import { AdminShell } from "@/components/admin/AdminShell";
-import { BrandPreview } from "@/components/admin/BrandPreview";
-import { DraftChecklist } from "@/components/admin/DraftChecklist";
-import { EditSheet } from "@/components/admin/EditSheet";
-import { EventActions } from "@/components/admin/EventActions";
-import { EventFilters } from "@/components/admin/EventFilters";
-import { OrgSwitcher } from "@/components/admin/OrgSwitcher";
-import { QrCode } from "@/components/admin/QrCode";
-import { RaffleDraw } from "@/components/admin/RaffleDraw";
-import { StatTile } from "@/components/admin/StatTile";
-import { TopBar } from "@/components/admin/TopBar";
 import { ConsoleDemo } from "@/components/landing/ConsoleDemo";
+import { AccountMenu } from "@/components/panel/AccountMenu";
+import { ActiveEvent } from "@/components/panel/ActiveEvent";
+import { BrandPreview } from "@/components/panel/BrandPreview";
+import { DraftChecklist } from "@/components/panel/DraftChecklist";
+import { EditSheet } from "@/components/panel/EditSheet";
+import { EventActions } from "@/components/panel/EventActions";
+import { EventFilters } from "@/components/panel/EventFilters";
+import { OrgSwitcher } from "@/components/panel/OrgSwitcher";
+import { PanelShell } from "@/components/panel/PanelShell";
+import { QrCode } from "@/components/panel/QrCode";
+import { RaffleDraw } from "@/components/panel/RaffleDraw";
+import { eventCells, StatStrip } from "@/components/panel/StatStrip";
+import { TopBar } from "@/components/panel/TopBar";
 import { ActionButton } from "@/components/ui/ActionButton";
 import { Button } from "@/components/ui/Button";
 import { Combobox } from "@/components/ui/Combobox";
@@ -729,7 +729,7 @@ export default function ComponentesPage() {
         >
           <div className="grid gap-6">
             <div className={FRAME}>
-              <AdminShell
+              <PanelShell
                 account={CARD_ACCOUNT}
                 sections={[
                   {
@@ -756,10 +756,10 @@ export default function ComponentesPage() {
               >
                 <TopBar title="Eventos" />
                 <p className="px-4 py-8 sm:px-6">Contenido de la página.</p>
-              </AdminShell>
+              </PanelShell>
             </div>
             <div className={FRAME}>
-              <AdminShell
+              <PanelShell
                 account={{
                   name: "dev@eventdex.test",
                   email: "dev@eventdex.test",
@@ -775,30 +775,26 @@ export default function ComponentesPage() {
               >
                 <TopBar title="Plataforma" />
                 <p className="px-4 py-8 sm:px-6">Contenido de la página.</p>
-              </AdminShell>
+              </PanelShell>
             </div>
           </div>
         </Section>
 
         <Section
-          title="Panel: métricas y filtros"
-          note="Las cifras de un área (la plataforma, un evento) y el buscador con filtros por fase. Los filtros viven en la URL."
+          title="Panel: cifras y filtros"
+          note="StatStrip: las cifras de un evento o de la plataforma en celdas regladas, con leyenda opcional; tres celdas dejan la última a todo el ancho en el celular. Abajo, el buscador con filtros por fase, que viven en la URL."
         >
           <div className="grid gap-6">
-            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-              <StatTile
-                label="Eventos"
-                value={3}
-                caption="en la organización"
-              />
-              <StatTile
-                label="Stands"
-                value={58}
-                caption="en todos los eventos"
-              />
-              <StatTile label="Medallas" value={532} caption="conseguidas" />
-              <StatTile label="Visitantes" value={290} caption="registrados" />
-            </div>
+            <StatStrip
+              cells={eventCells({ stands: 58, visitors: 290, medals: 532 })}
+            />
+            <StatStrip
+              cells={[
+                ["Organizaciones", "4", "1 suspendida"],
+                ["Eventos en curso", "1", "En este momento"],
+                ["Facturas pendientes", "0", "Nada por cobrar"],
+              ]}
+            />
             <EventFilters
               basePath="/dev/componentes"
               current="todos"

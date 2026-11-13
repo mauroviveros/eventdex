@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PageBody, TopBar } from "@/components/admin/TopBar";
+import { PageBody, TopBar } from "@/components/panel/TopBar";
 import { platformMetadata } from "@/lib/data/viewer";
 import { env } from "@/lib/env";
 import { NewOrganizationForm } from "./NewOrganizationForm";

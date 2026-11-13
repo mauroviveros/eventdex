@@ -26,7 +26,7 @@ export async function signInWithGoogle(formData: FormData) {
   redirect(data.url);
 }
 
-export type EmailSignInState = ActionResult<{ email: string }> | null;
+type EmailSignInState = ActionResult<{ email: string }> | null;
 
 /**
  * Development only: sign in with a magic link that lands in the local mail

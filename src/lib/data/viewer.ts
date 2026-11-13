@@ -13,7 +13,7 @@ import {
  * Who is looking at this request, resolved once per request (layouts, pages
  * and generateMetadata share it). Null without a session.
  */
-export const getViewer = cache(async () => {
+const getViewer = cache(async () => {
   const supabase = await createClient();
   const user = await getSessionUser(supabase);
   if (!user) return null;

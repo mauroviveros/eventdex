@@ -47,12 +47,12 @@ const checkbox = z
   .optional()
   .transform((v) => v === "on");
 
-export const spotSchema = z.object({
+const spotSchema = z.object({
   organizationId: z.guid(),
   ...spotFields,
   logo: optionalLogo,
 });
-export const spotUpdateSchema = z.object({
+const spotUpdateSchema = z.object({
   id: z.guid(),
   organizationId: z.guid(),
   ...spotFields,
@@ -76,14 +76,14 @@ const points = z.preprocess(
     .max(1000, "Máximo 1000 puntos."),
 );
 
-export const eventSpotSchema = z.object({
+const eventSpotSchema = z.object({
   eventId: z.guid(),
   spotId: z.guid("Elegí un spot del catálogo."),
   booth: optionalText(60),
   points,
 });
 
-export const eventSpotUpdateSchema = z.object({
+const eventSpotUpdateSchema = z.object({
   id: z.guid(),
   code,
   nameOverride: optionalText(120),

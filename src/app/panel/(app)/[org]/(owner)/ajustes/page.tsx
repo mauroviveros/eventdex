@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { BrandPreview } from "@/components/admin/BrandPreview";
-import { PageBody, TopBar } from "@/components/admin/TopBar";
+import { BrandPreview } from "@/components/panel/BrandPreview";
+import { PageBody, TopBar } from "@/components/panel/TopBar";
 import { timeZoneOptions } from "@/domain/events";
 import { EVENTDEX_COLOR } from "@/domain/palette";
 import { CONTACT_EMAIL } from "@/lib/contact";

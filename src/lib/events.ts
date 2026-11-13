@@ -29,7 +29,7 @@ const timezone = z
   .trim()
   .refine(isTimeZone, "Elegí una zona horaria válida.");
 
-export const venueSchema = z.object({
+const venueSchema = z.object({
   organizationId: z.guid(),
   name: z
     .string()
@@ -43,7 +43,7 @@ export const venueSchema = z.object({
   timezone,
 });
 
-export const eventSchema = z.object({
+const eventSchema = z.object({
   organizationId: z.guid(),
   title: z
     .string()
@@ -60,7 +60,7 @@ export const eventSchema = z.object({
   timezone,
 });
 
-export const scheduleSchema = z
+const scheduleSchema = z
   .object({
     eventId: z.guid(),
     label: optionalText(60),

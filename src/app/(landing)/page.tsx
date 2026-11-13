@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { QrCode } from "@/components/admin/QrCode";
 import { ConsoleDemo } from "@/components/landing/ConsoleDemo";
 import { STANDS } from "@/components/landing/stands";
+import { QrCode } from "@/components/panel/QrCode";
 import { Sprite } from "@/components/pixel/Sprite";
 import { buttonClass } from "@/components/ui/Button";
 import { rampFromHex } from "@/domain/palette";

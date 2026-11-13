@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PageBody, TopBar } from "@/components/admin/TopBar";
+import { PageBody, TopBar } from "@/components/panel/TopBar";
 import { ActionButton } from "@/components/ui/ActionButton";
 import { Badge } from "@/components/ui/shadcn/badge";
 import {

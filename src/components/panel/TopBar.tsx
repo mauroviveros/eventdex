@@ -14,7 +14,7 @@ import { SidebarTrigger } from "@/components/ui/shadcn/sidebar";
  * The top of every admin page: the sidebar's toggle and where you are on the
  * left, the screen's actions on the right. Sticky, so the actions are always
  * at hand. A page under another one passes `crumbs`, the way back up, and the
- * title becomes the last step of the path. Lives inside AdminShell (the toggle
+ * title becomes the last step of the path. Lives inside PanelShell (the toggle
  * needs its sidebar).
  */
 export function TopBar({

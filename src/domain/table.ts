@@ -1,9 +1,9 @@
 /** Rows per page in the panel's tables. */
-export const PAGE_SIZE = 25;
+const PAGE_SIZE = 25;
 
 export type SortDir = "asc" | "desc";
 
-export type TableQuery<K extends string> = {
+type TableQuery<K extends string> = {
   orden: K;
   dir: SortDir;
   pag: number;

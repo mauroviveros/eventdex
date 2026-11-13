@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { EditSheet } from "@/components/admin/EditSheet";
+import { EditSheet } from "@/components/panel/EditSheet";
 import { buttonClass } from "@/components/ui/Button";
 import { readTableQuery, type SearchParams, sortAndPage } from "@/domain/table";
 import type { listSpots } from "@/lib/data/spots";
+import { AddEventSpotForm } from "./EventSpotForms";
 import { SPOT_SORTS } from "./query";
 import { type Spot, SpotsTable } from "./SpotsTable";
-import { AddEventSpotForm } from "./spots/EventSpotForms";
 
 /** The event's spots: which catalog spots are in it, with their code, booth and points. */
 export function SpotsTab({

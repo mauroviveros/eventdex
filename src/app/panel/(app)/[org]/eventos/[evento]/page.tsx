@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { DraftSteps } from "@/components/admin/DraftChecklist";
-import { EditSheet } from "@/components/admin/EditSheet";
-import { EventActions } from "@/components/admin/EventActions";
-import { eventCells, StatStrip } from "@/components/admin/StatStrip";
-import { PageBody, TopBar } from "@/components/admin/TopBar";
+import { DraftSteps } from "@/components/panel/DraftChecklist";
+import { EditSheet } from "@/components/panel/EditSheet";
+import { EventActions } from "@/components/panel/EventActions";
+import { PublishButton } from "@/components/panel/PublishEvent";
+import { eventCells, StatStrip } from "@/components/panel/StatStrip";
+import { PageBody, TopBar } from "@/components/panel/TopBar";
 import { ActionButton } from "@/components/ui/ActionButton";
 import { EventCover } from "@/components/visitante/EventHome";
 import { PhaseBadge } from "@/components/visitante/PhaseBadge";
@@ -30,7 +31,6 @@ import {
   AddScheduleForm,
   EditScheduleForm,
   EventDataForm,
-  PublishButton,
   VenueForm,
 } from "./ScheduleForms";
 import { SpotsTab } from "./SpotsTab";
@@ -337,11 +337,15 @@ function General({
               hasVenue: event.venue !== null,
             }}
           />
-          <PublishButton
-            org={org.slug}
-            eventId={event.id}
-            ready={event.schedules.length > 0}
-          />
+          {/* Publishing needs a schedule; until then the steps above say so. */}
+          {event.schedules.length > 0 && (
+            <div>
+              <PublishButton
+                org={org.slug}
+                event={{ id: event.id, title: event.title }}
+              />
+            </div>
+          )}
         </section>
       )}
 

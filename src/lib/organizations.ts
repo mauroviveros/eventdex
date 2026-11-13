@@ -31,7 +31,7 @@ const hostname = z
     "Escribí solo el dominio, sin https:// ni barras. Ej.: expo.com.ar.",
   );
 
-export const createOrganizationSchema = z.object({
+const createOrganizationSchema = z.object({
   name: orgName,
   slug: z
     .string()
@@ -72,7 +72,7 @@ export async function createOrganization(
 
 // Same rule as the organizations_brand_color_format check. Any hue is valid:
 // the ramp fixes each tone's lightness, so contrast holds (DESIGN_SYSTEM).
-export const settingsSchema = z.object({
+const settingsSchema = z.object({
   organizationId: z.guid(),
   name: orgName,
   brandColor: z
@@ -124,7 +124,7 @@ export const logoFile = z
     "Subí una imagen PNG, JPG o WebP.",
   );
 
-export const logoSchema = z.object({
+const logoSchema = z.object({
   organizationId: z.guid(),
   logo: logoFile,
 });

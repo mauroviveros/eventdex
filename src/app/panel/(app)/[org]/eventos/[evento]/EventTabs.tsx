@@ -57,11 +57,15 @@ export function EventTabs({
     >
       <TabsList
         aria-label="Secciones del evento"
-        // On a phone it runs to the screen edges, like the phase filters: a tab cut at the edge reads as "scroll".
-        className="max-sm:-mx-4 max-sm:w-auto max-sm:max-w-none max-sm:border-x-0"
+        // On a phone the four share the width, the count under the name: no scrolling to find one.
+        className="max-sm:grid max-sm:w-full max-sm:grid-cols-4"
       >
         {EVENT_TABS.map((tab) => (
-          <TabsTrigger key={tab} value={tab}>
+          <TabsTrigger
+            key={tab}
+            value={tab}
+            className="max-sm:flex-col max-sm:justify-center max-sm:gap-0 max-sm:px-1 max-sm:py-1"
+          >
             {LABEL[tab]}
             {counts[tab] !== undefined && (
               <span className="tabular-nums opacity-80">

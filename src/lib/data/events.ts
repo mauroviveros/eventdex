@@ -26,7 +26,7 @@ export async function listEvents(supabase: Supabase, organizationId: string) {
   const { data, error } = await supabase
     .from("events")
     .select(
-      `id, slug, title, edition_label, status, visibility, timezone,
+      `id, slug, title, edition_label, status, timezone,
        venue:venues (name),
        schedules:event_schedules (starts_at, ends_at),
        stands:event_spots (count),

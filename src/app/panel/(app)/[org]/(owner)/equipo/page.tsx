@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PageBody, TopBar } from "@/components/admin/TopBar";
+import { PageBody, TopBar } from "@/components/panel/TopBar";
 import { ActionButton } from "@/components/ui/ActionButton";
 import { Monogram } from "@/components/ui/Monogram";
 import {
