@@ -6,8 +6,23 @@ import type { Supabase } from "@/lib/supabase/server";
  * error.tsx shows it. Dropped rows (deleted_at) never come back.
  */
 
-/** The organization's venues, by name, with how many events use each. */
+/** The organization's venues, by name. */
 export async function listVenues(supabase: Supabase, organizationId: string) {
+  const { data, error } = await supabase
+    .from("venues")
+    .select("id, name, address_line, city, state, postal_code, timezone")
+    .eq("organization_id", organizationId)
+    .is("deleted_at", null)
+    .order("name");
+  if (error) throw error;
+  return data;
+}
+
+/** The venues with how many events use each: only the Sedes page shows it. */
+export async function listVenuesWithEvents(
+  supabase: Supabase,
+  organizationId: string,
+) {
   const { data, error } = await supabase
     .from("venues")
     .select(

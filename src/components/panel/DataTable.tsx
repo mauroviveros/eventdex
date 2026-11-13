@@ -185,7 +185,9 @@ export function DataTable<T extends RowData>({
                     className={cn(
                       "max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:gap-x-3 max-sm:p-0 max-sm:data-label:before:font-display max-sm:data-label:before:text-px-1 max-sm:data-label:before:text-muted-foreground max-sm:data-label:before:content-[attr(data-label)]",
                       // The first column is the row's name: alone on its line, without its label.
-                      "max-sm:first:basis-full max-sm:first:before:hidden max-sm:last:ml-auto",
+                      "max-sm:first:basis-full max-sm:first:before:hidden",
+                      // The ⋮ closes the card on the right; any other last field stays in the flow.
+                      cell.column.id === "acciones" && "max-sm:ml-auto",
                     )}
                   >
                     <table.FlexRender cell={cell} />

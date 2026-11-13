@@ -1,12 +1,10 @@
 "use client";
 
 import { useActionState } from "react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
-import { useFormFeedback } from "@/components/ui/useFormFeedback";
+import { announce, useFormFeedback } from "@/components/ui/useFormFeedback";
 import { createVenueAction, updateVenueAction } from "@/lib/actions/events";
-import type { FormState } from "@/lib/actions/form";
 
 type Props = {
   org: { id: string; slug: string; timezone: string };
@@ -15,14 +13,8 @@ type Props = {
 
 /** A new venue: name, address and the time zone its events take. */
 export function NewVenueForm({ org, timezones }: Props) {
-  // The toast goes out with the response: the first venue swaps the page to
-  // the list, and this form unmounts before an effect could announce it.
   const [state, action, pending] = useActionState(
-    async (prev: FormState, data: FormData) => {
-      const next = await createVenueAction(prev, data);
-      if (next?.ok) toast.success("Sede creada.");
-      return next;
-    },
+    announce(createVenueAction, "Sede creada."),
     null,
   );
   const { form, failed, fields, values } = useFormFeedback(state);
@@ -110,11 +102,11 @@ type Venue = {
 
 /** Name and address of a venue. The zone is shown, not edited: its events already took it. */
 export function EditVenueForm({ org, venue }: { org: string; venue: Venue }) {
-  const [state, action, pending] = useActionState(updateVenueAction, null);
-  const { form, failed, fields, values } = useFormFeedback(
-    state,
-    "Sede guardada.",
+  const [state, action, pending] = useActionState(
+    announce(updateVenueAction, "Sede guardada."),
+    null,
   );
+  const { form, failed, fields, values } = useFormFeedback(state);
   const value = (name: string, saved: string | null) =>
     values[name] ?? saved ?? "";
 

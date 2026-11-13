@@ -6,7 +6,7 @@ import { Field, FormMessage, SelectField } from "@/components/ui/Field";
 import { LogoField } from "@/components/ui/LogoField";
 import { Checkbox } from "@/components/ui/shadcn/checkbox";
 import { Label } from "@/components/ui/shadcn/label";
-import { useFormFeedback } from "@/components/ui/useFormFeedback";
+import { announce, useFormFeedback } from "@/components/ui/useFormFeedback";
 import { SPOT_TYPE_LABEL, SPOT_TYPES, type SpotType } from "@/domain/spots";
 import type { FormState } from "@/lib/actions/form";
 
@@ -34,8 +34,11 @@ export function SpotForm({
   pendingLabel,
   savedMessage,
 }: Props) {
-  const [state, action, pending] = useActionState(run, null);
-  const { form, failed, fields, values } = useFormFeedback(state, savedMessage);
+  const [state, action, pending] = useActionState(
+    announce(run, savedMessage),
+    null,
+  );
+  const { form, failed, fields, values } = useFormFeedback(state);
 
   return (
     <form ref={form} action={action} className="grid gap-6" noValidate>

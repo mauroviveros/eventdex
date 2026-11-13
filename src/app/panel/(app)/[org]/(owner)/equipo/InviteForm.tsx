@@ -3,15 +3,18 @@
 import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
-import { useFormFeedback } from "@/components/ui/useFormFeedback";
+import { announce, useFormFeedback } from "@/components/ui/useFormFeedback";
 import { inviteMemberAction } from "@/lib/actions/team";
 
 export function InviteForm({ org }: { org: { id: string; slug: string } }) {
-  const [state, action, pending] = useActionState(inviteMemberAction, null);
-  const { form, failed, fields, values } = useFormFeedback(
-    state,
-    "Invitación creada. Avisale que entre al panel con ese mail.",
+  const [state, action, pending] = useActionState(
+    announce(
+      inviteMemberAction,
+      "Invitación creada. Avisale que entre al panel con ese mail.",
+    ),
+    null,
   );
+  const { form, failed, fields, values } = useFormFeedback(state);
 
   return (
     <form ref={form} action={action} className="grid gap-6" noValidate>

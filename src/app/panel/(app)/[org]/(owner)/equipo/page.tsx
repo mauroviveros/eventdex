@@ -91,6 +91,7 @@ export default async function EquipoPage({
                     {!support && !isMe && (
                       <RowActions
                         name={name}
+                        fallbackFocus="miembros"
                         actions={[
                           {
                             label:
@@ -165,6 +166,7 @@ export default async function EquipoPage({
                   {!support && (
                     <RowActions
                       name={invitation.email}
+                      fallbackFocus="invitaciones"
                       actions={[
                         ...(invitation.expired
                           ? [

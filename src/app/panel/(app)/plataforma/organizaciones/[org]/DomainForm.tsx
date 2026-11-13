@@ -10,7 +10,7 @@ import {
 } from "react";
 import { Button } from "@/components/ui/Button";
 import { Field, FormMessage } from "@/components/ui/Field";
-import { useFormFeedback } from "@/components/ui/useFormFeedback";
+import { announce, useFormFeedback } from "@/components/ui/useFormFeedback";
 import {
   assignDomainAction,
   type DomainFormState,
@@ -64,11 +64,11 @@ function Confirm({
 
 /** Adds a domain. Asks first if it becomes the primary or another org has it. */
 export function DomainForm({ organizationId }: { organizationId: string }) {
-  const [state, action, pending] = useActionState(assignDomainAction, null);
-  const { form, failed, fields, values } = useFormFeedback(
-    state,
-    "Dominio sumado.",
+  const [state, action, pending] = useActionState(
+    announce(assignDomainAction, "Dominio sumado."),
+    null,
   );
+  const { form, failed, fields, values } = useFormFeedback(state);
   // Each holds the state it was decided on, so the next response closes it.
   const [cancelled, setCancelled] = useState<DomainFormState>(null);
   const [askedPrimary, setAskedPrimary] = useState<DomainFormState>();

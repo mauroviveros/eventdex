@@ -11,6 +11,7 @@ import { EventActions } from "@/components/panel/EventActions";
 import { EventFilters } from "@/components/panel/EventFilters";
 import { OrgSwitcher } from "@/components/panel/OrgSwitcher";
 import { PanelShell } from "@/components/panel/PanelShell";
+import { PublishButton } from "@/components/panel/PublishEvent";
 import { QrCode } from "@/components/panel/QrCode";
 import { RaffleDraw } from "@/components/panel/RaffleDraw";
 import { RowActions } from "@/components/panel/RowActions";
@@ -23,6 +24,7 @@ import { DateField } from "@/components/ui/DateField";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
 import { GoogleSignIn } from "@/components/ui/GoogleSignIn";
 import { LogoField } from "@/components/ui/LogoField";
+import { SignInCard } from "@/components/ui/SignInCard";
 import { Badge } from "@/components/ui/shadcn/badge";
 import { Checkbox } from "@/components/ui/shadcn/checkbox";
 import { Label } from "@/components/ui/shadcn/label";
@@ -808,6 +810,38 @@ export default function ComponentesPage() {
               }}
             />
           </div>
+        </Section>
+
+        <Section
+          title="Ingresar"
+          note="SignInCard: el login del panel y el de cada organización, con su título y su texto. Con ?error=auth suma el aviso; el link por mail aparece solo en desarrollo."
+        >
+          <div className="grid gap-6 md:grid-cols-2">
+            <SignInCard next="/panel" failed={false} title="Ingresá a Eventdex">
+              Para organizar tus eventos. Si te invitaron, usá el mismo mail de
+              la invitación.
+            </SignInCard>
+            <SignInCard
+              next="/s/demo"
+              failed
+              title="Ingresá para sumar la medalla"
+            >
+              Tus medallas quedan guardadas en tu cuenta de Expo de ejemplo.
+            </SignInCard>
+          </div>
+        </Section>
+
+        <Section
+          title="Panel: publicar"
+          note="PublishButton: el Publicar de un borrador listo. Pregunta antes en el ConfirmDialog del panel, que conserva el error (acá falla, porque el evento no existe) y devuelve el foco."
+        >
+          <PublishButton
+            org="dev"
+            event={{
+              id: "00000000-0000-4000-8000-000000000000",
+              title: "Feria de ejemplo",
+            }}
+          />
         </Section>
 
         <Section

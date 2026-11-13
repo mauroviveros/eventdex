@@ -133,7 +133,7 @@ test("the developer configures domains and moves one between orgs", async ({
     await open();
     await field.fill(host);
     await sheet.getByRole("button", { name: "Sumar dominio" }).click();
-    await expect(page.getByText("Dominio sumado.")).toBeVisible();
+    await expect(page.getByText("Dominio sumado.").last()).toBeVisible();
     await close();
     await expect(domain(host)).toBeVisible();
   };
@@ -165,7 +165,7 @@ test("the developer configures domains and moves one between orgs", async ({
       .getByRole("button", { name: "Sumar y hacer principal" })
       .click();
     await confirm.click();
-    await expect(page.getByText("Dominio sumado.")).toBeVisible();
+    await expect(page.getByText("Dominio sumado.").last()).toBeVisible();
     await close();
     await expect(domain(primary)).toContainText("Principal");
   });
@@ -207,7 +207,7 @@ test("the developer configures domains and moves one between orgs", async ({
     await field.fill(moved);
     await sheet.getByRole("button", { name: "Sumar dominio" }).click();
     await sheet.getByRole("button", { name: "Sí, mover" }).click();
-    await expect(page.getByText("Dominio sumado.")).toBeVisible();
+    await expect(page.getByText("Dominio sumado.").last()).toBeVisible();
     await close();
     await expect(domain(moved)).toBeVisible();
 

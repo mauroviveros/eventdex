@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
 import { DateField } from "@/components/ui/DateField";
 import { Field, FormMessage, SelectField } from "@/components/ui/Field";
-import { useFormFeedback } from "@/components/ui/useFormFeedback";
+import { announce, useFormFeedback } from "@/components/ui/useFormFeedback";
 import { createInvoiceAction } from "@/lib/actions/platform";
 
 type Props = {
@@ -13,11 +13,11 @@ type Props = {
 };
 
 export function NewInvoiceForm({ organizations, today }: Props) {
-  const [state, action, pending] = useActionState(createInvoiceAction, null);
-  const { form, failed, fields, values } = useFormFeedback(
-    state,
-    "Factura registrada.",
+  const [state, action, pending] = useActionState(
+    announce(createInvoiceAction, "Factura registrada."),
+    null,
   );
+  const { form, failed, fields, values } = useFormFeedback(state);
 
   return (
     <form ref={form} action={action} className="grid gap-6" noValidate>

@@ -1,10 +1,7 @@
-import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { AlertIcon } from "@/components/pixel/AlertIcon";
 import { EmailSignIn } from "@/components/ui/EmailSignIn";
 import { GoogleSignIn } from "@/components/ui/GoogleSignIn";
-import { getSessionUser } from "@/lib/session";
-import { createClient } from "@/lib/supabase/server";
 
 type Props = {
   /** Where to go after signing in (already checked with safeNext). */
@@ -18,12 +15,10 @@ type Props = {
 
 /**
  * The sign-in of the panel and of an org's site: each page lives on its own
- * host so the session cookie lands there. Someone already signed in goes on
- * to `next`. Mail sign-in only exists in development.
+ * host so the session cookie lands there, and sends whoever is already
+ * signed in on to `next`. Mail sign-in only exists in development.
  */
-export async function SignInCard({ next, failed, title, children }: Props) {
-  if (await getSessionUser(await createClient())) redirect(next);
-
+export function SignInCard({ next, failed, title, children }: Props) {
   return (
     <div className="panel grid w-full max-w-sm gap-6 px-6 py-8">
       <div className="grid gap-2">

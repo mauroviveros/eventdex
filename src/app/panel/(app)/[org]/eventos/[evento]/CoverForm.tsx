@@ -5,7 +5,7 @@ import { ActionButton } from "@/components/ui/ActionButton";
 import { Button } from "@/components/ui/Button";
 import { FormMessage } from "@/components/ui/Field";
 import { LogoField } from "@/components/ui/LogoField";
-import { useFormFeedback } from "@/components/ui/useFormFeedback";
+import { announce, useFormFeedback } from "@/components/ui/useFormFeedback";
 import { COVER_MAX_BYTES } from "@/domain/events";
 import { removeCoverAction, uploadCoverAction } from "@/lib/actions/events";
 
@@ -13,11 +13,11 @@ type Ids = { org: string; organizationId: string; eventId: string };
 
 /** Uploads, replaces or removes the event's banner. */
 export function CoverForm({ ids, hasCover }: { ids: Ids; hasCover: boolean }) {
-  const [state, action, pending] = useActionState(uploadCoverAction, null);
-  const { form, failed, fields } = useFormFeedback(
-    state,
-    "Banner actualizado.",
+  const [state, action, pending] = useActionState(
+    announce(uploadCoverAction, "Banner actualizado."),
+    null,
   );
+  const { form, failed, fields } = useFormFeedback(state);
 
   return (
     <div className="grid gap-4">

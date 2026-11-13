@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { EditSheet } from "@/components/panel/EditSheet";
 import { PageBody, TopBar } from "@/components/panel/TopBar";
 import { timeZoneOptions } from "@/domain/events";
-import { listVenues } from "@/lib/data/events";
+import { listVenuesWithEvents } from "@/lib/data/events";
 import { requireOrg } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
 import { EditVenueForm, NewVenueForm } from "./VenueForms";
@@ -23,7 +23,7 @@ export default async function SedesPage({
   params,
 }: PageProps<"/panel/[org]/sedes">) {
   const { org, support } = await requireOrg((await params).org);
-  const venues = await listVenues(await createClient(), org.id);
+  const venues = await listVenuesWithEvents(await createClient(), org.id);
 
   const form = (
     <NewVenueForm

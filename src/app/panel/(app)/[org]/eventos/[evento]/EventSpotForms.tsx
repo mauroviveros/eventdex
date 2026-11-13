@@ -6,7 +6,7 @@ import { Combobox } from "@/components/ui/Combobox";
 import { Field, FormMessage } from "@/components/ui/Field";
 import { Checkbox } from "@/components/ui/shadcn/checkbox";
 import { Label } from "@/components/ui/shadcn/label";
-import { useFormFeedback } from "@/components/ui/useFormFeedback";
+import { announce, useFormFeedback } from "@/components/ui/useFormFeedback";
 import { addEventSpotAction, updateEventSpotAction } from "@/lib/actions/spots";
 
 /** Puts a catalog spot in the event with its booth and points; the code is generated. */
@@ -20,11 +20,11 @@ export function AddEventSpotForm({
   /** Catalog spots not archived and not in the event yet. */
   spots: { id: string; name: string }[];
 }) {
-  const [state, action, pending] = useActionState(addEventSpotAction, null);
-  const { form, failed, fields, values } = useFormFeedback(
-    state,
-    "Spot agregado.",
+  const [state, action, pending] = useActionState(
+    announce(addEventSpotAction, "Spot agregado."),
+    null,
   );
+  const { form, failed, fields, values } = useFormFeedback(state);
 
   return (
     <form ref={form} action={action} className="grid gap-6" noValidate>
@@ -95,11 +95,11 @@ export function EditEventSpotForm({
   spot: EventSpot;
   catalogName: string;
 }) {
-  const [state, action, pending] = useActionState(updateEventSpotAction, null);
-  const { form, failed, fields, values } = useFormFeedback(
-    state,
-    "Cambios guardados.",
+  const [state, action, pending] = useActionState(
+    announce(updateEventSpotAction, "Cambios guardados."),
+    null,
   );
+  const { form, failed, fields, values } = useFormFeedback(state);
   // After a failed save, show what was typed (keyed by field name).
   const v = (field: string, saved: string | null) =>
     values[field] ?? saved ?? "";

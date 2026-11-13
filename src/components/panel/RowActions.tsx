@@ -3,15 +3,8 @@
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { PixelIcon } from "@/components/pixel/icons";
-import { Button, buttonClass } from "@/components/ui/Button";
-import { FormMessage } from "@/components/ui/Field";
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogTitle,
-} from "@/components/ui/shadcn/alert-dialog";
+import { buttonClass } from "@/components/ui/Button";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -43,31 +36,30 @@ const formData = (fields: Record<string, string>) => {
 /**
  * A row's actions behind a ⋮ (a team member, an invitation). Each one runs its
  * Server Action; the result is a toast, and what can't be undone asks first
- * in a dialog that keeps its error. The focus goes back to the ⋮.
+ * in a ConfirmDialog, which keeps its error and brings the focus back to the
+ * ⋮, or to `fallbackFocus` when the row is gone.
  */
 export function RowActions({
   name,
   actions,
+  fallbackFocus,
 }: {
   /** What the row is, for the button's name: "Acciones de Martín". */
   name: string;
   actions: RowAction[];
+  /** Id of what takes the focus when an action removes this row. */
+  fallbackFocus?: string;
 }) {
   const trigger = useRef<HTMLButtonElement>(null);
   const [asking, setAsking] = useState<RowAction | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
 
+  // Without a question: run it, and say how it went in a toast.
   const run = (item: RowAction) =>
     start(async () => {
       const result = await item.action(null, formData(item.fields));
-      if (result && !result.ok) {
-        if (item.confirm) setError(result.error);
-        else toast.error(result.error);
-        return;
-      }
-      setAsking(null);
-      toast.success(item.done);
+      if (result && !result.ok) toast.error(result.error);
+      else toast.success(item.done);
     });
 
   return (
@@ -76,7 +68,7 @@ export function RowActions({
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger
           ref={trigger}
-          disabled={pending && !asking}
+          disabled={pending}
           className={buttonClass("secondary", "w-11 shrink-0 px-0")}
           aria-label={`Acciones de ${name}`}
         >
@@ -86,11 +78,7 @@ export function RowActions({
           {actions.map((item) => (
             <DropdownMenuItem
               key={item.label}
-              onSelect={() => {
-                if (!item.confirm) return run(item);
-                setError(null);
-                setAsking(item);
-              }}
+              onSelect={() => (item.confirm ? setAsking(item) : run(item))}
             >
               {item.label}
             </DropdownMenuItem>
@@ -98,43 +86,21 @@ export function RowActions({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <AlertDialog
-        open={asking !== null}
-        // Escape can't close it mid-action: it would look cancelled.
-        onOpenChange={(open) => pending || open || setAsking(null)}
-      >
-        <AlertDialogContent
-          onCloseAutoFocus={(e) => {
-            e.preventDefault();
-            trigger.current?.focus();
-          }}
-        >
-          {asking?.confirm && (
-            <>
-              <AlertDialogTitle>{asking.confirm.title}</AlertDialogTitle>
-              <AlertDialogDescription>
-                {asking.confirm.message}
-              </AlertDialogDescription>
-              {error && <FormMessage tone="error">{error}</FormMessage>}
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  variant="danger"
-                  pending={pending}
-                  pendingLabel={asking.confirm.pending}
-                  onClick={() => run(asking)}
-                >
-                  {asking.confirm.label}
-                </Button>
-                <AlertDialogCancel asChild>
-                  <Button variant="secondary" disabled={pending}>
-                    Cancelar
-                  </Button>
-                </AlertDialogCancel>
-              </div>
-            </>
-          )}
-        </AlertDialogContent>
-      </AlertDialog>
+      {asking?.confirm && (
+        <ConfirmDialog
+          open
+          onOpenChange={(open) => open || setAsking(null)}
+          opener={trigger}
+          fallbackFocus={fallbackFocus}
+          title={asking.confirm.title}
+          message={asking.confirm.message}
+          label={asking.confirm.label}
+          pendingLabel={asking.confirm.pending}
+          action={asking.action}
+          fields={asking.fields}
+          done={asking.done}
+        />
+      )}
     </>
   );
 }
