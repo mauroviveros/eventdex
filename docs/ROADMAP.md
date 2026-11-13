@@ -567,20 +567,31 @@ equipo ya tiene sesión, y no en el dominio de la org. El ganador lo sigue eligi
 `draw_raffle` en el servidor, parejo entre los elegibles: la animación solo termina en
 el nombre que devolvió. Branch `feat/sorteo-escenario`.
 
-1. ▶ **Backend.** `drawRaffle` devuelve la extracción (id, número y nombre público) en
+1. ✅ **Backend.** `drawRaffle` devuelve la extracción (id, número y nombre público) en
    vez de descartarla, y `listRaffleParticipants` lee quién puede ganar con su nombre
    público («Ana G.») y sus medallas, sin mails ni ids (`publicName`, copia de
    `app.public_name`). Sin cambios en la base.
    *Listo cuando* los tests cubren la extracción devuelta y las reglas del nombre
    público.
-2. **Vista.** `/[org]/eventos/[evento]/sorteo/proyectar`, a pantalla completa y
-   sin la barra del panel, con la marca de la org; participantes a la vista, animación
-   en pasos que frena en el ganador (sin movimiento con `prefers-reduced-motion`) y
-   «Proyectar» desde la pestaña Sorteo.
+2. ▶ **Vista.** `/[org]/eventos/[evento]/sorteo/proyectar?sorteo=<id>`, a pantalla
+   completa y sin la barra del panel, con la marca de la org (`RaffleStage`). Para dejarla
+   afuera, el layout con la barra y todas sus páginas pasan al grupo `(con-barra)` de
+   `[org]`, y la pantalla vive en `(escenario)`: las URLs no cambian. Participantes a la
+   vista, animación en pasos que frena en el ganador (sin movimiento con
+   `prefers-reduced-motion`), solo el ganador se anuncia, y «Proyectar» en cada sorteo de
+   la pestaña. Sin cambios en la base.
    *Listo cuando* se sortea desde la pantalla proyectada y el ganador coincide con el
    de la pestaña.
-3. **Auditoría.** e2e del sorteo proyectado, `/code-review`, `/accessibility` y axe.
-   *Listo cuando* pasan los e2e y axe da 0 violaciones, claro y oscuro, a 375 y 1280 px.
+   e2e (`sorteo-escenario.spec.ts`): se sortea, el ganador coincide con la extracción del
+   panel, con movimiento reducido aparece sin animación (el test falla si se saca esa
+   rama), y un sorteo inexistente es 404. Suite completa: 23 de 23. axe (WCAG 2.2 AA y
+   buenas prácticas) en la pantalla: 0 violaciones en claro y oscuro a 1280 px y en
+   oscuro a 375 px, sin scroll horizontal. En `/dev/componentes` entra con sus cuatro
+   estados.
+3. **Auditoría.** `/code-review` de la branch y `/accessibility`; axe en el estado con
+   ganador y en claro a 375 px, que quedaron sin correr.
+   *Listo cuando* se resuelven los hallazgos y axe da 0 violaciones, claro y oscuro, a 375
+   y 1280 px.
 
 ---
 
