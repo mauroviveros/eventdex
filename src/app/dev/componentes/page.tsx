@@ -45,6 +45,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/shadcn/tabs";
+import { UserAvatar } from "@/components/ui/UserAvatar";
 import { Celebration } from "@/components/visitante/Celebration";
 import { Countdown } from "@/components/visitante/Countdown";
 import {
@@ -85,6 +86,14 @@ async function catalogAction() {
 }
 
 // Synthetic events, only for the catalog. Fixed "now": sat 14 nov 2026, 12:00 in Buenos Aires.
+const BETO = { name: "Beto P.", claims: 4, avatarUrl: retrato.src };
+const PARTICIPANTS = [
+  { name: "Ana G.", claims: 5, avatarUrl: null },
+  BETO,
+  { name: "Cris L.", claims: 3, avatarUrl: null },
+  { name: "Dani R.", claims: 2, avatarUrl: null },
+  { name: "Eli M.", claims: 2, avatarUrl: retrato.src },
+];
 const SAMPLE_CLAIM = "2026-11-14T18:32:00Z";
 const CELEBRATION = {
   headingLevel: 3 as const,
@@ -846,30 +855,50 @@ export default function ComponentesPage() {
         </Section>
 
         <Section
+          title="Avatar"
+          note="UserAvatar: la foto de una persona, o sus iniciales si no tiene o no carga. Todas las fotos de la app pasan por acá. Tamaños sm, md, lg y xl; con foto y sin foto."
+        >
+          <div className="flex flex-wrap items-end gap-6">
+            {(["sm", "md", "lg"] as const).map((size) => (
+              <div key={size} className="flex items-end gap-3">
+                <UserAvatar name="Beto Pérez" src={retrato.src} size={size} />
+                <UserAvatar name="Beto Pérez" size={size} />
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        <Section
           title="Panel: sorteo en escenario"
-          note="RaffleStage: el sorteo para proyectar. Listo (vivo: sortea, anima unos cuatro segundos y al final falla porque el sorteo no existe, para ver el error), sorteando, ganador y sin participantes. Con movimiento reducido el ganador aparece sin animación."
+          note="RaffleStage: el sorteo para proyectar. Listo (vivo: sortea, pasan las fotos unos cuatro segundos y al final falla porque el sorteo no existe, para ver el error), sorteando, ganador (con confeti, que solo sale en el vivo) y sin participantes. Con movimiento reducido el ganador aparece sin animación ni confeti. Una foto y el resto con iniciales."
         >
           <div className="grid gap-10">
             <RaffleStage
               raffleId="00000000-0000-4000-8000-000000000000"
-              names={["Ana G.", "Beto P.", "Cris L.", "Dani R.", "Eli M."]}
+              participants={PARTICIPANTS}
               canDraw
             />
             <RaffleStage
               raffleId="00000000-0000-4000-8000-000000000000"
-              names={["Ana G.", "Beto P.", "Cris L."]}
+              participants={PARTICIPANTS}
               canDraw
-              initial={{ kind: "drawing", shown: "Beto P." }}
+              initial={{ kind: "drawing", shown: BETO, frame: 0, ms: 400 }}
             />
             <RaffleStage
               raffleId="00000000-0000-4000-8000-000000000000"
-              names={["Ana G.", "Cris L."]}
+              participants={PARTICIPANTS.slice(0, 2)}
               canDraw
-              initial={{ kind: "won", name: "Beto P.", number: 1 }}
+              initial={{
+                kind: "won",
+                name: "Beto P.",
+                number: 1,
+                claims: 4,
+                avatarUrl: retrato.src,
+              }}
             />
             <RaffleStage
               raffleId="00000000-0000-4000-8000-000000000000"
-              names={[]}
+              participants={[]}
               canDraw
             />
           </div>

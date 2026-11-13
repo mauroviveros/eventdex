@@ -399,6 +399,67 @@
   }
 }
 
+/*
+ * Raffle stage: stepped like the rest of the console, never smooth. Each name
+ * that goes by fades in and out in chunky steps; the winner lands with a
+ * pulsing frame, a tile that pops, a name that types in and medals that fill.
+ */
+@keyframes stage-pass {
+  0% {
+    opacity: 0;
+  }
+  25%,
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes stage-frame {
+  0%,
+  40%,
+  80% {
+    outline-width: 2px;
+  }
+  20%,
+  60%,
+  100% {
+    outline-width: 10px;
+  }
+}
+@keyframes stage-pop {
+  from {
+    transform: scale(0.5);
+  }
+}
+@keyframes stage-reveal {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+}
+@keyframes stage-pip {
+  from {
+    opacity: 0;
+  }
+}
+.stage-pass {
+  animation: stage-pass var(--frame-ms, 300ms) steps(3, end) both;
+}
+.stage-frame {
+  animation: stage-frame 1s steps(1, end) both;
+}
+.stage-pop {
+  animation: stage-pop 0.4s steps(4, end) both;
+}
+.stage-reveal {
+  animation: stage-reveal 0.7s steps(12, end) 0.3s both;
+}
+.stage-pip {
+  animation: stage-pip 0.01s steps(1, end) both;
+  animation-delay: calc(0.9s + var(--i) * 150ms);
+}
+
 /* Reduced motion: a new medal shows fully developed, nothing blinks. */
 @media (prefers-reduced-motion: reduce) {
   *,

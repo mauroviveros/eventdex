@@ -57,7 +57,13 @@ test("staff draws from the stage screen, and the winner is the one in the panel"
     await expect(
       staff.getByRole("heading", { level: 1, name: "Entradas" }),
     ).toBeVisible();
-    await expect(staff.getByText("Listo para sortear")).toBeVisible();
+    await expect(
+      staff.getByText("Presioná el botón para comenzar el sorteo"),
+    ).toBeVisible();
+    // The header counts who takes part and the medals in play; the list is names only.
+    await expect(staff.getByText("participa ·")).toBeVisible();
+    await expect(staff.getByText("medalla en juego")).toBeVisible();
+    await expect(staff.getByText("Participaron 1")).toBeVisible();
     await expect(
       staff.getByRole("navigation", { name: "Secciones" }),
     ).toHaveCount(0);
@@ -73,9 +79,18 @@ test("staff draws from the stage screen, and the winner is the one in the panel"
       "Ganador: Visitante",
       { timeout: 15_000 },
     );
-    await expect(staff.getByText("Extracción 1")).toBeVisible();
+    await expect(staff.getByText("Ganador n.º 1")).toBeVisible();
     // The Sortear button is gone, so the focus goes to the winner, not to nowhere.
-    await expect(staff.getByText("Visitante", { exact: true })).toBeFocused();
+    const winner = staff.locator("main p[tabindex='-1']");
+    await expect(winner).toHaveText("Visitante");
+    await expect(winner).toBeFocused();
+    await expect(staff.getByText("1 medalla", { exact: true })).toBeVisible();
+    // Reloading doesn't forget who won.
+    await staff.reload();
+    await expect(staff.getByText("Ganador n.º 1")).toBeVisible();
+    await expect(staff.locator("main p[tabindex='-1']")).toHaveText(
+      "Visitante",
+    );
     // The only participant just won: there is nobody else to draw.
     await expect(staff.getByRole("button", { name: /^Sortear/ })).toHaveCount(
       0,
@@ -127,7 +142,7 @@ test("staff draws from the stage screen, and the winner is the one in the panel"
     );
     // A second draw would have failed (nobody else is left) and said so here.
     await expect(staff.getByText("No hay participantes")).toHaveCount(0);
-    await expect(staff.getByText("Extracción 1")).toBeVisible();
+    await expect(staff.getByText("Ganador n.º 1")).toBeVisible();
   });
 
   await test.step("a raffle of another event, or a made-up one, is a 404", async () => {
