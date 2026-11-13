@@ -44,3 +44,31 @@ test("spots are added one after another without the sheet closing", async ({
     sheet.getByText("Todos los spots del catálogo ya están en el evento."),
   ).toBeVisible();
 });
+
+test("while a tab loads, its panel keeps the name of what it still shows", async ({
+  page,
+}) => {
+  const url = `http://localhost:3000/panel/${seed.org.slug}/eventos/feria-borrador`;
+  await page.goto(url);
+  await signInByMail(page, seed.ownerEmail);
+  await page.goto(url);
+
+  // Hold the server's answer for the new tab, to look at the panel in between.
+  let release = () => {};
+  const held = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  await page.route(/tab=visitantes/, async (route) => {
+    await held;
+    await route.continue();
+  });
+
+  await page.getByRole("tab", { name: /^Visitantes/ }).click();
+  const panel = page.getByRole("tabpanel");
+  await expect(panel).toHaveAttribute("aria-busy", "true");
+  await expect(panel).toHaveAccessibleName("General");
+
+  release();
+  await expect(panel).not.toHaveAttribute("aria-busy");
+  await expect(panel).toHaveAccessibleName(/^Visitantes/);
+});
