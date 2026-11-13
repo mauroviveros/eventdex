@@ -520,7 +520,14 @@ revisada antes de la siguiente.
    Dominios, cada sección con su Guardar. Sin cambios en la base.
    *Listo cuando* se invita, se cambia el rol y se quita desde el ⋮, se guarda el color
    aparte del nombre, y pasan los e2e.
-7. **Plataforma e `/ingresar`.**
+7. ▶ **Plataforma e `/ingresar`.** Misma branch. Organizaciones, facturas y auditoría en
+   `DataTable` (tarjetas compactas en el celular). «Nueva factura» y «Sumar dominio» en
+   hojas laterales; las acciones de cada factura y de cada dominio en `RowActions`. Las
+   cifras del Resumen llevan a su página (`StatStrip` con `href`). En el celular el título
+   de una sección no se corta: la acción baja. `/ingresar` toma el fondo y el logotipo
+   de la landing, con vuelta al inicio. Sin cambios en la base.
+   *Listo cuando* se factura, se marca pagada y se suma un dominio desde las hojas y los
+   ⋮, y pasan los e2e.
 
 ---
 

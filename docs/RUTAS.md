@@ -47,7 +47,7 @@ Las rutas de esta tabla van **bajo `/panel`** (`/[org]` es `/panel/[org]`), salv
 
 | Ruta | Vista | Acceso | Rebanada |
 |------|-------|--------|----------|
-| `/ingresar` (en la raíz) | Login del equipo con Google; sin `next`, vuelve a `/panel`. La landing lo linkea desde su cabecera. En desarrollo suma un link por mail que llega al visor local | Público | R1 |
+| `/ingresar` (en la raíz) | Login del equipo con Google; sin `next`, vuelve a `/panel`. Sobre el fondo de la landing, con el logotipo como link de vuelta al inicio. La landing lo linkea desde su cabecera. En desarrollo suma un link por mail que llega al visor local | Público | R1 |
 | `/` | Sin pantalla: acepta las invitaciones abiertas para tu mail y te lleva a tu lugar. Developer → `/plataforma/organizaciones`; miembro → `/[org]` de su primera org; nadie más → `/sin-acceso` | Usuario con sesión | R2 · 0 |
 | `/sin-acceso` | Cuenta sin organización ni invitación: lo explica, muestra el mail y deja salir para probar con otra. Sin barra lateral | Usuario con sesión | R2 · 0 |
 | `/[org]` | Dashboard de la organización: arriba, el evento activo (en curso o, si no hay, el próximo) con sus cifras y atajos (Gestionar, Hoja de QR, Sorteo, Ver en el sitio); después, los borradores con lo que les falta para publicar; y abajo, todos los eventos en una tabla ordenada por atención (en curso, próximos, borradores, finalizados), con búsqueda y filtro por fase en la URL (`?q=…&fase=…`) y el menú de acciones de cada uno. Un no miembro recibe 404; el developer entra en modo soporte, solo lectura (sin formularios ni botones de alta), y queda en la auditoría | Miembro · developer en soporte | R2 · R15 · R16 |
@@ -67,11 +67,11 @@ un 404, no un 403: la ruta no existe para él.
 
 | Ruta | Vista | Acceso | Rebanada |
 |------|-------|--------|----------|
-| `/plataforma` | Resumen: organizaciones, eventos en curso, facturas pendientes | Developer | R8 |
-| `/plataforma/organizaciones` | Lista de organizaciones con su estado | Developer | R1 |
+| `/plataforma` | Resumen: organizaciones, eventos en curso, facturas pendientes; organizaciones y facturas llevan a su página | Developer | R8 · R16 |
+| `/plataforma/organizaciones` | Tabla de organizaciones con dominio, estado, equipo e invitación abierta (tarjetas en el celular) | Developer | R1 · R16 |
 | `/plataforma/organizaciones/nueva` | Alta de organización + invitación al owner + primer dominio | Developer | R1 |
-| `/plataforma/organizaciones/[org]` | Detalle: dominios (sumar, hacer principal, quitar y mover desde otra org, con confirmación), miembros, eventos, suspender o reactivar, y la entrada al modo soporte | Developer | R8 |
-| `/plataforma/facturacion` | Facturas manuales: alta, marcar pagada, anular | Developer | R8 |
+| `/plataforma/organizaciones/[org]` | Detalle: dominios (**Sumar dominio** en hoja lateral, que pregunta antes de moverlo desde otra org; hacer principal y quitar, con confirmación, en el ⋮ de cada uno), miembros, eventos, suspender o reactivar, y la entrada al modo soporte | Developer | R8 · R16 |
+| `/plataforma/facturacion` | Facturas manuales en una tabla, cada una con marcar pagada y anular (con confirmación) en su ⋮. **Nueva factura** (hoja lateral, desde la barra) | Developer | R8 · R16 |
 | `/plataforma/auditoria` | Registro de acciones sensibles, filtrable por organización y área en la URL (`?org=…&area=…&pagina=…`) | Developer | R8 |
 
 ## Landing · `eventdex.vercel.app`
