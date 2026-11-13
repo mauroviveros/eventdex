@@ -569,7 +569,7 @@ el nombre que devolvió. Branch `feat/sorteo-escenario`.
 
 1. ✅ **Backend.** `drawRaffle` devuelve la extracción (id, número y nombre público) en
    vez de descartarla, y `listRaffleParticipants` lee quién puede ganar con su nombre
-   público («Ana G.») y sus medallas, sin mails ni ids (`publicName`, copia de
+   público («Ana G.»), sin mails ni ids (`publicName`, copia de
    `app.public_name`). Sin cambios en la base.
    *Listo cuando* los tests cubren la extracción devuelta y las reglas del nombre
    público.
@@ -583,13 +583,20 @@ el nombre que devolvió. Branch `feat/sorteo-escenario`.
    *Listo cuando* se sortea desde la pantalla proyectada y el ganador coincide con el
    de la pestaña.
    e2e (`sorteo-escenario.spec.ts`): se sortea, el ganador coincide con la extracción del
-   panel, con movimiento reducido aparece sin animación (el test falla si se saca esa
-   rama), y un sorteo inexistente es 404. Suite completa: 23 de 23. axe (WCAG 2.2 AA y
+   panel y recibe el foco, con movimiento reducido aparece sin animación (el test falla si
+   se saca esa rama), una conexión cortada avisa que hay que mirar la pestaña antes de
+   volver a sortear, dos toques seguidos sortean una vez, y un sorteo inexistente o de
+   otro evento es 404. Suite completa: 23 de 23. axe (WCAG 2.2 AA y
    buenas prácticas) en la pantalla: 0 violaciones en claro y oscuro a 1280 px y en
    oscuro a 375 px, sin scroll horizontal. En `/dev/componentes` entra con sus cuatro
    estados.
-3. **Auditoría.** `/code-review` de la branch y `/accessibility`; axe en el estado con
-   ganador y en claro a 375 px, que quedaron sin correr.
+3. **Auditoría.** `/code-review` hecho: los 10 hallazgos resueltos (nombres repetidos,
+   lectura de participantes en tandas, doble sorteo, foco, nombre público, lectura mínima
+   de la org, revalidación por patrón, e2e del otro evento). `/accessibility` hecho: axe
+   (WCAG 2.2 AA y buenas prácticas) da 0 violaciones en la pantalla, en espera y con
+   ganador, en claro y oscuro, a 375 y 1280 px, sin scroll horizontal; botón de 56 px y
+   enlace de 44 px, foco al ganador, solo el ganador se anuncia. Sin probar con lector de
+   pantalla real.
    *Listo cuando* se resuelven los hallazgos y axe da 0 violaciones, claro y oscuro, a 375
    y 1280 px.
 

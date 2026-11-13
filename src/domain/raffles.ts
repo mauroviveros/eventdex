@@ -39,9 +39,29 @@ export function stageFrames(
   const frames: string[] = [];
   for (let i = 0; i < count; i++) {
     const previous = frames.at(-1);
-    const pool =
-      names.length > 1 ? names.filter((n) => n !== previous) : [...names];
+    const others = names.filter((n) => n !== previous);
+    // Every name the same (visitors without one are all "Visitante"): repeat it.
+    const pool = others.length > 0 ? others : names;
     frames.push(pool[Math.floor(random() * pool.length)] ?? "");
   }
   return frames;
+}
+
+/**
+ * The name a profile gets in a raffle, by the same rule as the SQL that freezes
+ * the winner's: coalesce(nullif(trim(display_name), ''), full_name).
+ */
+export function publicNameOf(
+  profile: { display_name: string | null; full_name: string | null } | null,
+) {
+  return publicName(profile?.display_name?.trim() || profile?.full_name);
+}
+
+/** A list in pieces of at most `size`, in order. */
+export function chunked<T>(items: readonly T[], size: number) {
+  const pieces: T[][] = [];
+  for (let i = 0; i < items.length; i += size) {
+    pieces.push(items.slice(i, i + size));
+  }
+  return pieces;
 }

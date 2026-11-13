@@ -8,7 +8,7 @@ import { Monogram } from "@/components/ui/Monogram";
 import { Logo } from "@/components/visitante/Medal";
 import { EVENTDEX_HUE, ramp, rampFromHex } from "@/domain/palette";
 import { getEventBySlug } from "@/lib/data/events";
-import { getOrganizationSettings, logoUrl } from "@/lib/data/organizations";
+import { logoUrl } from "@/lib/data/organizations";
 import { listRaffleParticipants } from "@/lib/data/raffles";
 import { requireOrg } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
@@ -34,16 +34,15 @@ export default async function StagePage({
 
   const { org, support } = await requireOrg(slug);
   const supabase = await createClient();
-  const [event, settings, raffle] = await Promise.all([
+  const [event, raffle] = await Promise.all([
     getEventBySlug(supabase, org.id, evento),
-    getOrganizationSettings(supabase, org.id),
     listRaffleParticipants(supabase, raffleId.data),
   ]);
   // A raffle of another event is as missing as one that doesn't exist.
   if (!event || !raffle || raffle.eventId !== event.id) notFound();
 
-  const tones = settings?.brand_color
-    ? rampFromHex(settings.brand_color)
+  const tones = org.brand_color
+    ? rampFromHex(org.brand_color)
     : ramp(EVENTDEX_HUE);
   const style = Object.fromEntries(
     tones.map((tone, i) => [`--ramp-${i}`, tone]),
@@ -57,9 +56,9 @@ export default async function StagePage({
       <header className="border-b-2 border-lcd-3">
         <div className="mx-auto flex min-h-16 max-w-5xl flex-wrap items-center justify-between gap-x-4 px-4 sm:px-6">
           <p className="flex min-h-11 min-w-0 items-center gap-3 font-display text-px-2">
-            {settings?.logo_path ? (
+            {org.logo_path ? (
               <Logo
-                src={logoUrl(settings.logo_path)}
+                src={logoUrl(org.logo_path)}
                 mode="lleno"
                 label=""
                 className="size-10 shrink-0 object-contain"
@@ -92,9 +91,8 @@ export default async function StagePage({
           </p>
         </div>
         <RaffleStage
-          org={org.slug}
           raffleId={raffleId.data}
-          names={raffle.participants.map((p) => p.name)}
+          names={raffle.names}
           canDraw={!support}
         />
       </main>
