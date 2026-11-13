@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { EditSheet } from "@/components/panel/EditSheet";
 import { RowActions } from "@/components/panel/RowActions";
 import { PageBody, TopBar } from "@/components/panel/TopBar";
-import { Monogram } from "@/components/ui/Monogram";
+import { UserAvatar } from "@/components/ui/UserAvatar";
 import {
   changeMemberRoleAction,
   inviteMemberAction,
@@ -59,7 +59,8 @@ export default async function EquipoPage({
           </h2>
           <ul className="grid">
             {members.map((member) => {
-              const { email, display_name, full_name } = member.profile;
+              const { email, display_name, full_name, avatar_url } =
+                member.profile;
               const name = display_name || full_name || email;
               const isMe = member.user_id === viewer.id;
               const next = member.role === "owner" ? "staff" : "owner";
@@ -69,7 +70,7 @@ export default async function EquipoPage({
                   className="flex items-center justify-between gap-4 border-2 border-lcd-3 px-4 py-3 not-first:-mt-0.5"
                 >
                   <div className="flex min-w-0 items-center gap-3">
-                    <Monogram text={name} size="sm" />
+                    <UserAvatar name={name} src={avatar_url} size="sm" />
                     <div className="min-w-0">
                       <p className="break-words">
                         {name}
