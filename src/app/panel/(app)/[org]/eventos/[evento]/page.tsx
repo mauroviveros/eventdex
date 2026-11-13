@@ -107,7 +107,7 @@ export default async function EventoPage({
                       Todavía no cargaste sedes.{" "}
                       <Link
                         href={`/panel/${org.slug}/sedes`}
-                        className="underline decoration-2 underline-offset-4"
+                        className="underline"
                       >
                         Cargá una
                       </Link>{" "}

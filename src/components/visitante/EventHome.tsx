@@ -114,7 +114,7 @@ export function Marquee({ event, now }: Props) {
         {event.spots.length > 0 && (
           <a
             href="#medallas"
-            className="inline-flex min-h-11 items-center font-display text-px-1 underline decoration-2 underline-offset-4"
+            className="inline-flex min-h-11 items-center font-display text-px-1 underline"
           >
             {event.spots.length === 1
               ? "Ver la medalla"
