@@ -504,7 +504,15 @@ revisada antes de la siguiente.
    nuevas.
    *Listo cuando* hay un solo Publicar con confirmación, las cuatro pestañas entran a
    320 px, y pasan lint, tipos, tests y e2e.
-5. **Catálogo de spots y sedes**, con las tablas pasadas a tarjetas en el celular.
+5. ▶ **Catálogo de spots y sedes.** Misma branch. Todas las tablas usan en el celular
+   las tarjetas compactas del dashboard, con un selector «Ordenar por» en vez de los
+   encabezados sueltos. En las secciones, la barra es el título (h1) y se va el título
+   grande repetido; «Nuevo evento» y el detalle de una organización suman migas. Sedes:
+   «Nueva sede» y «Editar» (nombre y dirección, `updateVenue` con tests; la zona no se
+   edita) en hojas laterales, cada sede con en cuántos eventos se usa, y sin sedes el
+   alta es la página. Sin cambios en la base: la política de `update` ya existía.
+   *Listo cuando* se ordena una tabla desde el celular, se edita una sede, y pasan los
+   e2e.
 6. **Equipo y ajustes.**
 7. **Plataforma e `/ingresar`.**
 

@@ -149,9 +149,13 @@ Los formularios además muestran:
   desktop primero, pero todo se puede operar desde el celular.
 - Las acciones principales del visitante quedan al alcance del pulgar (mitad
   inferior) y miden al menos 44×44 px.
-- En el admin, las tablas pasan a lista de tarjetas por debajo de 640 px. `DataTable` ya
-  lo hace (cada celda lleva el nombre de su columna); las de la plataforma todavía se
-  corren de costado.
+- En el panel, las tablas pasan a tarjetas compactas por debajo de 640 px: `DataTable`
+  pone la primera columna como nombre de la tarjeta y el resto seguido, cada dato con el
+  nombre de su columna, y cambia los encabezados para ordenar por un selector «Ordenar
+  por». Las de la plataforma todavía se corren de costado.
+- En las secciones del panel (Eventos, Spots, Sedes, Equipo, Ajustes y la plataforma) el
+  título de la barra es el h1 de la página; las páginas con migas (un evento, un spot,
+  un alta) tienen su propio título grande.
 - Sin hover como única forma de llegar a algo.
 - Contemplar la red lenta: las mutaciones muestran el resultado optimista solo
   cuando revertirlo es seguro (nunca en el reclamo de medallas ni en el sorteo).
