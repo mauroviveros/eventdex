@@ -53,19 +53,25 @@ export async function createRaffle(
   return { ok: true, data: null };
 }
 
+/** The draw that just came out: its name is the one frozen in the database. */
+export type DrawnWinner = { id: string; drawNumber: number; name: string };
+
 export async function drawRaffle(
   supabase: Client,
   raffleId: unknown,
-): Promise<ActionResult<null>> {
+): Promise<ActionResult<DrawnWinner>> {
   const parsed = z.guid().safeParse(raffleId);
   if (!parsed.success) return failed(NOT_ALLOWED);
 
-  const { error } = await supabase.rpc("draw_raffle", {
+  const { data, error } = await supabase.rpc("draw_raffle", {
     p_raffle_id: parsed.data,
   });
   // Here 23514 only comes from draw_raffle's own raises, already in our voice.
   if (error) return failed(error, { "23514": error.message });
-  return { ok: true, data: null };
+  return {
+    ok: true,
+    data: { id: data.id, drawNumber: data.draw_number, name: data.winner_name },
+  };
 }
 
 export async function voidRaffleDraw(
