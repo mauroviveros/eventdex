@@ -137,7 +137,7 @@ function Sidebar({
   className,
   children,
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<"aside">) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
 
   if (isMobile) {
@@ -175,7 +175,9 @@ function Sidebar({
         data-slot="sidebar-gap"
         className="relative w-(--sidebar-width) group-data-[collapsible=icon]:w-(--sidebar-width-icon)"
       />
-      <div
+      {/* A landmark like the phone's sheet, so the org and the account aren't loose content. */}
+      <aside
+        aria-label="Menú"
         data-slot="sidebar-container"
         className={cn(
           "fixed inset-y-0 left-0 z-10 hidden h-svh w-(--sidebar-width) border-r-2 border-sidebar-border group-data-[collapsible=icon]:w-(--sidebar-width-icon) md:flex",
@@ -190,7 +192,7 @@ function Sidebar({
         >
           {children}
         </div>
-      </div>
+      </aside>
     </div>
   );
 }
