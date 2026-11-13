@@ -599,6 +599,21 @@ el nombre que devolvió. Branch `feat/sorteo-escenario`.
    pantalla real.
    *Listo cuando* se resuelven los hallazgos y axe da 0 violaciones, claro y oscuro, a 375
    y 1280 px.
+4. ▶ **Rediseño del escenario**, de tres alternativas (impeccable) la «placa del
+   ganador»: encabezado compacto con el título y los totales; una placa de tinta con doble
+   filete donde ocurre el sorteo (trofeo en espera; las caras pasan una a una con un fade
+   en pasos, al azar; el ganador entra con el marco que pulsa, la cara que aparece, el
+   nombre que se escribe, las medallas que se llenan y confeti); botón de ancho completo
+   dentro de la placa; y abajo, sin fotos ni medallas, quiénes participaron. «Ganador n.º N»
+   reemplaza a «Extracción N». Al abrir o recargar, la pantalla vuelve a la última
+   extracción vigente. Todas las fotos de la app pasan por `UserAvatar` (shadcn Avatar, con
+   iniciales); el confeti es `canvas-confetti` en cuadrados planos con los tonos de la org
+   y no sale con movimiento reducido. La foto y las medallas del ganador las lee el
+   servidor (`getWinnerCard`, `getLastDraw`): la pantalla sigue sin recibir mails ni ids.
+   Sin cambios en la base.
+   *Listo cuando* se sortea desde la pantalla y el ganador sale con su foto y sus
+   medallas, y la pantalla sigue en 0 violaciones de axe. e2e y catálogo al día; falta
+   repetir `/accessibility` sobre el diseño nuevo.
 
 ---
 
