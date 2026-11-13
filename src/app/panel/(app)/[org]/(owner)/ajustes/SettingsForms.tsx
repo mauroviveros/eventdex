@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { type ReactNode, useActionState, useState } from "react";
 import { BrandPreview } from "@/components/panel/BrandPreview";
 import { ActionButton } from "@/components/ui/ActionButton";
 import { Button } from "@/components/ui/Button";
@@ -24,8 +24,12 @@ function Hidden({ ids }: { ids: Ids }) {
   );
 }
 
-/** The form and, beside it, how the brand looks as it's edited. */
-export function BrandEditor({
+/**
+ * The org's settings in two sections, each with its own Guardar: Organización
+ * (name and zone) and Marca (color and logo, beside how they look). The action
+ * saves the three fields together, so each form sends the other's as saved.
+ */
+export function SettingsEditor({
   ids,
   settings,
   logo,
@@ -36,67 +40,112 @@ export function BrandEditor({
   logo: string | null;
   timezones: string[];
 }) {
-  const [state, action, pending] = useActionState(updateSettingsAction, null);
-  const { form, failed, fields, values } = useFormFeedback(
-    state,
-    "Cambios guardados.",
-  );
   const [name, setName] = useState(settings.name);
   const [color, setColor] = useState(settings.color);
 
   return (
-    <div className="grid gap-10 xl:grid-cols-[1fr_28rem] xl:items-start">
-      <div className="panel grid gap-8 p-6">
-        <form ref={form} action={action} className="grid gap-6" noValidate>
-          <Hidden ids={ids} />
-          {failed && !failed.fieldErrors && (
-            <FormMessage tone="error">{failed.error}</FormMessage>
+    <>
+      <section aria-labelledby="organizacion" className="grid max-w-xl gap-4">
+        <h2 id="organizacion" className="text-px-2">
+          Organización
+        </h2>
+        <SettingsForm ids={ids} saved={settings} done="Datos guardados.">
+          {({ fields, values }) => (
+            <>
+              <Field
+                label="Nombre"
+                name="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                error={fields.name}
+              />
+              <SelectField
+                label="Zona horaria"
+                name="defaultTimezone"
+                defaultValue={values.defaultTimezone ?? settings.timezone}
+                hint="La que se propone al crear una sede."
+                error={fields.defaultTimezone}
+              >
+                {timezones.map((tz) => (
+                  <option key={tz} value={tz}>
+                    {tz.replaceAll("_", " ")}
+                  </option>
+                ))}
+              </SelectField>
+            </>
           )}
-          <Field
-            label="Nombre"
-            name="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            error={fields.name}
-          />
-          <Field
-            label="Color de marca"
-            name="brandColor"
-            type="color"
-            value={color}
-            onChange={(e) => setColor(e.target.value)}
-            hint="Tomamos el tono y armamos cuatro con buen contraste: cualquier color sirve."
-            error={fields.brandColor}
-          />
-          <SelectField
-            label="Zona horaria"
-            name="defaultTimezone"
-            defaultValue={values.defaultTimezone ?? settings.timezone}
-            hint="La que se propone al crear una sede."
-            error={fields.defaultTimezone}
-          >
-            {timezones.map((tz) => (
-              <option key={tz} value={tz}>
-                {tz.replaceAll("_", " ")}
-              </option>
-            ))}
-          </SelectField>
-          <Button
-            type="submit"
-            pending={pending}
-            pendingLabel="Guardando…"
-            className="justify-self-start"
-          >
-            Guardar cambios
-          </Button>
-        </form>
-        <LogoForm ids={ids} hasLogo={logo !== null} />
-      </div>
-      <div className="min-w-0 xl:order-first">
-        <BrandPreview color={color} name={name} logo={logo} />
-      </div>
-    </div>
+        </SettingsForm>
+      </section>
+
+      <section aria-labelledby="marca" className="grid gap-4">
+        <h2 id="marca" className="text-px-2">
+          Marca
+        </h2>
+        <div className="grid gap-10 xl:grid-cols-[1fr_28rem] xl:items-start">
+          <div className="panel grid gap-8 p-6">
+            <SettingsForm ids={ids} saved={settings} done="Color guardado.">
+              {({ fields }) => (
+                <Field
+                  label="Color de marca"
+                  name="brandColor"
+                  type="color"
+                  value={color}
+                  onChange={(e) => setColor(e.target.value)}
+                  hint="Tomamos el tono y armamos cuatro con buen contraste: cualquier color sirve."
+                  error={fields.brandColor}
+                />
+              )}
+            </SettingsForm>
+            <LogoForm ids={ids} hasLogo={logo !== null} />
+          </div>
+          <div className="min-w-0 xl:order-first">
+            <BrandPreview color={color} name={name} logo={logo} />
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+
+type Feedback = ReturnType<typeof useFormFeedback>;
+
+/**
+ * One section's form. The fields it doesn't render go as saved, since the
+ * action takes the three; its own fields override them by coming later.
+ */
+function SettingsForm({
+  ids,
+  saved,
+  done,
+  children,
+}: {
+  ids: Ids;
+  saved: { name: string; color: string; timezone: string };
+  done: string;
+  children: (feedback: Pick<Feedback, "fields" | "values">) => ReactNode;
+}) {
+  const [state, action, pending] = useActionState(updateSettingsAction, null);
+  const { form, failed, fields, values } = useFormFeedback(state, done);
+  return (
+    <form ref={form} action={action} className="grid gap-6" noValidate>
+      <Hidden ids={ids} />
+      <input type="hidden" name="name" value={saved.name} />
+      <input type="hidden" name="brandColor" value={saved.color} />
+      <input type="hidden" name="defaultTimezone" value={saved.timezone} />
+      {failed && !failed.fieldErrors && (
+        <FormMessage tone="error">{failed.error}</FormMessage>
+      )}
+      {children({ fields, values })}
+      <Button
+        type="submit"
+        pending={pending}
+        pendingLabel="Guardando…"
+        className="justify-self-start"
+      >
+        Guardar
+      </Button>
+    </form>
   );
 }
 

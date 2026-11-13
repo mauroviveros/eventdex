@@ -8,7 +8,7 @@ import { CONTACT_EMAIL } from "@/lib/contact";
 import { getOrganizationSettings, logoUrl } from "@/lib/data/organizations";
 import { requireOrgOwner } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
-import { BrandEditor } from "./SettingsForms";
+import { SettingsEditor } from "./SettingsForms";
 
 export async function generateMetadata({
   params,
@@ -17,7 +17,7 @@ export async function generateMetadata({
   return { title: `Ajustes · ${org.name}` };
 }
 
-/** The org's name, brand and domains. In support mode, only to read. */
+/** The org's data, brand and domains. In support mode, the brand only to look at. */
 export default async function AjustesPage({
   params,
 }: PageProps<"/panel/[org]/ajustes">) {
@@ -32,28 +32,28 @@ export default async function AjustesPage({
     <>
       <TopBar title="Ajustes" />
       <PageBody>
-        <section aria-labelledby="marca" className="grid gap-4">
-          <h2 id="marca" className="border-b-2 border-lcd-3 pb-2 text-px-2">
-            Marca
-          </h2>
-          {support ? (
+        {support ? (
+          <section aria-labelledby="marca" className="grid gap-4">
+            <h2 id="marca" className="text-px-2">
+              Marca
+            </h2>
             <BrandPreview color={color} name={settings.name} logo={logo} />
-          ) : (
-            <BrandEditor
-              ids={ids}
-              settings={{
-                name: settings.name,
-                color,
-                timezone: settings.default_timezone,
-              }}
-              logo={logo}
-              timezones={timeZoneOptions(settings.default_timezone)}
-            />
-          )}
-        </section>
+          </section>
+        ) : (
+          <SettingsEditor
+            ids={ids}
+            settings={{
+              name: settings.name,
+              color,
+              timezone: settings.default_timezone,
+            }}
+            logo={logo}
+            timezones={timeZoneOptions(settings.default_timezone)}
+          />
+        )}
 
         <section aria-labelledby="dominios" className="grid gap-4">
-          <h2 id="dominios" className="border-b-2 border-lcd-3 pb-2 text-px-2">
+          <h2 id="dominios" className="text-px-2">
             Dominios
           </h2>
           <ul className="grid max-w-3xl gap-2">

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import { EditSheet } from "@/components/panel/EditSheet";
+import { RowActions } from "@/components/panel/RowActions";
 import { PageBody, TopBar } from "@/components/panel/TopBar";
-import { ActionButton } from "@/components/ui/ActionButton";
 import { Monogram } from "@/components/ui/Monogram";
 import {
   changeMemberRoleAction,
@@ -22,7 +23,10 @@ export async function generateMetadata({
   return { title: `Equipo · ${org.name}` };
 }
 
-/** Who works in the org and who was invited. Your own row has no actions. */
+/**
+ * Who works in the org and who was invited, each with their actions behind a
+ * ⋮ (your own row has none). Invitar opens a side sheet from the bar.
+ */
 export default async function EquipoPage({
   params,
 }: PageProps<"/panel/[org]/equipo">) {
@@ -34,167 +38,163 @@ export default async function EquipoPage({
     timeZone: org.default_timezone,
   });
 
+  const invite = !support && (
+    <EditSheet
+      label="Invitar"
+      variant="primary"
+      title="Invitar a alguien"
+      description="Entra con su cuenta de Google y queda en el equipo."
+    >
+      <InviteForm org={{ id: org.id, slug: org.slug }} />
+    </EditSheet>
+  );
+
   return (
     <>
-      <TopBar title="Equipo" />
+      <TopBar title="Equipo" actions={invite} />
       <PageBody>
-        <div className="grid gap-10 xl:grid-cols-[1fr_28rem] xl:items-start">
-          <div className="grid gap-12">
-            <section aria-labelledby="miembros" className="grid gap-4">
-              <h2
-                id="miembros"
-                className="border-b-2 border-lcd-3 pb-2 text-px-2"
-              >
-                Miembros
-              </h2>
-              <ul className="grid gap-2">
-                {members.map((member) => {
-                  const { email, display_name, full_name } = member.profile;
-                  const name = display_name || full_name || email;
-                  const isMe = member.user_id === viewer.id;
-                  const next = member.role === "owner" ? "staff" : "owner";
-                  return (
-                    <li
-                      key={member.id}
-                      className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-2 border-lcd-3 px-4 py-3"
-                    >
-                      <div className="flex min-w-0 items-center gap-3">
-                        <Monogram text={name} size="sm" />
-                        <div className="min-w-0">
-                          <p className="break-words">
-                            {name}
-                            {isMe && (
-                              <span className="text-muted-foreground">
-                                {" "}
-                                (vos)
-                              </span>
-                            )}
-                          </p>
-                          {name !== email && (
-                            <p className="text-sm break-all text-muted-foreground">
-                              {email}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                        <span className="font-display text-px-1">
-                          {ROLE[member.role]}
-                        </span>
-                        {!support && !isMe && (
-                          <>
-                            <ActionButton
-                              action={changeMemberRoleAction}
-                              fields={{
-                                org: org.slug,
-                                id: member.id,
-                                role: next,
-                              }}
-                              label={
-                                next === "owner"
-                                  ? "Hacer owner"
-                                  : "Pasar a staff"
-                              }
-                              ariaLabel={
-                                next === "owner"
-                                  ? `Hacer owner a ${name}`
-                                  : `Pasar a staff a ${name}`
-                              }
-                              pendingLabel="Cambiando…"
-                            />
-                            <ActionButton
-                              action={removeMemberAction}
-                              fields={{ org: org.slug, id: member.id }}
-                              label="Quitar"
-                              ariaLabel={`Quitar a ${name}`}
-                              pendingLabel="Quitando…"
-                              confirm={{
-                                message: `${name} deja de tener acceso a ${org.name}. Para que vuelva, hay que invitar de nuevo a esa persona.`,
-                                label: "Sí, quitar",
-                              }}
-                            />
-                          </>
+        <section aria-labelledby="miembros" className="grid max-w-4xl gap-4">
+          <h2 id="miembros" className="text-px-2">
+            Miembros
+          </h2>
+          <ul className="grid">
+            {members.map((member) => {
+              const { email, display_name, full_name } = member.profile;
+              const name = display_name || full_name || email;
+              const isMe = member.user_id === viewer.id;
+              const next = member.role === "owner" ? "staff" : "owner";
+              return (
+                <li
+                  key={member.id}
+                  className="flex items-center justify-between gap-4 border-2 border-lcd-3 px-4 py-3 not-first:-mt-0.5"
+                >
+                  <div className="flex min-w-0 items-center gap-3">
+                    <Monogram text={name} size="sm" />
+                    <div className="min-w-0">
+                      <p className="break-words">
+                        {name}
+                        {isMe && (
+                          <span className="text-muted-foreground"> (vos)</span>
                         )}
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-            </section>
-
-            <section aria-labelledby="invitaciones" className="grid gap-4">
-              <h2
-                id="invitaciones"
-                className="border-b-2 border-lcd-3 pb-2 text-px-2"
-              >
-                Invitaciones
-              </h2>
-              {invitations.length === 0 ? (
-                <p className="max-w-prose border-2 border-dashed border-lcd-2 px-6 py-8">
-                  No hay invitaciones abiertas. Cuando invites a alguien, va a
-                  aparecer acá hasta que entre con su cuenta.
-                </p>
-              ) : (
-                <ul className="grid gap-2">
-                  {invitations.map((invitation) => (
-                    <li
-                      key={invitation.id}
-                      className={`flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-2 px-4 py-3 ${
-                        invitation.expired
-                          ? "border-dashed border-lcd-2"
-                          : "border-lcd-3"
-                      }`}
-                    >
-                      <div className="min-w-0">
-                        <p className="break-all">{invitation.email}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {ROLE[invitation.role]} ·{" "}
-                          {invitation.expired
-                            ? "Vencida"
-                            : `Vence el ${date.format(new Date(invitation.expires_at))}`}
+                      </p>
+                      {name !== email && (
+                        <p className="text-sm break-all text-muted-foreground">
+                          {email}
                         </p>
-                      </div>
-                      {!support && (
-                        <div className="flex flex-wrap gap-2">
-                          {invitation.expired && (
-                            <ActionButton
-                              action={inviteMemberAction}
-                              fields={{
-                                org: org.slug,
-                                organizationId: org.id,
-                                email: invitation.email,
-                                role: invitation.role,
-                              }}
-                              label="Invitar de nuevo"
-                              ariaLabel={`Invitar de nuevo a ${invitation.email}`}
-                              pendingLabel="Invitando…"
-                            />
-                          )}
-                          <ActionButton
-                            action={revokeInvitationAction}
-                            fields={{ org: org.slug, id: invitation.id }}
-                            label="Revocar"
-                            ariaLabel={`Revocar la invitación de ${invitation.email}`}
-                            pendingLabel="Revocando…"
-                          />
-                        </div>
                       )}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </section>
-          </div>
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-4">
+                    <span className="font-display text-px-1">
+                      {ROLE[member.role]}
+                    </span>
+                    {!support && !isMe && (
+                      <RowActions
+                        name={name}
+                        actions={[
+                          {
+                            label:
+                              next === "owner"
+                                ? "Hacer owner"
+                                : "Pasar a staff",
+                            action: changeMemberRoleAction,
+                            fields: {
+                              org: org.slug,
+                              id: member.id,
+                              role: next,
+                            },
+                            done:
+                              next === "owner"
+                                ? `${name} ahora es owner.`
+                                : `${name} ahora es staff.`,
+                          },
+                          {
+                            label: "Quitar",
+                            action: removeMemberAction,
+                            fields: { org: org.slug, id: member.id },
+                            done: `${name} ya no está en el equipo.`,
+                            confirm: {
+                              title: `Quitar a ${name}`,
+                              message: `${name} deja de tener acceso a ${org.name}. Para que vuelva, hay que invitar de nuevo a esa persona.`,
+                              label: "Sí, quitar",
+                              pending: "Quitando…",
+                            },
+                          },
+                        ]}
+                      />
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
 
-          {!support && (
-            <section aria-labelledby="invitar" className="panel grid gap-6 p-6">
-              <h2 id="invitar" className="text-px-2">
-                Invitar a alguien
-              </h2>
-              <InviteForm org={{ id: org.id, slug: org.slug }} />
-            </section>
+        <section
+          aria-labelledby="invitaciones"
+          className="grid max-w-4xl gap-4"
+        >
+          <h2 id="invitaciones" className="text-px-2">
+            Invitaciones
+          </h2>
+          {invitations.length === 0 ? (
+            <p className="max-w-prose border-2 border-dashed border-lcd-2 px-6 py-8">
+              No hay invitaciones abiertas. Cuando invites a alguien, va a
+              aparecer acá hasta que entre con su cuenta.
+            </p>
+          ) : (
+            <ul className="grid">
+              {invitations.map((invitation) => (
+                <li
+                  key={invitation.id}
+                  className={`flex items-center justify-between gap-4 border-2 px-4 py-3 not-first:-mt-0.5 ${
+                    invitation.expired
+                      ? "border-dashed border-lcd-2"
+                      : "border-lcd-3"
+                  }`}
+                >
+                  <div className="min-w-0">
+                    <p className="break-all">{invitation.email}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {ROLE[invitation.role]} ·{" "}
+                      {invitation.expired
+                        ? "Vencida"
+                        : `Vence el ${date.format(new Date(invitation.expires_at))}`}
+                    </p>
+                  </div>
+                  {!support && (
+                    <RowActions
+                      name={invitation.email}
+                      actions={[
+                        ...(invitation.expired
+                          ? [
+                              {
+                                label: "Invitar de nuevo",
+                                action: inviteMemberAction,
+                                fields: {
+                                  org: org.slug,
+                                  organizationId: org.id,
+                                  email: invitation.email,
+                                  role: invitation.role,
+                                },
+                                done: `Invitación renovada para ${invitation.email}.`,
+                              },
+                            ]
+                          : []),
+                        {
+                          label: "Revocar",
+                          action: revokeInvitationAction,
+                          fields: { org: org.slug, id: invitation.id },
+                          done: `Invitación de ${invitation.email} revocada.`,
+                        },
+                      ]}
+                    />
+                  )}
+                </li>
+              ))}
+            </ul>
           )}
-        </div>
+        </section>
       </PageBody>
     </>
   );
