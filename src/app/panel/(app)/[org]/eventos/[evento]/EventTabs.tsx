@@ -63,10 +63,13 @@ export function EventTabs({
         {EVENT_TABS.map((tab) => (
           <TabsTrigger
             key={tab}
+            id={`pestana-${tab}`}
             value={tab}
             className="max-sm:flex-col max-sm:justify-center max-sm:gap-0 max-sm:px-1 max-sm:py-1"
           >
             {LABEL[tab]}
+            {/* Read as "Spots 4", not "Spots4"; the flex gap does the visual spacing. */}
+            {counts[tab] !== undefined && " "}
             {counts[tab] !== undefined && (
               <span className="tabular-nums opacity-80">
                 {counts[tab].toLocaleString("es-AR")}
@@ -77,6 +80,8 @@ export function EventTabs({
       </TabsList>
       <TabsContent
         value={shown}
+        // Named by the tab it still shows, not the one on its way.
+        aria-labelledby={`pestana-${value}`}
         aria-busy={pending || undefined}
         className={pending ? "opacity-60" : undefined}
       >
