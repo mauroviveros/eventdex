@@ -513,7 +513,13 @@ revisada antes de la siguiente.
    alta es la página. Sin cambios en la base: la política de `update` ya existía.
    *Listo cuando* se ordena una tabla desde el celular, se edita una sede, y pasan los
    e2e.
-6. **Equipo y ajustes.**
+6. ▶ **Equipo y ajustes.** Misma branch. Equipo: «Invitar» en la barra abre una hoja
+   lateral; miembros e invitaciones a todo el ancho, con sus acciones en un ⋮
+   (`RowActions`: cambiar rol, quitar con confirmación, invitar de nuevo, revocar).
+   Ajustes: Organización (nombre y zona), Marca (color y logo junto a la vista previa) y
+   Dominios, cada sección con su Guardar. Sin cambios en la base.
+   *Listo cuando* se invita, se cambia el rol y se quita desde el ⋮, se guarda el color
+   aparte del nombre, y pasan los e2e.
 7. **Plataforma e `/ingresar`.**
 
 ---
