@@ -55,10 +55,7 @@ export function SpotsTab({
       {available.length === 0 ? (
         <p className="border-2 border-dashed border-lcd-2 px-4 py-6">
           Todos los spots del catálogo ya están en el evento.{" "}
-          <Link
-            href={`/panel/${org}/spots?nuevo`}
-            className="underline decoration-2 underline-offset-4"
-          >
+          <Link href={`/panel/${org}/spots?nuevo`} className="underline">
             Cargá un spot nuevo
           </Link>
           .
