@@ -1,5 +1,7 @@
+import Link from "next/link";
 import { RaffleDraw } from "@/components/panel/RaffleDraw";
 import { ActionButton } from "@/components/ui/ActionButton";
+import { buttonClass } from "@/components/ui/Button";
 import {
   drawRaffleAction,
   publishRaffleWinnersAction,
@@ -17,12 +19,14 @@ const participants = (n: number) =>
 export function RaffleTab({
   org,
   eventId,
+  eventSlug,
   timezone,
   raffles,
   support,
 }: {
   org: { slug: string; id: string };
   eventId: string;
+  eventSlug: string;
   timezone: string;
   raffles: EventRaffle[];
   support: boolean;
@@ -49,6 +53,7 @@ export function RaffleTab({
             key={raffle.id}
             raffle={raffle}
             org={org.slug}
+            eventSlug={eventSlug}
             timezone={timezone}
             readOnly={support}
           />
@@ -73,11 +78,13 @@ export function RaffleTab({
 function Raffle({
   raffle,
   org,
+  eventSlug,
   timezone,
   readOnly,
 }: {
   raffle: EventRaffle;
   org: string;
+  eventSlug: string;
   timezone: string;
   readOnly: boolean;
 }) {
@@ -113,13 +120,22 @@ function Raffle({
       {!readOnly && (raffle.eligible > 0 || (hasWinner && !published)) && (
         <div className="flex flex-wrap items-start gap-3">
           {raffle.eligible > 0 && (
-            <ActionButton
-              action={drawRaffleAction}
-              fields={fields}
-              label={hasWinner ? "Sacar otro ganador" : "Sacar ganador"}
-              pendingLabel="Sorteando…"
-              variant="primary"
-            />
+            <>
+              <ActionButton
+                action={drawRaffleAction}
+                fields={fields}
+                label={hasWinner ? "Sacar otro ganador" : "Sacar ganador"}
+                pendingLabel="Sorteando…"
+                variant="primary"
+              />
+              <Link
+                href={`/panel/${org}/eventos/${eventSlug}/sorteo/proyectar?sorteo=${raffle.id}`}
+                aria-label={`Proyectar ${raffle.title}`}
+                className={buttonClass("secondary", "no-underline")}
+              >
+                Proyectar
+              </Link>
+            </>
           )}
           {hasWinner && !published && (
             <ActionButton
