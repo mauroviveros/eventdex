@@ -32,8 +32,11 @@ test("the owner runs the team and the brand shows on the public app", async ({
 
   await test.step("a new color reaches the public app right away", async () => {
     await page.getByLabel("Color de marca").fill("#d6336c");
-    await page.getByRole("button", { name: "Guardar cambios" }).click();
-    await expect(page.getByText("Cambios guardados.")).toBeVisible();
+    await page
+      .getByRole("region", { name: "Marca" })
+      .getByRole("button", { name: "Guardar" })
+      .click();
+    await expect(page.getByText("Color guardado.")).toBeVisible();
 
     const ramp = () =>
       visitor
@@ -73,23 +76,38 @@ test("the owner runs the team and the brand shows on the public app", async ({
     ).toHaveCount(0);
   });
 
+  // Invitar opens a sheet from the bar; each row's actions live behind its ⋮.
+  const invite = async (email: string) => {
+    await page.getByRole("button", { name: "Invitar" }).click();
+    const sheet = page.getByRole("dialog", { name: "Invitar a alguien" });
+    await sheet.getByLabel("Mail").fill(email);
+    await sheet.getByRole("button", { name: "Invitar", exact: true }).click();
+    await expect(sheet.getByLabel("Mail")).toHaveValue("");
+    await page.keyboard.press("Escape");
+  };
+  const rowAction = async (row: string, action: string) => {
+    await page.getByRole("button", { name: `Acciones de ${row}` }).click();
+    await page.getByRole("menuitem", { name: action }).click();
+  };
+
   await test.step("an invitation is listed and revoked", async () => {
     await page.goto(`http://localhost:3000/panel/${seed.org.slug}/equipo`);
     const email = `nueva-${seed.org.slug}@e2e.local`;
-    await page.getByLabel("Mail").fill(email);
-    await page.getByRole("button", { name: "Invitar", exact: true }).click();
+    await invite(email);
     await expect(page.getByText(email)).toBeVisible();
 
-    await page
-      .getByRole("button", { name: `Revocar la invitación de ${email}` })
-      .click();
-    await expect(page.getByText(email)).toBeHidden();
+    await rowAction(email, "Revocar");
+    await expect(
+      page.getByText(`Invitación de ${email} revocada.`),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("listitem").filter({ hasText: email }),
+    ).toHaveCount(0);
   });
 
   await test.step("an invited person joins, changes role and is removed", async () => {
     const email = seed.visitorEmail;
-    await page.getByLabel("Mail").fill(email);
-    await page.getByRole("button", { name: "Invitar", exact: true }).click();
+    await invite(email);
     await expect(page.getByText(email)).toBeVisible();
 
     await visitor.goto("http://localhost:3000/panel");
@@ -102,18 +120,12 @@ test("the owner runs the team and the brand shows on the public app", async ({
     expect(denied?.status()).toBe(404);
 
     await page.reload();
-    await page.getByRole("button", { name: `Hacer owner a ${email}` }).click();
-    await page
-      .getByRole("button", { name: `Pasar a staff a ${email}` })
-      .waitFor();
-    await page
-      .getByRole("button", { name: `Pasar a staff a ${email}` })
-      .click();
-    await page
-      .getByRole("button", { name: `Hacer owner a ${email}` })
-      .waitFor();
+    await rowAction(email, "Hacer owner");
+    await expect(page.getByText(`${email} ahora es owner.`)).toBeVisible();
+    await rowAction(email, "Pasar a staff");
+    await expect(page.getByText(`${email} ahora es staff.`)).toBeVisible();
 
-    await page.getByRole("button", { name: `Quitar a ${email}` }).click();
+    await rowAction(email, "Quitar");
     await page.getByRole("button", { name: "Sí, quitar" }).click();
     await expect(
       page.getByRole("listitem").filter({ hasText: email }),

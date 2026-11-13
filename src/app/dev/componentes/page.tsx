@@ -13,6 +13,7 @@ import { OrgSwitcher } from "@/components/panel/OrgSwitcher";
 import { PanelShell } from "@/components/panel/PanelShell";
 import { QrCode } from "@/components/panel/QrCode";
 import { RaffleDraw } from "@/components/panel/RaffleDraw";
+import { RowActions } from "@/components/panel/RowActions";
 import { eventCells, StatStrip } from "@/components/panel/StatStrip";
 import { TopBar } from "@/components/panel/TopBar";
 import { ActionButton } from "@/components/ui/ActionButton";
@@ -805,6 +806,39 @@ export default function ComponentesPage() {
                 finalizado: 1,
                 borrador: 1,
               }}
+            />
+          </div>
+        </Section>
+
+        <Section
+          title="Panel: acciones de una fila"
+          note="RowActions: el ⋮ de una fila (un miembro, una invitación). Cada opción corre su acción y avisa con un toast; lo que no se deshace confirma antes en un diálogo que conserva el error. Acá las dos fallan, para ver el error."
+        >
+          <div className="flex max-w-xl items-center justify-between gap-4 border-2 border-lcd-3 px-4 py-3">
+            <p>Martín Miembro</p>
+            <RowActions
+              name="Martín Miembro"
+              actions={[
+                {
+                  label: "Hacer owner",
+                  action: catalogAction,
+                  fields: {},
+                  done: "Martín Miembro ahora es owner.",
+                },
+                {
+                  label: "Quitar",
+                  action: catalogAction,
+                  fields: {},
+                  done: "Martín Miembro ya no está en el equipo.",
+                  confirm: {
+                    title: "Quitar a Martín Miembro",
+                    message:
+                      "Deja de tener acceso a la organización. Para que vuelva, hay que invitarlo de nuevo.",
+                    label: "Sí, quitar",
+                    pending: "Quitando…",
+                  },
+                },
+              ]}
             />
           </div>
         </Section>
