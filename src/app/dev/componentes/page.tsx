@@ -14,6 +14,7 @@ import { PanelShell } from "@/components/panel/PanelShell";
 import { PublishButton } from "@/components/panel/PublishEvent";
 import { QrCode } from "@/components/panel/QrCode";
 import { RaffleDraw } from "@/components/panel/RaffleDraw";
+import { RaffleStage } from "@/components/panel/RaffleStage";
 import { RowActions } from "@/components/panel/RowActions";
 import { eventCells, StatStrip } from "@/components/panel/StatStrip";
 import { TopBar } from "@/components/panel/TopBar";
@@ -842,6 +843,40 @@ export default function ComponentesPage() {
               title: "Feria de ejemplo",
             }}
           />
+        </Section>
+
+        <Section
+          title="Panel: sorteo en escenario"
+          note="RaffleStage: el sorteo para proyectar. Listo (vivo: sortea, anima unos cuatro segundos y al final falla porque el sorteo no existe, para ver el error), sorteando, ganador y sin participantes. Con movimiento reducido el ganador aparece sin animación."
+        >
+          <div className="grid gap-10">
+            <RaffleStage
+              org="dev"
+              raffleId="00000000-0000-4000-8000-000000000000"
+              names={["Ana G.", "Beto P.", "Cris L.", "Dani R.", "Eli M."]}
+              canDraw
+            />
+            <RaffleStage
+              org="dev"
+              raffleId="00000000-0000-4000-8000-000000000000"
+              names={["Ana G.", "Beto P.", "Cris L."]}
+              canDraw
+              initial={{ kind: "drawing", shown: "Beto P." }}
+            />
+            <RaffleStage
+              org="dev"
+              raffleId="00000000-0000-4000-8000-000000000000"
+              names={["Ana G.", "Cris L."]}
+              canDraw
+              initial={{ kind: "won", name: "Beto P.", number: 1 }}
+            />
+            <RaffleStage
+              org="dev"
+              raffleId="00000000-0000-4000-8000-000000000000"
+              names={[]}
+              canDraw
+            />
+          </div>
         </Section>
 
         <Section

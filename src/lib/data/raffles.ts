@@ -79,6 +79,7 @@ export async function listRaffleParticipants(
 
   return {
     title: raffle.data.title,
+    eventId: raffle.data.event_id,
     minClaims: raffle.data.min_claims,
     participants: data
       .map((r) => ({

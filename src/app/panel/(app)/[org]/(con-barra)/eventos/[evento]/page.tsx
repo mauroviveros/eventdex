@@ -199,6 +199,7 @@ export default async function EventoPage({
             <RaffleTab
               org={org}
               eventId={event.id}
+              eventSlug={event.slug}
               timezone={event.timezone}
               raffles={raffles}
               support={support}
