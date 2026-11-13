@@ -348,7 +348,7 @@ es lo que más tarda. Branch `feat/duplicar-evento`.
    tocar el original.
    `/code-review`: sin hallazgos. axe queda sin correr.
 
-## R14 · Tarjeta de visitante
+## R14 · Tarjeta de visitante ✅
 
 La colección del evento, con la cara de quien la juntó, lista para mostrar. Branch
 `feat/tarjeta-visitante`.
@@ -357,7 +357,7 @@ La colección del evento, con la cara de quien la juntó, lista para mostrar. Br
    cambios en la base.
    *Listo cuando* desde la primera medalla la tarjeta encabeza `/mis-medallas` con datos
    reales, y sin medallas la página sigue como antes.
-2. ▶ **Compartir.** Una imagen de 1080×1920 generada con sesión, Web Share con archivo y
+2. ✅ **Compartir.** Una imagen de 1080×1920 generada con sesión, Web Share con archivo y
    descarga si el navegador no puede.
    *Listo cuando* el visitante comparte su tarjeta como imagen desde el celular.
    `/code-review`: 10 hallazgos, 8 resueltos; los 2 de limpieza quedaron sin
@@ -365,8 +365,8 @@ La colección del evento, con la cara de quien la juntó, lista para mostrar. Br
    Verificado en `chore/cierres-r14-r16`: `/mis-medallas/tarjeta` da un PNG de
    1080×1920, privado y sin caché, y 404 para un evento sin medallas; sin Web Share, el
    botón descarga `tarjeta-<evento>.png`. axe (WCAG 2.2 AA y buenas prácticas) en
-   `/mis-medallas`: 0 violaciones, claro y oscuro, 375 y 1280 px. Falta compartirla
-   desde un celular.
+   `/mis-medallas`: 0 violaciones, claro y oscuro, 375 y 1280 px. Mauro la
+   compartió desde su celular, en producción.
 
 ## R15 · Panel con shadcn ✅
 
