@@ -851,27 +851,23 @@ export default function ComponentesPage() {
         >
           <div className="grid gap-10">
             <RaffleStage
-              org="dev"
               raffleId="00000000-0000-4000-8000-000000000000"
               names={["Ana G.", "Beto P.", "Cris L.", "Dani R.", "Eli M."]}
               canDraw
             />
             <RaffleStage
-              org="dev"
               raffleId="00000000-0000-4000-8000-000000000000"
               names={["Ana G.", "Beto P.", "Cris L."]}
               canDraw
               initial={{ kind: "drawing", shown: "Beto P." }}
             />
             <RaffleStage
-              org="dev"
               raffleId="00000000-0000-4000-8000-000000000000"
               names={["Ana G.", "Cris L."]}
               canDraw
               initial={{ kind: "won", name: "Beto P.", number: 1 }}
             />
             <RaffleStage
-              org="dev"
               raffleId="00000000-0000-4000-8000-000000000000"
               names={[]}
               canDraw

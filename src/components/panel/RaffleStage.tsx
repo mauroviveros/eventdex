@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { FormMessage } from "@/components/ui/Field";
@@ -15,6 +16,10 @@ export type Stage =
 // shortcut: lists the first names that fit on one screen, add columns or paging if a raffle has thousands
 const MAX_LISTED = 120;
 
+// The server may have drawn before the connection dropped: never just say "try again".
+const LOST =
+  "Se cortó la conexión y no sabemos si salió el sorteo. Mirá la pestaña Sorteo antes de probar de nuevo.";
+
 const sleep = (ms: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, ms));
 
@@ -25,13 +30,11 @@ const sleep = (ms: number) =>
  * motion it lands at once.
  */
 export function RaffleStage({
-  org,
   raffleId,
   names,
   canDraw,
   initial = { kind: "idle" },
 }: {
-  org: string;
   raffleId: string;
   names: string[];
   canDraw: boolean;
@@ -40,6 +43,11 @@ export function RaffleStage({
 }) {
   const [stage, setStage] = useState<Stage>(initial);
   const id = useId();
+  const router = useRouter();
+  // A draw can't be undone: a second tap before the first ends must do nothing.
+  const running = useRef(false);
+  const winnerText = useRef<HTMLParagraphElement>(null);
+  const focusWinner = useRef(false);
   // The list as it was when the draw began: the winner leaves it once it lands.
   const [frozen, setFrozen] = useState<string[] | null>(null);
   const mounted = useRef(true);
@@ -50,48 +58,61 @@ export function RaffleStage({
     };
   }, []);
 
+  // When the button goes away (nobody left to draw) the focus goes to the winner.
+  useEffect(() => {
+    if (stage.kind === "won" && focusWinner.current) {
+      focusWinner.current = false;
+      winnerText.current?.focus();
+    }
+  }, [stage]);
+
   const drawing = stage.kind === "drawing";
   const listed = frozen ?? names;
 
   async function draw() {
-    if (drawing) return;
-    const snapshot = names;
-    setFrozen(snapshot);
-    setStage({ kind: "drawing", shown: snapshot[0] ?? "" });
+    if (running.current) return;
+    running.current = true;
+    try {
+      const snapshot = names;
+      setFrozen(snapshot);
+      setStage({ kind: "drawing", shown: snapshot[0] ?? "" });
 
-    let refused = false;
-    const request = drawOnStageAction(org, raffleId)
-      .catch(() => ({
-        ok: false as const,
-        error: "No pudimos sortear. Probá de nuevo.",
-      }))
-      .then((result) => {
-        refused = !result.ok;
-        return result;
-      });
+      let refused = false;
+      const request = drawOnStageAction(raffleId)
+        .catch(() => ({ ok: false as const, error: LOST, lost: true }))
+        .then((result) => {
+          refused = !result.ok;
+          return result;
+        });
 
-    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!reduced) {
-      for (const [i, name] of stageFrames(snapshot, STAGE_FRAMES).entries()) {
-        // A refusal stops the show: there is no winner to wait for.
-        if (refused || !mounted.current) break;
-        setStage({ kind: "drawing", shown: name });
-        await sleep(frameDelay(i));
+      const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (!reduced) {
+        for (const [i, name] of stageFrames(snapshot, STAGE_FRAMES).entries()) {
+          // A refusal stops the show: there is no winner to wait for.
+          if (refused || !mounted.current) break;
+          setStage({ kind: "drawing", shown: name });
+          await sleep(frameDelay(i));
+        }
       }
-    }
 
-    const result = await request;
-    if (!mounted.current) return;
-    setFrozen(null);
-    setStage(
-      result.ok
-        ? {
-            kind: "won",
-            name: result.data.name,
-            number: result.data.drawNumber,
-          }
-        : { kind: "error", message: result.error },
-    );
+      const result = await request;
+      if (!mounted.current) return;
+      setFrozen(null);
+      if (result.ok) {
+        focusWinner.current = true;
+        setStage({
+          kind: "won",
+          name: result.data.name,
+          number: result.data.drawNumber,
+        });
+      } else {
+        setStage({ kind: "error", message: result.error });
+        // If it did go through, the winner is gone from the list once it reloads.
+        if ("lost" in result) router.refresh();
+      }
+    } finally {
+      running.current = false;
+    }
   }
 
   return (
@@ -117,7 +138,11 @@ export function RaffleStage({
               <p className="font-display text-px-1">
                 Extracción {stage.number.toLocaleString("es-AR")}
               </p>
-              <p className="font-display text-px-3 wrap-anywhere sm:text-px-4 lg:text-px-5">
+              <p
+                ref={winnerText}
+                tabIndex={-1}
+                className="font-display text-px-3 wrap-anywhere focus:outline-none sm:text-px-4 lg:text-px-5"
+              >
                 {stage.name}
               </p>
             </div>

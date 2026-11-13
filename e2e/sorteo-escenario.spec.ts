@@ -1,4 +1,4 @@
-import { expect, type Page, test } from "@playwright/test";
+import { expect, type Page, type Route, test } from "@playwright/test";
 import { signInByMail } from "./support/mailpit";
 import { seedLiveEvent } from "./support/seed";
 
@@ -6,6 +6,8 @@ let seed: Awaited<ReturnType<typeof seedLiveEvent>>;
 
 test.beforeAll(async () => {
   seed = await seedLiveEvent();
+  // A second event in the same org, for a raffle that isn't its own.
+  await seed.addDraft();
 });
 
 test.afterAll(async () => {
@@ -23,6 +25,8 @@ test("staff draws from the stage screen, and the winner is the one in the panel"
   page,
   browser,
 }) => {
+  // Four draws with their show, one after another: the default 30 s doesn't fit.
+  test.setTimeout(120_000);
   const [cafe] = seed.spots;
   if (!cafe) throw new Error("seed without spots");
 
@@ -34,6 +38,7 @@ test("staff draws from the stage screen, and the winner is the one in the panel"
     ).toBeVisible();
   });
 
+  let entradasId: string | null = null;
   const staff = await browser.newPage();
   const tab = `http://localhost:3000/panel/${seed.org.slug}/eventos/${seed.event.slug}?tab=sorteo`;
   await staff.goto(tab);
@@ -42,7 +47,12 @@ test("staff draws from the stage screen, and the winner is the one in the panel"
 
   await test.step("a raffle opens on the stage, without the panel's bar", async () => {
     await createRaffle(staff, "Entradas");
-    await staff.getByRole("link", { name: "Proyectar Entradas" }).click();
+    const open = staff.getByRole("link", { name: "Proyectar Entradas" });
+    entradasId = new URL(
+      (await open.getAttribute("href")) ?? "",
+      "http://localhost:3000",
+    ).searchParams.get("sorteo");
+    await open.click();
     await expect(staff).toHaveURL(/\/sorteo\/proyectar\?sorteo=/);
     await expect(
       staff.getByRole("heading", { level: 1, name: "Entradas" }),
@@ -64,6 +74,8 @@ test("staff draws from the stage screen, and the winner is the one in the panel"
       { timeout: 15_000 },
     );
     await expect(staff.getByText("Extracción 1")).toBeVisible();
+    // The Sortear button is gone, so the focus goes to the winner, not to nowhere.
+    await expect(staff.getByText("Visitante", { exact: true })).toBeFocused();
     // The only participant just won: there is nobody else to draw.
     await expect(staff.getByRole("button", { name: /^Sortear/ })).toHaveCount(
       0,
@@ -90,12 +102,47 @@ test("staff draws from the stage screen, and the winner is the one in the panel"
     );
   });
 
-  await test.step("a raffle that is not this event's, or is made up, is a 404", async () => {
-    const base = `http://localhost:3000/panel/${seed.org.slug}/eventos/${seed.event.slug}/sorteo/proyectar`;
-    const missing = await staff.request.get(
-      `${base}?sorteo=00000000-0000-4000-8000-000000000000`,
+  await test.step("a lost connection says so instead of inviting a second draw", async () => {
+    await staff.goto(tab);
+    await createRaffle(staff, "Gorra");
+    await staff.getByRole("link", { name: "Proyectar Gorra" }).click();
+    const isStage = (url: URL) => url.pathname.endsWith("/sorteo/proyectar");
+    const cut = (route: Route) =>
+      route.request().method() === "POST"
+        ? route.abort("connectionreset")
+        : route.continue();
+    await staff.route(isStage, cut);
+    await staff.getByRole("button", { name: "Sortear", exact: true }).click();
+    await expect(staff.getByText("Se cortó la conexión")).toBeVisible();
+    await expect(staff.getByText("Mirá la pestaña Sorteo")).toBeVisible();
+    await staff.unroute(isStage, cut);
+  });
+
+  await test.step("two quick taps draw once", async () => {
+    await staff
+      .getByRole("button", { name: "Sortear", exact: true })
+      .dblclick();
+    await expect(staff.locator("main").getByRole("status")).toHaveText(
+      "Ganador: Visitante",
     );
-    expect(missing.status()).toBe(404);
+    // A second draw would have failed (nobody else is left) and said so here.
+    await expect(staff.getByText("No hay participantes")).toHaveCount(0);
+    await expect(staff.getByText("Extracción 1")).toBeVisible();
+  });
+
+  await test.step("a raffle of another event, or a made-up one, is a 404", async () => {
+    const stage = (event: string, raffle: string) =>
+      `http://localhost:3000/panel/${seed.org.slug}/eventos/${event}/sorteo/proyectar?sorteo=${raffle}`;
+    const made = await staff.request.get(
+      stage(seed.event.slug, "00000000-0000-4000-8000-000000000000"),
+    );
+    expect(made.status()).toBe(404);
+    // Entradas is this event's: under the draft's address it doesn't exist.
+    if (!entradasId) throw new Error("no raffle id");
+    const other = await staff.request.get(stage("feria-borrador", entradasId));
+    expect(other.status()).toBe(404);
+    const own = await staff.request.get(stage(seed.event.slug, entradasId));
+    expect(own.status()).toBe(200);
   });
 
   await staff.close();

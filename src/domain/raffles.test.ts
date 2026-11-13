@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { frameDelay, publicName, STAGE_FRAMES, stageFrames } from "./raffles";
+import {
+  chunked,
+  frameDelay,
+  publicName,
+  publicNameOf,
+  STAGE_FRAMES,
+  stageFrames,
+} from "./raffles";
 
 // The same cases as app.public_name in the raffles migration.
 describe("publicName", () => {
@@ -56,6 +63,22 @@ describe("stageFrames", () => {
   it("has nothing to show without participants", () => {
     expect(stageFrames([], 10, walk(1))).toEqual([]);
   });
+
+  // Visitors without a name are all "Visitante": there is no other to alternate with.
+  it("repeats the name when every participant has the same one", () => {
+    const frames = stageFrames(["Visitante", "Visitante"], 6, walk(3));
+    expect(frames).toEqual(Array(6).fill("Visitante"));
+    expect(
+      stageFrames(["Ana G.", "Ana G.", "Ana G."], 4, walk(4)),
+    ).not.toContain("");
+  });
+
+  it("still alternates when only some names repeat", () => {
+    const frames = stageFrames(["Ana G.", "Ana G.", "Beto P."], 30, walk(7));
+    for (const [i, frame] of frames.entries()) {
+      if (i > 0) expect(frame).not.toBe(frames[i - 1]);
+    }
+  });
 });
 
 describe("frameDelay", () => {
@@ -75,5 +98,52 @@ describe("frameDelay", () => {
     ).reduce((sum, d) => sum + d, 0);
     expect(total).toBeGreaterThan(2000);
     expect(total).toBeLessThan(6000);
+  });
+});
+
+// The same rule as the SQL that freezes the winner's name at the draw:
+// coalesce(nullif(trim(display_name), ''), full_name).
+describe("publicNameOf", () => {
+  it("prefers the display name", () => {
+    expect(
+      publicNameOf({ display_name: "Ani Paz", full_name: "Ana García" }),
+    ).toBe("Ani P.");
+  });
+
+  it("falls back to the full name when the display name is blank", () => {
+    expect(publicNameOf({ display_name: "   ", full_name: "Ana García" })).toBe(
+      "Ana G.",
+    );
+    expect(publicNameOf({ display_name: "", full_name: "Ana García" })).toBe(
+      "Ana G.",
+    );
+    expect(publicNameOf({ display_name: null, full_name: "Ana García" })).toBe(
+      "Ana G.",
+    );
+  });
+
+  it("is Visitante without a profile or a name", () => {
+    expect(publicNameOf(null)).toBe("Visitante");
+    expect(publicNameOf({ display_name: null, full_name: null })).toBe(
+      "Visitante",
+    );
+  });
+});
+
+describe("chunked", () => {
+  it("splits in pieces of at most the size, in order", () => {
+    expect(chunked([1, 2, 3, 4, 5], 2)).toEqual([[1, 2], [3, 4], [5]]);
+  });
+
+  it("keeps a short list whole and an empty one empty", () => {
+    expect(chunked([1, 2], 100)).toEqual([[1, 2]]);
+    expect(chunked([], 100)).toEqual([]);
+  });
+
+  it("covers every item exactly once", () => {
+    const ids = Array.from({ length: 250 }, (_, i) => i);
+    const pieces = chunked(ids, 100);
+    expect(pieces.map((p) => p.length)).toEqual([100, 100, 50]);
+    expect(pieces.flat()).toEqual(ids);
   });
 });

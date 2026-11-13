@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { SLUG } from "@/lib/organizations";
 import {
   createRaffle,
   type DrawnWinner,
@@ -9,21 +8,20 @@ import {
   publishRaffleWinners,
   voidRaffleDraw,
 } from "@/lib/raffles";
-import { type ActionResult, failed } from "@/lib/results";
+import type { ActionResult } from "@/lib/results";
 import { createClient } from "@/lib/supabase/server";
 import { type FormState, runFormWrite } from "./form";
 
 /**
  * Draws from the stage screen, which needs the winner back to land on it (the
- * tab's draw only refreshes). Same function in the database, same checks.
+ * tab's draw only refreshes). Same function in the database, same checks. It
+ * refreshes every org's panel by pattern: the path is not the caller's to name.
  */
 export async function drawOnStageAction(
-  org: string,
   raffleId: string,
 ): Promise<ActionResult<DrawnWinner>> {
-  if (!SLUG.test(org)) return failed({ code: "42501" });
   const result = await drawRaffle(await createClient(), raffleId);
-  if (result.ok) revalidatePath(`/panel/${org}`, "layout");
+  if (result.ok) revalidatePath("/panel/[org]", "layout");
   return result;
 }
 

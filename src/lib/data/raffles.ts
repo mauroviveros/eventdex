@@ -1,4 +1,4 @@
-import { publicName } from "@/domain/raffles";
+import { chunked, publicNameOf } from "@/domain/raffles";
 import { visitorName } from "@/lib/data/claims";
 import type { Supabase } from "@/lib/supabase/server";
 
@@ -47,12 +47,15 @@ export async function listEventRaffles(supabase: Supabase, eventId: string) {
 
 export type EventRaffle = Awaited<ReturnType<typeof listEventRaffles>>[number];
 
+// Ids per request: they travel in the URL, and a few hundred in one overflow it.
+const IDS_PER_READ = 100;
+
 /**
  * Who can still win a raffle, for the screen shown on stage: only the public
- * name ("Ana G.") and the medals, never a mail or an id. Null if the raffle
- * doesn't exist or isn't the viewer's to see.
+ * name ("Ana G."), never a mail or an id. Null if the raffle doesn't exist or
+ * isn't the viewer's to see.
  */
-// shortcut: the registrations in one read (PostgREST caps it at max-rows), page it when an event passes ~1000 visitors
+// shortcut: PostgREST cuts the eligible at max-rows (1000), show a count and page the names past ~1000 eligible
 export async function listRaffleParticipants(
   supabase: Supabase,
   raffleId: string,
@@ -68,32 +71,35 @@ export async function listRaffleParticipants(
   if (raffle.error) throw raffle.error;
   if (eligible.error) throw eligible.error;
   if (!raffle.data) return null;
+  const { title, min_claims: minClaims, event_id: eventId } = raffle.data;
 
-  const medals = new Map(eligible.data.map((e) => [e.user_id, e.claims]));
-  const { data, error } = await supabase
-    .from("event_registrations")
-    .select("user_id, profile:profiles (full_name, display_name)")
-    .eq("event_id", raffle.data.event_id)
-    .in("user_id", [...medals.keys()]);
-  if (error) throw error;
+  const reads = await Promise.all(
+    chunked(
+      eligible.data.map((e) => e.user_id),
+      IDS_PER_READ,
+    ).map((ids) =>
+      supabase
+        .from("event_registrations")
+        .select("profile:profiles (full_name, display_name)")
+        .eq("event_id", eventId)
+        .in("user_id", ids),
+    ),
+  );
+  const rows = reads.flatMap(({ data, error }) => {
+    if (error) throw error;
+    return data;
+  });
 
   return {
-    title: raffle.data.title,
-    eventId: raffle.data.event_id,
-    minClaims: raffle.data.min_claims,
-    participants: data
-      .map((r) => ({
-        // The embed goes through profiles RLS: never assume it came back.
-        name: publicName(r.profile?.display_name || r.profile?.full_name),
-        medals: Number(medals.get(r.user_id) ?? 0),
-      }))
-      .sort((a, b) => a.name.localeCompare(b.name, "es-AR")),
+    title,
+    eventId,
+    minClaims,
+    // The embed goes through profiles RLS: never assume it came back.
+    names: rows
+      .map((r) => publicNameOf(r.profile))
+      .sort((a, b) => a.localeCompare(b, "es-AR")),
   };
 }
-
-export type RaffleParticipants = NonNullable<
-  Awaited<ReturnType<typeof listRaffleParticipants>>
->;
 
 /**
  * The published winners of one event, or by default of the org's latest public
