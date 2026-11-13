@@ -559,16 +559,38 @@ revisada antes de la siguiente.
    violaciones, después de pasar la barra lateral de escritorio a `<aside>` (el nombre
    de la org y la cuenta quedaban fuera de todo landmark).
 
+## R17 · Sorteo en escenario
+
+El sorteo para proyectar, como en la v1 (tag `v1.0.0`, `apps/event/src/app/raffle/`):
+la extracción con animación y los participantes a la vista. Vive en el panel, donde el
+equipo ya tiene sesión, y no en el dominio de la org. El ganador lo sigue eligiendo
+`draw_raffle` en el servidor, parejo entre los elegibles: la animación solo termina en
+el nombre que devolvió. Branch `feat/sorteo-escenario`.
+
+1. ▶ **Backend.** `drawRaffle` devuelve la extracción (id, número y nombre público) en
+   vez de descartarla, y `listRaffleParticipants` lee quién puede ganar con su nombre
+   público («Ana G.») y sus medallas, sin mails ni ids (`publicName`, copia de
+   `app.public_name`). Sin cambios en la base.
+   *Listo cuando* los tests cubren la extracción devuelta y las reglas del nombre
+   público.
+2. **Vista.** `/[org]/eventos/[evento]/sorteo/proyectar`, a pantalla completa y
+   sin la barra del panel, con la marca de la org; participantes a la vista, animación
+   en pasos que frena en el ganador (sin movimiento con `prefers-reduced-motion`) y
+   «Proyectar» desde la pestaña Sorteo.
+   *Listo cuando* se sortea desde la pantalla proyectada y el ganador coincide con el
+   de la pestaña.
+3. **Auditoría.** e2e del sorteo proyectado, `/code-review`, `/accessibility` y axe.
+   *Listo cuando* pasan los e2e y axe da 0 violaciones, claro y oscuro, a 375 y 1280 px.
+
 ---
 
 ## ⏸ Estacionado
 
 Fuera de esta versión; vuelve solo con una decisión explícita.
 
-- **Sorteo en la página pública del evento**, para proyectarlo en el escenario: la
-  extracción con animación y los participantes a la vista, como en la v1 (tag
-  `v1.0.0`, `apps/event/src/app/raffle/`: `raffle-panel`, `participants-panel`,
-  `winner-panel` y `use-raffle-draw`). Hoy se sortea desde la pestaña Sorteo del panel.
+- **Sorteo en vivo desde el celular**: el equipo extrae desde el panel y la pantalla
+  pública del proyector, sin sesión, recibe el resultado en tiempo real y anima
+  (Supabase Realtime). Se construye sobre el R17.
 
 - Panel del expositor.
 - Roles por evento (`event_members`).
