@@ -455,7 +455,7 @@ cada uno revisado antes del siguiente. Branch `feat/admin-shadcn`.
    vuelve al botón, `aria-sort`, objetivos de 44 px, orden de títulos); solo el link
    que repetía el tipo. axe queda sin correr.
 
-## R16 · Panel unificado
+## R16 · Panel unificado ✅
 
 El panel se muda al dominio de la landing, bajo `/panel`, y se rediseña por zonas
 con las primitivas de shadcn adaptadas al mundo LCD. Una zona por bloque, cada una
@@ -469,7 +469,7 @@ revisada antes de la siguiente.
    suma Ingresar en su cabecera y sigue estática. Sin cambios en la base.
    *Listo cuando* se entra por `/ingresar` y se cae en `/panel/[org]`, salir vuelve a
    `/ingresar` y los e2e del panel pasan.
-2. ▶ **Dashboard de la org.** Misma branch. `/impeccable critique`: 25/40, sin hallazgos
+2. ✅ **Dashboard de la org.** Misma branch. `/impeccable critique`: 25/40, sin hallazgos
    del detector; los problemas eran de jerarquía (totales que no deciden nada, ningún
    atajo al evento del día, borradores sin decir qué les falta, eventos del mismo nombre
    sin edición). Arriba, el evento activo (`ActiveEvent`: en curso o el próximo, con sus
@@ -481,7 +481,7 @@ revisada antes de la siguiente.
    datos reales en escritorio y celular, y los e2e del panel pasan.
    axe (WCAG 2.2 AA): 0 violaciones en el dashboard (claro y oscuro, 375 y 1280 px) y
    en `/dev/componentes`.
-3. ▶ **Detalle del evento y sorteo.** Misma branch. El encabezado sigue al dashboard: la
+3. ✅ **Detalle del evento y sorteo.** Misma branch. El encabezado sigue al dashboard: la
    edición en el título, cuándo y dónde en una línea, y en General la misma franja de
    cifras (`StatStrip`, compartida con `ActiveEvent`) en vez de tres cajas. Un borrador
    muestra en Publicación lo que le falta (`DraftSteps`). El sorteo pasa a ser la
@@ -491,7 +491,7 @@ revisada antes de la siguiente.
    *Listo cuando* se sortea desde la pestaña, un link viejo a `/sorteo` cae en ella, un
    borrador dice qué le falta, y los e2e del panel pasan.
    axe (WCAG 2.2 AA): 0 violaciones en General, Sorteo y un borrador, a 375 y 1280 px.
-4. ▶ **Limpieza del panel.** Misma branch, salida de una revisión de lo hecho. Publicar es
+4. ✅ **Limpieza del panel.** Misma branch, salida de una revisión de lo hecho. Publicar es
    uno solo (`PublishEvent`): el ⋮ y General abren la misma confirmación, y en General
    aparece recién con jornadas. Las pestañas del evento son cuatro columnas en el
    celular, sin scroll. Sin las rutas que solo redirigían (`/eventos`,
@@ -504,7 +504,7 @@ revisada antes de la siguiente.
    nuevas.
    *Listo cuando* hay un solo Publicar con confirmación, las cuatro pestañas entran a
    320 px, y pasan lint, tipos, tests y e2e.
-5. ▶ **Catálogo de spots y sedes.** Misma branch. Todas las tablas usan en el celular
+5. ✅ **Catálogo de spots y sedes.** Misma branch. Todas las tablas usan en el celular
    las tarjetas compactas del dashboard, con un selector «Ordenar por» en vez de los
    encabezados sueltos. En las secciones, la barra es el título (h1) y se va el título
    grande repetido; «Nuevo evento» y el detalle de una organización suman migas. Sedes:
@@ -513,14 +513,14 @@ revisada antes de la siguiente.
    alta es la página. Sin cambios en la base: la política de `update` ya existía.
    *Listo cuando* se ordena una tabla desde el celular, se edita una sede, y pasan los
    e2e.
-6. ▶ **Equipo y ajustes.** Misma branch. Equipo: «Invitar» en la barra abre una hoja
+6. ✅ **Equipo y ajustes.** Misma branch. Equipo: «Invitar» en la barra abre una hoja
    lateral; miembros e invitaciones a todo el ancho, con sus acciones en un ⋮
    (`RowActions`: cambiar rol, quitar con confirmación, invitar de nuevo, revocar).
    Ajustes: Organización (nombre y zona), Marca (color y logo junto a la vista previa) y
    Dominios, cada sección con su Guardar. Sin cambios en la base.
    *Listo cuando* se invita, se cambia el rol y se quita desde el ⋮, se guarda el color
    aparte del nombre, y pasan los e2e.
-7. ▶ **Plataforma e `/ingresar`.** Misma branch. Organizaciones, facturas y auditoría en
+7. ✅ **Plataforma e `/ingresar`.** Misma branch. Organizaciones, facturas y auditoría en
    `DataTable` (tarjetas compactas en el celular). «Nueva factura» y «Sumar dominio» en
    hojas laterales; las acciones de cada factura y de cada dominio en `RowActions`. Las
    cifras del Resumen llevan a su página (`StatStrip` con `href`). En el celular el título
