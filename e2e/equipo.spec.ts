@@ -101,7 +101,7 @@ test("the owner runs the team and the brand shows on the public app", async ({
       page.getByText(`Invitación de ${email} revocada.`),
     ).toBeVisible();
     await expect(
-      page.getByRole("listitem").filter({ hasText: email }),
+      page.getByRole("main").getByRole("listitem").filter({ hasText: email }),
     ).toHaveCount(0);
   });
 
@@ -128,7 +128,7 @@ test("the owner runs the team and the brand shows on the public app", async ({
     await rowAction(email, "Quitar");
     await page.getByRole("button", { name: "Sí, quitar" }).click();
     await expect(
-      page.getByRole("listitem").filter({ hasText: email }),
+      page.getByRole("main").getByRole("listitem").filter({ hasText: email }),
     ).toHaveCount(0);
   });
 

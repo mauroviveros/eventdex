@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache } from "react";
+import { EditSheet } from "@/components/panel/EditSheet";
+import { RowActions } from "@/components/panel/RowActions";
 import { PageBody, TopBar } from "@/components/panel/TopBar";
 import { ActionButton } from "@/components/ui/ActionButton";
 import { buttonClass } from "@/components/ui/Button";
@@ -102,7 +104,16 @@ export default async function PlataformaOrganizacionPage({
         </section>
 
         <section className="grid gap-4">
-          <h2 className="text-px-2">Dominios</h2>
+          <div className="flex max-w-3xl flex-wrap items-center justify-between gap-3">
+            <h2 className="text-px-2">Dominios</h2>
+            <EditSheet
+              label="Sumar dominio"
+              title="Sumar un dominio"
+              description="Si otra organización ya lo tiene, te pregunta antes de moverlo."
+            >
+              <DomainForm organizationId={org.id} />
+            </EditSheet>
+          </div>
           {settings?.domains.length ? (
             <ul className="grid max-w-3xl gap-2">
               {settings.domains.map((d) => (
@@ -119,30 +130,35 @@ export default async function PlataformaOrganizacionPage({
                     )}
                   </div>
                   {!d.is_primary && (
-                    <div className="flex flex-wrap gap-2">
-                      <ActionButton
-                        action={setPrimaryDomainAction}
-                        fields={{ id: d.id }}
-                        label="Hacer principal"
-                        ariaLabel={`Hacer principal ${d.hostname}`}
-                        pendingLabel="Cambiando…"
-                        confirm={{
-                          message: `Hacelo solo si ${d.hostname} ya abre los eventos de ${org.name}: los QR que se impriman desde ahora van a apuntar ahí. Los ya impresos siguen andando mientras no se quite el dominio anterior.`,
-                          label: "Sí, hacer principal",
-                        }}
-                      />
-                      <ActionButton
-                        action={removeDomainAction}
-                        fields={{ id: d.id }}
-                        label="Quitar"
-                        ariaLabel={`Quitar ${d.hostname}`}
-                        pendingLabel="Quitando…"
-                        confirm={{
-                          message: `${d.hostname} deja de mostrar los eventos de ${org.name}, y los QR impresos con ese dominio dejan de andar.`,
-                          label: "Sí, quitar",
-                        }}
-                      />
-                    </div>
+                    <RowActions
+                      name={d.hostname}
+                      actions={[
+                        {
+                          label: "Hacer principal",
+                          action: setPrimaryDomainAction,
+                          fields: { id: d.id },
+                          done: `${d.hostname} es el dominio principal.`,
+                          confirm: {
+                            title: `Hacer principal ${d.hostname}`,
+                            message: `Hacelo solo si ${d.hostname} ya abre los eventos de ${org.name}: los QR que se impriman desde ahora van a apuntar ahí. Los ya impresos siguen andando mientras no se quite el dominio anterior.`,
+                            label: "Sí, hacer principal",
+                            pending: "Cambiando…",
+                          },
+                        },
+                        {
+                          label: "Quitar",
+                          action: removeDomainAction,
+                          fields: { id: d.id },
+                          done: `${d.hostname} ya no es de ${org.name}.`,
+                          confirm: {
+                            title: `Quitar ${d.hostname}`,
+                            message: `${d.hostname} deja de mostrar los eventos de ${org.name}, y los QR impresos con ese dominio dejan de andar.`,
+                            label: "Sí, quitar",
+                            pending: "Quitando…",
+                          },
+                        },
+                      ]}
+                    />
                   )}
                 </li>
               ))}
@@ -150,15 +166,6 @@ export default async function PlataformaOrganizacionPage({
           ) : (
             <p className="text-muted-foreground">Todavía no tiene dominios.</p>
           )}
-          <section
-            aria-labelledby="nuevo-dominio"
-            className="panel grid max-w-xl gap-6 p-6"
-          >
-            <h3 id="nuevo-dominio" className="text-px-2">
-              Sumar un dominio
-            </h3>
-            <DomainForm organizationId={org.id} />
-          </section>
         </section>
 
         <section className="grid gap-3">
