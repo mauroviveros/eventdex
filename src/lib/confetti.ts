@@ -19,16 +19,29 @@ const BURSTS = [
   { at: 1250, x: 0.9 },
 ];
 
-/** Five bursts, timed after the winner's name has typed in, of squares from the stage; `scope` carries the --ramp-* tones. */
+// A burst lasts about two seconds from the last tanda; then the canvas goes.
+const CANVAS_LIFETIME_MS = 4000;
+
+/**
+ * Five bursts of squares, timed after the winner's name has typed in. `scope`
+ * carries the --ramp-* tones and hosts the canvas: inside the page's landmark
+ * and hidden from readers, since it is decoration.
+ */
 export async function lcdConfetti(scope: HTMLElement) {
   const { default: confetti } = await import("canvas-confetti");
   const style = getComputedStyle(scope);
   const colors = [1, 2, 3].map((i) =>
     toHex(style.getPropertyValue(`--ramp-${i}`)),
   );
+  const canvas = document.createElement("canvas");
+  canvas.setAttribute("aria-hidden", "true");
+  canvas.style.cssText =
+    "position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:100";
+  scope.append(canvas);
+  const fire = confetti.create(canvas, { resize: true, useWorker: false });
   for (const { at, x } of BURSTS) {
     setTimeout(() => {
-      confetti({
+      void fire({
         particleCount: 55,
         spread: 70,
         startVelocity: 38,
@@ -42,4 +55,11 @@ export async function lcdConfetti(scope: HTMLElement) {
       });
     }, at);
   }
+  setTimeout(
+    () => {
+      fire.reset();
+      canvas.remove();
+    },
+    (BURSTS.at(-1)?.at ?? 0) + CANVAS_LIFETIME_MS,
+  );
 }

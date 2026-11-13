@@ -612,8 +612,11 @@ el nombre que devolvió. Branch `feat/sorteo-escenario`.
    servidor (`getWinnerCard`, `getLastDraw`): la pantalla sigue sin recibir mails ni ids.
    Sin cambios en la base.
    *Listo cuando* se sortea desde la pantalla y el ganador sale con su foto y sus
-   medallas, y la pantalla sigue en 0 violaciones de axe. e2e y catálogo al día; falta
-   repetir `/accessibility` sobre el diseño nuevo.
+   medallas, y la pantalla sigue en 0 violaciones de axe. e2e y catálogo al día. `/accessibility`
+   hecho sobre el diseño nuevo: axe (WCAG 2.2 AA y buenas prácticas) da 0 violaciones con
+   el ganador y el confeti en pantalla, en claro y oscuro, a 375 y 1280 px (el canvas del
+   confeti va dentro del `main` y oculto a los lectores); botón de 56 px; sin probar con
+   lector de pantalla real.
 
 ---
 
