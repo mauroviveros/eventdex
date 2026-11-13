@@ -491,9 +491,22 @@ revisada antes de la siguiente.
    *Listo cuando* se sortea desde la pestaña, un link viejo a `/sorteo` cae en ella, un
    borrador dice qué le falta, y los e2e del panel pasan.
    axe (WCAG 2.2 AA): 0 violaciones en General, Sorteo y un borrador, a 375 y 1280 px.
-4. **Catálogo de spots y sedes**, con las tablas pasadas a tarjetas en el celular.
-5. **Equipo y ajustes.**
-6. **Plataforma e `/ingresar`.**
+4. ▶ **Limpieza del panel.** Misma branch, salida de una revisión de lo hecho. Publicar es
+   uno solo (`PublishEvent`): el ⋮ y General abren la misma confirmación, y en General
+   aparece recién con jornadas. Las pestañas del evento son cuatro columnas en el
+   celular, sin scroll. Sin las rutas que solo redirigían (`/eventos`,
+   `/eventos/[evento]/spots|visitantes|sorteo`, `/spots/nuevo`): no llegaron a
+   producción. `StatTile` pasa a `StatStrip` (con leyenda) en la plataforma. Sin código
+   muerto (`supabase/client.ts`, `visibility` en la lista de eventos, 31 `export` que
+   solo se usaban en su archivo). `components/admin` → `components/panel`, `AdminShell`
+   → `PanelShell`, `adminLanding` → `panelLanding`, el grupo `(panel)` → `(secciones)`,
+   la superficie `landing` → `raiz`, y las fichas de impeccable apuntan a las rutas
+   nuevas.
+   *Listo cuando* hay un solo Publicar con confirmación, las cuatro pestañas entran a
+   320 px, y pasan lint, tipos, tests y e2e.
+5. **Catálogo de spots y sedes**, con las tablas pasadas a tarjetas en el celular.
+6. **Equipo y ajustes.**
+7. **Plataforma e `/ingresar`.**
 
 ---
 
