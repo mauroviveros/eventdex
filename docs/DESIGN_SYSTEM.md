@@ -153,7 +153,7 @@ Los formularios además muestran:
 - En el panel, las tablas pasan a tarjetas compactas por debajo de 640 px: `DataTable`
   pone la primera columna como nombre de la tarjeta y el resto seguido, cada dato con el
   nombre de su columna, y cambia los encabezados para ordenar por un selector «Ordenar
-  por». Las de la plataforma todavía se corren de costado.
+  por». Así también las de la plataforma.
 - En las secciones del panel (Eventos, Spots, Sedes, Equipo, Ajustes y la plataforma) el
   título de la barra es el h1 de la página; las páginas con migas (un evento, un spot,
   un alta) tienen su propio título grande.
