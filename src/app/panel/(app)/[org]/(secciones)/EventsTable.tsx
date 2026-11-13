@@ -118,7 +118,6 @@ export function EventsTable({
       sort={{ orden: "", dir: "asc" }}
       page={1}
       pageCount={1}
-      compactCards
       rowClassName={(e) =>
         e.phase === "finalizado" ? "text-muted-foreground" : undefined
       }

@@ -71,13 +71,10 @@ export default async function SpotsPage({
     <>
       <TopBar title="Spots" actions={newSpot} />
       <PageBody>
-        <div className="grid gap-2">
-          <h1 className="text-px-3 sm:text-px-4">Catálogo de spots</h1>
-          <p className="max-w-prose">
-            Stands, atracciones, sponsors y actividades de la organización. Se
-            cargan una vez y se ponen en cada evento.
-          </p>
-        </div>
+        <p className="max-w-prose">
+          Stands, atracciones, sponsors y actividades de la organización. Se
+          cargan una vez y se ponen en cada evento.
+        </p>
 
         {spots.length === 0 ? (
           <section className="grid max-w-prose gap-3 border-2 border-dashed border-lcd-2 px-6 py-8">

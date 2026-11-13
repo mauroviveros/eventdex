@@ -117,9 +117,6 @@ export default async function OrgEventsPage({
     <>
       <TopBar title="Eventos" actions={newEvent} />
       <PageBody>
-        {/* The org's name is in the sidebar; the bar says the section. */}
-        <h1 className="sr-only">Eventos de {org.name}</h1>
-
         {rows.length === 0 ? (
           <section className="grid max-w-prose gap-3 border-2 border-dashed border-lcd-2 px-6 py-8">
             <h2 className="text-px-2">Todavía no hay eventos</h2>

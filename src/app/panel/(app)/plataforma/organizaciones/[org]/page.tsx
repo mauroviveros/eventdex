@@ -51,7 +51,10 @@ export default async function PlataformaOrganizacionPage({
   return (
     <>
       <TopBar
-        title="Plataforma"
+        title={org.name}
+        crumbs={[
+          { label: "Organizaciones", href: "/panel/plataforma/organizaciones" },
+        ]}
         actions={
           <Link
             href={`/panel/${org.slug}`}

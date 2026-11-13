@@ -38,8 +38,6 @@ export default async function EquipoPage({
     <>
       <TopBar title="Equipo" />
       <PageBody>
-        <h1 className="text-px-3 sm:text-px-4">Equipo</h1>
-
         <div className="grid gap-10 xl:grid-cols-[1fr_28rem] xl:items-start">
           <div className="grid gap-12">
             <section aria-labelledby="miembros" className="grid gap-4">

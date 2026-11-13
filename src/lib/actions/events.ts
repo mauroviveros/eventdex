@@ -12,6 +12,7 @@ import {
   setEventVenue,
   updateEvent,
   updateSchedule,
+  updateVenue,
   uploadCover,
 } from "@/lib/events";
 import { type FormState, runFormWrite, takeLogo } from "./form";
@@ -51,6 +52,14 @@ export async function createVenueAction(
   formData: FormData,
 ): Promise<FormState> {
   const r = await runFormWrite(formData, createVenue);
+  return r.ok ? { ok: true } : r.state;
+}
+
+export async function updateVenueAction(
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const r = await runFormWrite(formData, updateVenue);
   return r.ok ? { ok: true } : r.state;
 }
 

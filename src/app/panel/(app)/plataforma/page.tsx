@@ -17,9 +17,8 @@ export default async function PlataformaPage() {
 
   return (
     <>
-      <TopBar title="Plataforma" />
+      <TopBar title="Resumen" />
       <PageBody>
-        <h1 className="text-px-3 sm:text-px-4">Resumen</h1>
         <StatStrip
           cells={[
             [
