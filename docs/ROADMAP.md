@@ -536,6 +536,14 @@ revisada antes de la siguiente.
    solo en Sedes; la última columna de una tarjeta se alinea a la derecha solo si es el
    ⋮; y nombres que no se repiten («Guardar marca», las acciones de cada factura).
    axe (WCAG 2.2 AA): 0 violaciones en `/ingresar` y `/dev/componentes`.
+   Después del merge (branch `chore/cierres-r14-r16`): Lighthouse de la landing en
+   producción con Ingresar, 100 en accesibilidad, buenas prácticas y SEO (celular y
+   escritorio), y en el celular con 4G lento y CPU ×4, LCP 704 ms y CLS 0. `/ingresar` en
+   claro, 375 y 1280 px: axe sin violaciones. Ajustes en modo soporte muestra solo Marca y
+   Dominios, sin formularios. axe (WCAG 2.2 AA y buenas prácticas) en el dashboard,
+   Ajustes y las cinco pantallas de la plataforma, claro y oscuro, 375 y 1280 px: 0
+   violaciones, después de pasar la barra lateral de escritorio a `<aside>` (el nombre
+   de la org y la cuenta quedaban fuera de todo landmark).
 
 ---
 
