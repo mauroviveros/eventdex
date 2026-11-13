@@ -147,3 +147,16 @@ describe("chunked", () => {
     expect(pieces.flat()).toEqual(ids);
   });
 });
+
+describe("stageFrames with people", () => {
+  it("tells two people with the same name apart", () => {
+    const lucias = [
+      { name: "Lucía F.", claims: 2 },
+      { name: "Lucía F.", claims: 3 },
+    ];
+    const frames = stageFrames(lucias, STAGE_FRAMES);
+    for (const [i, frame] of frames.entries()) {
+      expect(frame).not.toBe(frames[i - 1]);
+    }
+  });
+});

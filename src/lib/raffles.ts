@@ -56,6 +56,12 @@ export async function createRaffle(
 /** The draw that just came out: its name is the one frozen in the database. */
 export type DrawnWinner = { id: string; drawNumber: number; name: string };
 
+/** The winner as the stage shows it: with the photo and medals the card needs. */
+export type StageWinner = DrawnWinner & {
+  claims: number | null;
+  avatarUrl: string | null;
+};
+
 export async function drawRaffle(
   supabase: Client,
   raffleId: unknown,
