@@ -30,27 +30,32 @@ test("the developer bills an org, suspends it and sees it all audited", async ({
   ).toBeVisible();
 
   const concept = `Expo ${seed.org.slug}`;
-  const row = page.getByRole("row", { name: concept });
+  const row = page.getByRole("row").filter({ hasText: concept });
+  // Nueva factura opens a side sheet; each invoice's actions live behind its ⋮.
+  const sheet = page.getByRole("dialog", { name: "Nueva factura" });
 
   await test.step("a malformed amount is rejected with its reason", async () => {
-    await page
+    await page.getByRole("button", { name: "Nueva factura" }).click();
+    await sheet
       .getByLabel("Organización")
       .selectOption({ label: seed.org.name });
-    await page.getByLabel("Concepto").fill(concept);
-    await page.getByLabel("Monto").fill("1500.50");
-    await page.getByRole("button", { name: "Registrar factura" }).click();
-    await expect(page.getByText("Escribí el monto así")).toBeVisible();
-    await expect(page.getByLabel("Concepto")).toHaveValue(concept);
+    await sheet.getByLabel("Concepto").fill(concept);
+    await sheet.getByLabel("Monto").fill("1500.50");
+    await sheet.getByRole("button", { name: "Registrar factura" }).click();
+    await expect(sheet.getByText("Escribí el monto así")).toBeVisible();
+    await expect(sheet.getByLabel("Concepto")).toHaveValue(concept);
   });
 
   await test.step("an invoice is registered and marked paid", async () => {
-    await page.getByLabel("Monto").fill("1.500,50");
-    await page.getByRole("button", { name: "Registrar factura" }).click();
+    await sheet.getByLabel("Monto").fill("1.500,50");
+    await sheet.getByRole("button", { name: "Registrar factura" }).click();
     await expect(page.getByText("Factura registrada.")).toBeVisible();
+    await page.keyboard.press("Escape");
     await expect(row).toContainText("1.500,50");
     await expect(row).toContainText("Pendiente");
 
-    await row.getByRole("button", { name: `Marcar pagada ${concept}` }).click();
+    await page.getByRole("button", { name: `Acciones de ${concept}` }).click();
+    await page.getByRole("menuitem", { name: "Marcar pagada" }).click();
     await expect(row).toContainText("Pagada");
   });
 
@@ -111,12 +116,25 @@ test("the developer configures domains and moves one between orgs", async ({
   await page.goto(`${ADMIN}/organizaciones/${seed.org.slug}`);
   await signInByMail(page, developer.email);
 
-  const field = page.getByRole("textbox", { name: "Dominio", exact: true });
+  // Domains are added from a side sheet; each one's actions live behind its ⋮.
+  const sheet = page.getByRole("dialog", { name: "Sumar un dominio" });
+  const field = sheet.getByRole("textbox", { name: "Dominio", exact: true });
+  const open = () =>
+    page.getByRole("button", { name: "Sumar dominio" }).click();
+  const close = () => page.keyboard.press("Escape");
+  // In the page, not in the toasts (also a list) that name the domain.
   const domain = (host: string) =>
-    page.getByRole("listitem").filter({ hasText: host });
+    page.getByRole("main").getByRole("listitem").filter({ hasText: host });
+  const rowAction = async (host: string, action: string) => {
+    await page.getByRole("button", { name: `Acciones de ${host}` }).click();
+    await page.getByRole("menuitem", { name: action }).click();
+  };
   const add = async (host: string) => {
+    await open();
     await field.fill(host);
-    await page.getByRole("button", { name: "Sumar dominio" }).click();
+    await sheet.getByRole("button", { name: "Sumar dominio" }).click();
+    await expect(page.getByText("Dominio sumado.")).toBeVisible();
+    await close();
     await expect(domain(host)).toBeVisible();
   };
   const moved = `mover-${seed.org.slug}.test`;
@@ -124,63 +142,76 @@ test("the developer configures domains and moves one between orgs", async ({
   const removed = `quitar-${seed.org.slug}.test`;
 
   await test.step("a bad domain is explained, a good one is listed", async () => {
+    await open();
     await field.fill("https://mal/");
-    await page.getByRole("button", { name: "Sumar dominio" }).click();
-    await expect(page.getByText("Escribí solo el dominio")).toBeVisible();
+    await sheet.getByRole("button", { name: "Sumar dominio" }).click();
+    await expect(sheet.getByText("Escribí solo el dominio")).toBeVisible();
+    await close();
     await add(moved);
     await expect(domain(moved)).not.toContainText("Principal");
   });
 
   await test.step("a domain added as primary asks first", async () => {
+    await open();
     await field.fill(primary);
-    await page.getByRole("button", { name: "Sumar y hacer principal" }).click();
-    const confirm = page.getByRole("button", { name: "Sí, hacer principal" });
+    await sheet
+      .getByRole("button", { name: "Sumar y hacer principal" })
+      .click();
+    const confirm = sheet.getByRole("button", { name: "Sí, hacer principal" });
     await expect(confirm).toBeFocused();
 
-    await page.getByRole("button", { name: "Cancelar" }).click();
-    await expect(domain(primary)).toHaveCount(0);
-
-    await page.getByRole("button", { name: "Sumar y hacer principal" }).click();
+    await sheet.getByRole("button", { name: "Cancelar" }).click();
+    await sheet
+      .getByRole("button", { name: "Sumar y hacer principal" })
+      .click();
     await confirm.click();
+    await expect(page.getByText("Dominio sumado.")).toBeVisible();
+    await close();
     await expect(domain(primary)).toContainText("Principal");
   });
 
   await test.step("a non-primary domain is removed after confirming", async () => {
     await add(removed);
-    await page.getByRole("button", { name: `Quitar ${removed}` }).click();
+    await rowAction(removed, "Quitar");
     await page.getByRole("button", { name: "Sí, quitar" }).click();
     await expect(domain(removed)).toHaveCount(0);
   });
 
   await test.step("a taken domain asks first, and can be cancelled", async () => {
     await page.goto(`${ADMIN}/organizaciones/${other.org.slug}`);
+    await open();
     await field.fill(moved);
-    await page.getByRole("button", { name: "Sumar dominio" }).click();
+    await sheet.getByRole("button", { name: "Sumar dominio" }).click();
     await expect(
-      page.getByText(`${moved} ya es de ${seed.org.name}`),
+      sheet.getByText(`${moved} ya es de ${seed.org.name}`),
     ).toBeVisible();
-    await expect(page.getByRole("button", { name: "Sí, mover" })).toBeFocused();
-    await expect(domain(moved)).toHaveCount(0);
+    await expect(
+      sheet.getByRole("button", { name: "Sí, mover" }),
+    ).toBeFocused();
 
     await field.press("Enter");
-    await expect(page.getByRole("button", { name: "Sí, mover" })).toBeVisible();
-    await expect(domain(moved)).toHaveCount(0);
+    await expect(
+      sheet.getByRole("button", { name: "Sí, mover" }),
+    ).toBeVisible();
 
-    await page.getByRole("button", { name: "Cancelar" }).click();
-    await expect(page.getByRole("button", { name: "Sí, mover" })).toHaveCount(
+    await sheet.getByRole("button", { name: "Cancelar" }).click();
+    await expect(sheet.getByRole("button", { name: "Sí, mover" })).toHaveCount(
       0,
     );
+    await close();
     await expect(domain(moved)).toHaveCount(0);
   });
 
   await test.step("once confirmed it moves, and can become primary", async () => {
-    await page.getByRole("button", { name: "Sumar dominio" }).click();
-    await page.getByRole("button", { name: "Sí, mover" }).click();
+    await open();
+    await field.fill(moved);
+    await sheet.getByRole("button", { name: "Sumar dominio" }).click();
+    await sheet.getByRole("button", { name: "Sí, mover" }).click();
+    await expect(page.getByText("Dominio sumado.")).toBeVisible();
+    await close();
     await expect(domain(moved)).toBeVisible();
 
-    await page
-      .getByRole("button", { name: `Hacer principal ${moved}` })
-      .click();
+    await rowAction(moved, "Hacer principal");
     await page.getByRole("button", { name: "Sí, hacer principal" }).click();
     await expect(domain(moved)).toContainText("Principal");
 

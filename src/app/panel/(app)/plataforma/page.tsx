@@ -27,6 +27,7 @@ export default async function PlataformaPage() {
               summary.suspended > 0
                 ? `${summary.suspended} ${summary.suspended === 1 ? "suspendida" : "suspendidas"}`
                 : "Todas activas",
+              "/panel/plataforma/organizaciones",
             ],
             [
               "Eventos en curso",
@@ -39,6 +40,7 @@ export default async function PlataformaPage() {
               owed.length > 0
                 ? owed.map((p) => formatMoney(p.cents, p.currency)).join(" · ")
                 : "Nada por cobrar",
+              "/panel/plataforma/facturacion",
             ],
           ]}
         />

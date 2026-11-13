@@ -4,20 +4,12 @@ import Link from "next/link";
 import { PageBody, TopBar } from "@/components/panel/TopBar";
 import { Button, buttonClass } from "@/components/ui/Button";
 import { SelectField } from "@/components/ui/Field";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/shadcn/table";
 import { listAllOrganizations } from "@/lib/data/organizations";
 import { listAuditLogs } from "@/lib/data/platform";
 import { platformMetadata, requireDeveloper } from "@/lib/data/viewer";
 import { AUDIT_AREAS, AUDIT_LABELS, parseAuditFilter } from "@/lib/platform";
 import { createClient } from "@/lib/supabase/server";
+import { AuditTable } from "./AuditTable";
 
 export function generateMetadata(): Promise<Metadata> {
   return platformMetadata("Auditoría · Plataforma");
@@ -104,58 +96,16 @@ export default async function AuditoriaPage({
                 : "Todavía no hay registros."}
           </p>
         ) : (
-          <Table className="min-w-3xl">
-            <TableCaption className="sr-only">
-              Registro de auditoría
-            </TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Cuándo</TableHead>
-                <TableHead>Acción</TableHead>
-                <TableHead>Organización</TableHead>
-                <TableHead>Quién</TableHead>
-                <TableHead>Detalle</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {rows.map((row) => (
-                <TableRow key={row.id}>
-                  <TableCell className="tabular-nums whitespace-nowrap">
-                    {WHEN.format(new Date(row.created_at))}
-                  </TableCell>
-                  <TableCell>
-                    {AUDIT_LABELS[row.action] ?? row.action}
-                  </TableCell>
-                  <TableCell>
-                    {row.organization ? (
-                      <Link
-                        href={`/panel/plataforma/organizaciones/${row.organization.slug}`}
-                      >
-                        {row.organization.name}
-                      </Link>
-                    ) : (
-                      "—"
-                    )}
-                  </TableCell>
-                  <TableCell>{row.actor?.email ?? "—"}</TableCell>
-                  <TableCell>
-                    {row.diff ? (
-                      <details>
-                        <summary className="min-h-6 cursor-pointer">
-                          Ver
-                        </summary>
-                        <pre className="mt-2 max-w-md text-sm break-all whitespace-pre-wrap">
-                          {JSON.stringify(row.diff, null, 2)}
-                        </pre>
-                      </details>
-                    ) : (
-                      "—"
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <AuditTable
+            rows={rows.map((row) => ({
+              id: String(row.id),
+              action: AUDIT_LABELS[row.action] ?? row.action,
+              when: WHEN.format(new Date(row.created_at)),
+              organization: row.organization,
+              actor: row.actor?.email ?? null,
+              diff: row.diff ? JSON.stringify(row.diff, null, 2) : null,
+            }))}
+          />
         )}
 
         {(filter.pagina > 1 || hasMore) && (
