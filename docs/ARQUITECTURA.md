@@ -22,6 +22,7 @@
 | Validación | **Zod** | Un esquema por acción, en el borde del servidor |
 | Fechas | **`Intl` nativo** + `@date-fns/tz` si hace falta aritmética con zonas | Formatear con zona no necesita una librería |
 | QR | **`uqr`** (`encode()` → matriz; el SVG lo dibuja `QrCode` en el servidor) | Sin dependencias; impresión nítida a cualquier tamaño, sin JS en el navegador. Elegida en R3 sobre `qrcode`, que pesa más para lo mismo |
+| Confeti | **`canvas-confetti`** (`lcdConfetti`: cuadrados planos con la rampa de la org, canvas dentro del `main` y oculto a lectores) | Lo celebra el ganador del sorteo en escenario. Elegida en R17 sobre CSS puro: el canvas da cientos de partículas sin tocar el DOM; pesa unos 3 kB y se importa solo al ganar |
 | Paquetes | **pnpm**, un solo `package.json` | Sin Turborepo ni packages internos |
 | Hosting | **Vercel** | Dominios custom por organización contra un deployment |
 

@@ -559,7 +559,7 @@ revisada antes de la siguiente.
    violaciones, después de pasar la barra lateral de escritorio a `<aside>` (el nombre
    de la org y la cuenta quedaban fuera de todo landmark).
 
-## R17 · Sorteo en escenario
+## R17 · Sorteo en escenario ✅
 
 El sorteo para proyectar, como en la v1 (tag `v1.0.0`, `apps/event/src/app/raffle/`):
 la extracción con animación y los participantes a la vista. Vive en el panel, donde el
@@ -573,7 +573,7 @@ el nombre que devolvió. Branch `feat/sorteo-escenario`.
    `app.public_name`). Sin cambios en la base.
    *Listo cuando* los tests cubren la extracción devuelta y las reglas del nombre
    público.
-2. ▶ **Vista.** `/[org]/eventos/[evento]/sorteo/proyectar?sorteo=<id>`, a pantalla
+2. ✅ **Vista.** `/[org]/eventos/[evento]/sorteo/proyectar?sorteo=<id>`, a pantalla
    completa y sin la barra del panel, con la marca de la org (`RaffleStage`). Para dejarla
    afuera, el layout con la barra y todas sus páginas pasan al grupo `(con-barra)` de
    `[org]`, y la pantalla vive en `(escenario)`: las URLs no cambian. Participantes a la
@@ -590,7 +590,7 @@ el nombre que devolvió. Branch `feat/sorteo-escenario`.
    buenas prácticas) en la pantalla: 0 violaciones en claro y oscuro a 1280 px y en
    oscuro a 375 px, sin scroll horizontal. En `/dev/componentes` entra con sus cuatro
    estados.
-3. **Auditoría.** `/code-review` hecho: los 10 hallazgos resueltos (nombres repetidos,
+3. ✅ **Auditoría.** `/code-review` hecho: los 10 hallazgos resueltos (nombres repetidos,
    lectura de participantes en tandas, doble sorteo, foco, nombre público, lectura mínima
    de la org, revalidación por patrón, e2e del otro evento). `/accessibility` hecho: axe
    (WCAG 2.2 AA y buenas prácticas) da 0 violaciones en la pantalla, en espera y con
@@ -599,7 +599,7 @@ el nombre que devolvió. Branch `feat/sorteo-escenario`.
    pantalla real.
    *Listo cuando* se resuelven los hallazgos y axe da 0 violaciones, claro y oscuro, a 375
    y 1280 px.
-4. ▶ **Rediseño del escenario**, de tres alternativas (impeccable) la «placa del
+4. ✅ **Rediseño del escenario**, de tres alternativas (impeccable) la «placa del
    ganador»: encabezado compacto con el título y los totales; una placa de tinta con doble
    filete donde ocurre el sorteo (trofeo en espera; las caras pasan una a una con un fade
    en pasos, al azar; el ganador entra con el marco que pulsa, la cara que aparece, el
