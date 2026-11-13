@@ -401,7 +401,9 @@ cada uno revisado antes del siguiente. Branch `feat/admin-shadcn`.
    *Listo cuando* se cambia de pestaña, se ordena y pagina por URL, se agrega un spot
    con el buscador usando el teclado, y los e2e del panel pasan.
    `/code-review`: 7 hallazgos, 5 resueltos, 1 descartado (la hoja no bloquea el panel)
-   y 1 que queda (el panel de la pestaña se nombra antes de cargar). `/accessibility`:
+   y 1 que queda (el panel de la pestaña se nombra antes de cargar; resuelto en
+   `chore/cierres-r14-r16`: lo nombra la pestaña que todavía muestra, y el conteo se lee
+   separado, «Spots 4»). `/accessibility`:
    revisión manual (contraste AA, teclado, foco de la hoja); axe queda sin correr.
 6. ▶ **Cifras y acciones del evento.** Misma branch. Cada tarjeta del dashboard muestra
    stands activos, visitantes, medallas y medallas por visitante, contados en la misma
@@ -434,7 +436,9 @@ cada uno revisado antes del siguiente. Branch `feat/admin-shadcn`.
    `/code-review`: 6 hallazgos, 5 resueltos (la hoja se cerraba al agregar el primer
    spot o la primera jornada, con su e2e; el catálogo vacío detrás de una hoja; la
    página actual oculta a lectores en el celular; la galería sin el caso de dos
-   tramos) y 1 que queda (clases de link repetidas en los estados vacíos).
+   tramos) y 1 que queda (clases de link repetidas en los estados vacíos; resuelto en
+   `chore/cierres-r14-r16`: queda `underline`, porque grosor y separación ya vienen del
+   estilo base de `a`).
    `/accessibility`: revisión manual (contraste AA, foco, orden, objetivos de 44 px,
    foco de la hoja) sin hallazgos; axe queda sin correr.
 9. ▶ **Catálogo de spots.** Branch `feat/spots-catalogo`. El catálogo es una `DataTable`
