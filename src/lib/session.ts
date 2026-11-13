@@ -1,6 +1,6 @@
 import type { Supabase } from "@/lib/supabase/server";
 
-export type SessionUser = { id: string; email: string | null };
+type SessionUser = { id: string; email: string | null };
 
 /**
  * The signed-in user, verified from the JWT (getClaims), or null.

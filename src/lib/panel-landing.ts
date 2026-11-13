@@ -3,7 +3,7 @@
  * the developer goes to the platform, a member to their organization, and
  * anyone else has no access. Invitations are accepted before deciding.
  */
-export function adminLanding({
+export function panelLanding({
   isDeveloper,
   organizations,
 }: {

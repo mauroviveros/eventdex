@@ -1,4 +1,4 @@
-import { AdminShell } from "@/components/admin/AdminShell";
+import { PanelShell } from "@/components/panel/PanelShell";
 import { getVisitorAccount, requireDeveloper } from "@/lib/data/viewer";
 
 export default async function PlataformaLayout({
@@ -9,7 +9,7 @@ export default async function PlataformaLayout({
     getVisitorAccount(),
   ]);
   return (
-    <AdminShell
+    <PanelShell
       account={
         account ?? { name: "", email: viewer.email ?? "", avatarUrl: null }
       }
@@ -38,6 +38,6 @@ export default async function PlataformaLayout({
       ]}
     >
       {children}
-    </AdminShell>
+    </PanelShell>
   );
 }

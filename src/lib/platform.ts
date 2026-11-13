@@ -21,7 +21,7 @@ function toCents(amount: string) {
   return Number(whole) * 100 + Number(decimals.padEnd(2, "0"));
 }
 
-export const invoiceSchema = z.object({
+const invoiceSchema = z.object({
   organizationId: z.guid("Elegí la organización."),
   concept: z
     .string()

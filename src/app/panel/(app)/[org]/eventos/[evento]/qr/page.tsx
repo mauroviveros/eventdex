@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { QrCode } from "@/components/admin/QrCode";
-import { PageBody, TopBar } from "@/components/admin/TopBar";
+import { QrCode } from "@/components/panel/QrCode";
+import { PageBody, TopBar } from "@/components/panel/TopBar";
 import { spotUrl } from "@/domain/spots";
 import { getPrimaryHostname } from "@/lib/data/organizations";
 import { listEventSpots } from "@/lib/data/spots";

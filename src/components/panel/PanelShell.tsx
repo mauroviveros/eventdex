@@ -49,7 +49,7 @@ type Props = {
  * TopBar, which carries the toggle) on the right. On phones the sidebar is a
  * sheet that the TopBar's toggle opens.
  */
-export async function AdminShell({
+export async function PanelShell({
   account,
   sections,
   notice,

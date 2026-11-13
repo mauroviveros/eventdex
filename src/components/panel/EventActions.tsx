@@ -1,25 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
+import { useRef, useState } from "react";
 import { PixelIcon } from "@/components/pixel/icons";
-import { Button, buttonClass } from "@/components/ui/Button";
-import { FormMessage } from "@/components/ui/Field";
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogTitle,
-} from "@/components/ui/shadcn/alert-dialog";
+import { buttonClass } from "@/components/ui/Button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/shadcn/dropdown-menu";
-import { publishEventAction } from "@/lib/actions/events";
+import { PublishDialog } from "./PublishEvent";
 
 type Props = {
   org: string;
@@ -48,7 +39,6 @@ export function EventActions({
   support,
 }: Props) {
   const [asking, setAsking] = useState(false);
-  const [pending, setPending] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
   const base = `/panel/${org}/eventos/${event.slug}`;
 
@@ -95,78 +85,13 @@ export function EventActions({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <AlertDialog
+      <PublishDialog
+        org={org}
+        event={event}
         open={asking}
-        // Escape can't close it mid-action: it would look cancelled.
-        onOpenChange={(open) => pending || setAsking(open)}
-      >
-        <AlertDialogContent
-          // Opened from the menu, which is gone by now: back to the ⋮.
-          onCloseAutoFocus={(e) => {
-            e.preventDefault();
-            trigger.current?.focus();
-          }}
-        >
-          <AlertDialogTitle>Publicar {event.title}</AlertDialogTitle>
-          <AlertDialogDescription>
-            Aparece en el dominio de la organización y ya no vuelve a ser
-            borrador.
-          </AlertDialogDescription>
-          <PublishForm
-            org={org}
-            event={event}
-            onPending={setPending}
-            onDone={setAsking}
-          />
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
-  );
-}
-
-/**
- * The dialog's form. It mounts each time the dialog opens, so an error from a
- * previous try doesn't greet the next one.
- */
-function PublishForm({
-  org,
-  event,
-  onPending,
-  onDone,
-}: {
-  org: string;
-  event: Props["event"];
-  /** Stable (a state setter): the effect below must not re-run on renders. */
-  onPending: (pending: boolean) => void;
-  onDone: (open: false) => void;
-}) {
-  const [state, publish, pending] = useActionState(publishEventAction, null);
-
-  useEffect(() => onPending(pending), [pending, onPending]);
-  useEffect(() => {
-    if (state?.ok) {
-      onDone(false);
-      toast.success(`${event.title} está publicado.`);
-    }
-  }, [state, event.title, onDone]);
-
-  return (
-    <>
-      {state && !state.ok && (
-        <FormMessage tone="error">{state.error}</FormMessage>
-      )}
-      <form action={publish} className="flex flex-wrap gap-2">
-        <input type="hidden" name="org" value={org} />
-        <input type="hidden" name="eventId" value={event.id} />
-        <Button type="submit" pending={pending} pendingLabel="Publicando…">
-          Sí, publicar
-        </Button>
-        <AlertDialogCancel asChild>
-          <Button variant="secondary" disabled={pending}>
-            Cancelar
-          </Button>
-        </AlertDialogCancel>
-      </form>
+        onOpenChange={setAsking}
+        returnFocus={trigger}
+      />
     </>
   );
 }

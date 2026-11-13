@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PageBody, TopBar } from "@/components/admin/TopBar";
+import { PageBody, TopBar } from "@/components/panel/TopBar";
 import { timeZoneOptions } from "@/domain/events";
 import { listVenues } from "@/lib/data/events";
 import { requireOrg } from "@/lib/data/viewer";

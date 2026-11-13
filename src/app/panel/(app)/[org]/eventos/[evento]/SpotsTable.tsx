@@ -2,8 +2,8 @@
 
 import { createColumnHelper } from "@tanstack/react-table";
 import { useMemo } from "react";
-import { DataTable, type features } from "@/components/admin/DataTable";
-import { EditSheet } from "@/components/admin/EditSheet";
+import { DataTable, type features } from "@/components/panel/DataTable";
+import { EditSheet } from "@/components/panel/EditSheet";
 import { Sprite } from "@/components/pixel/Sprite";
 import { ActionButton } from "@/components/ui/ActionButton";
 import { Badge } from "@/components/ui/shadcn/badge";
@@ -11,8 +11,8 @@ import { SPOT_TYPE_LABEL } from "@/domain/spots";
 import type { SortDir } from "@/domain/table";
 import { removeEventSpotAction } from "@/lib/actions/spots";
 import type { listEventSpots } from "@/lib/data/spots";
+import { EditEventSpotForm } from "./EventSpotForms";
 import { SPOT_SORTS } from "./query";
-import { EditEventSpotForm } from "./spots/EventSpotForms";
 
 export type Spot = Awaited<ReturnType<typeof listEventSpots>>[number];
 

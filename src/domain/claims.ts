@@ -13,7 +13,7 @@ export type ClaimResult =
   | { kind: "bloqueado" };
 
 /** The row claim_spot() returns. */
-export type ClaimRow = {
+type ClaimRow = {
   outcome: "new" | "repeat" | "inactive" | "out_of_phase" | "blocked";
   claimed_at: string | null;
   starts_at: string | null;
@@ -58,7 +58,7 @@ export function toClaimResult(row: ClaimRow, now = new Date()): ClaimResult {
   }
 }
 
-export type CollectionSpot = { id: string; points: number };
+type CollectionSpot = { id: string; points: number };
 
 /**
  * How much of the event's collection the visitor has: medals and points over

@@ -8,7 +8,6 @@ import { useFormFeedback } from "@/components/ui/useFormFeedback";
 import { instantToLocal } from "@/domain/events";
 import {
   addScheduleAction,
-  publishEventAction,
   setEventVenueAction,
   updateEventAction,
   updateScheduleAction,
@@ -68,40 +67,6 @@ export function AddScheduleForm({
       >
         Agregar jornada
       </Button>
-    </form>
-  );
-}
-
-/**
- * Publishes a draft. Stays enabled (and focusable) without schedules: the hint
- * says why, and trying explains it again.
- */
-export function PublishButton({
-  org,
-  eventId,
-  ready,
-}: Ids & { ready: boolean }) {
-  const [state, action, pending] = useActionState(publishEventAction, null);
-  return (
-    <form action={action} className="grid justify-items-start gap-2">
-      <input type="hidden" name="org" value={org} />
-      <input type="hidden" name="eventId" value={eventId} />
-      <Button
-        type="submit"
-        pending={pending}
-        pendingLabel="Publicando…"
-        aria-describedby={ready ? undefined : "publicar-ayuda"}
-      >
-        Publicar
-      </Button>
-      {!ready && (
-        <p id="publicar-ayuda" className="text-sm text-muted-foreground">
-          Agregá al menos una jornada para publicar.
-        </p>
-      )}
-      {state && !state.ok && (
-        <FormMessage tone="error">{state.error}</FormMessage>
-      )}
     </form>
   );
 }

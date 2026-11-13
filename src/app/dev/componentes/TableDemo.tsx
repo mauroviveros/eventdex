@@ -1,7 +1,7 @@
 "use client";
 
 import { createColumnHelper } from "@tanstack/react-table";
-import { DataTable, type features } from "@/components/admin/DataTable";
+import { DataTable, type features } from "@/components/panel/DataTable";
 import { Badge } from "@/components/ui/shadcn/badge";
 
 type Row = { id: string; name: string; medals: number; blocked: boolean };

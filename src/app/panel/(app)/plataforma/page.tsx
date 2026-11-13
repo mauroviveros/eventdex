@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { StatTile } from "@/components/admin/StatTile";
-import { PageBody, TopBar } from "@/components/admin/TopBar";
+import { StatStrip } from "@/components/panel/StatStrip";
+import { PageBody, TopBar } from "@/components/panel/TopBar";
 import { formatMoney } from "@/domain/money";
 import { getPlatformSummary } from "@/lib/data/platform";
 import { platformMetadata, requireDeveloper } from "@/lib/data/viewer";
@@ -20,31 +20,29 @@ export default async function PlataformaPage() {
       <TopBar title="Plataforma" />
       <PageBody>
         <h1 className="text-px-3 sm:text-px-4">Resumen</h1>
-        <div className="grid gap-4 sm:grid-cols-3">
-          <StatTile
-            label="Organizaciones"
-            value={summary.organizations}
-            caption={
+        <StatStrip
+          cells={[
+            [
+              "Organizaciones",
+              summary.organizations.toLocaleString("es-AR"),
               summary.suspended > 0
                 ? `${summary.suspended} ${summary.suspended === 1 ? "suspendida" : "suspendidas"}`
-                : "Todas activas"
-            }
-          />
-          <StatTile
-            label="Eventos en curso"
-            value={summary.liveEvents}
-            caption="En este momento"
-          />
-          <StatTile
-            label="Facturas pendientes"
-            value={summary.pendingInvoices}
-            caption={
+                : "Todas activas",
+            ],
+            [
+              "Eventos en curso",
+              summary.liveEvents.toLocaleString("es-AR"),
+              "En este momento",
+            ],
+            [
+              "Facturas pendientes",
+              summary.pendingInvoices.toLocaleString("es-AR"),
               owed.length > 0
                 ? owed.map((p) => formatMoney(p.cents, p.currency)).join(" · ")
-                : "Nada por cobrar"
-            }
-          />
-        </div>
+                : "Nada por cobrar",
+            ],
+          ]}
+        />
       </PageBody>
     </>
   );

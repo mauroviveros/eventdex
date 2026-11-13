@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Form from "next/form";
 import Link from "next/link";
-import { PageBody, TopBar } from "@/components/admin/TopBar";
+import { PageBody, TopBar } from "@/components/panel/TopBar";
 import { Button, buttonClass } from "@/components/ui/Button";
 import { SelectField } from "@/components/ui/Field";
 import {

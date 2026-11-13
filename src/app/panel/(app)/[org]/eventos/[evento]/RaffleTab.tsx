@@ -1,4 +1,4 @@
-import { RaffleDraw } from "@/components/admin/RaffleDraw";
+import { RaffleDraw } from "@/components/panel/RaffleDraw";
 import { ActionButton } from "@/components/ui/ActionButton";
 import {
   drawRaffleAction,

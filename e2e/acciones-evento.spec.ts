@@ -13,6 +13,29 @@ test.afterAll(async () => {
   await seed?.cleanup();
 });
 
+test("the event's General asks the same question before publishing", async ({
+  page,
+}) => {
+  await page.goto(
+    `http://localhost:3000/panel/${seed.org.slug}/eventos/feria-borrador`,
+  );
+  await signInByMail(page, seed.ownerEmail);
+  const publish = page
+    .getByRole("region", { name: "Publicación" })
+    .getByRole("button", { name: "Publicar" });
+
+  await publish.click();
+  const confirm = page.getByRole("alertdialog", {
+    name: "Publicar Feria Borrador",
+  });
+  await expect(confirm.getByRole("button", { name: "Cancelar" })).toBeFocused();
+  await confirm.getByRole("button", { name: "Cancelar" }).click();
+  await expect(publish).toBeFocused();
+  await expect(
+    page.getByText("Borrador", { exact: true }).first(),
+  ).toBeVisible();
+});
+
 test("a ready draft is published from its row's menu, after confirming", async ({
   page,
 }) => {

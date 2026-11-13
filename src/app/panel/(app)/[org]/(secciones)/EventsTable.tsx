@@ -3,8 +3,8 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import Link from "next/link";
 import { useMemo } from "react";
-import { DataTable, type features } from "@/components/admin/DataTable";
-import { EventActions } from "@/components/admin/EventActions";
+import { DataTable, type features } from "@/components/panel/DataTable";
+import { EventActions } from "@/components/panel/EventActions";
 import { PhaseBadge } from "@/components/visitante/PhaseBadge";
 import type { Phase } from "@/domain/events";
 

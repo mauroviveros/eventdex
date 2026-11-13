@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { PageBody, TopBar } from "@/components/admin/TopBar";
+import { PageBody, TopBar } from "@/components/panel/TopBar";
 import {
   getEventToDuplicate,
   getLastEventTitle,

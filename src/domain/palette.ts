@@ -4,7 +4,7 @@
  * and how saturated it is.
  */
 
-export type Ramp = readonly [string, string, string, string];
+type Ramp = readonly [string, string, string, string];
 
 type Tone = { l: number; c: number };
 
@@ -110,7 +110,7 @@ export function contrast(fg: string, bg: string): number {
   return (l1 + 0.05) / (l2 + 0.05);
 }
 
-export type Rgb = [number, number, number];
+type Rgb = [number, number, number];
 
 function parse(oklch: string): Rgb {
   const [l = 0, c = 0, h = 0] = oklch.match(/[\d.]+/g)?.map(Number) ?? [];

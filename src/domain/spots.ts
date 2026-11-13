@@ -20,14 +20,14 @@ export type CatalogSpot = {
   type: SpotType;
 };
 
-export type EventSpotFields = {
+type EventSpotFields = {
   name_override: string | null;
   description_override: string | null;
   /** jsonb from the database: trusted shape, read defensively. */
   snapshot: unknown;
 };
 
-export type ResolvedSpot = {
+type ResolvedSpot = {
   name: string;
   description: string | null;
   logoPath: string | null;

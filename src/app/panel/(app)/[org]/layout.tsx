@@ -1,4 +1,4 @@
-import { AdminShell, type Section } from "@/components/admin/AdminShell";
+import { PanelShell, type Section } from "@/components/panel/PanelShell";
 import { getVisitorAccount, requireOrg } from "@/lib/data/viewer";
 import { SupportVisit } from "./SupportVisit";
 
@@ -42,7 +42,7 @@ export default async function OrgLayout({
   }
 
   return (
-    <AdminShell
+    <PanelShell
       account={
         account ?? { name: "", email: viewer.email ?? "", avatarUrl: null }
       }
@@ -66,6 +66,6 @@ export default async function OrgLayout({
       }
     >
       {children}
-    </AdminShell>
+    </PanelShell>
   );
 }

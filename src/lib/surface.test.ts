@@ -5,8 +5,8 @@ describe("surfaceFor", () => {
   const root = "localhost:3000";
 
   it("serves the landing and the panel on the root domain and www", () => {
-    expect(surfaceFor("localhost:3000", root)).toEqual({ kind: "landing" });
-    expect(surfaceFor("www.localhost:3000", root)).toEqual({ kind: "landing" });
+    expect(surfaceFor("localhost:3000", root)).toEqual({ kind: "raiz" });
+    expect(surfaceFor("www.localhost:3000", root)).toEqual({ kind: "raiz" });
   });
 
   it("serves the root on Vercel's deployment and branch URLs only", () => {
@@ -19,11 +19,11 @@ describe("surfaceFor", () => {
     expect(
       surfaceFor("eventdex-1bqgspuqb-mauroviveros.vercel.app", root, deployment)
         .kind,
-    ).toBe("landing");
+    ).toBe("raiz");
     expect(
       surfaceFor("eventdex-git-main-mauroviveros.vercel.app", root, deployment)
         .kind,
-    ).toBe("landing");
+    ).toBe("raiz");
     expect(surfaceFor("eventdex-demo.vercel.app", root, deployment)).toEqual({
       kind: "publica",
       host: "eventdex-demo.vercel.app",
@@ -50,7 +50,7 @@ describe("surfaceFor", () => {
 });
 
 describe("internalPath", () => {
-  const root = { kind: "landing" } as const;
+  const root = { kind: "raiz" } as const;
 
   it("serves the root host's folders as they are", () => {
     expect(internalPath(root, "/")).toBe("/");

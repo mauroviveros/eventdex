@@ -3,7 +3,7 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import Link from "next/link";
 import { useMemo } from "react";
-import { DataTable, type features } from "@/components/admin/DataTable";
+import { DataTable, type features } from "@/components/panel/DataTable";
 import { Sprite } from "@/components/pixel/Sprite";
 import { Badge } from "@/components/ui/shadcn/badge";
 import { SPOT_TYPE_LABEL } from "@/domain/spots";

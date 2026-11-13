@@ -1,22 +1,22 @@
 import { describe, expect, it } from "vitest";
-import { adminLanding } from "./admin-landing";
+import { panelLanding } from "./panel-landing";
 
-describe("adminLanding", () => {
+describe("panelLanding", () => {
   it("sends the developer to the platform, even with an organization", () => {
     expect(
-      adminLanding({ isDeveloper: true, organizations: [{ slug: "expo" }] }),
+      panelLanding({ isDeveloper: true, organizations: [{ slug: "expo" }] }),
     ).toBe("/panel/plataforma/organizaciones");
   });
 
   it("sends a member to their organization", () => {
     expect(
-      adminLanding({ isDeveloper: false, organizations: [{ slug: "expo" }] }),
+      panelLanding({ isDeveloper: false, organizations: [{ slug: "expo" }] }),
     ).toBe("/panel/expo");
   });
 
   it("picks the first organization when there are several", () => {
     expect(
-      adminLanding({
+      panelLanding({
         isDeveloper: false,
         organizations: [{ slug: "expo" }, { slug: "feria" }],
       }),
@@ -24,7 +24,7 @@ describe("adminLanding", () => {
   });
 
   it("has no access without organization", () => {
-    expect(adminLanding({ isDeveloper: false, organizations: [] })).toBe(
+    expect(panelLanding({ isDeveloper: false, organizations: [] })).toBe(
       "/panel/sin-acceso",
     );
   });
