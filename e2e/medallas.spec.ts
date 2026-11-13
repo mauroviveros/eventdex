@@ -117,12 +117,12 @@ test("a visitor scans a QR, signs in, collects, and staff can block them", async
     );
     await signInByMail(staff, seed.ownerEmail);
 
-    // The table sorts by medals through the URL.
-    await staff.getByRole("link", { name: "Medallas" }).click();
+    // The table sorts by medals through the URL; on a phone, from its picker.
+    await staff
+      .getByLabel("Ordenar por")
+      .selectOption({ label: "Medallas (descendente)" });
     await expect(staff).toHaveURL(/orden=medallas&dir=desc/);
-    await expect(
-      staff.getByRole("columnheader", { name: "Medallas" }),
-    ).toHaveAttribute("aria-sort", "descending");
+    await expect(staff.getByLabel("Ordenar por")).toHaveValue("medallas:desc");
 
     const row = staff.getByRole("row").filter({
       hasText: seed.visitorEmail,

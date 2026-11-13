@@ -7,9 +7,10 @@ import {
   useTable,
 } from "@tanstack/react-table";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import type { ReactNode } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { type ReactNode, useId } from "react";
 import { Chevron } from "@/components/pixel/Chevron";
+import { NativeSelect } from "@/components/ui/shadcn/native-select";
 import {
   Table,
   TableBody,
@@ -38,18 +39,14 @@ type Props<T extends RowData> = {
   pageCount: number;
   /** Extra classes per row (a blocked visitor, an inactive spot). */
   rowClassName?: (row: T) => string | undefined;
-  /**
-   * Phone cards with the first column on its own line and the rest flowing
-   * side by side, for rows of short values (the dashboard's events).
-   */
-  compactCards?: boolean;
 };
 
 /**
  * The panel's table. TanStack Table lays out columns and cells; the order and
  * the page live in the URL (?orden=…&dir=…&pag=…), so the server sorts and
- * cuts, and a link shows the same page. Under 640 px each row is a card with
- * its column names, and the sortable headers stay as a strip of links.
+ * cuts, and a link shows the same page. Under 640 px each row is a card: the
+ * first column as its name, the rest side by side with their column names;
+ * the headers give way to an "Ordenar por" picker.
  */
 export function DataTable<T extends RowData>({
   label,
@@ -61,7 +58,6 @@ export function DataTable<T extends RowData>({
   page,
   pageCount,
   rowClassName,
-  compactCards = false,
 }: Props<T>) {
   const table = useTable({
     features: features,
@@ -69,6 +65,8 @@ export function DataTable<T extends RowData>({
     data: rows,
     getRowId: rowId,
   });
+  const router = useRouter();
+  const sortId = useId();
   const pathname = usePathname();
   const params = useSearchParams();
   const href = (change: Record<string, string>) => {
@@ -78,15 +76,46 @@ export function DataTable<T extends RowData>({
     return `${pathname}?${next}`;
   };
 
+  // On a phone the headers hide: the sortable columns become one picker.
+  const sortBy = table
+    .getHeaderGroups()
+    .flatMap((g) => g.headers)
+    .map((h) => [h.column.id, h.column.columnDef.header] as const)
+    .filter(
+      (c): c is readonly [string, string] =>
+        sortable[c[0]] !== undefined && typeof c[1] === "string",
+    );
+
   return (
     <div className="grid gap-4">
+      {sortBy.length > 0 && (
+        <div className="flex items-center gap-3 sm:hidden">
+          <label htmlFor={sortId} className="shrink-0 font-display text-px-1">
+            Ordenar por
+          </label>
+          <NativeSelect
+            id={sortId}
+            value={`${sort.orden}:${sort.dir}`}
+            onChange={(e) => {
+              const [orden = "", dir = "asc"] = e.target.value.split(":");
+              router.push(href({ orden, dir, pag: "1" }), { scroll: false });
+            }}
+          >
+            {sortBy.flatMap(([id, name]) => [
+              <option key={`${id}:asc`} value={`${id}:asc`}>
+                {name} (ascendente)
+              </option>,
+              <option key={`${id}:desc`} value={`${id}:desc`}>
+                {name} (descendente)
+              </option>,
+            ])}
+          </NativeSelect>
+        </div>
+      )}
       <Table aria-label={label} className="max-sm:block">
-        <TableHeader className="max-sm:block">
+        <TableHeader className="max-sm:hidden">
           {table.getHeaderGroups().map((group) => (
-            <TableRow
-              key={group.id}
-              className="max-sm:flex max-sm:flex-wrap max-sm:gap-x-4 max-sm:pb-1"
-            >
+            <TableRow key={group.id}>
               {group.headers.map((header) => {
                 const id = header.column.id;
                 const first = sortable[id];
@@ -102,7 +131,6 @@ export function DataTable<T extends RowData>({
                           : "descending"
                         : undefined
                     }
-                    className={cn("max-sm:py-0", !first && "max-sm:hidden")}
                   >
                     {first ? (
                       <Link
@@ -144,9 +172,7 @@ export function DataTable<T extends RowData>({
               key={row.id}
               className={cn(
                 "align-middle max-sm:border-2 max-sm:border-solid max-sm:border-lcd-3 max-sm:p-4",
-                compactCards
-                  ? "max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:gap-x-5 max-sm:gap-y-2"
-                  : "max-sm:grid max-sm:gap-2",
+                "max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:gap-x-5 max-sm:gap-y-2",
                 rowClassName?.(row.original),
               )}
             >
@@ -159,8 +185,7 @@ export function DataTable<T extends RowData>({
                     className={cn(
                       "max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:gap-x-3 max-sm:p-0 max-sm:data-label:before:font-display max-sm:data-label:before:text-px-1 max-sm:data-label:before:text-muted-foreground max-sm:data-label:before:content-[attr(data-label)]",
                       // The first column is the row's name: alone on its line, without its label.
-                      compactCards &&
-                        "max-sm:first:basis-full max-sm:first:before:hidden max-sm:last:ml-auto",
+                      "max-sm:first:basis-full max-sm:first:before:hidden max-sm:last:ml-auto",
                     )}
                   >
                     <table.FlexRender cell={cell} />

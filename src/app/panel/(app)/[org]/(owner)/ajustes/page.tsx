@@ -32,8 +32,6 @@ export default async function AjustesPage({
     <>
       <TopBar title="Ajustes" />
       <PageBody>
-        <h1 className="text-px-3 sm:text-px-4">Ajustes</h1>
-
         <section aria-labelledby="marca" className="grid gap-4">
           <h2 id="marca" className="border-b-2 border-lcd-3 pb-2 text-px-2">
             Marca

@@ -13,8 +13,9 @@ import { SidebarTrigger } from "@/components/ui/shadcn/sidebar";
 /**
  * The top of every admin page: the sidebar's toggle and where you are on the
  * left, the screen's actions on the right. Sticky, so the actions are always
- * at hand. A page under another one passes `crumbs`, the way back up, and the
- * title becomes the last step of the path. Lives inside PanelShell (the toggle
+ * at hand. On a section page the title is the page's h1. A page under another
+ * one passes `crumbs`, the way back up, and keeps its own h1: the title
+ * becomes the last step of the path. Lives inside PanelShell (the toggle
  * needs its sidebar).
  */
 export function TopBar({
@@ -61,7 +62,8 @@ export function TopBar({
               </BreadcrumbList>
             </Breadcrumb>
           ) : (
-            <p className="font-display text-px-2">{title}</p>
+            // A section page has no other title: the bar's is its h1.
+            <h1 className="font-display text-px-2">{title}</h1>
           )}
         </div>
         {actions && <div className="flex flex-wrap gap-2">{actions}</div>}

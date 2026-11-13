@@ -52,10 +52,8 @@ export default async function AuditoriaPage({
 
   return (
     <>
-      <TopBar title="Plataforma" />
+      <TopBar title="Auditoría" />
       <PageBody>
-        <h1 className="text-px-3 sm:text-px-4">Auditoría</h1>
-
         <Form
           action="/panel/plataforma/auditoria"
           className="flex flex-wrap items-end gap-4"

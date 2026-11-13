@@ -43,6 +43,11 @@ const venueSchema = z.object({
   timezone,
 });
 
+// A venue's zone stays: each of its events already copied it.
+const venueEditSchema = venueSchema
+  .omit({ organizationId: true, timezone: true })
+  .extend({ venueId: z.guid() });
+
 const eventSchema = z.object({
   organizationId: z.guid(),
   title: z
@@ -182,6 +187,33 @@ export async function updateEvent(
 const venueChangeSchema = eventSchema
   .pick({ venueId: true })
   .extend({ eventId: z.guid() });
+
+/** Name and address of a venue. Its time zone doesn't change here. */
+export async function updateVenue(
+  supabase: Client,
+  input: unknown,
+): Promise<ActionResult<null>> {
+  const parsed = venueEditSchema.safeParse(input);
+  if (!parsed.success) return invalid(parsed.error);
+  const v = parsed.data;
+
+  const { data, error } = await supabase
+    .from("venues")
+    .update({
+      name: v.name,
+      address_line: v.addressLine,
+      city: v.city,
+      state: v.state,
+      postal_code: v.postalCode,
+    })
+    .eq("id", v.venueId)
+    .is("deleted_at", null)
+    .select("id");
+  if (error) return failed(error);
+  // RLS hides what isn't yours: nothing updated means no permission.
+  if (data.length === 0) return failed({ code: "42501" });
+  return { ok: true, data: null };
+}
 
 /** Sets or clears the venue. With one, the event takes its zone; without, it keeps the one it had. */
 export async function setEventVenue(

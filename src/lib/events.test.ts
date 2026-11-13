@@ -9,6 +9,7 @@ import {
   setEventVenue,
   updateEvent,
   updateSchedule,
+  updateVenue,
   uploadCover,
 } from "./events";
 import { fakeClient, inserted } from "./fake-supabase";
@@ -421,6 +422,51 @@ describe("updateSchedule", () => {
       { data: [], error: null },
     );
     expect(await updateSchedule(client, valid)).toEqual({
+      ok: false,
+      error: "No tenés permiso para hacer esto.",
+    });
+  });
+});
+
+describe("updateVenue", () => {
+  const valid = {
+    venueId: "0000000a-0000-4000-8000-000000000007",
+    name: " Predio Norte ",
+    addressLine: "Av. Siempreviva 742",
+    city: "",
+    state: "Santa Fe",
+    postalCode: "",
+    // Sent by mistake: the zone is not part of the edit.
+    timezone: "Europe/Madrid",
+  };
+  const updated = (calls: { method: string; args: unknown[] }[]) =>
+    calls.find((c) => c.method === "update")?.args[0];
+
+  it("saves name and address, empty fields as null, and never the zone", async () => {
+    const { client, calls } = fakeClient({
+      data: [{ id: valid.venueId }],
+      error: null,
+    });
+    expect(await updateVenue(client, valid)).toEqual({ ok: true, data: null });
+    expect(updated(calls)).toEqual({
+      name: "Predio Norte",
+      address_line: "Av. Siempreviva 742",
+      city: null,
+      state: "Santa Fe",
+      postal_code: null,
+    });
+  });
+
+  it("rejects a name too short, without writing", async () => {
+    const { client, calls } = fakeClient();
+    const result = await updateVenue(client, { ...valid, name: "P" });
+    expect(result.ok).toBe(false);
+    expect(calls).toEqual([]);
+  });
+
+  it("says no permission when the venue isn't visible", async () => {
+    const { client } = fakeClient({ data: [], error: null });
+    expect(await updateVenue(client, valid)).toEqual({
       ok: false,
       error: "No tenés permiso para hacer esto.",
     });

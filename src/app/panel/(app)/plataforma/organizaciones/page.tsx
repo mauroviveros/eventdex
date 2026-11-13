@@ -31,7 +31,7 @@ export default async function PlataformaOrganizacionesPage({
   return (
     <>
       <TopBar
-        title="Plataforma"
+        title="Organizaciones"
         actions={
           <Link
             href="/panel/plataforma/organizaciones/nueva"
@@ -42,8 +42,6 @@ export default async function PlataformaOrganizacionesPage({
         }
       />
       <PageBody>
-        <h1 className="text-px-3 sm:text-px-4">Organizaciones</h1>
-
         {creada && (
           <p role="status" className="border-2 border-lcd-3 bg-lcd-1 px-4 py-3">
             Organización creada. Avisale al owner que entre con el mail invitado

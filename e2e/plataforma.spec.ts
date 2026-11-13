@@ -96,7 +96,7 @@ test("the platform does not exist for an owner", async ({ page }) => {
   await page.goto(`http://localhost:3000/panel/${seed.org.slug}`);
   await signInByMail(page, seed.ownerEmail);
   await expect(
-    page.getByRole("heading", { level: 1, name: seed.org.name }),
+    page.getByRole("heading", { level: 1, name: "Eventos" }),
   ).toBeVisible();
 
   for (const path of ["", "/facturacion", "/auditoria"]) {

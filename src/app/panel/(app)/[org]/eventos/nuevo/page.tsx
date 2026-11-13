@@ -45,7 +45,10 @@ export default async function NuevoEventoPage({
 
   return (
     <>
-      <TopBar title="Eventos" />
+      <TopBar
+        title={source ? "Duplicar evento" : "Nuevo evento"}
+        crumbs={[{ label: "Eventos", href: `/panel/${org.slug}` }]}
+      />
       <PageBody>
         <div className="grid max-w-xl gap-8">
           <div className="grid gap-2">

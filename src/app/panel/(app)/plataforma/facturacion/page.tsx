@@ -58,10 +58,8 @@ export default async function FacturacionPage() {
 
   return (
     <>
-      <TopBar title="Plataforma" />
+      <TopBar title="Facturación" />
       <PageBody>
-        <h1 className="text-px-3 sm:text-px-4">Facturación</h1>
-
         <section className="grid max-w-2xl gap-4">
           <h2 className="text-px-2">Nueva factura</h2>
           {organizations.length > 0 ? (
