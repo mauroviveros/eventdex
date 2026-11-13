@@ -417,7 +417,10 @@ cada uno revisado antes del siguiente. Branch `feat/admin-shadcn`.
    3 más: la dirección fija también en la base (trigger `events_keep_published_slug`,
    con pgTAP), Publicar desde el menú con su e2e (que encontró un toast doble) y la hoja
    de spots sobre `EditSheet`. Quedan 2: conteos de medallas por spot (con `shortcut`)
-   y conteos que paga la plataforma. `/accessibility`: revisión manual sin hallazgos.
+   y conteos que paga la plataforma. Los dos quedan como atajos aceptados: con los
+   eventos de hoy no pesan, y se pasan a una vista agrupada por evento si se acercan al
+   umbral del `shortcut` (~50 spots por evento). `/accessibility`: revisión manual sin
+   hallazgos.
 7. ▶ **Editar el evento.** Misma branch. Un botón Editar en el encabezado abre una
    hoja lateral (`EditSheet`) con nombre, dirección (solo en borradores), edición,
    resumen, sede y banner; las jornadas tienen su propia hoja, donde además se corrigen.
