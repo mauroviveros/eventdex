@@ -1,3 +1,4 @@
+import { publicName } from "@/domain/raffles";
 import { visitorName } from "@/lib/data/claims";
 import type { Supabase } from "@/lib/supabase/server";
 
@@ -45,6 +46,53 @@ export async function listEventRaffles(supabase: Supabase, eventId: string) {
 }
 
 export type EventRaffle = Awaited<ReturnType<typeof listEventRaffles>>[number];
+
+/**
+ * Who can still win a raffle, for the screen shown on stage: only the public
+ * name ("Ana G.") and the medals, never a mail or an id. Null if the raffle
+ * doesn't exist or isn't the viewer's to see.
+ */
+// shortcut: the registrations in one read (PostgREST caps it at max-rows), page it when an event passes ~1000 visitors
+export async function listRaffleParticipants(
+  supabase: Supabase,
+  raffleId: string,
+) {
+  const [raffle, eligible] = await Promise.all([
+    supabase
+      .from("raffles")
+      .select("title, min_claims, event_id")
+      .eq("id", raffleId)
+      .maybeSingle(),
+    supabase.rpc("raffle_eligible", { p_raffle_id: raffleId }),
+  ]);
+  if (raffle.error) throw raffle.error;
+  if (eligible.error) throw eligible.error;
+  if (!raffle.data) return null;
+
+  const medals = new Map(eligible.data.map((e) => [e.user_id, e.claims]));
+  const { data, error } = await supabase
+    .from("event_registrations")
+    .select("user_id, profile:profiles (full_name, display_name)")
+    .eq("event_id", raffle.data.event_id)
+    .in("user_id", [...medals.keys()]);
+  if (error) throw error;
+
+  return {
+    title: raffle.data.title,
+    minClaims: raffle.data.min_claims,
+    participants: data
+      .map((r) => ({
+        // The embed goes through profiles RLS: never assume it came back.
+        name: publicName(r.profile?.display_name || r.profile?.full_name),
+        medals: Number(medals.get(r.user_id) ?? 0),
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name, "es-AR")),
+  };
+}
+
+export type RaffleParticipants = NonNullable<
+  Awaited<ReturnType<typeof listRaffleParticipants>>
+>;
 
 /**
  * The published winners of one event, or by default of the org's latest public

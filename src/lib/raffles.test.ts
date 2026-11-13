@@ -47,9 +47,15 @@ describe("createRaffle", () => {
 });
 
 describe("drawRaffle", () => {
-  it("calls draw_raffle", async () => {
-    const { client, rpc } = fakeClient({ data: {}, error: null });
-    expect(await drawRaffle(client, RAFFLE)).toEqual({ ok: true, data: null });
+  it("calls draw_raffle and returns the draw that came out", async () => {
+    const { client, rpc } = fakeClient({
+      data: { id: DRAW, draw_number: 2, winner_name: "Ana G." },
+      error: null,
+    });
+    expect(await drawRaffle(client, RAFFLE)).toEqual({
+      ok: true,
+      data: { id: DRAW, drawNumber: 2, name: "Ana G." },
+    });
     expect(rpc).toHaveBeenCalledWith("draw_raffle", { p_raffle_id: RAFFLE });
   });
 
