@@ -51,8 +51,8 @@ export type EventRaffle = Awaited<ReturnType<typeof listEventRaffles>>[number];
 const IDS_PER_READ = 100;
 
 /**
- * Who can still win a raffle, for the screen shown on stage: only the public
- * name ("Ana G."), never a mail or an id. Null if the raffle doesn't exist or
+ * Who can still win a raffle, for the screen shown on stage: public name
+ * ("Ana G."), medals and photo, never a mail or an id. Null if the raffle doesn't exist or
  * isn't the viewer's to see.
  */
 // shortcut: PostgREST cuts the eligible at max-rows (1000), show a count and page the names past ~1000 eligible
@@ -80,7 +80,9 @@ export async function listRaffleParticipants(
     ).map((ids) =>
       supabase
         .from("event_registrations")
-        .select("profile:profiles (full_name, display_name)")
+        .select(
+          "user_id, profile:profiles (full_name, display_name, avatar_url)",
+        )
         .eq("event_id", eventId)
         .in("user_id", ids),
     ),
@@ -90,15 +92,67 @@ export async function listRaffleParticipants(
     return data;
   });
 
+  const claimsOf = new Map(eligible.data.map((e) => [e.user_id, e.claims]));
+  // The embed goes through profiles RLS: never assume it came back.
+  const participants = rows
+    .map((r) => ({
+      name: publicNameOf(r.profile),
+      claims: claimsOf.get(r.user_id) ?? 0,
+      avatarUrl: r.profile?.avatar_url ?? null,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name, "es-AR"));
+
   return {
     title,
     eventId,
     minClaims,
-    // The embed goes through profiles RLS: never assume it came back.
-    names: rows
-      .map((r) => publicNameOf(r.profile))
-      .sort((a, b) => a.localeCompare(b, "es-AR")),
+    participants,
+    totalClaims: participants.reduce((sum, p) => sum + p.claims, 0),
   };
+}
+
+/**
+ * What the stage shows next to the name of the draw that just came out: the
+ * winner's photo and how many medals they have. The draw already happened, so
+ * a failed read here only leaves the card plainer.
+ */
+export async function getWinnerCard(supabase: Supabase, drawId: string) {
+  const { data } = await supabase
+    .from("raffle_draws")
+    .select(
+      `winner_user_id, raffle:raffles (event_id),
+       winner:profiles!raffle_draws_winner_user_id_fkey (avatar_url)`,
+    )
+    .eq("id", drawId)
+    .maybeSingle();
+  const eventId = data?.raffle?.event_id;
+  if (!data?.winner_user_id || !eventId)
+    return { claims: null, avatarUrl: null };
+
+  const { count } = await supabase
+    .from("spot_claims")
+    .select("id", { head: true, count: "exact" })
+    .eq("event_id", eventId)
+    .eq("user_id", data.winner_user_id);
+  return { claims: count, avatarUrl: data.winner?.avatar_url ?? null };
+}
+
+/**
+ * The latest draw that still stands, for the stage to open on it: without this
+ * a reload would forget who just won. Null if there is none.
+ */
+export async function getLastDraw(supabase: Supabase, raffleId: string) {
+  const { data } = await supabase
+    .from("raffle_draws")
+    .select("id, draw_number, winner_name")
+    .eq("raffle_id", raffleId)
+    .is("voided_at", null)
+    .order("draw_number", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (!data) return null;
+  const card = await getWinnerCard(supabase, data.id);
+  return { name: data.winner_name, number: data.draw_number, ...card };
 }
 
 /**
