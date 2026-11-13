@@ -361,39 +361,46 @@ La colección del evento, con la cara de quien la juntó, lista para mostrar. Br
    descarga si el navegador no puede.
    *Listo cuando* el visitante comparte su tarjeta como imagen desde el celular.
    `/code-review`: 10 hallazgos, 8 resueltos; los 2 de limpieza quedaron sin
-   objeto al sacar los skins. `/accessibility`: revisión manual sin hallazgos abiertos; axe queda sin correr.
+   objeto al sacar los skins. `/accessibility`: revisión manual sin hallazgos abiertos.
+   Verificado en `chore/cierres-r14-r16`: `/mis-medallas/tarjeta` da un PNG de
+   1080×1920, privado y sin caché, y 404 para un evento sin medallas; sin Web Share, el
+   botón descarga `tarjeta-<evento>.png`. axe (WCAG 2.2 AA y buenas prácticas) en
+   `/mis-medallas`: 0 violaciones, claro y oscuro, 375 y 1280 px. Falta compartirla
+   desde un celular.
 
-## R15 · Panel con shadcn
+## R15 · Panel con shadcn ✅
 
 El panel pasa a las primitivas de shadcn/ui, adaptadas al mundo LCD: esquinas rectas,
 reglas de 2 px, sin sombras ni animaciones, objetivos de 44 px. Un bloque por zona,
 cada uno revisado antes del siguiente. Branch `feat/admin-shadcn`.
+Cerrado con el R16: el axe que en estos bloques quedó sin correr lo cubren las pasadas
+del R16 sobre las mismas pantallas, ya rediseñadas.
 
-1. ▶ **Shell.** `Sidebar` con la organización arriba, las secciones con íconos pixel y
+1. ✅ **Shell.** `Sidebar` con la organización arriba, las secciones con íconos pixel y
    la cuenta abajo (`DropdownMenu` + `Avatar`). Colapsa a íconos y lo recuerda; en el
    celular es una `Sheet` que abre el botón de la barra superior.
    *Listo cuando* se navega, se cambia de organización y se sale desde el panel en
    escritorio y celular, con teclado, en ambos esquemas.
-2. ▶ **Formularios.** `Field` y `SelectField` sobre Input, NativeSelect y Label;
+2. ✅ **Formularios.** `Field` y `SelectField` sobre Input, NativeSelect y Label;
    Checkbox en los spots; `DateField` (Calendar + Popover, en castellano) para las
    jornadas y las facturas, que manda el mismo texto que el input nativo. `Button`
    queda para el bloque de confirmaciones.
    *Listo cuando* se agrega una jornada eligiendo la fecha en el calendario, un error
    conserva lo cargado, y los formularios del panel pasan sus e2e.
-3. ▶ **Tablas y estados.** Table en organizaciones, facturación y auditoría; Badge
+3. ✅ **Tablas y estados.** Table en organizaciones, facturación y auditoría; Badge
    para la fase del evento (`PhaseBadge`), el estado de una organización y el de una
    factura. Las tablas siguen corriéndose de costado en el celular; pasarlas a
    tarjetas (DESIGN_SYSTEM · Móvil) queda pendiente.
    *Listo cuando* las tres tablas y los estados se ven con las primitivas, y los e2e
    de la plataforma pasan.
-4. ▶ **Confirmaciones y avisos.** `Button` sobre el de shadcn (mismos nombres de
+4. ✅ **Confirmaciones y avisos.** `Button` sobre el de shadcn (mismos nombres de
    variante y estado pendiente). Lo que no se deshace confirma en un AlertDialog con la
    acción y su objeto, la consecuencia y un botón explícito; el foco arranca en Cancelar.
    Los éxitos del panel son un toast (Sonner) abajo; los errores siguen al lado del
    formulario.
    *Listo cuando* las confirmaciones y los avisos del panel usan las primitivas, y la
    suite e2e pasa.
-5. ▶ **Detalle del evento.** Branch `feat/evento-pestanas`. Una página con Tabs (General ·
+5. ✅ **Detalle del evento.** Branch `feat/evento-pestanas`. Una página con Tabs (General ·
    Spots · Visitantes) en `?tab=`; Spots y Visitantes son `DataTable` (TanStack Table)
    con orden y páginas en la URL, resueltos en el server, y tarjetas bajo 640 px. El
    spot del catálogo se elige con `Combobox` (Command); se edita en una `Sheet`. Las
@@ -405,7 +412,7 @@ cada uno revisado antes del siguiente. Branch `feat/admin-shadcn`.
    `chore/cierres-r14-r16`: lo nombra la pestaña que todavía muestra, y el conteo se lee
    separado, «Spots 4»). `/accessibility`:
    revisión manual (contraste AA, teclado, foco de la hoja); axe queda sin correr.
-6. ▶ **Cifras y acciones del evento.** Misma branch. Cada tarjeta del dashboard muestra
+6. ✅ **Cifras y acciones del evento.** Misma branch. Cada tarjeta del dashboard muestra
    stands activos, visitantes, medallas y medallas por visitante, contados en la misma
    lectura de eventos; arriba, Eventos · Visitantes · Medallas. Un ⋮ (`EventActions`)
    junta Hoja de QR, Sorteo, Ver en el sitio, Publicar (con confirmación) y Duplicar,
@@ -421,13 +428,13 @@ cada uno revisado antes del siguiente. Branch `feat/admin-shadcn`.
    eventos de hoy no pesan, y se pasan a una vista agrupada por evento si se acercan al
    umbral del `shortcut` (~50 spots por evento). `/accessibility`: revisión manual sin
    hallazgos.
-7. ▶ **Editar el evento.** Misma branch. Un botón Editar en el encabezado abre una
+7. ✅ **Editar el evento.** Misma branch. Un botón Editar en el encabezado abre una
    hoja lateral (`EditSheet`) con nombre, dirección (solo en borradores), edición,
    resumen, sede y banner; las jornadas tienen su propia hoja, donde además se corrigen.
    General queda de solo lectura.
    *Listo cuando* se edita un evento y una jornada desde las hojas, un publicado no
    cambia de dirección, y los e2e del panel pasan.
-8. ▶ **Migas y ancho del evento.** Branch `feat/evento-layout`, salida de un
+8. ✅ **Migas y ancho del evento.** Branch `feat/evento-layout`, salida de un
    `/impeccable critique` del detalle del evento. La barra superior lleva migas
    (`Breadcrumb`) en vez de título y link de volver en las seis pantallas que dependen
    de otra; en el celular queda solo el tramo de arriba. Editar y el ⋮ suben a la
@@ -444,7 +451,7 @@ cada uno revisado antes del siguiente. Branch `feat/admin-shadcn`.
    estilo base de `a`).
    `/accessibility`: revisión manual (contraste AA, foco, orden, objetivos de 44 px,
    foco de la hoja) sin hallazgos; axe queda sin correr.
-9. ▶ **Catálogo de spots.** Branch `feat/spots-catalogo`. El catálogo es una `DataTable`
+9. ✅ **Catálogo de spots.** Branch `feat/spots-catalogo`. El catálogo es una `DataTable`
    (tipo, en cuántos eventos está, estado) con orden y páginas en la URL. Nuevo spot y
    Editar abren una `EditSheet`; la de alta queda abierta para cargar el siguiente y
    `?nuevo` la abre al entrar (reemplaza a `/spots/nuevo`). El detalle distingue los
