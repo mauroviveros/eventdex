@@ -1,8 +1,8 @@
 import { Sprite } from "@/components/pixel/Sprite";
 import { Monogram } from "@/components/ui/Monogram";
+import { UserAvatar } from "@/components/ui/UserAvatar";
 import type { PublicEvent } from "@/components/visitante/EventHome";
 import { Logo } from "@/components/visitante/Medal";
-import { largeAvatar } from "@/domain/avatar";
 import type { SpotType } from "@/domain/spots";
 import {
   CARD_MEDALS_SHOWN,
@@ -57,11 +57,12 @@ export function VisitorCard({
           )}
         </div>
 
-        {/* The monogram stays behind the photo: it shows if the photo fails to load. */}
-        <div className="relative border-2 border-lcd-3">
-          <Monogram text={name} size="lg" />
-          {account.avatarUrl && <Photo src={account.avatarUrl} />}
-        </div>
+        <UserAvatar
+          name={name}
+          src={account.avatarUrl}
+          size="lg"
+          className="border-2 border-lcd-3"
+        />
 
         <p className="line-clamp-2 w-full font-display text-px-3 break-words">
           {name}
@@ -107,20 +108,5 @@ export function VisitorCard({
         </p>
       </div>
     </section>
-  );
-}
-
-/** The photo as its owner chose it, like a logo. */
-function Photo({ src }: { src: string }) {
-  return (
-    // biome-ignore lint/performance/noImgElement: an external photo; next/image would need every provider's host in the config
-    <img
-      src={largeAvatar(src)}
-      alt=""
-      width={144}
-      height={144}
-      referrerPolicy="no-referrer"
-      className="absolute inset-0 size-36 object-cover"
-    />
   );
 }

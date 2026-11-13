@@ -2,12 +2,6 @@
 
 import { useRef } from "react";
 import { Chevron } from "@/components/pixel/Chevron";
-import { initialsOf } from "@/components/ui/Monogram";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/shadcn/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/shadcn/dropdown-menu";
 import { SidebarMenuButton, useSidebar } from "@/components/ui/shadcn/sidebar";
+import { UserAvatar } from "@/components/ui/UserAvatar";
 
 export type Account = {
   name: string;
@@ -34,18 +29,7 @@ export function AccountMenu({ account }: { account: Account }) {
   const signOut = useRef<HTMLFormElement>(null);
   const name = account.name || "Tu cuenta";
 
-  const face = (
-    <Avatar>
-      {account.avatarUrl && (
-        <AvatarImage
-          src={account.avatarUrl}
-          alt=""
-          referrerPolicy="no-referrer"
-        />
-      )}
-      <AvatarFallback>{initialsOf(name)}</AvatarFallback>
-    </Avatar>
-  );
+  const face = <UserAvatar name={name} src={account.avatarUrl} size="sm" />;
   const who = (className = "") => (
     <span className={`grid min-w-0 flex-1 text-left ${className}`}>
       <span className="truncate font-display text-px-1">{name}</span>
