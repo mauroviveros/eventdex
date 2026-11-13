@@ -3,6 +3,17 @@
  * is ground. One <path> in currentColor, 16 px by default.
  */
 export const ICONS = {
+  // The raffle's cup.
+  trofeo: [
+    "########",
+    "#.####.#",
+    "#.####.#",
+    ".######.",
+    "..####..",
+    "...##...",
+    "..####..",
+    ".######.",
+  ],
   // Sections of an organization.
   eventos: [
     ".#....#.",
@@ -149,12 +160,18 @@ const pathOf = (rows: readonly string[]) =>
     )
     .join("");
 
-export function PixelIcon({ name }: { name: IconName }) {
+export function PixelIcon({
+  name,
+  size = 16,
+}: {
+  name: IconName;
+  size?: number;
+}) {
   return (
     <svg
       aria-hidden
-      width={16}
-      height={16}
+      width={size}
+      height={size}
       viewBox="0 0 8 8"
       shapeRendering="crispEdges"
       fill="currentColor"

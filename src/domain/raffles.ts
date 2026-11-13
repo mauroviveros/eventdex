@@ -14,6 +14,13 @@ export function publicName(name: string | null | undefined) {
   return `${first} ${last.charAt(0).toUpperCase()}.`;
 }
 
+/** Who can win, as the stage shows them: public name, medals and photo. */
+export type Participant = {
+  name: string;
+  claims: number;
+  avatarUrl: string | null;
+};
+
 /** How many names go by on stage before the winner lands. */
 export const STAGE_FRAMES = 24;
 
@@ -26,23 +33,23 @@ export function frameDelay(index: number) {
 }
 
 /**
- * The names that go by on stage, at random but never the same one twice in a
+ * The participants that go by on stage, at random but never the same one twice in a
  * row (when there is another to show). The winner is not here: the server
  * already chose it, and the screen only lands on it afterwards.
  */
-export function stageFrames(
-  names: readonly string[],
+export function stageFrames<T>(
+  items: readonly T[],
   count: number,
   random: () => number = Math.random,
 ) {
-  if (names.length === 0) return [];
-  const frames: string[] = [];
+  const frames: T[] = [];
+  if (items.length === 0) return frames;
   for (let i = 0; i < count; i++) {
     const previous = frames.at(-1);
-    const others = names.filter((n) => n !== previous);
-    // Every name the same (visitors without one are all "Visitante"): repeat it.
-    const pool = others.length > 0 ? others : names;
-    frames.push(pool[Math.floor(random() * pool.length)] ?? "");
+    const others = items.filter((n) => n !== previous);
+    // Every one the same (visitors without a name are all "Visitante"): repeat it.
+    const pool = others.length > 0 ? others : items;
+    frames.push(pool[Math.floor(random() * pool.length)] as T);
   }
   return frames;
 }

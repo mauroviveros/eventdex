@@ -1,11 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getWinnerCard } from "@/lib/data/raffles";
 import {
   createRaffle,
-  type DrawnWinner,
   drawRaffle,
   publishRaffleWinners,
+  type StageWinner,
   voidRaffleDraw,
 } from "@/lib/raffles";
 import type { ActionResult } from "@/lib/results";
@@ -19,10 +20,13 @@ import { type FormState, runFormWrite } from "./form";
  */
 export async function drawOnStageAction(
   raffleId: string,
-): Promise<ActionResult<DrawnWinner>> {
-  const result = await drawRaffle(await createClient(), raffleId);
-  if (result.ok) revalidatePath("/panel/[org]", "layout");
-  return result;
+): Promise<ActionResult<StageWinner>> {
+  const supabase = await createClient();
+  const result = await drawRaffle(supabase, raffleId);
+  if (!result.ok) return result;
+  revalidatePath("/panel/[org]", "layout");
+  const card = await getWinnerCard(supabase, result.data.id);
+  return { ok: true, data: { ...result.data, ...card } };
 }
 
 export async function createRaffleAction(
