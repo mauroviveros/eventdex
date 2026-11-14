@@ -14,9 +14,9 @@ type Props = {
 };
 
 /**
- * The sign-in of the panel and of an org's site: each page lives on its own
- * host so the session cookie lands there, and sends whoever is already
- * signed in on to `next`. Mail sign-in only exists in development.
+ * The panel's sign-in: it sends whoever is already signed in on to `next`.
+ * Mail sign-in only exists in development. The visitor's /ingresar is its
+ * own title screen.
  */
 export function SignInCard({ next, failed, title, children }: Props) {
   return (

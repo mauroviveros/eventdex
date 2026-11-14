@@ -843,19 +843,16 @@ export default function ComponentesPage() {
 
         <Section
           title="Ingresar"
-          note="SignInCard: el login del panel y el de cada organización, con su título y su texto. Con ?error=auth suma el aviso; el link por mail aparece solo en desarrollo."
+          note="SignInCard: el login del panel, con su título y su texto. Con ?error=auth suma el aviso; el link por mail aparece solo en desarrollo. El del visitante es la pantalla de título de /ingresar en el dominio de cada organización."
         >
           <div className="grid gap-6 md:grid-cols-2">
             <SignInCard next="/panel" failed={false} title="Ingresá a Eventdex">
               Para organizar tus eventos. Si te invitaron, usá el mismo mail de
               la invitación.
             </SignInCard>
-            <SignInCard
-              next="/s/demo"
-              failed
-              title="Ingresá para sumar la medalla"
-            >
-              Tus medallas quedan guardadas en tu cuenta de Expo de ejemplo.
+            <SignInCard next="/panel" failed title="Ingresá a Eventdex">
+              Para organizar tus eventos. Si te invitaron, usá el mismo mail de
+              la invitación.
             </SignInCard>
           </div>
         </Section>

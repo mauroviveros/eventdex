@@ -637,14 +637,16 @@ ediciones anteriores. Promedio real: de 2 a 3 medallas por persona (ver
 Orden: primero lo que más mueve el escaneo (R18 → R19 → R20), después lo personal
 (R22) y al final la portada grande (R21).
 
-## R18 · Ingreso directo ✅
+## R18 · Ingreso directo ▶
 
 Escanear sin sesión es el camino más importante, y hoy pasa por `/ingresar`. En
 producción solo hay Google, así que esa parada sobra. Branch `feat/ingreso-directo`.
 
-1. ✅ **Backend.** `/auth/google?next=…` arranca el OAuth de Google con `next` (la Server
-   Action `signInWithGoogle` no sirve para un link). Sin cambios en la base.
-   *Listo cuando* la ruta lleva a Google y vuelve a `next`, y `safeNext` la protege.
+1. ✅ **Backend.** `googleSignInUrl` arranca el OAuth de Google con `next` y lo comparte
+   la acción `signInWithGoogle`. Sin cambios en la base.
+   *Listo cuando* el ingreso lleva a Google y vuelve a `next`, y `safeNext` lo protege.
+   La ruta GET `/auth/google` que se hizo acá se sacó: solo servía para mandar directo a
+   Google las páginas que piden sesión, y eso se descartó (ver bloque 3).
 2. ✅ **Diseño.** La medalla bloqueada del QR sin sesión: alternativas con `/impeccable`.
    Hubo tres: A (la celebración en espera), B (candado) y C («¡Bien ahí!», con un
    «Falta un paso» que parpadea). **Elegida: la B con el título de la C**
@@ -660,18 +662,43 @@ producción solo hay Google, así que esa parada sobra. Branch `feat/ingreso-dir
    *Listo cuando* escanear sin sesión es un toque hasta Google y la vuelta suma la
    medalla (e2e).
    Hecho con `LockedMedal`. La cabecera esconde «Ingresar» en `/s/[id]`, porque la
-   página ya es el ingreso. En producción, `requireVisitor` (`/mis-medallas` y su
-   tarjeta) también va directo a `/auth/google`. El panel sigue pasando por `/ingresar`.
+   página ya es el ingreso. Las páginas que piden sesión (`/mis-medallas`) siguen
+   pasando por `/ingresar`. Mandarlas directo a Google se probó y se descartó: salir de
+   la app sin aviso no se siente parte de ella. El login sin salir de la página es el
+   botón «Ingresar» de la cabecera (en producción ya va a Google; en desarrollo pasa por
+   `/ingresar` porque Supabase local no tiene Google, solo el link por mail).
 4. ✅ **Auditoría.** `/code-review` y `/accessibility`. Se arreglaron estas cosas:
    - La medalla bloqueada se anuncia como «Medalla bloqueada» y no queda muda.
    - Una sola `callbackUrl` para Google y para el mail.
    - Un log cuando Google no devuelve URL.
-   - Un test de `requireVisitor` en producción y en desarrollo.
 
    Quedaron sin cambiar, por decisión:
    - El 404 de un QR roto no muestra «Ingresar» en la cabecera.
-   - Los `NODE_ENV` del ingreso por mail siguen sueltos en cuatro lugares; se juntan cuando se decida otro método de ingreso.
-   - La navegación del cliente a una página con sesión vencida puede pasar por una carga completa antes de llegar a Google.
+   - Los `NODE_ENV` del ingreso por mail siguen sueltos en tres lugares; se juntan cuando se decida otro método de ingreso.
+5. ✅ **Diseño.** El login entero, con alternativas de `/impeccable` sobre las páginas reales:
+   - **La carga.** Se probaron dos (una barra que se llena en el botón y una pantalla
+     propia, «Yendo a Google») y se descartaron. Con la cuenta de Google ya recordada,
+     Google vuelve enseguida y la pantalla queda como un parpadeo. Queda como estaba: los
+     tres bloques y «Yendo a Google…» en el botón.
+   - **`/ingresar`.** Hoy llegan quien abre `/mis-medallas` sin sesión y quien tuvo un
+     error con Google. Hubo cinco: A (solo la tarjeta), B (cartel compacto), C
+     (medallas ocultas), D (la tarjeta de visitante en blanco) y E (pantalla de título).
+     **Elegida: la E.** La organización, el título del evento en rojo y sus datos en
+     amarillo; abajo «Ingresá para ver tus medallas» (según `next`) con un bloque que
+     parpadea, como el «PRESS START» de un juego, y el botón de Google; debajo, qué se
+     guarda de Google («tu nombre, tu mail y tu foto», que la org ve junto con los stands
+     visitados). Todo entra en la primera pantalla. La D se descartó porque dejaba el
+     botón abajo del pliegue. `SignInCard` queda solo para el panel.
+6. **Vista.**
+   - `/ingresar` es la pantalla de título (ya aplicada al elegirla).
+   - Un error de Google al escanear vuelve a `/s/[id]?error=auth` y la medalla bloqueada
+     muestra el aviso con el botón para reintentar; `/ingresar` se queda con el error de
+     los demás casos.
+   - RUTAS al día.
+
+   *Listo cuando* `/ingresar` toma el diseño elegido y un error al escanear vuelve al QR
+   (e2e).
+7. **Auditoría.** `/code-review` y `/accessibility`.
 
 ## R19 · Premios a la vista
 
@@ -762,6 +789,25 @@ esa organización. Sin cambios en la base. Branch `feat/mi-historial`.
 4. **Auditoría.** `/code-review` y `/accessibility`.
 
 ---
+
+## R23 · Componentes únicos
+
+Lo mismo se dibuja de una sola forma en toda la app. Hoy hay varias. Branch
+`refactor/componentes-unicos`.
+
+1. **Avatar.** Toda foto de persona pasa por el `Avatar` de shadcn adaptado a los tokens
+   (`UserAvatar`): el menú del visitante (hoy tiene su propio `Avatar`), la tarjeta, el
+   equipo, la cuenta del panel y el escenario. La imagen PNG de la tarjeta
+   (`mis-medallas/tarjeta`) queda afuera: la dibuja `next/og`, sin React del cliente.
+2. **Diseño.** Un único componente de spot con todos sus estados: oculto (sprite en
+   silueta), bloqueado (con candado), pendiente, nuevo (la revelación), conseguido e
+   inactivo, en los tamaños que hoy usan la colección, la celebración, la medalla
+   bloqueada, la tarjeta y la consola de la landing. Alternativas con `/impeccable`.
+3. **Vista.** `Medal`, `LockedMedal`, la medalla de `Celebration` y las casillas de la
+   tarjeta pasan a usarlo. `/dev/componentes` lo muestra en todos sus estados.
+   *Listo cuando* no queda otro lugar que dibuje un spot por su cuenta (búsqueda en el
+   código) y los e2e siguen pasando.
+4. **Auditoría.** `/code-review` y `/accessibility`.
 
 ## ⏸ Estacionado
 
