@@ -82,3 +82,23 @@ export function collectionProgress(
   }
   return { medals, total: spots.length, points, maxPoints };
 }
+
+/** How many missing stands the celebration names; the rest are counted. */
+export const MISSING_SHOWN = 3;
+
+/**
+ * The stands the visitor has not scanned yet, for the celebration: the first
+ * few in the event's order, and how many more there are.
+ */
+export function missingSpots<T extends { id: string }>(
+  spots: readonly T[],
+  claimedSpotIds: Iterable<string>,
+  limit = MISSING_SHOWN,
+) {
+  const claimed = new Set(claimedSpotIds);
+  const missing = spots.filter((s) => !claimed.has(s.id));
+  return {
+    shown: missing.slice(0, limit),
+    more: Math.max(0, missing.length - limit),
+  };
+}

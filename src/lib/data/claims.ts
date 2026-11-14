@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { collectionProgress } from "@/domain/claims";
+import { collectionProgress, missingSpots } from "@/domain/claims";
 import { resolvePublishedSpot } from "@/domain/spots";
 import type { Supabase } from "@/lib/supabase/server";
 
@@ -94,7 +94,8 @@ export async function listEventVisitors(supabase: Supabase, eventId: string) {
 
 /**
  * The visitor's progress in one event: medals and points over its active
- * spots. What the celebration needs, without reading the whole event.
+ * spots, and the first stands they still miss. What the celebration needs,
+ * without reading the whole event.
  */
 export async function getMyProgress(
   supabase: Supabase,
@@ -104,16 +105,24 @@ export async function getMyProgress(
   const [spots, mine] = await Promise.all([
     supabase
       .from("event_spots")
-      .select("id, points")
+      .select("id, code, points, name_override, description_override, snapshot")
       .eq("event_id", eventId)
-      .eq("is_active", true),
+      .eq("is_active", true)
+      .order("sort_order")
+      .order("code"),
     listMyClaims(supabase, eventId, userId),
   ]);
   if (spots.error) throw spots.error;
-  return collectionProgress(
-    spots.data,
-    mine.map((c) => c.event_spot_id),
-  );
+  const claimed = mine.map((c) => c.event_spot_id);
+  // A spot whose snapshot can't be read is left out of the names, not of the count.
+  const named = spots.data.flatMap((s) => {
+    const shown = resolvePublishedSpot(s);
+    return shown ? [{ id: s.id, code: s.code, name: shown.name }] : [];
+  });
+  return {
+    ...collectionProgress(spots.data, claimed),
+    missing: missingSpots(named, claimed),
+  };
 }
 
 /**
