@@ -79,6 +79,15 @@ insert into public.event_spots (id, event_id, organization_id, spot_id, code, bo
   ('00000000-0000-4000-8005-000000000005', '00000000-0000-4000-8004-000000000002', '00000000-0000-4000-8001-000000000001', '00000000-0000-4000-8003-000000000004', 'B02', null, 1),
   ('00000000-0000-4000-8005-000000000006', '00000000-0000-4000-8004-000000000003', '00000000-0000-4000-8001-000000000001', '00000000-0000-4000-8003-000000000004', 'C01', null, 0);
 
+-- Perks of the live event: a visible one and a surprise.
+update public.event_spots
+set perk = '10 % de descuento en tu primer café', perk_hidden = false
+where id = '00000000-0000-4000-8005-000000000001';
+
+update public.event_spots
+set perk = 'Una taza para pintar, de regalo', perk_hidden = true
+where id = '00000000-0000-4000-8005-000000000003';
+
 -- Publish the live and the finished one, freezing the spot snapshots as
 -- publish_event does.
 update public.event_spots es

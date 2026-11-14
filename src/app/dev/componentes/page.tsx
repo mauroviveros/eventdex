@@ -58,6 +58,12 @@ import {
 import { LockedMedal } from "@/components/visitante/LockedMedal";
 import { Medal } from "@/components/visitante/Medal";
 import { MARQUESINA } from "@/components/visitante/marquesina";
+import {
+  PerkBlock,
+  PerkInSheet,
+  PerkSurprise,
+  PerkVoucher,
+} from "@/components/visitante/PerkPlate";
 import { PhaseBadge } from "@/components/visitante/PhaseBadge";
 import {
   PrizeNotice,
@@ -66,6 +72,7 @@ import {
 } from "@/components/visitante/Prizes";
 import { Progress } from "@/components/visitante/Progress";
 import { ShareCardButton } from "@/components/visitante/ShareCardButton";
+import { SpotDirectory } from "@/components/visitante/SpotDirectory";
 import { VisitorCard } from "@/components/visitante/VisitorCard";
 import { SignInLink, VisitorMenu } from "@/components/visitante/VisitorMenu";
 import banco from "./logos/banco.svg";
@@ -406,6 +413,9 @@ export default function ComponentesPage() {
                   spot={CAFE}
                   outcome={{ kind: "nueva", claimedAt: SAMPLE_CLAIM }}
                   progress={<Progress claimed={6} total={12} />}
+                  perk={
+                    <PerkVoucher perk="10 % de descuento en tu primer café" />
+                  }
                 />
               </Replay>
               <Celebration
@@ -413,6 +423,7 @@ export default function ComponentesPage() {
                 spot={RUEDA}
                 outcome={{ kind: "repetida", claimedAt: SAMPLE_CLAIM }}
                 progress={<Progress claimed={6} total={12} />}
+                perk={<PerkInSheet href="#beneficios" />}
               />
               <Celebration
                 {...CELEBRATION}
@@ -462,6 +473,58 @@ export default function ComponentesPage() {
                 next="/s/demo"
                 failed
                 headingLevel={3}
+              />
+            </div>
+          </Section>
+
+          <Section
+            title="Beneficios"
+            note="Lo que da cada stand. PerkVoucher: el cupón de la celebración, solo con medalla nueva. PerkBlock: la ficha del stand (sin la medalla es una promesa). PerkSurprise: un beneficio sorpresa antes de la medalla. SpotDirectory: la grilla de la portada, con la etiqueta en el marco y la ficha al tocar."
+          >
+            <div className="grid items-start gap-10">
+              <div className="grid w-full max-w-sm gap-4">
+                <PerkVoucher perk="10 % de descuento en tu primer café" />
+                <PerkBlock perk="10 % de descuento en tu primer café" claimed />
+                <PerkBlock
+                  perk="10 % de descuento en tu primer café"
+                  claimed={false}
+                />
+                <PerkSurprise />
+              </div>
+              <SpotDirectory
+                claimedIds={["1"]}
+                spots={[
+                  {
+                    id: "1",
+                    name: "Café de la Esquina",
+                    code: "A01",
+                    type: "stand",
+                    description: "Café de especialidad y medialunas.",
+                    booth: "Pabellón 1",
+                    perk: "10 % de descuento en tu primer café",
+                    surprise: false,
+                  },
+                  {
+                    id: "2",
+                    name: "Taller de cerámica",
+                    code: "A02",
+                    type: "stand",
+                    description: "Modelá tu propia taza.",
+                    booth: "Pabellón 2",
+                    perk: null,
+                    surprise: true,
+                  },
+                  {
+                    id: "3",
+                    name: "Rueda gigante",
+                    code: "A03",
+                    type: "attraction",
+                    description: null,
+                    booth: null,
+                    perk: null,
+                    surprise: false,
+                  },
+                ]}
               />
             </div>
           </Section>

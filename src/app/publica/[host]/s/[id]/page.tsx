@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { Celebration } from "@/components/visitante/Celebration";
 import { LockedMedal } from "@/components/visitante/LockedMedal";
 import { MissingSpots } from "@/components/visitante/MissingSpots";
+import { PerkInSheet, PerkVoucher } from "@/components/visitante/PerkPlate";
 import { hasPrizes, PrizeNotice } from "@/components/visitante/Prizes";
 import { Progress } from "@/components/visitante/Progress";
 import { claimSpot } from "@/lib/claims";
@@ -111,8 +112,20 @@ async function Claim({
       timeZone={event.timezone}
       eventHref={`/eventos/${event.slug}`}
       progress={progress}
+      perk={perkFor(outcome.kind, spot.perk, `/eventos/${event.slug}#medallas`)}
     />
   );
+}
+
+/**
+ * The coupon only with a new medal (a surprise is revealed here, now that it is
+ * theirs); with one already held, a pointer to the stand's sheet instead.
+ */
+function perkFor(kind: string, perk: string | null, sheetHref: string) {
+  if (!perk) return null;
+  if (kind === "nueva") return <PerkVoucher perk={perk} />;
+  if (kind === "repetida") return <PerkInSheet href={sheetHref} />;
+  return null;
 }
 
 /** While the medal is claimed: the celebration's panel, still empty. */

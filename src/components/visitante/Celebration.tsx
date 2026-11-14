@@ -17,6 +17,8 @@ type Props = {
   eventHref: string;
   /** Progress block shown under a new or repeated medal. */
   progress?: ReactNode;
+  /** The stand's perk: the coupon with a new medal, a pointer to its sheet with a repeated one. */
+  perk?: ReactNode;
   /** 1 on /s/[id]; lower where it sits under other headings (the catalog). */
   headingLevel?: 1 | 2 | 3;
 };
@@ -36,6 +38,7 @@ export function Celebration({
   timeZone,
   eventHref,
   progress,
+  perk,
   headingLevel = 1,
 }: Props) {
   const copy = copyFor(
@@ -68,6 +71,9 @@ export function Celebration({
         </p>
         <p className="text-base">{copy.body}</p>
       </div>
+      {perk && (outcome.kind === "nueva" || outcome.kind === "repetida") && (
+        <div className="w-full">{perk}</div>
+      )}
       {progress &&
         (outcome.kind === "nueva" || outcome.kind === "repetida") && (
           <div className="w-full border-t-2 border-lcd-3 pt-5 text-left">

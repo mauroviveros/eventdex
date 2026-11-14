@@ -3,16 +3,17 @@ import { cache, Suspense } from "react";
 import { ClockIcon } from "@/components/pixel/ClockIcon";
 import { buttonClass } from "@/components/ui/Button";
 import { Countdown } from "@/components/visitante/Countdown";
-import { MedalGrid } from "@/components/visitante/MedalGrid";
 import { PrizesSection } from "@/components/visitante/Prizes";
+import { SpotDirectory } from "@/components/visitante/SpotDirectory";
 import { collectionProgress } from "@/domain/claims";
 import {
   countdownState,
   formatEventDates,
   formatScheduleTimes,
 } from "@/domain/events";
+import { shownPerk } from "@/domain/spots";
 import { listMyClaims } from "@/lib/data/claims";
-import { coverUrl } from "@/lib/data/organizations";
+import { coverUrl, spotLogoUrl } from "@/lib/data/organizations";
 import type { getActiveEvent } from "@/lib/data/public";
 import { listEventPrizes } from "@/lib/data/raffles";
 import { getVisitorAccount } from "@/lib/data/viewer";
@@ -279,7 +280,20 @@ async function Medals({ event }: { event: PublicEvent }) {
           fecha.
         </p>
       ) : (
-        <MedalGrid spots={event.spots} claimed={claimed} />
+        <SpotDirectory
+          claimedIds={[...claimed]}
+          spots={event.spots.map((s) => ({
+            id: s.id,
+            name: s.name,
+            code: s.code,
+            type: s.type,
+            logo: spotLogoUrl(s.logoPath),
+            description: s.description,
+            booth: s.booth,
+            // A surprise perk's text never leaves the server before the medal.
+            ...shownPerk(s, claimed.has(s.id)),
+          }))}
+        />
       )}
     </section>
   );

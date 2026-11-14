@@ -79,6 +79,8 @@ type EventSpot = {
   id: string;
   code: string;
   booth: string | null;
+  perk: string | null;
+  perk_hidden: boolean;
   points: number;
   is_active: boolean;
   name_override: string | null;
@@ -153,6 +155,20 @@ export function EditEventSpotForm({
         hint="Opcional."
         error={fields.descriptionOverride}
       />
+      <Field
+        label="Beneficio"
+        name="perk"
+        defaultValue={v("perk", spot.perk)}
+        placeholder="10 % de descuento en tu primer café"
+        hint="Opcional. Lo que el stand da a quien escanea su QR: se lo muestra al visitante en la medalla nueva."
+        error={fields.perk}
+      />
+      <Label className="min-h-11 font-sans text-base">
+        <Checkbox name="perkHidden" defaultChecked={spot.perk_hidden} />
+        <span>
+          Beneficio sorpresa: el visitante lo descubre al sumar la medalla.
+        </span>
+      </Label>
       <Label className="min-h-11 font-sans text-base">
         <Checkbox name="isActive" defaultChecked={spot.is_active} />
         <span>

@@ -797,11 +797,15 @@ opcional; el panel del expositor sigue ⏸. Branch `feat/beneficios`.
    - **Comprobante (celebración):** una placa punteada «Tu beneficio» (A, el cupón), solo
      con la medalla nueva: si ya la tenía no se vuelve a mostrar. El canje no se
      registra; el beneficio sigue a la vista en la ficha.
-4. **Vista.** Tocar una medalla abre la ficha del stand (descripción de `spots` y su
-   beneficio). La celebración muestra el beneficio como comprobante para mostrarle al
-   stand. Un directorio de stands en la portada. Campo en la pestaña Spots del panel.
-   *Listo cuando* un beneficio cargado en el panel aparece en la ficha y al escanear
-   (e2e).
+4. ✅ **Vista.** Tocar una medalla abre la ficha del stand (`SpotDirectory`: nombre,
+   código y puesto, beneficio, descripción y si la medalla ya se tiene). La celebración
+   muestra el beneficio como cupón (`PerkVoucher`) solo con la medalla nueva; con una
+   ya conseguida no se repite y manda a la ficha. El beneficio sorpresa muestra una
+   etiqueta y su texto no sale del servidor hasta tener la medalla (el e2e lo
+   comprueba en el HTML). Campo «Beneficio» y casilla «sorpresa» en la hoja de editar
+   del spot del evento. La semilla trae un beneficio visible y uno sorpresa.
+   *Listo cuando* un beneficio cargado en el panel aparece en la ficha y al escanear:
+   `e2e/beneficios.spec.ts`. Los componentes están en `/dev/componentes` («Beneficios»).
 5. **Auditoría.** `/code-review` y `/accessibility`.
 
 ## R21 · La portada como cara del evento
