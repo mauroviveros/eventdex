@@ -8,6 +8,7 @@
 export type HistoryEdition = {
   id: string;
   title: string;
+  editionLabel: string | null;
   /** First schedule's start. */
   startsAt: string;
   came: boolean;

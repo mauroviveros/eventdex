@@ -879,7 +879,14 @@ esa organización. Sin cambios en la base. Branch `feat/mi-historial`.
    `title` (un `shortcut:` en el código); las series de verdad siguen ⏸. Hecho: `src/domain/history.ts` (`buildHistory`: ediciones jugadas, totales,
    desde cuándo, «3 de 4» por título y cuatro sellos: primera edición, tres seguidas,
    colección completa y ganador) y `getMyHistory` en `src/lib/data/history.ts`.
-2. **Diseño.** El historial y los sellos: alternativas con `/impeccable`.
+2. ✅ **Diseño.** El historial y los sellos: alternativas con `/impeccable`.
+   Elegida la B (sellos primero) con la frase de totales de la C: los cuatro sellos en
+   grilla, los ganados llenos y los que faltan con candado y cómo conseguirlos; debajo
+   «Jugaste N eventos, juntaste N medallas y ganaste N sorteos. Venís desde …» y la lista
+   de ediciones. Plegado, con «N eventos · N medallas» en el resumen. Los íconos son los
+   del set pixel (`eventos`, `calendario`, `spots`, `trofeo`, `candado`); si se quieren
+   propios, se dibujan en el bloque 3. Las series de una sola edición no se muestran.
+   Las alternativas (`HistoryAlternatives.tsx`, `?alt=`, `?demo=`) se borran en el bloque 3.
 3. **Vista.** «Tu historial» plegado en `/mis-medallas`, con estados vacío, de carga y
    de error. RUTAS al día.
    *Listo cuando* un visitante con varias ediciones ve su historial y sus sellos con
