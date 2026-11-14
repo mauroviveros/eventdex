@@ -728,8 +728,11 @@ el caso es la frase. Branch `feat/premios`.
    públicas solo con ganadores publicados. El equipo puede cambiar descripción e
    imagen, y nada más: el título y el mínimo quedan fijos porque ya pueden tener
    extracciones hechas con ellos. pgTAP (`15_raffle_prizes`, `07_raffles` al día) y tipos.
-2. **Backend.** La regla de la tabla en `src/domain/` como función pura, con tests de
-   cada caso. Las acciones del panel guardan descripción e imagen.
+2. ✅ **Backend.** `prizeLadder` en `src/domain/prizes.ts`: función pura con la frase
+   de cada caso, la escalera ordenada, el próximo premio y los sorteos imposibles
+   (mínimo mayor que los stands), con tests. `updateRafflePrize` guarda descripción e
+   imagen (mismo manejo de archivos que el banner) y `listEventPrizes` es la lectura
+   pública, sin extracciones.
 3. **Diseño.** La sección Premios, el aviso en la celebración y el progreso en Mis
    medallas: alternativas con `/impeccable`.
 4. **Vista.** Premios en la portada; «te faltan N para X» en la celebración, con los

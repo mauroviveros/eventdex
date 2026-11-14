@@ -1,9 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { fakeClient, inserted } from "./fake-supabase";
 import {
   createRaffle,
   drawRaffle,
   publishRaffleWinners,
+  updateRafflePrize,
   voidRaffleDraw,
 } from "./raffles";
 
@@ -126,5 +127,112 @@ describe("publishRaffleWinners", () => {
       ok: false,
       error: "Todavía no hay ganadores para publicar.",
     });
+  });
+});
+
+describe("updateRafflePrize", () => {
+  const ORG = "0000000a-0000-4000-8000-000000000001";
+  const ref = {
+    organizationId: ORG,
+    raffleId: "0000000a-0000-4000-8000-000000000002",
+  };
+  const png = () => new File(["x"], "premio.png", { type: "image/png" });
+
+  function withStorage(...results: { data: unknown; error: unknown }[]) {
+    const { client, calls } = fakeClient(...results);
+    const upload = vi.fn(async (_path: string) => ({ error: null }));
+    const remove = vi.fn(async () => ({ error: null }));
+    return {
+      client: {
+        ...(client as object),
+        storage: { from: () => ({ upload, remove }) },
+      } as never,
+      calls,
+      upload,
+      remove,
+    };
+  }
+
+  it("saves the description and leaves the image alone when none comes", async () => {
+    const { client, calls, upload, remove } = withStorage(
+      { data: { image_path: `${ORG}/old.png` }, error: null },
+      { data: [{ id: ref.raffleId }], error: null },
+    );
+    const result = await updateRafflePrize(client, {
+      ...ref,
+      description: " Rodado 29 ",
+      image: new File([], "", { type: "application/octet-stream" }),
+    });
+    expect(result).toEqual({ ok: true, data: null });
+    expect(calls.find((c) => c.method === "update")?.args[0]).toEqual({
+      description: "Rodado 29",
+      image_path: undefined,
+    });
+    expect(upload).not.toHaveBeenCalled();
+    expect(remove).not.toHaveBeenCalled();
+  });
+
+  it("uploads under the org folder and deletes the previous file", async () => {
+    const { client, upload, remove } = withStorage(
+      { data: { image_path: `${ORG}/old.png` }, error: null },
+      { data: [{ id: ref.raffleId }], error: null },
+    );
+    const result = await updateRafflePrize(client, { ...ref, image: png() });
+    expect(result.ok).toBe(true);
+    expect(upload.mock.calls[0]?.[0]).toMatch(new RegExp(`^${ORG}/.+\\.png$`));
+    expect(remove).toHaveBeenCalledWith([`${ORG}/old.png`]);
+  });
+
+  it("removes the image on request", async () => {
+    const { client, calls, remove } = withStorage(
+      { data: { image_path: `${ORG}/old.png` }, error: null },
+      { data: [{ id: ref.raffleId }], error: null },
+    );
+    await updateRafflePrize(client, { ...ref, removeImage: "on" });
+    expect(calls.find((c) => c.method === "update")?.args[0]).toMatchObject({
+      image_path: null,
+    });
+    expect(remove).toHaveBeenCalledWith([`${ORG}/old.png`]);
+  });
+
+  it("deletes the new file if the raffle can't point to it", async () => {
+    const { client, upload, remove } = withStorage(
+      { data: { image_path: null }, error: null },
+      { data: [], error: null },
+    );
+    const result = await updateRafflePrize(client, { ...ref, image: png() });
+    expect(result.ok).toBe(false);
+    expect(remove).toHaveBeenCalledWith([upload.mock.calls[0]?.[0]]);
+  });
+
+  it("uploads nothing for a raffle of another org", async () => {
+    const { client, upload } = withStorage({ data: null, error: null });
+    const result = await updateRafflePrize(client, { ...ref, image: png() });
+    expect(result.ok).toBe(false);
+    expect(upload).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["an SVG", new File(["x"], "a.svg", { type: "image/svg+xml" })],
+    [
+      "a file over 1,5 MB",
+      new File([new Uint8Array(1_572_865)], "a.png", { type: "image/png" }),
+    ],
+  ])("rejects %s before uploading", async (_label, image) => {
+    const { client, upload } = withStorage();
+    const result = await updateRafflePrize(client, { ...ref, image });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.fieldErrors?.image).toBeTruthy();
+    expect(upload).not.toHaveBeenCalled();
+  });
+
+  it("rejects a description over 500 characters", async () => {
+    const { client } = withStorage();
+    const result = await updateRafflePrize(client, {
+      ...ref,
+      description: "a".repeat(501),
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.fieldErrors?.description).toBeTruthy();
   });
 });

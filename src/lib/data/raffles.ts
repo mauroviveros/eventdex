@@ -1,5 +1,6 @@
 import { chunked, publicNameOf } from "@/domain/raffles";
 import { visitorName } from "@/lib/data/claims";
+import { prizeImageUrl } from "@/lib/data/organizations";
 import type { Supabase } from "@/lib/supabase/server";
 
 /**
@@ -10,7 +11,7 @@ export async function listEventRaffles(supabase: Supabase, eventId: string) {
   const { data, error } = await supabase
     .from("raffles")
     .select(
-      `id, title, min_claims, winners_published_at,
+      `id, title, description, image_path, min_claims, winners_published_at,
        draws:raffle_draws (id, draw_number, winner_name, eligible_count, drawn_at,
                            voided_at, void_reason,
                            winner:profiles!raffle_draws_winner_user_id_fkey (full_name, display_name, email))`,
@@ -44,6 +45,29 @@ export async function listEventRaffles(supabase: Supabase, eventId: string) {
     }),
   );
 }
+
+/**
+ * The prizes of an event for whoever looks at it, with or without a session:
+ * no draws, no winners. RLS only lets through the raffles of a published event.
+ */
+export async function listEventPrizes(supabase: Supabase, eventId: string) {
+  const { data, error } = await supabase
+    .from("raffles")
+    .select("id, title, description, image_path, min_claims")
+    .eq("event_id", eventId)
+    .order("min_claims")
+    .order("title");
+  if (error) throw error;
+  return data.map((r) => ({
+    id: r.id,
+    title: r.title,
+    description: r.description,
+    imageUrl: prizeImageUrl(r.image_path),
+    minClaims: r.min_claims,
+  }));
+}
+
+export type EventPrize = Awaited<ReturnType<typeof listEventPrizes>>[number];
 
 export type EventRaffle = Awaited<ReturnType<typeof listEventRaffles>>[number];
 

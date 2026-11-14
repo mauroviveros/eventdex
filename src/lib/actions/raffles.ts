@@ -7,11 +7,12 @@ import {
   drawRaffle,
   publishRaffleWinners,
   type StageWinner,
+  updateRafflePrize,
   voidRaffleDraw,
 } from "@/lib/raffles";
 import type { ActionResult } from "@/lib/results";
 import { createClient } from "@/lib/supabase/server";
-import { type FormState, runFormWrite } from "./form";
+import { type FormState, runFormWrite, takeLogo } from "./form";
 
 /**
  * Draws from the stage screen, which needs the winner back to land on it (the
@@ -61,6 +62,18 @@ export async function publishRaffleWinnersAction(
 ): Promise<FormState> {
   const r = await runFormWrite(formData, (supabase, v) =>
     publishRaffleWinners(supabase, v.raffleId),
+  );
+  return r.ok ? { ok: true } : r.state;
+}
+
+export async function updateRafflePrizeAction(
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  // The file input is named "logo" by the shared upload field; see takeLogo.
+  const image = takeLogo(formData);
+  const r = await runFormWrite(formData, (supabase, v) =>
+    updateRafflePrize(supabase, { ...v, image }),
   );
   return r.ok ? { ok: true } : r.state;
 }
