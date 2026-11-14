@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import { AlertIcon } from "@/components/pixel/AlertIcon";
 import { EmailSignIn } from "@/components/ui/EmailSignIn";
 import { GoogleSignIn } from "@/components/ui/GoogleSignIn";
+import { SignInError } from "@/components/ui/SignInError";
 
 type Props = {
   /** Where to go after signing in (already checked with safeNext). */
@@ -26,14 +26,7 @@ export function SignInCard({ next, failed, title, children }: Props) {
         <p>{children}</p>
       </div>
 
-      {failed && (
-        <p role="alert" className="flex items-start gap-2 text-danger">
-          <span className="mt-1">
-            <AlertIcon />
-          </span>
-          No pudimos completar el ingreso. Probá de nuevo.
-        </p>
-      )}
+      {failed && <SignInError />}
 
       <GoogleSignIn next={next} className="w-full">
         Ingresar con Google

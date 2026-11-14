@@ -1,8 +1,8 @@
-import { AlertIcon } from "@/components/pixel/AlertIcon";
 import { PixelIcon } from "@/components/pixel/icons";
 import { Sprite } from "@/components/pixel/Sprite";
 import { EmailSignIn } from "@/components/ui/EmailSignIn";
 import { GoogleSignIn } from "@/components/ui/GoogleSignIn";
+import { SignInError } from "@/components/ui/SignInError";
 import type { SpotType } from "@/domain/spots";
 
 type Props = {
@@ -53,13 +53,10 @@ export function LockedMedal({
         <p>Desbloqueala con un toque: entrás con Google y es tuya.</p>
       </div>
       {failed && (
-        <p role="alert" className="flex items-start gap-2 text-danger">
-          <span className="mt-1">
-            <AlertIcon />
-          </span>
+        <SignInError>
           No pudimos completar el ingreso. Probá de nuevo: la medalla te sigue
           esperando.
-        </p>
+        </SignInError>
       )}
       <GoogleSignIn next={next} className="w-full">
         Ingresá con Google para sumarla

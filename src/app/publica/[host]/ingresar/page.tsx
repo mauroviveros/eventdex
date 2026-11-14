@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { AlertIcon } from "@/components/pixel/AlertIcon";
 import { EmailSignIn } from "@/components/ui/EmailSignIn";
 import { GoogleSignIn } from "@/components/ui/GoogleSignIn";
 import { Monogram } from "@/components/ui/Monogram";
+import { SignInError } from "@/components/ui/SignInError";
 import { Logo } from "@/components/visitante/Medal";
 import { cardDetails } from "@/domain/visitorCard";
 import { logoUrl } from "@/lib/data/organizations";
@@ -20,7 +20,6 @@ export const metadata: Metadata = {
 /** Where they are going, from `next`. */
 function titleFor(next: string) {
   if (next.startsWith("/mis-medallas")) return "Ingresá para ver tus medallas";
-  if (next.startsWith("/s/")) return "Ingresá para sumar la medalla";
   return "Ingresá";
 }
 
@@ -38,8 +37,12 @@ export default async function IngresarPage({
   const { org } = await requireHostOrganization(host);
   const next = safeNext(typeof query.next === "string" ? query.next : null);
   const supabase = await createClient();
-  if (await getSessionUser(supabase)) redirect(next);
-  const event = await getActiveEvent(supabase, org.id);
+  // In parallel: the event read is wasted only when a session redirects.
+  const [user, event] = await Promise.all([
+    getSessionUser(supabase),
+    getActiveEvent(supabase, org.id),
+  ]);
+  if (user) redirect(next);
   const details = event && cardDetails(event, new Date());
 
   return (
@@ -76,17 +79,7 @@ export default async function IngresarPage({
           />
           {titleFor(next)}
         </h1>
-        {query.error === "auth" && (
-          <p
-            role="alert"
-            className="flex items-start gap-2 text-left text-danger"
-          >
-            <span className="mt-1">
-              <AlertIcon />
-            </span>
-            No pudimos completar el ingreso. Probá de nuevo.
-          </p>
-        )}
+        {query.error === "auth" && <SignInError />}
         <GoogleSignIn next={next} className="w-full">
           Ingresar con Google
         </GoogleSignIn>

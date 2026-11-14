@@ -637,7 +637,7 @@ ediciones anteriores. Promedio real: de 2 a 3 medallas por persona (ver
 Orden: primero lo que más mueve el escaneo (R18 → R19 → R20), después lo personal
 (R22) y al final la portada grande (R21).
 
-## R18 · Ingreso directo ▶
+## R18 · Ingreso directo ✅
 
 Escanear sin sesión es el camino más importante, y hoy pasa por `/ingresar`. En
 producción solo hay Google, así que esa parada sobra. Branch `feat/ingreso-directo`.
@@ -698,7 +698,12 @@ producción solo hay Google, así que esa parada sobra. Branch `feat/ingreso-dir
 
    *Listo cuando* `/ingresar` toma el diseño elegido y un error al escanear vuelve al QR
    (e2e).
-7. **Auditoría.** `/code-review` y `/accessibility`.
+7. ✅ **Auditoría.** `/code-review` y `/accessibility`. Se arreglaron estas cosas:
+   - Un solo `SignInError` para el aviso del login, que estaba copiado en `SignInCard`, `LockedMedal` y `/ingresar`.
+   - Fuera el título muerto «Ingresá para sumar la medalla» de `/ingresar`: el QR ya no pasa por ahí.
+   - La sesión y el evento de `/ingresar` se leen en paralelo.
+
+   Queda para R23 la línea de la organización, copiada de `VisitorCard`. Accesibilidad sin hallazgos: un solo `h1`, el aviso como `alert`, el foco visible en el botón de Google y contraste de 7:1 o más.
 
 ## R19 · Premios a la vista
 
