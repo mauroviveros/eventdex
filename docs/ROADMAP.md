@@ -962,6 +962,40 @@ mismo archivo que la grilla.
    se lee completo (e2e).
 3. **Auditoría.** `/code-review` y `/accessibility`.
 
+## R25 · La portada, a la vista de buscadores y redes
+
+Hoy la página del evento solo declara título y descripción. Quien comparte el link por
+WhatsApp o Instagram ve una tarjeta pobre, y Google no sabe que es un evento. Branch
+`feat/portada-compartible`. Sin cambios en la base: usa lo que ya carga el staff en R21.
+
+1. **Backend.** Metadatos de la página del evento: Open Graph y Twitter con el banner
+   (o el logo de la org si no hay), título, descripción y URL canónica por dominio; y
+   JSON-LD `Event` (nombre, fechas con zona, lugar, imagen, link de entradas) más
+   `FAQPage` si tiene preguntas. Salen de `getPublicEvent`; un evento sin fecha no emite
+   `Event`. Tests de lo que se arma.
+2. **Vista.** Sin pantalla nueva: se ve en la tarjeta compartida. Se prueba con el
+   validador de resultados enriquecidos y con una vista previa de Open Graph. RUTAS y
+   `robots` al día (un borrador o un evento sin publicar no se indexa).
+   *Listo cuando* el JSON-LD valida sin errores y el link se ve con imagen y título.
+3. **Auditoría.** `/code-review` y `/seo`.
+
+## R26 · Preguntas frecuentes en el orden que el staff quiere
+
+Las preguntas frecuentes (R21) salen en el orden en que se cargaron. El staff necesita
+subir las que más se preguntan. Branch `feat/orden-faq`. Usa `event_faqs.sort_order`, que
+ya existe: puede no necesitar cambios en la base.
+
+1. **Diseño.** `/impeccable shape` de cómo se reordena en la pestaña Página: subir y
+   bajar con botones (sin arrastrar, para el celular y el teclado) frente a arrastrar;
+   dos o tres alternativas sobre la pestaña real y Mauro elige.
+2. **Backend.** Acción para mover una pregunta arriba o abajo, validada con Zod y con
+   RLS; el orden queda estable al cargar una nueva. Tests.
+3. **Vista.** El control elegido en la pestaña Página, con sus estados (primera y última
+   sin su botón, guardando, error). `/dev/componentes` y RUTAS al día.
+   *Listo cuando* se mueve una pregunta y la portada pública la muestra en el nuevo
+   orden (e2e).
+4. **Auditoría.** `/code-review` y `/accessibility`.
+
 ## ⏸ Estacionado
 
 Fuera de esta versión; vuelve solo con una decisión explícita.
