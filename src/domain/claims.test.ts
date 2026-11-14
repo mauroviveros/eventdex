@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { collectionProgress } from "./claims";
+import { collectionProgress, missingSpots } from "./claims";
 
 const spots = [
   { id: "a", points: 1 },
@@ -40,5 +40,34 @@ describe("collectionProgress", () => {
       points: 0,
       maxPoints: 0,
     });
+  });
+});
+
+describe("missingSpots", () => {
+  const spots = ["a", "b", "c", "d", "e"].map((id) => ({ id }));
+
+  it("names the first stands still missing, in order, and counts the rest", () => {
+    expect(missingSpots(spots, ["b"])).toEqual({
+      shown: [{ id: "a" }, { id: "c" }, { id: "d" }],
+      more: 1,
+    });
+  });
+
+  it("names them all when there are few", () => {
+    expect(missingSpots(spots, ["a", "b", "c"])).toEqual({
+      shown: [{ id: "d" }, { id: "e" }],
+      more: 0,
+    });
+  });
+
+  it("has nothing to say once the collection is complete", () => {
+    expect(missingSpots(spots, ["a", "b", "c", "d", "e"])).toEqual({
+      shown: [],
+      more: 0,
+    });
+  });
+
+  it("ignores medals of stands that are not in the list", () => {
+    expect(missingSpots(spots, ["zz"]).more).toBe(2);
   });
 });

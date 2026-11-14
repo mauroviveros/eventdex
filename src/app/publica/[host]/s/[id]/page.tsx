@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { Celebration } from "@/components/visitante/Celebration";
 import { LockedMedal } from "@/components/visitante/LockedMedal";
+import { MissingSpots } from "@/components/visitante/MissingSpots";
 import { hasPrizes, PrizeNotice } from "@/components/visitante/Prizes";
 import { Progress } from "@/components/visitante/Progress";
 import { claimSpot } from "@/lib/claims";
@@ -80,10 +81,19 @@ async function Claim({
     const p = await getMyProgress(supabase, event.id, visitorId);
     const prizes = await listEventPrizes(supabase, event.id);
     // With prizes, the bar carries their cups; without, the plain progress.
-    progress = hasPrizes(prizes, p.medals, p.total) ? (
-      <PrizeNotice prizes={prizes} claimed={p.medals} total={p.total} />
-    ) : (
-      <Progress claimed={p.medals} total={p.total} />
+    progress = (
+      <div className="grid gap-5">
+        {hasPrizes(prizes, p.medals, p.total) ? (
+          <PrizeNotice prizes={prizes} claimed={p.medals} total={p.total} />
+        ) : (
+          <Progress claimed={p.medals} total={p.total} />
+        )}
+        <MissingSpots
+          shown={p.missing.shown}
+          more={p.missing.more}
+          href={`/eventos/${event.slug}#medallas`}
+        />
+      </div>
     );
   }
 

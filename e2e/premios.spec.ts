@@ -51,6 +51,10 @@ test("the visitor sees what is won and how far they are, from the event to Mis m
     await expect(
       raffle.getByRole("img", { name: "Imagen actual del premio" }),
     ).toBeVisible();
+    // The toast sits over the next form on a phone: let it go before clicking under it.
+    await expect(staff.getByText("Premio actualizado.")).toBeHidden({
+      timeout: 10_000,
+    });
   });
 
   await test.step("a prize nobody can reach is flagged to staff and hidden from visitors", async () => {
@@ -87,6 +91,10 @@ test("the visitor sees what is won and how far they are, from the event to Mis m
     await expect(
       page.getByRole("progressbar", { name: "Medallas juntadas" }),
     ).toHaveAttribute("aria-valuetext", "1 de 2 medallas");
+    // And which stand is still to find.
+    await expect(
+      page.getByRole("region", { name: "Stands que te faltan" }),
+    ).toContainText("Rueda gigante");
   });
 
   await test.step("Mis medallas keeps the ladder", async () => {
