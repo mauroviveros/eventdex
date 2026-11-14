@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { Celebration } from "@/components/visitante/Celebration";
+import { LockedMedal } from "@/components/visitante/LockedMedal";
 import { Progress } from "@/components/visitante/Progress";
 import { claimSpot } from "@/lib/claims";
 import { getClaimTarget, getMyProgress } from "@/lib/data/claims";
 import { spotLogoUrl } from "@/lib/data/organizations";
-import { requireVisitor } from "@/lib/data/viewer";
+import { getVisitorAccount } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
 import { requireHostOrganization } from "../../organization";
 
@@ -30,7 +31,15 @@ export default async function ClaimPage({
 
   const target = await getClaimTarget(supabase, org.id, id);
   if (!target) notFound();
-  const visitor = await requireVisitor();
+  const visitor = await getVisitorAccount();
+  if (!visitor) {
+    const { name, code, type } = target.spot;
+    return (
+      <main className="mx-auto grid w-full max-w-3xl justify-items-center px-4 py-10 sm:px-6">
+        <LockedMedal spot={{ name, code, type }} next={`/s/${id}`} />
+      </main>
+    );
+  }
 
   return (
     <main className="mx-auto grid w-full max-w-3xl justify-items-center px-4 py-10 sm:px-6">

@@ -645,7 +645,14 @@ producción solo hay Google, así que esa parada sobra. Branch `feat/ingreso-dir
 1. ✅ **Backend.** `/auth/google?next=…` arranca el OAuth de Google con `next` (la Server
    Action `signInWithGoogle` no sirve para un link). Sin cambios en la base.
    *Listo cuando* la ruta lleva a Google y vuelve a `next`, y `safeNext` la protege.
-2. **Diseño.** La medalla bloqueada del QR sin sesión: alternativas con `/impeccable`.
+2. ✅ **Diseño.** La medalla bloqueada del QR sin sesión: alternativas con `/impeccable`.
+   Hubo tres: A (la celebración en espera), B (candado) y C («¡Bien ahí!», con un
+   «Falta un paso» que parpadea). **Elegida: la B con el título de la C**
+   (`LockedMedal`). Arriba «¡Bien ahí!», porque encontrar el stand ya es un logro. Abajo,
+   la medalla en silueta con un candado pixelado colgado de la esquina. Siempre se
+   muestra el sprite del tipo, nunca el logo: el logo es lo que revela la celebración
+   al volver. Debajo, el nombre del spot a 40 px y el código chico en secundario: el
+   código no le dice nada al visitante.
 3. **Vista.** En producción, `/s/[id]` sin sesión muestra la medalla del stand bloqueada
    y un solo botón «Ingresá con Google para sumarla»; no redirige a `/ingresar`. En
    desarrollo sigue el link por mail. `/ingresar` queda para desarrollo y para el error
