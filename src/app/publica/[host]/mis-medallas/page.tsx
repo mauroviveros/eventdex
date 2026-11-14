@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { buttonClass } from "@/components/ui/Button";
+import {
+  History,
+  HistoryFailed,
+  HistoryLoading,
+} from "@/components/visitante/History";
 import type { Medal } from "@/components/visitante/Medal";
 import { MedalGrid } from "@/components/visitante/MedalGrid";
 import { PrizesLadder } from "@/components/visitante/Prizes";
@@ -10,6 +16,7 @@ import { VisitorCard } from "@/components/visitante/VisitorCard";
 import { collectionProgress } from "@/domain/claims";
 import { eventPhase } from "@/domain/events";
 import { listMyClaims, listMyEvents } from "@/lib/data/claims";
+import { getMyHistory } from "@/lib/data/history";
 import { getActiveEvent, getPublicEvent } from "@/lib/data/public";
 import { listEventPrizes } from "@/lib/data/raffles";
 import { requireVisitor } from "@/lib/data/viewer";
@@ -121,6 +128,9 @@ export default async function MisMedallasPage({
               eventPhase(event.status, event.schedules) === "finalizado"
             }
           />
+          <Suspense fallback={<HistoryLoading />}>
+            <MyHistory organizationId={org.id} userId={visitor.id} />
+          </Suspense>
           <Link
             href={`/eventos/${event.slug}`}
             className={buttonClass(
@@ -170,4 +180,25 @@ function Collection({
       <MedalGrid spots={spots} claimed={claimed} label="Tu colección" />
     </>
   );
+}
+
+/** The visitor's history; if the read fails, only this section says so. */
+async function MyHistory({
+  organizationId,
+  userId,
+}: {
+  organizationId: string;
+  userId: string;
+}) {
+  try {
+    const history = await getMyHistory(
+      await createClient(),
+      organizationId,
+      userId,
+    );
+    return <History history={history} />;
+  } catch (error) {
+    console.error("reading the visitor's history failed", error);
+    return <HistoryFailed />;
+  }
 }

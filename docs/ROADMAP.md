@@ -887,10 +887,13 @@ esa organización. Sin cambios en la base. Branch `feat/mi-historial`.
    del set pixel (`eventos`, `calendario`, `spots`, `trofeo`, `candado`); si se quieren
    propios, se dibujan en el bloque 3. Las series de una sola edición no se muestran.
    Las alternativas (`HistoryAlternatives.tsx`, `?alt=`, `?demo=`) se borran en el bloque 3.
-3. **Vista.** «Tu historial» plegado en `/mis-medallas`, con estados vacío, de carga y
+3. ✅ **Vista.** «Tu historial» plegado en `/mis-medallas`, con estados vacío, de carga y
    de error. RUTAS al día.
    *Listo cuando* un visitante con varias ediciones ve su historial y sus sellos con
    datos reales (e2e).
+   Hecho: `History` en `src/components/visitante/History.tsx` (con `HistoryLoading` y
+   `HistoryFailed`), `MyHistory` con `Suspense` en `/mis-medallas`, la sección en
+   `/dev/componentes` y `e2e/historial.spec.ts`. Se borraron las alternativas.
 4. **Auditoría.** `/code-review` y `/accessibility`.
 
 ---

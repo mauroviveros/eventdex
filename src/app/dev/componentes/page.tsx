@@ -60,6 +60,11 @@ import {
   MedalsLoading,
   type PublicEvent,
 } from "@/components/visitante/EventHome";
+import {
+  History,
+  HistoryFailed,
+  HistoryLoading,
+} from "@/components/visitante/History";
 import { LockedMedal } from "@/components/visitante/LockedMedal";
 import { Medal } from "@/components/visitante/Medal";
 import { MARQUESINA } from "@/components/visitante/marquesina";
@@ -87,6 +92,7 @@ import { ShareCardButton } from "@/components/visitante/ShareCardButton";
 import { SpotDirectory } from "@/components/visitante/SpotDirectory";
 import { VisitorCard } from "@/components/visitante/VisitorCard";
 import { SignInLink, VisitorMenu } from "@/components/visitante/VisitorMenu";
+import { buildHistory, type HistoryEdition } from "@/domain/history";
 import banco from "./logos/banco.svg";
 import cafe from "./logos/cafe.svg";
 import ceramica from "./logos/ceramica.svg";
@@ -192,6 +198,45 @@ const SAMPLE = {
     null,
   ),
 };
+
+const sampleEdition = (over: Partial<HistoryEdition>): HistoryEdition => ({
+  id: "e",
+  title: "Expo Primavera",
+  editionLabel: "2026",
+  startsAt: "2026-10-10T12:00:00Z",
+  came: true,
+  medals: 4,
+  total: 7,
+  wins: 0,
+  ...over,
+});
+
+const SAMPLE_HISTORY = buildHistory([
+  sampleEdition({
+    id: "1",
+    editionLabel: "2023",
+    startsAt: "2023-10-14T12:00:00Z",
+    medals: 3,
+    total: 5,
+  }),
+  sampleEdition({
+    id: "2",
+    editionLabel: "2024",
+    startsAt: "2024-10-12T12:00:00Z",
+    came: false,
+    medals: 0,
+    total: 6,
+  }),
+  sampleEdition({
+    id: "3",
+    editionLabel: "2025",
+    startsAt: "2025-10-11T12:00:00Z",
+    medals: 6,
+    total: 6,
+    wins: 1,
+  }),
+  sampleEdition({ id: "4" }),
+]);
 
 export const metadata: Metadata = {
   title: "Componentes · Eventdex",
@@ -542,6 +587,21 @@ export default function ComponentesPage() {
                   },
                 ]}
               />
+            </div>
+          </Section>
+
+          <Section
+            title="Tu historial"
+            note="El historial del visitante en /mis-medallas, plegado bajo su colección. Con varias ediciones (sellos ganados y por ganar), con una sola, sin historial, cargando y con error: el resto de la página sigue en pie."
+          >
+            <div className="grid max-w-3xl gap-6">
+              <History history={SAMPLE_HISTORY} />
+              <History
+                history={buildHistory([sampleEdition({ id: "solo" })])}
+              />
+              <History history={buildHistory([])} />
+              <HistoryLoading />
+              <HistoryFailed />
             </div>
           </Section>
 
