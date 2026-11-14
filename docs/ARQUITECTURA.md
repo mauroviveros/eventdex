@@ -257,7 +257,9 @@ pueda levantar Supabase completo (auth y Mailpit) y la app. Dos proyectos: `mobi
   no se reemplazan ni se borran: el snapshot de un evento publicado puede usarlos.
   `event-covers` guarda el banner de cada evento (`events.cover_path`): hasta 1,5 MiB,
   sin SVG, cualquier miembro de la org sube bajo su carpeta, y al cambiarlo se borra
-  el anterior, porque ningún snapshot lo apunta.
+  el anterior, porque ningún snapshot lo apunta. `event-photos` guarda la galería de
+  la portada (`event_photos.path`, hasta 12 por evento): mismos límites que
+  `event-covers`, y cada foto se borra con su archivo.
 
 ## Corte a producción (hecho el 2026-11-08)
 

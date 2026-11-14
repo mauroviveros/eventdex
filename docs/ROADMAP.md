@@ -821,9 +821,16 @@ fijas que carga el staff, no un armador de páginas, y el orden cambia con la fa
 antes informa, durante juega, después muestra ganadores y la próxima edición. Branch
 `feat/portada-completa`.
 
-1. **DB.** Links del evento (web, Instagram, entradas, mapa), preguntas frecuentes y
+1. ✅ **DB.** Links del evento (web, Instagram, entradas, mapa), preguntas frecuentes y
    galería de fotos (bucket propio, con tamaño máximo). `events.description` se usa tal
-   cual. pgTAP y tipos.
+   cual. pgTAP y tipos. Hecho: `events` suma `website_url`, `instagram_url`,
+   `tickets_url` y `map_url` (solo https, sin espacios, hasta 300); `event_faqs`
+   (pregunta hasta 160, respuesta hasta 600, `sort_order`) y `event_photos` (hasta 12 por
+   evento con un trigger, epígrafe hasta 120, el archivo bajo la carpeta de la org) con
+   el bucket público `event-photos` (1,5 MiB, sin SVG). Lectura pública solo con el
+   evento publicado; escribe la org. Fuera del snapshot y sin copiar al duplicar.
+   *Límite conocido:* el tope de 12 cuenta sin lock (`// shortcut:` en la migración).
+   **Antes del merge: correr `pnpm db:push` (dry-run primero).**
 2. **Backend.** Lecturas públicas y acciones del panel; cifras de ediciones anteriores
    con datos reales (visitantes y medallas).
 3. **Diseño.** `/impeccable shape` de la portada en sus tres fases y alternativas antes
