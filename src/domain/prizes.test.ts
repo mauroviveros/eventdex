@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { prizeLadder } from "./prizes";
+import { MANY_SPOTS, onlyFirstMedal, prizeLadder } from "./prizes";
 
 const bike = { id: "1", title: "Bicicleta", minClaims: 1 };
 const tablet = { id: "2", title: "Tablet", minClaims: 3 };
@@ -31,6 +31,12 @@ describe("prizeLadder", () => {
     const { next } = prizeLadder([tablet], 1, 4);
     expect(next?.phrase).toBe("Te faltan 2 para el sorteo de Tablet");
     expect(next?.missing).toBe(2);
+  });
+
+  it("says it in the singular when one medal is missing", () => {
+    expect(prizeLadder([tablet], 2, 4).next?.phrase).toBe(
+      "Te falta 1 para el sorteo de Tablet",
+    );
   });
 
   it("says the visitor is in once the minimum is reached", () => {
@@ -81,5 +87,27 @@ describe("prizeLadder", () => {
     const list = [trip, bike];
     prizeLadder(list, 0, 6);
     expect(list).toEqual([trip, bike]);
+  });
+});
+
+describe("onlyFirstMedal", () => {
+  it("warns when the only prize asks for one medal and there are many stands", () => {
+    expect(onlyFirstMedal([bike], MANY_SPOTS + 1)).toBe(true);
+  });
+
+  it("does not warn with few stands, where one medal is most of the collection", () => {
+    expect(onlyFirstMedal([bike], MANY_SPOTS)).toBe(false);
+  });
+
+  it("does not warn when some prize asks for more", () => {
+    expect(onlyFirstMedal([bike, tablet], 45)).toBe(false);
+  });
+
+  it("does not warn without raffles", () => {
+    expect(onlyFirstMedal([], 45)).toBe(false);
+  });
+
+  it("ignores prizes nobody can reach", () => {
+    expect(onlyFirstMedal([bike, { ...trip, minClaims: 99 }], 45)).toBe(true);
   });
 });
