@@ -704,8 +704,10 @@ export type Database = {
       raffles: {
         Row: {
           created_at: string;
+          description: string | null;
           event_id: string;
           id: string;
+          image_path: string | null;
           min_claims: number;
           organization_id: string;
           title: string;
@@ -715,8 +717,10 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           created_at?: string;
+          description?: string | null;
           event_id: string;
           id?: string;
+          image_path?: string | null;
           min_claims?: number;
           organization_id: string;
           title: string;
@@ -725,8 +729,10 @@ export type Database = {
         };
         Update: {
           created_at?: string;
+          description?: string | null;
           event_id?: string;
           id?: string;
+          image_path?: string | null;
           min_claims?: number;
           organization_id?: string;
           title?: string;
