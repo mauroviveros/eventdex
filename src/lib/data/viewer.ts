@@ -40,10 +40,10 @@ export async function requireDeveloper() {
   return viewer;
 }
 
-/** To sign in on this host (/ingresar by default), coming back to the page that asked. */
-async function signInAndComeBack(path = "/ingresar"): Promise<never> {
+/** To /ingresar on this host, coming back to the page that asked. */
+async function signInAndComeBack(): Promise<never> {
   const next = (await headers()).get("x-public-path") ?? "/";
-  redirect(`${path}?next=${encodeURIComponent(next)}`);
+  redirect(`/ingresar?next=${encodeURIComponent(next)}`);
 }
 
 /**
@@ -110,11 +110,5 @@ export const getVisitorAccount = cache(async () => {
  * and back. Shares getVisitorAccount with the header: one session read.
  */
 export async function requireVisitor() {
-  return (
-    (await getVisitorAccount()) ??
-    // Production only has Google, so straight to it; /ingresar adds the mail link.
-    signInAndComeBack(
-      process.env.NODE_ENV === "production" ? "/auth/google" : "/ingresar",
-    )
-  );
+  return (await getVisitorAccount()) ?? signInAndComeBack();
 }
