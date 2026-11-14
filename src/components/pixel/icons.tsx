@@ -138,6 +138,17 @@ export const ICONS = {
     "...##...",
     "...##...",
   ],
+  // A medal still to unlock (the scan without a session).
+  candado: [
+    "..####..",
+    ".#....#.",
+    ".#....#.",
+    "########",
+    "###..###",
+    "###..###",
+    "########",
+    "########",
+  ],
   // The sidebar's own control.
   panel: [
     "########",
