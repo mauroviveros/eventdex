@@ -2,7 +2,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(36);
+select plan(37);
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000009a1', 'dos@raffles.local'),
@@ -70,9 +70,17 @@ select throws_ok(
   '42501', null, 'anon cannot draw'
 );
 
+select results_eq(
+  $$ select id from public.raffles where organization_id = '00000000-0000-0000-0000-000000000901' order by min_claims, title $$,
+  $$ values ('00000000-0000-0000-0000-0000000009f1'::uuid),
+            ('00000000-0000-0000-0000-0000000009f2'::uuid),
+            ('00000000-0000-0000-0000-0000000009f4'::uuid) $$,
+  'anon sees the raffles of a published event, not those of a draft'
+);
+
 select is_empty(
-  $$ select id from public.raffles $$,
-  'anon sees no raffle until its winners are published'
+  $$ select id from public.raffle_draws where organization_id = '00000000-0000-0000-0000-000000000901' $$,
+  'anon sees no draw until the winners are published'
 );
 
 reset role;
@@ -95,10 +103,12 @@ select throws_ok(
   '42501', null, 'a visitor cannot create a raffle'
 );
 
-select is_empty(
-  $$ select id from public.raffles $$,
-  'a visitor sees no unpublished raffle'
+select results_eq(
+  $$ select count(*)::int from public.raffles where organization_id = '00000000-0000-0000-0000-000000000901' $$,
+  $$ values (3) $$,
+  'a visitor sees the raffles of a published event, not those of a draft'
 );
+
 
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000009b2","role":"authenticated"}', true);
 

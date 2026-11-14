@@ -722,9 +722,12 @@ el caso es la frase. Branch `feat/premios`.
 | Mínimo mayor que los stands | No se muestra; el panel avisa al staff |
 | Ganadores publicados | Los ganadores, como hoy |
 
-1. **DB.** `raffles` suma `description` y una imagen opcional del premio (bucket
-   propio, como `event-covers`). Lectura pública de los sorteos de un evento publicado,
-   sin sus extracciones. pgTAP y tipos.
+1. ✅ **DB.** `raffles` suma `description` (hasta 500) y `image_path` (bucket
+   `raffle-images`, como `event-covers`, sin SVG, con el chequeo de que sea de la org).
+   Lectura pública de los sorteos de un evento publicado; las extracciones siguen
+   públicas solo con ganadores publicados. El equipo puede cambiar descripción e
+   imagen, y nada más: el título y el mínimo quedan fijos porque ya pueden tener
+   extracciones hechas con ellos. pgTAP (`15_raffle_prizes`, `07_raffles` al día) y tipos.
 2. **Backend.** La regla de la tabla en `src/domain/` como función pura, con tests de
    cada caso. Las acciones del panel guardan descripción e imagen.
 3. **Diseño.** La sección Premios, el aviso en la celebración y el progreso en Mis
