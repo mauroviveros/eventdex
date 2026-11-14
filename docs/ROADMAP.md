@@ -11,7 +11,12 @@
   Una rebanada es una branch `feat/...`.
 - Adentro, **bloques** numerados que se hacen de a uno y en orden:
   **DB** (tablas, permisos, tests) → **Backend** (capa de datos, acciones,
-  validación) → **Vista** → **Auditoría**.
+  validación) → **Diseño** (si la rebanada tiene vista nueva o rediseñada) →
+  **Vista** → **Auditoría**.
+- **Diseño** se decide antes del código: `/impeccable shape` arma el brief, después
+  dos o tres alternativas con `/impeccable` sobre la página real y con datos locales,
+  Mauro elige una (o una mezcla) y recién ahí se escribe la vista. La elegida y el
+  porqué quedan anotados en el bloque.
 - Cada bloque cierra con un *Listo cuando*: algo concreto que se puede verificar.
 - Ni pantallas con datos inventados ni backend sin una vista que lo use.
 
@@ -617,6 +622,125 @@ el nombre que devolvió. Branch `feat/sorteo-escenario`.
    el ganador y el confeti en pantalla, en claro y oscuro, a 375 y 1280 px (el canvas del
    confeti va dentro del `main` y oculto a los lectores); botón de 56 px; sin probar con
    lector de pantalla real.
+
+---
+
+## App pública: que el visitante quiera escanear
+
+El organizador lo dijo así: la app está buena, pero cada stand tiene que perseguir al
+visitante para que escanee. Hoy el visitante no sabe qué gana (el mínimo de cada
+sorteo está oculto hasta publicar ganadores), el stand no tiene nada que darle por
+escanear, la portada muestra poco del evento y Mis medallas no tiene memoria de las
+ediciones anteriores. Promedio real: de 2 a 3 medallas por persona (ver
+[PRODUCT](./PRODUCT.md#evidence-on-hand)).
+
+Orden: primero lo que más mueve el escaneo (R18 → R19 → R20), después lo personal
+(R22) y al final la portada grande (R21).
+
+## R18 · Ingreso directo
+
+Escanear sin sesión es el camino más importante, y hoy pasa por `/ingresar`. En
+producción solo hay Google, así que esa parada sobra. Branch `feat/ingreso-directo`.
+
+1. **Backend.** Una ruta GET que arranca el OAuth de Google con `next` (la Server
+   Action `signInWithGoogle` no sirve para un link). Sin cambios en la base.
+   *Listo cuando* la ruta lleva a Google y vuelve a `next`, y `safeNext` la protege.
+2. **Diseño.** La medalla bloqueada del QR sin sesión: alternativas con `/impeccable`.
+3. **Vista.** En producción, `/s/[id]` sin sesión muestra la medalla del stand bloqueada
+   y un solo botón «Ingresá con Google para sumarla»; no redirige a `/ingresar`. En
+   desarrollo sigue el link por mail. `/ingresar` queda para desarrollo y para el error
+   del callback. RUTAS al día.
+   *Listo cuando* escanear sin sesión es un toque hasta Google y la vuelta suma la
+   medalla (e2e).
+4. **Auditoría.** `/code-review` y `/accessibility`.
+
+## R19 · Premios a la vista
+
+El visitante ve qué se gana y cuánto le falta. Revierte lo decidido en R5/R6 (el
+mínimo oculto): el mínimo se muestra siempre que haya sorteos, y lo que cambia según
+el caso es la frase. Branch `feat/premios`.
+
+| Caso | Frase |
+|---|---|
+| Mínimo 1, sin medallas | «Con tu primera medalla ya entrás al sorteo de X» |
+| Mínimo 2 o más | «Juntá N medallas y entrás al sorteo de X» |
+| Con medallas, sin llegar | «Te faltan N para el sorteo de X» |
+| Llegó | «Ya estás en el sorteo de X» (y el próximo premio, si hay uno más alto) |
+| Varios premios | Escalera de menor a mayor, con el próximo resaltado |
+| Sin sorteos | No se muestra |
+| Mínimo mayor que los stands | No se muestra; el panel avisa al staff |
+| Ganadores publicados | Los ganadores, como hoy |
+
+1. **DB.** `raffles` suma `description` y una imagen opcional del premio (bucket
+   propio, como `event-covers`). Lectura pública de los sorteos de un evento publicado,
+   sin sus extracciones. pgTAP y tipos.
+2. **Backend.** La regla de la tabla en `src/domain/` como función pura, con tests de
+   cada caso. Las acciones del panel guardan descripción e imagen.
+3. **Diseño.** La sección Premios, el aviso en la celebración y el progreso en Mis
+   medallas: alternativas con `/impeccable`.
+4. **Vista.** Premios en la portada; «te faltan N para X» en la celebración, con los
+   stands que faltan; el progreso a cada premio en Mis medallas; descripción e imagen
+   en la pestaña Sorteo del panel, con el aviso del mínimo imposible. La Hoja de QR suma
+   el gancho («Escaneá · N premios en juego») y un cartel de entrada con el QR de la
+   portada. RUTAS al día.
+   *Listo cuando* un visitante ve cuánto le falta para cada premio en la portada, al
+   escanear y en Mis medallas, con datos reales (e2e).
+5. **Auditoría.** `/code-review` y `/accessibility`.
+
+## R20 · Stands con algo para dar
+
+Escanear en un stand da algo concreto: un descuento, una muestra, una chance más. El
+stand tiene un motivo para pedir el escaneo sin perseguir a nadie. Lo carga el staff,
+opcional; el panel del expositor sigue ⏸. Branch `feat/beneficios`.
+
+1. **DB.** `event_spots` suma `perk` (texto corto, opcional, por evento). pgTAP y tipos.
+2. **Backend.** Guardar el beneficio desde la hoja del spot del evento; leerlo en la
+   portada y en la celebración.
+3. **Diseño.** La ficha del stand, el comprobante del beneficio en la celebración y el
+   directorio: alternativas con `/impeccable`.
+4. **Vista.** Tocar una medalla abre la ficha del stand (descripción de `spots` y su
+   beneficio). La celebración muestra el beneficio como comprobante para mostrarle al
+   stand. Un directorio de stands en la portada. Campo en la pestaña Spots del panel.
+   *Listo cuando* un beneficio cargado en el panel aparece en la ficha y al escanear
+   (e2e).
+5. **Auditoría.** `/code-review` y `/accessibility`.
+
+## R21 · La portada como cara del evento
+
+La portada también es la página del evento para quien quiere saber cómo es. Secciones
+fijas que carga el staff, no un armador de páginas, y el orden cambia con la fase:
+antes informa, durante juega, después muestra ganadores y la próxima edición. Branch
+`feat/portada-completa`.
+
+1. **DB.** Links del evento (web, Instagram, entradas, mapa), preguntas frecuentes y
+   galería de fotos (bucket propio, con tamaño máximo). `events.description` se usa tal
+   cual. pgTAP y tipos.
+2. **Backend.** Lecturas públicas y acciones del panel; cifras de ediciones anteriores
+   con datos reales (visitantes y medallas).
+3. **Diseño.** `/impeccable shape` de la portada en sus tres fases y alternativas antes
+   de escribirla.
+4. **Vista.** La portada por fase: sobre el evento, premios (R19), stands (R20), cómo
+   llegar, preguntas, galería y ediciones anteriores. En el panel, la pestaña «Página»
+   del evento con vista previa. RUTAS al día.
+   *Listo cuando* el staff carga cada sección desde el panel y se ve en la portada en las
+   tres fases (e2e), y Lighthouse en el celular sigue en verde con la galería.
+5. **Auditoría.** `/code-review`, `/accessibility` y `seo`.
+
+## R22 · Mis medallas propia
+
+La colección del evento sigue arriba; debajo, plegado, el historial del visitante en
+esa organización. Sin cambios en la base. Branch `feat/mi-historial`.
+
+1. **Backend.** En `src/domain/`, con tests: eventos en que jugó, total de medallas,
+   sorteos ganados, ediciones a las que vino («3 de 4»), desde cuándo viene y sellos de
+   fidelidad (primera edición, tres seguidas…). La serie de un evento se toma por su
+   `title` (un `shortcut:` en el código); las series de verdad siguen ⏸.
+2. **Diseño.** El historial y los sellos: alternativas con `/impeccable`.
+3. **Vista.** «Tu historial» plegado en `/mis-medallas`, con estados vacío, de carga y
+   de error. RUTAS al día.
+   *Listo cuando* un visitante con varias ediciones ve su historial y sus sellos con
+   datos reales (e2e).
+4. **Auditoría.** `/code-review` y `/accessibility`.
 
 ---
 
