@@ -1,9 +1,10 @@
 import type { SpotType } from "@/domain/spots";
 import { Spot, type SpotState } from "./Spot";
 
-const STATUS: Record<SpotState, string> = {
-  oculto: "Oculta",
-  bloqueado: "Bloqueada",
+/** A collection never lists a hidden or locked spot: those are for a page that can't show it yet. */
+type MedalState = Exclude<SpotState, "oculto" | "bloqueado">;
+
+const STATUS: Record<MedalState, string> = {
   pendiente: "Te falta",
   nuevo: "¡Nueva!",
   conseguido: "Conseguida",
@@ -14,7 +15,7 @@ type Props = {
   name: string;
   code: string;
   type: SpotType;
-  state: SpotState;
+  state: MedalState;
   /** The spot's logo. Without one, the medal is the sprite of its type. */
   logo?: string;
 };

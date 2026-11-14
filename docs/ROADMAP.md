@@ -936,7 +936,12 @@ Lo mismo se dibuja de una sola forma en toda la app. Hoy hay varias. Branch
    marquesina y las marcas de ejemplo de la landing y el 404. La tarjeta PNG
    (`next/og`) sigue aparte. Se borraron las alternativas. `/dev/componentes` tiene la
    matriz de estados por tamaño. Los 28 e2e pasan.
-4. **Auditoría.** `/code-review` y `/accessibility`.
+4. ✅ **Auditoría.** `/code-review` y `/accessibility`. Hecho: `Medal` ya no acepta los
+   estados oculto y bloqueado, que ninguna colección muestra. Las tiras de la consola
+   (de 32 a 40 px en el celular) caben a 375 px sin desbordar. Accesibilidad: los 69
+   `role="img"` de `/dev/componentes` tienen nombre, ningún `aria-hidden` esconde algo
+   interactivo y el estado de cada spot lo dice el texto de al lado; sin pasar lector de
+   pantalla.
 
 ## R24 · Fotos ampliables
 
