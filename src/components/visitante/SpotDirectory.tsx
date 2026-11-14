@@ -2,11 +2,11 @@
 
 import { Dialog } from "radix-ui";
 import { useEffect, useState } from "react";
-import { Sprite } from "@/components/pixel/Sprite";
 import { buttonClass } from "@/components/ui/Button";
 import type { SpotType } from "@/domain/spots";
-import { Logo, Medal } from "./Medal";
+import { Medal } from "./Medal";
 import { PerkBlock, PerkSurprise } from "./PerkPlate";
+import { Spot } from "./Spot";
 
 type SpotView = {
   id: string;
@@ -60,7 +60,7 @@ export function SpotDirectory({ spots, claimedIds }: Props) {
                   code={s.code}
                   type={s.type}
                   logo={s.logo}
-                  state={claimed.has(s.id) ? "conseguida" : "pendiente"}
+                  state={claimed.has(s.id) ? "conseguido" : "pendiente"}
                 />
                 {tag && (
                   <span className="sr-only">Con {tag.toLowerCase()}</span>
@@ -101,23 +101,15 @@ export function SpotDirectory({ spots, claimedIds }: Props) {
 }
 
 function Sheet({ spot, claimed }: { spot: SpotView; claimed: boolean }) {
-  const mode = claimed ? "lleno" : "silueta";
   return (
     <>
       <div className="grid grid-cols-[auto_1fr] items-center gap-4">
-        <div
-          className={`grid size-24 place-items-center overflow-hidden border-2 ${
-            claimed
-              ? "border-lcd-3 bg-plate shadow-plate"
-              : "border-dashed border-lcd-2"
-          }`}
-        >
-          {spot.logo ? (
-            <Logo src={spot.logo} mode={mode} label="" />
-          ) : (
-            <Sprite type={spot.type} mode={mode} label="" />
-          )}
-        </div>
+        <Spot
+          state={claimed ? "conseguido" : "pendiente"}
+          size="sm"
+          type={spot.type}
+          logo={spot.logo}
+        />
         <div className="grid gap-1">
           <span className="font-display text-px-1 text-muted-foreground">
             {[spot.code, spot.booth].filter(Boolean).join(" · ")}

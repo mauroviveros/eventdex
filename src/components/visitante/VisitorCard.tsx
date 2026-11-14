@@ -1,8 +1,8 @@
-import { Sprite } from "@/components/pixel/Sprite";
+import { Logo } from "@/components/pixel/Logo";
 import { Monogram } from "@/components/ui/Monogram";
 import { UserAvatar } from "@/components/ui/UserAvatar";
 import type { PublicEvent } from "@/components/visitante/EventHome";
-import { Logo } from "@/components/visitante/Medal";
+import { Spot } from "@/components/visitante/Spot";
 import type { SpotType } from "@/domain/spots";
 import {
   CARD_MEDALS_SHOWN,
@@ -70,20 +70,19 @@ export function VisitorCard({
 
         <ul
           aria-label="Tus medallas"
-          className="flex flex-wrap justify-center gap-1"
+          className="flex flex-wrap justify-center gap-2"
         >
           {medals.slice(0, CARD_MEDALS_SHOWN).map((m) => {
             const logo = spotLogoUrl(m.logoPath);
             return (
-              <li
-                key={m.id}
-                className="grid size-10 place-items-center overflow-hidden border-2 border-lcd-3 bg-plate"
-              >
-                {logo ? (
-                  <Logo src={logo} mode="lleno" label={m.name} />
-                ) : (
-                  <Sprite type={m.type} scale={2} label={m.name} />
-                )}
+              <li key={m.id}>
+                <Spot
+                  state="conseguido"
+                  size="xs"
+                  type={m.type}
+                  logo={logo}
+                  label={m.name}
+                />
               </li>
             );
           })}

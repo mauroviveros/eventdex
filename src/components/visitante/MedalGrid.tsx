@@ -29,7 +29,7 @@ export function MedalGrid({ spots, claimed, label }: Props) {
             code={s.code}
             type={s.type}
             logo={spotLogoUrl(s.logoPath)}
-            state={claimed.has(s.id) ? "conseguida" : "pendiente"}
+            state={claimed.has(s.id) ? "conseguido" : "pendiente"}
           />
         </li>
       ))}

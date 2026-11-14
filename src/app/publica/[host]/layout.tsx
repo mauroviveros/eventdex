@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { type CSSProperties, Suspense } from "react";
+import { Logo } from "@/components/pixel/Logo";
 import { Monogram } from "@/components/ui/Monogram";
-import { Logo } from "@/components/visitante/Medal";
 import { MARQUESINA } from "@/components/visitante/marquesina";
 import { SignInLink, VisitorMenu } from "@/components/visitante/VisitorMenu";
 import { EVENTDEX_HUE, ramp, rampFromHex } from "@/domain/palette";

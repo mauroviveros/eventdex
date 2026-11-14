@@ -1,12 +1,11 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { AlertIcon } from "@/components/pixel/AlertIcon";
-import { Sprite, type SpriteMode } from "@/components/pixel/Sprite";
 import { buttonClass } from "@/components/ui/Button";
 import type { ClaimResult } from "@/domain/claims";
 import { formatMoment } from "@/domain/events";
 import type { SpotType } from "@/domain/spots";
-import { Logo } from "./Medal";
+import { Spot, type SpotState } from "./Spot";
 
 type Props = {
   spot: { name: string; code: string; type: SpotType; logo?: string };
@@ -23,12 +22,12 @@ type Props = {
   headingLevel?: 1 | 2 | 3;
 };
 
-const MODE: Record<ClaimResult["kind"], SpriteMode> = {
-  nueva: "revelando",
-  repetida: "lleno",
+const STATE: Record<ClaimResult["kind"], SpotState> = {
+  nueva: "nuevo",
+  repetida: "conseguido",
   inactivo: "inactivo",
-  "fuera-de-fase": "silueta",
-  bloqueado: "silueta",
+  "fuera-de-fase": "pendiente",
+  bloqueado: "bloqueado",
 };
 
 /** What the visitor sees at /s/[id] after scanning a QR. */
@@ -48,18 +47,18 @@ export function Celebration({
   );
   const blocked = outcome.kind === "bloqueado";
   const Heading = `h${headingLevel}` as const;
-  const mode = MODE[outcome.kind];
   return (
     <article className="panel grid w-full max-w-sm justify-items-center gap-5 px-6 py-8 text-center">
       <div className="grid justify-items-center gap-4">
-        {!blocked &&
-          (spot.logo ? (
-            <div className="size-32 border-2 border-lcd-3">
-              <Logo src={spot.logo} mode={mode} label={spot.name} />
-            </div>
-          ) : (
-            <Sprite type={spot.type} scale={10} mode={mode} label={spot.name} />
-          ))}
+        {!blocked && (
+          <Spot
+            state={STATE[outcome.kind]}
+            size="lg"
+            type={spot.type}
+            logo={spot.logo}
+            label={spot.name}
+          />
+        )}
         <Heading
           className={`flex items-center gap-2 ${headingLevel === 1 ? "font-wide text-title" : "text-px-2"} ${blocked ? "text-danger" : ""}`}
         >

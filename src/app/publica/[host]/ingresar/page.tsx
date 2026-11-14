@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { Logo } from "@/components/pixel/Logo";
 import { EmailSignIn } from "@/components/ui/EmailSignIn";
 import { GoogleSignIn } from "@/components/ui/GoogleSignIn";
 import { Monogram } from "@/components/ui/Monogram";
 import { SignInError } from "@/components/ui/SignInError";
-import { Logo } from "@/components/visitante/Medal";
 import { cardDetails } from "@/domain/visitorCard";
 import { logoUrl } from "@/lib/data/organizations";
 import { getActiveEvent } from "@/lib/data/public";

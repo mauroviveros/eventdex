@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
-import { Sprite } from "@/components/pixel/Sprite";
+import { Logo } from "@/components/pixel/Logo";
 import { Monogram } from "@/components/ui/Monogram";
-import { Logo } from "@/components/visitante/Medal";
+import { Spot } from "@/components/visitante/Spot";
 import { rampFromHex } from "@/domain/palette";
 
 const SCHEMES = [
@@ -51,8 +51,18 @@ export function BrandPreview({
           <div className="grid gap-4 p-4">
             <p className="font-display text-px-3 text-accent-red">Tu evento</p>
             <div className="flex gap-4">
-              <Sprite type="stand" label="Medalla conseguida" />
-              <Sprite type="stand" mode="silueta" label="Medalla pendiente" />
+              <Spot
+                state="conseguido"
+                size="sm"
+                type="stand"
+                label="Medalla conseguida"
+              />
+              <Spot
+                state="pendiente"
+                size="sm"
+                type="stand"
+                label="Medalla pendiente"
+              />
             </div>
             <div
               aria-hidden

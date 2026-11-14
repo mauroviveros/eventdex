@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Chevron } from "@/components/pixel/Chevron";
-import { Sprite } from "@/components/pixel/Sprite";
+import { Spot } from "@/components/visitante/Spot";
 import { STANDS } from "./stands";
 
 const STATUS = {
@@ -85,21 +85,15 @@ export function ConsoleDemo() {
           <p className="font-display text-px-1">
             {stand.code} · {stand.name}
           </p>
-          <div
-            className={`grid size-36 place-items-center border-2 ${
-              owned ? "border-lcd-3" : "border-dashed border-lcd-2"
-            } ${status === "new" ? "bg-lcd-1" : ""}`}
-          >
-            <Sprite
-              key={`${selected}-${scans}`}
-              type={stand.type}
-              scale={9}
-              mode={
-                !owned ? "silueta" : status === "new" ? "revelando" : "lleno"
-              }
-              label={stand.name}
-            />
-          </div>
+          <Spot
+            key={`${selected}-${scans}`}
+            state={
+              !owned ? "pendiente" : status === "new" ? "nuevo" : "conseguido"
+            }
+            size="md"
+            type={stand.type}
+            label={stand.name}
+          />
           <p aria-live="polite" className="font-display text-px-3">
             {complete ? "¡Entrás al sorteo!" : STATUS[status]}
             <span className="sr-only"> {stand.name}</span>
@@ -110,17 +104,11 @@ export function ConsoleDemo() {
                 <span key={s.code} className="grid justify-items-center gap-1">
                   {/* Game cursor: which stand the screen is showing. */}
                   <Chevron className={i === selected ? "" : "invisible"} />
-                  <span
-                    className={`grid size-8 place-items-center border-2 sm:size-10 ${
-                      claimed.has(i)
-                        ? "border-lcd-3"
-                        : "border-dashed border-lcd-2"
-                    }`}
-                  >
-                    {claimed.has(i) && (
-                      <Sprite type={s.type} scale={2} label="" />
-                    )}
-                  </span>
+                  <Spot
+                    state={claimed.has(i) ? "conseguido" : "oculto"}
+                    size="xs"
+                    type={s.type}
+                  />
                 </span>
               ))}
             </div>
