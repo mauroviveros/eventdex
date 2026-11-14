@@ -637,12 +637,12 @@ ediciones anteriores. Promedio real: de 2 a 3 medallas por persona (ver
 Orden: primero lo que más mueve el escaneo (R18 → R19 → R20), después lo personal
 (R22) y al final la portada grande (R21).
 
-## R18 · Ingreso directo
+## R18 · Ingreso directo ▶
 
 Escanear sin sesión es el camino más importante, y hoy pasa por `/ingresar`. En
 producción solo hay Google, así que esa parada sobra. Branch `feat/ingreso-directo`.
 
-1. **Backend.** Una ruta GET que arranca el OAuth de Google con `next` (la Server
+1. ✅ **Backend.** `/auth/google?next=…` arranca el OAuth de Google con `next` (la Server
    Action `signInWithGoogle` no sirve para un link). Sin cambios en la base.
    *Listo cuando* la ruta lleva a Google y vuelve a `next`, y `safeNext` la protege.
 2. **Diseño.** La medalla bloqueada del QR sin sesión: alternativas con `/impeccable`.

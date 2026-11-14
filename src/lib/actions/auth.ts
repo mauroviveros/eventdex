@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { googleSignInUrl } from "@/lib/auth";
 import type { ActionResult } from "@/lib/results";
 import { requestOrigin, safeNext } from "@/lib/session";
 import { createClient } from "@/lib/supabase/server";
@@ -15,15 +16,8 @@ async function callbackUrl(next: string) {
 /** Starts Google sign-in. */
 export async function signInWithGoogle(formData: FormData) {
   const next = safeNext(formData.get("next")?.toString());
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: { redirectTo: await callbackUrl(next) },
-  });
-  if (error || !data.url) {
-    redirect(`/ingresar?error=auth&next=${encodeURIComponent(next)}`);
-  }
-  redirect(data.url);
+  const origin = requestOrigin(await headers());
+  redirect(await googleSignInUrl(await createClient(), origin, next));
 }
 
 type EmailSignInState = ActionResult<{ email: string }> | null;

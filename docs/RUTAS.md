@@ -91,5 +91,6 @@ un 404, no un 403: la ruta no existe para él.
 | Ruta | Vista | Acceso | Rebanada |
 |------|-------|--------|----------|
 | `/auth/callback` | Intercambio de código OAuth por sesión; redirige a `next` | — | R1 |
+| `/auth/google` | Arranca el ingreso con Google como link; vuelve a `next` por `/auth/callback` | — | R18 |
 | `/auth/salir` | Cierra la sesión y vuelve al inicio del host | — | R1 |
 | `/dev/componentes` | Catálogo de componentes con todos sus estados. **Solo en desarrollo**: 404 en producción | Dev | F0 |
