@@ -26,7 +26,10 @@ export function MissingSpots({ shown, more, href }: Props) {
         ))}
       </ul>
       {more > 0 && (
-        <Link href={href} className="w-fit text-sm">
+        <Link
+          href={href}
+          className="inline-flex min-h-11 w-fit items-center text-sm"
+        >
           y {more.toLocaleString("es-AR")} más: verlos todos
         </Link>
       )}
