@@ -186,6 +186,7 @@ export type Database = {
           name_override: string | null;
           organization_id: string;
           perk: string | null;
+          perk_hidden: boolean;
           points: number;
           snapshot: Json | null;
           sort_order: number;
@@ -204,6 +205,7 @@ export type Database = {
           name_override?: string | null;
           organization_id: string;
           perk?: string | null;
+          perk_hidden?: boolean;
           points?: number;
           snapshot?: Json | null;
           sort_order?: number;
@@ -221,6 +223,7 @@ export type Database = {
           name_override?: string | null;
           organization_id?: string;
           perk?: string | null;
+          perk_hidden?: boolean;
           points?: number;
           snapshot?: Json | null;
           sort_order?: number;

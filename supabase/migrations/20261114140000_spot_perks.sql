@@ -7,10 +7,14 @@
 -- vivo, como los puntos o el puesto.
 -- ---------------------------------------------------------------------------
 
+-- perk_hidden: beneficio sorpresa. La app no muestra el texto hasta que el
+-- visitante tiene la medalla; la base lo sigue leyendo (es una sorpresa, no un
+-- secreto).
 alter table public.event_spots
   add column perk text,
+  add column perk_hidden boolean not null default false,
   add constraint event_spots_perk_length
     check (char_length(btrim(perk)) between 1 and 120);
 
 -- Insert no lo suma: un event_spot nace sin beneficio y se edita después.
-grant update (perk) on public.event_spots to authenticated;
+grant update (perk, perk_hidden) on public.event_spots to authenticated;

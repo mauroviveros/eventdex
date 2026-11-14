@@ -43,7 +43,7 @@ const EVENT_COLUMNS = `id, slug, title, edition_label, summary, description, cov
   timezone, status, visibility,
   venue:venues (name, address_line, city, state),
   schedules:event_schedules (id, label, starts_at, ends_at),
-  spots:event_spots (id, code, booth, perk, points, is_active, sort_order,
+  spots:event_spots (id, code, booth, perk, perk_hidden, points, is_active, sort_order,
                      name_override, description_override, snapshot),
   raffles (winners_published_at)`;
 
@@ -112,6 +112,7 @@ function toPublicEvent({ spots, raffles, ...event }: EventRow) {
               code: s.code,
               booth: s.booth,
               perk: s.perk,
+              perkHidden: s.perk_hidden,
               points: s.points,
               ...shown,
             },

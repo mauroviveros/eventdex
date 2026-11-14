@@ -776,13 +776,27 @@ opcional; el panel del expositor sigue ⏸. Branch `feat/beneficios`.
 1. ✅ **DB.** `event_spots` suma `perk` (texto de 1 a 120, opcional, por evento).
    Queda fuera del `snapshot`, así que el staff lo corrige con el evento en vivo, y
    duplicar un evento no lo copia. Solo se actualiza (la org); lo lee quien ya lee el
-   spot del evento. pgTAP y tipos.
+   spot del evento. `perk_hidden` marca un beneficio **sorpresa**: la app no muestra el
+   texto hasta que el visitante tiene la medalla, pero la base lo sigue leyendo (es una
+   sorpresa, no un secreto: `// shortcut:` hasta que alguien necesite ocultarlo de
+   verdad). pgTAP y tipos.
 2. ✅ **Backend.** Guardar el beneficio desde la hoja del spot del evento; leerlo en la
    portada y en la celebración. `updateEventSpot` valida `perk` (hasta 120, vacío lo
    borra); `getClaimTarget`, `getPublicEvent` y `listEventSpots` lo devuelven. Sin
-   vista todavía: el campo del panel llega en el bloque 4.
-3. **Diseño.** La ficha del stand, el comprobante del beneficio en la celebración y el
-   directorio: alternativas con `/impeccable`.
+   vista todavía: el campo del panel llega en el bloque 4. `shownPerk` (dominio) decide
+   qué texto ve cada visitante y la portada lo saca en el servidor antes de armar la
+   página.
+3. ✅ **Diseño.** La ficha del stand, el comprobante del beneficio en la celebración y el
+   directorio: alternativas con `/impeccable`. Se eligió así:
+   - **Ficha:** una hoja que sube desde abajo en el celular (centrada en escritorio), sin
+     salir de la portada. Lleva nombre, código y puesto, descripción, el beneficio y si
+     la medalla ya se tiene.
+   - **Directorio:** la grilla de Medallas, sin sección aparte. Cada medalla con
+     beneficio lleva una etiqueta oscura «Beneficio» que cuelga sobre su marco (B), y en
+     la ficha el beneficio va primero, en un bloque oscuro (B).
+   - **Comprobante (celebración):** una placa punteada «Tu beneficio» (A, el cupón), solo
+     con la medalla nueva: si ya la tenía no se vuelve a mostrar. El canje no se
+     registra; el beneficio sigue a la vista en la ficha.
 4. **Vista.** Tocar una medalla abre la ficha del stand (descripción de `spots` y su
    beneficio). La celebración muestra el beneficio como comprobante para mostrarle al
    stand. Un directorio de stands en la portada. Campo en la pestaña Spots del panel.

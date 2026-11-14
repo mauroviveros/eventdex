@@ -104,6 +104,19 @@ export function resolvePublishedSpot(eventSpot: EventSpotFields) {
 }
 
 /**
+ * What a visitor may read of a spot's perk. A surprise stays hidden until they
+ * hold the medal: `surprise` tells the page to say so without the text.
+ */
+export function shownPerk(
+  spot: { perk: string | null; perkHidden: boolean },
+  claimed: boolean,
+) {
+  if (!spot.perk) return { perk: null, surprise: false };
+  if (spot.perkHidden && !claimed) return { perk: null, surprise: true };
+  return { perk: spot.perk, surprise: false };
+}
+
+/**
  * The next code for a spot added to an event: A01, A02… one past the highest
  * A<n> already there. Codes typed by hand that don't follow it (VIP, B3) are
  * left alone.

@@ -2,7 +2,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(8);
+select plan(10);
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-000000000ea1', 'staff-a@perks.local'),
@@ -28,10 +28,11 @@ insert into public.event_spots (id, event_id, organization_id, spot_id, code, pe
   ('00000000-0000-0000-0000-0000000000c1', '00000000-0000-0000-0000-0000000000b1', '0000000a-0000-0000-0000-00000000000e', '00000000-0000-0000-0000-0000000000a1', 'A1', '10 % de descuento'),
   ('00000000-0000-0000-0000-0000000000c2', '00000000-0000-0000-0000-0000000000b2', '0000000a-0000-0000-0000-00000000000e', '00000000-0000-0000-0000-0000000000a2', 'A2', null);
 
-select is(
-  (select perk from public.event_spots where id = '00000000-0000-0000-0000-0000000000c2'),
-  null,
-  'a spot without a perk reads null'
+select results_eq(
+  $$ select perk, perk_hidden from public.event_spots
+     where id = '00000000-0000-0000-0000-0000000000c2' $$,
+  $$ values (null::text, false) $$,
+  'a spot is born without a perk, and a visible one'
 );
 
 -- Quien mira sin sesión
@@ -73,6 +74,19 @@ select lives_ok(
   $$ update public.event_spots set perk = null
      where id = '00000000-0000-0000-0000-0000000000c2' $$,
   'staff clears a perk'
+);
+
+select lives_ok(
+  $$ update public.event_spots set perk_hidden = true
+     where id = '00000000-0000-0000-0000-0000000000c2' $$,
+  'staff turns a perk into a surprise'
+);
+
+select throws_ok(
+  $$ update public.event_spots set perk_hidden = null
+     where id = '00000000-0000-0000-0000-0000000000c2' $$,
+  '23502', null,
+  'a perk is a surprise or it is not: never unknown'
 );
 
 select throws_ok(

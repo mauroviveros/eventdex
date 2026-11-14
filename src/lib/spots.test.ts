@@ -250,6 +250,31 @@ describe("updateEventSpot", () => {
     ).toMatchObject({ perk: null });
   });
 
+  it("reads the surprise checkbox: present means hidden", async () => {
+    const hidden = fakeClient({ data: [{ id: SPOT }], error: null });
+    await updateEventSpot(hidden.client, {
+      id: SPOT,
+      code: "A12",
+      points: "1",
+      perk: "Una muestra",
+      perkHidden: "on",
+    });
+    expect(
+      hidden.calls.find((c) => c.method === "update")?.args[0],
+    ).toMatchObject({ perk_hidden: true });
+
+    const shown = fakeClient({ data: [{ id: SPOT }], error: null });
+    await updateEventSpot(shown.client, {
+      id: SPOT,
+      code: "A12",
+      points: "1",
+      perk: "Una muestra",
+    });
+    expect(
+      shown.calls.find((c) => c.method === "update")?.args[0],
+    ).toMatchObject({ perk_hidden: false });
+  });
+
   it("rejects a perk longer than 120 characters", async () => {
     const { client, calls } = fakeClient();
     const result = await updateEventSpot(client, {

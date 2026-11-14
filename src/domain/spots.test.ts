@@ -6,6 +6,7 @@ import {
   resolvePublishedSpot,
   resolveSpot,
   SPOT_TYPES,
+  shownPerk,
   spotUrl,
 } from "./spots";
 
@@ -134,5 +135,32 @@ describe("nextSpotCode", () => {
     expect(nextSpotCode(["A01", "A02"])).toBe("A03");
     expect(nextSpotCode(["A07", "VIP", "B3", "A02"])).toBe("A08");
     expect(nextSpotCode(["A99"])).toBe("A100");
+  });
+});
+
+describe("shownPerk", () => {
+  const visible = { perk: "10 % de descuento", perkHidden: false };
+  const surprise = { perk: "Una muestra gratis", perkHidden: true };
+
+  it("shows a visible perk to anyone", () => {
+    expect(shownPerk(visible, false)).toEqual({
+      perk: "10 % de descuento",
+      surprise: false,
+    });
+  });
+
+  it("keeps a surprise out of reach until the medal is held", () => {
+    expect(shownPerk(surprise, false)).toEqual({ perk: null, surprise: true });
+    expect(shownPerk(surprise, true)).toEqual({
+      perk: "Una muestra gratis",
+      surprise: false,
+    });
+  });
+
+  it("says nothing of a spot without a perk, hidden or not", () => {
+    expect(shownPerk({ perk: null, perkHidden: true }, false)).toEqual({
+      perk: null,
+      surprise: false,
+    });
   });
 });
