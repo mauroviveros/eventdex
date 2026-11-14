@@ -755,8 +755,11 @@ el caso es la frase. Branch `feat/premios`.
 
    Hecho (e2e `premios.spec.ts`): los premios en la portada, la celebración y Mis
    medallas con el diseño elegido, y en la pestaña Sorteo la descripción, la imagen y los
-   avisos (mínimo imposible y «solo motiva el primer escaneo»). Falta: los stands que
-   faltan en la celebración, el gancho de la Hoja de QR y el cartel de entrada.
+   avisos (mínimo imposible y «solo motiva el primer escaneo»). La Hoja de QR lleva el
+   gancho «Escaneá · N premios en juego» y suma el cartel de entrada (un A4 con la
+   marquesina, el premio mayor destacado y el QR de la portada; elegido sobre dos
+   alternativas: el aspecto de A con lo destacado de B, e impreso con sus colores). La
+   celebración nombra los 3 primeros stands que faltan. Con esto el bloque 4 está hecho.
 5. **Auditoría.** `/code-review` y `/accessibility`.
 
 ## R20 · Stands con algo para dar
