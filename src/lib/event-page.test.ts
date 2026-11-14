@@ -21,12 +21,14 @@ describe("updateEventLinks", () => {
     });
     const result = await updateEventLinks(client, {
       eventId: EVENT,
+      description: " Tres jornadas. ",
       website: " https://expo.example ",
       instagram: "",
       tickets: "https://tickets.example/expo",
     });
     expect(result).toEqual({ ok: true, data: null });
     expect(calls.find((c) => c.method === "update")?.args[0]).toEqual({
+      description: "Tres jornadas.",
       website_url: "https://expo.example",
       instagram_url: null,
       tickets_url: "https://tickets.example/expo",

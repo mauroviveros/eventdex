@@ -37,12 +37,14 @@ const optionalLink = z
 
 const linksSchema = z.object({
   eventId: z.guid(),
+  description: optionalText(2000),
   website: optionalLink,
   instagram: optionalLink,
   tickets: optionalLink,
   map: optionalLink,
 });
 
+/** The event's long description and its four links, from one form. */
 export async function updateEventLinks(
   supabase: Client,
   input: unknown,
@@ -54,6 +56,7 @@ export async function updateEventLinks(
   const { data, error } = await supabase
     .from("events")
     .update({
+      description: v.description,
       website_url: v.website,
       instagram_url: v.instagram,
       tickets_url: v.tickets,

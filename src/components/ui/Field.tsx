@@ -3,6 +3,7 @@ import { AlertIcon } from "@/components/pixel/AlertIcon";
 import { Input } from "@/components/ui/shadcn/input";
 import { Label } from "@/components/ui/shadcn/label";
 import { NativeSelect } from "@/components/ui/shadcn/native-select";
+import { Textarea } from "@/components/ui/shadcn/textarea";
 
 type Labels = {
   label: string;
@@ -70,6 +71,25 @@ export function Field({
       error={error}
       className={className}
       control={(a11y) => <Input {...a11y} {...props} />}
+    />
+  );
+}
+
+/** A multi-line text with the same frame as Field. */
+export function TextareaField({
+  label,
+  hint,
+  error,
+  className = "",
+  ...props
+}: ComponentProps<"textarea"> & Labels) {
+  return (
+    <FieldFrame
+      label={label}
+      hint={hint}
+      error={error}
+      className={className}
+      control={(a11y) => <Textarea {...a11y} {...props} />}
     />
   );
 }

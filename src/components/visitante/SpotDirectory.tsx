@@ -44,7 +44,7 @@ export function SpotDirectory({ spots, claimedIds }: Props) {
   const open = spots.find((s) => s.id === openId);
   return (
     <>
-      <ul className="flex flex-wrap gap-x-2 gap-y-6">
+      <ul className="grid grid-cols-[repeat(auto-fill,minmax(8rem,1fr))] justify-items-center gap-y-6">
         {spots.map((s) => {
           const tag = s.surprise ? "Sorpresa" : s.perk ? "Beneficio" : null;
           return (

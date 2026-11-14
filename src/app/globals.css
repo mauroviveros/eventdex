@@ -199,6 +199,16 @@
     }
   }
 
+  /* The public header is sticky too, and under the event page's index bar: a
+     focused element or a #link stops below them, not under them. */
+  html:has([data-slot="public-header"]) {
+    scroll-padding-top: 5rem;
+  }
+
+  html:has([data-slot="portada-index"]) {
+    scroll-padding-top: 8rem;
+  }
+
   ::selection {
     background: var(--lcd-3);
     color: var(--lcd-0);

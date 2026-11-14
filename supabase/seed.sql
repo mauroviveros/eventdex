@@ -120,7 +120,8 @@ update public.events
 set website_url = 'https://expo.example.com',
     instagram_url = 'https://www.instagram.com/expoprimavera',
     tickets_url = 'https://expo.example.com/entradas',
-    map_url = 'https://maps.google.com/?q=Predio+Norte+Tucuman'
+    map_url = 'https://maps.google.com/?q=Predio+Norte+Tucuman',
+    description = E'Tres jornadas para recorrer con calma: más de cuarenta stands de diseño, libros, cerámica y comida, talleres para todas las edades y un escenario con música en vivo.\n\nCada stand tiene su medalla: juntalas escaneando el QR del puesto y entrás a los sorteos al final de cada día.'
 where id = '00000000-0000-4000-8004-000000000001';
 
 insert into public.event_faqs (event_id, organization_id, question, answer, sort_order) values

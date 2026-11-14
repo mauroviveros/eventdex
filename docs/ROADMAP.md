@@ -841,9 +841,27 @@ antes informa, durante juega, después muestra ganadores y la próxima edición.
    baja con su archivo), con sus Server Actions. El seed carga links y tres preguntas.
    *Falta, para la vista:* subir y bajar el orden de las preguntas (`sort_order` ya está
    en la base). **Antes del merge: `pnpm db:push` (dry-run primero).**
-3. **Diseño.** `/impeccable shape` de la portada en sus tres fases y alternativas antes
-   de escribirla.
-4. **Vista.** La portada por fase: sobre el evento, premios (R19), stands (R20), cómo
+3. ✅ **Diseño.** `/impeccable shape` de la portada en sus tres fases y alternativas antes
+   de escribirla. Elegida: **B · Índice pegajoso**. Una sola página con el cartel y los
+   links (entradas, web, Instagram) abajo del cartel, y una barra de índice con tres
+   grupos (Juego · El evento · Fotos) que se ordenan según la fase (`portadaOrder` en
+   `src/domain/portada.ts`). Las secciones vacías no aparecen. En escritorio la página
+   pasa de 768 a 1024 px (el cartel sigue en 768) y la galería a 4 columnas; el header
+   de la app pública y el índice quedan fijos, uno debajo del otro (66 px). Descartadas:
+   A · Cartelera (todo en una columna sin índice) y C · Juego primero (info plegada).
+   *Para la Vista:* borrar `PortadaAlt.tsx` y los `?alt=`/`?fase=` temporales de las
+   páginas, y dejar B como la portada. El header más ancho y fijo vale para toda la app
+   pública; revisar `/mis-medallas` y `/s/[id]`, que quedan a 768.
+4. ✅ **Vista.** Hecho: la portada B definitiva (`Portada.tsx`, sin `?alt=`), la
+   pestaña **Página** del panel (vista previa, descripción y links, preguntas, fotos;
+   la descripción larga se edita ahí), `TextareaField`, la sección en `/dev/componentes`,
+   RUTAS y `e2e/portada-completa.spec.ts`. Medido en `/` con la galería, en celular:
+   Lighthouse 100 en accesibilidad, buenas prácticas y SEO; LCP 339 ms y CLS 0,00
+   (servidor de desarrollo, sin red limitada: repetir sobre un preview de Vercel).
+   Las medallas pasan a una grilla de celdas que se reparten el ancho y se centran.
+   *Sin hacer:* subir y bajar el orden de las preguntas (`sort_order` ya está en la
+   base), ampliar la foto al tocarla, y probar con lector de pantalla.
+   Texto original: La portada por fase: sobre el evento, premios (R19), stands (R20), cómo
    llegar, preguntas, galería y ediciones anteriores. En el panel, la pestaña «Página»
    del evento con vista previa. RUTAS al día.
    *Listo cuando* el staff carga cada sección desde el panel y se ve en la portada en las

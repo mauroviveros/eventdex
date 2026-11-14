@@ -129,7 +129,7 @@ export async function getEventBySlug(
       `id, slug, title, edition_label, summary, description, cover_path, status,
        visibility, timezone, published_at, venue_id,
        website_url, instagram_url, tickets_url, map_url,
-       venue:venues (id, name, address_line, city),
+       venue:venues (id, name, address_line, city, state),
        schedules:event_schedules (id, label, starts_at, ends_at),
        faqs:event_faqs (id, question, answer),
        photos:event_photos (id, path, caption)`,

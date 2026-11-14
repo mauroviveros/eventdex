@@ -12,6 +12,7 @@ import { EVENT_TABS, type EventTab } from "./query";
 
 const LABEL: Record<EventTab, string> = {
   general: "General",
+  pagina: "Página",
   spots: "Spots",
   visitantes: "Visitantes",
   sorteo: "Sorteo",
@@ -57,8 +58,8 @@ export function EventTabs({
     >
       <TabsList
         aria-label="Secciones del evento"
-        // On a phone the four share the width, the count under the name: no scrolling to find one.
-        className="max-sm:grid max-sm:w-full max-sm:grid-cols-4"
+        // On a phone the five share the width, the count under the name: no scrolling to find one.
+        className="max-sm:grid max-sm:w-full max-sm:grid-cols-[1fr_1fr_1fr_1.3fr_1fr]"
       >
         {EVENT_TABS.map((tab) => (
           <TabsTrigger

@@ -40,8 +40,11 @@ export default async function PublicaLayout({
       style={style}
       className={`ramp-scope scanlines min-h-dvh bg-lcd-0 text-lcd-3 ${MARQUESINA}`}
     >
-      <header className="border-b-2 border-lcd-3">
-        <div className="mx-auto flex min-h-16 max-w-3xl items-center justify-between gap-4 px-4 sm:px-6">
+      <header
+        data-slot="public-header"
+        className="sticky top-0 z-30 border-b-2 border-lcd-3 bg-lcd-0"
+      >
+        <div className="mx-auto flex min-h-16 max-w-5xl items-center justify-between gap-4 px-4 sm:px-6">
           <Link
             href="/"
             className="flex min-h-11 min-w-0 items-center gap-3 font-display text-px-2 no-underline"

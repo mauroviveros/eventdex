@@ -18,7 +18,10 @@ type Props = {
 /** A collection of medals: what the visitor has, and silhouettes for the rest. */
 export function MedalGrid({ spots, claimed, label }: Props) {
   return (
-    <ul aria-label={label} className="flex flex-wrap gap-x-2 gap-y-6">
+    <ul
+      aria-label={label}
+      className="grid grid-cols-[repeat(auto-fill,minmax(8rem,1fr))] justify-items-center gap-y-6"
+    >
       {spots.map((s) => (
         <li key={s.id}>
           <Medal

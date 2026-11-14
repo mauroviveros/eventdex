@@ -9,7 +9,7 @@ export function Countdown({ state }: { state: CountdownState }) {
       <p className={`grid justify-items-center gap-2 px-6 py-4 ${CELL}`}>
         <span className="font-wide text-title">En curso</span>
         <span className="text-muted-foreground">
-          Termina a las {state.endsAt}
+          Termina a las {state.endsAt} hs
         </span>
       </p>
     );

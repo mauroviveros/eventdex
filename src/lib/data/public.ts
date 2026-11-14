@@ -39,7 +39,7 @@ export const getOrganizationByHost = cache((host: string) =>
   lookupOrganization(host.toLowerCase()),
 );
 
-const EVENT_COLUMNS = `id, slug, title, edition_label, summary, description, cover_path,
+const EVENT_COLUMNS = `id, organization_id, slug, title, edition_label, summary, description, cover_path,
   timezone, status, visibility,
   venue:venues (name, address_line, city, state),
   schedules:event_schedules (id, label, starts_at, ends_at),

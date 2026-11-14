@@ -25,6 +25,7 @@ import { createClient } from "@/lib/supabase/server";
 import { CoverForm } from "./CoverForm";
 import { EventTabs } from "./EventTabs";
 import { load } from "./load";
+import { PageTab } from "./PageTab";
 import { EVENT_TABS } from "./query";
 import { RaffleTab } from "./RaffleTab";
 import {
@@ -46,7 +47,7 @@ export async function generateMetadata({
 
 /**
  * One event, in tabs (?tab=): General (figures, publishing, schedules and
- * banner), Spots, Visitantes and Sorteo. The print sheet keeps its own page:
+ * banner), Página (what its public page shows), Spots, Visitantes and Sorteo. The print sheet keeps its own page:
  * it goes to paper.
  */
 export default async function EventoPage({
@@ -186,7 +187,9 @@ export default async function EventoPage({
           value={tab}
           counts={{ spots: inEvent.length, visitantes: visitors.length }}
         >
-          {tab === "spots" ? (
+          {tab === "pagina" ? (
+            <PageTab org={org} event={event} support={support} />
+          ) : tab === "spots" ? (
             <SpotsTab
               org={org.slug}
               eventId={event.id}

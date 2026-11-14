@@ -22,7 +22,12 @@ import { ActionButton } from "@/components/ui/ActionButton";
 import { Button } from "@/components/ui/Button";
 import { Combobox } from "@/components/ui/Combobox";
 import { DateField } from "@/components/ui/DateField";
-import { Field, FormMessage, SelectField } from "@/components/ui/Field";
+import {
+  Field,
+  FormMessage,
+  SelectField,
+  TextareaField,
+} from "@/components/ui/Field";
 import { GoogleSignIn } from "@/components/ui/GoogleSignIn";
 import { LogoField } from "@/components/ui/LogoField";
 import { SignInCard } from "@/components/ui/SignInCard";
@@ -65,6 +70,13 @@ import {
   PerkVoucher,
 } from "@/components/visitante/PerkPlate";
 import { PhaseBadge } from "@/components/visitante/PhaseBadge";
+import {
+  About,
+  Faq,
+  HowToGet,
+  LinksBar,
+  PastEditions,
+} from "@/components/visitante/PortadaSections";
 import {
   PrizeNotice,
   PrizesLadder,
@@ -143,6 +155,7 @@ const sampleEvent = (
   },
 ): PublicEvent => ({
   id: "ejemplo",
+  organization_id: "ejemplo-org",
   slug: "expo-de-ejemplo",
   title: "Expo de ejemplo 2026",
   edition_label: null,
@@ -528,6 +541,82 @@ export default function ComponentesPage() {
                     surprise: false,
                   },
                 ]}
+              />
+            </div>
+          </Section>
+
+          <Section
+            title="La página del evento"
+            note="Lo que carga el staff en la pestaña Página. About: la descripción, un párrafo por línea en blanco. LinksBar: los links como botones, entradas lleno. HowToGet: la sede y el mapa. Faq: preguntas como acordeón nativo. PastEditions: ediciones anteriores con sus cifras. La galería usa fotos del Storage y se ve en la portada. TextareaField: el campo de varias líneas del panel."
+          >
+            <div className="grid max-w-3xl gap-10">
+              <About
+                text={
+                  "Tres jornadas para recorrer con calma.\n\nCada stand tiene su medalla."
+                }
+              />
+              <LinksBar
+                links={{
+                  tickets: "https://example.com/entradas",
+                  website: "https://example.com",
+                  instagram: "https://instagram.com/ejemplo",
+                  map: "https://maps.example.com",
+                }}
+              />
+              <HowToGet
+                venue={{
+                  name: "Predio Norte",
+                  address_line: "Av. de Ejemplo 1234",
+                  city: "Tucumán",
+                  state: "Tucumán",
+                }}
+                mapUrl="https://maps.example.com"
+              />
+              <Faq
+                faqs={[
+                  {
+                    id: "1",
+                    question: "¿Cuánto cuesta la entrada?",
+                    answer: "Es gratuita.",
+                  },
+                  {
+                    id: "2",
+                    question: "¿Hay estacionamiento?",
+                    answer: "Sí, un playón frente a la entrada.",
+                  },
+                ]}
+              />
+              <PastEditions
+                editions={[
+                  {
+                    slug: "expo-2025",
+                    title: "Expo de ejemplo",
+                    editionLabel: "2025",
+                    endedAt: "2025-11-09T22:00:00Z",
+                    visitors: 1280,
+                    medals: 3410,
+                  },
+                  {
+                    slug: "expo-2024",
+                    title: "Expo de ejemplo",
+                    editionLabel: "2024",
+                    endedAt: "2024-11-10T22:00:00Z",
+                    visitors: 1,
+                    medals: 1,
+                  },
+                ]}
+              />
+              <TextareaField
+                label="Sobre el evento"
+                name="demo-about"
+                hint="Opcional. Separá los párrafos con una línea en blanco."
+              />
+              <TextareaField
+                label="Respuesta"
+                name="demo-answer"
+                defaultValue="x"
+                error="Escribí la respuesta."
+                aria-invalid
               />
             </div>
           </Section>

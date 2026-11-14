@@ -3,6 +3,16 @@ import { cache, Suspense } from "react";
 import { ClockIcon } from "@/components/pixel/ClockIcon";
 import { buttonClass } from "@/components/ui/Button";
 import { Countdown } from "@/components/visitante/Countdown";
+import { COLUMN, type Pieces, Portada } from "@/components/visitante/Portada";
+import {
+  About,
+  Faq,
+  Gallery,
+  HowToGet,
+  hasLinks,
+  LinksBar,
+  PastEditions,
+} from "@/components/visitante/PortadaSections";
 import { PrizesSection } from "@/components/visitante/Prizes";
 import { SpotDirectory } from "@/components/visitante/SpotDirectory";
 import { collectionProgress } from "@/domain/claims";
@@ -11,10 +21,11 @@ import {
   formatEventDates,
   formatScheduleTimes,
 } from "@/domain/events";
+import type { PortadaPhase } from "@/domain/portada";
 import { shownPerk } from "@/domain/spots";
 import { listMyClaims } from "@/lib/data/claims";
 import { coverUrl, spotLogoUrl } from "@/lib/data/organizations";
-import type { getActiveEvent } from "@/lib/data/public";
+import { type getActiveEvent, getPastEditions } from "@/lib/data/public";
 import { listEventPrizes } from "@/lib/data/raffles";
 import { getVisitorAccount } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
@@ -28,30 +39,98 @@ type Props = { event: PublicEvent; now: Date };
 const SCAN =
   "Escaneá el QR de cada stand con la cámara del celular y sumá su medalla.";
 
+const HERO_LINKS = ["tickets", "website", "instagram"] as const;
+
 /**
  * The event's home on the org's domain. Opens like the marquee of the old app
- * (date tab, title plate, venue tab, countdown), then the schedules as the
- * event's levels, then the medals to collect.
+ * (date tab, title plate, venue tab, countdown), then the links, an index and
+ * the sections in the order its phase reads them (see `Portada`): the game
+ * (medals, prizes, days), the event (about, how to get there, questions) and
+ * the photos with the past editions. What the staff left empty is not shown.
  */
-export function EventHome({ event, now }: Props) {
+export async function EventHome({ event, now }: Props) {
+  const countdown = countdownState(event.schedules, event.timezone, now);
+  const phase: PortadaPhase =
+    countdown.kind === "faltan" ? "proximo" : countdown.kind;
+  const past = await getPastEditions(
+    await createClient(),
+    event.organization_id,
+    event.id,
+  ).catch((error) => {
+    // The event's own page still stands: only this section is left out.
+    console.error("reading the past editions failed", error);
+    return [];
+  });
+  const linksBar = hasLinks(event.links, HERO_LINKS) ? (
+    <LinksBar links={event.links} only={HERO_LINKS} />
+  ) : null;
+  const pieces: Pieces = {
+    ganadores: event.hasWinners
+      ? {
+          body: (
+            <Link
+              href={`/sorteo?evento=${event.slug}`}
+              className={buttonClass(
+                "primary",
+                "justify-self-center no-underline",
+              )}
+            >
+              Ver ganadores del sorteo
+            </Link>
+          ),
+        }
+      : undefined,
+    acerca: event.description
+      ? { title: "Sobre el evento", body: <About text={event.description} /> }
+      : undefined,
+    jornadas:
+      event.schedules.length > 1
+        ? { body: <Levels event={event} now={now} /> }
+        : undefined,
+    premios: {
+      body: (
+        <Suspense>
+          <Prizes event={event} />
+        </Suspense>
+      ),
+    },
+    medallas: {
+      body: (
+        <Suspense fallback={<MedalsLoading spots={event.spots} />}>
+          <Medals event={event} />
+        </Suspense>
+      ),
+    },
+    "como-llegar":
+      event.venue || event.links.map
+        ? {
+            title: "Cómo llegar",
+            body: <HowToGet venue={event.venue} mapUrl={event.links.map} />,
+          }
+        : undefined,
+    preguntas: event.faqs.length
+      ? { title: "Preguntas frecuentes", body: <Faq faqs={event.faqs} /> }
+      : undefined,
+    fotos: event.photos.length
+      ? { title: "Fotos", body: <Gallery photos={event.photos} /> }
+      : undefined,
+    ediciones: past.length
+      ? {
+          title: "Ediciones anteriores",
+          body: <PastEditions editions={past} />,
+        }
+      : undefined,
+  };
   return (
-    <main className="mx-auto grid w-full max-w-3xl gap-12 px-4 py-8 sm:px-6">
-      <Marquee event={event} now={now} />
-      {event.hasWinners && (
-        <Link
-          href={`/sorteo?evento=${event.slug}`}
-          className={buttonClass("primary", "justify-self-center no-underline")}
-        >
-          Ver ganadores del sorteo
-        </Link>
-      )}
-      {event.schedules.length > 1 && <Levels event={event} now={now} />}
-      <Suspense>
-        <Prizes event={event} />
-      </Suspense>
-      <Suspense fallback={<MedalsLoading spots={event.spots} />}>
-        <Medals event={event} />
-      </Suspense>
+    <main className="grid w-full gap-12 py-8">
+      {/* The banner takes the first screen, and the index peeks at its foot. */}
+      <div
+        className={`${COLUMN} grid min-h-[calc(100dvh-12rem)] content-center gap-10`}
+      >
+        <Marquee event={event} now={now} />
+        {linksBar}
+      </div>
+      <Portada phase={phase} pieces={pieces} />
     </main>
   );
 }
@@ -83,7 +162,7 @@ export function Marquee({ event, now }: Props) {
   const countdown = countdownState(event.schedules, event.timezone, now);
 
   return (
-    <header className="grid min-h-[50dvh] grid-cols-[minmax(0,1fr)] content-center justify-items-center gap-8 text-center">
+    <header className="mx-auto grid w-full max-w-3xl grid-cols-[minmax(0,1fr)] content-center justify-items-center gap-8 text-center">
       {cover && <EventCover src={cover} alt={`Cartel de ${event.title}`} />}
       <div className="grid w-full justify-items-center">
         {dates && (
@@ -93,7 +172,7 @@ export function Marquee({ event, now }: Props) {
             </span>
             <span>
               {dates}
-              {only && ` · ${formatScheduleTimes(only, event.timezone)}`}
+              {only && ` · ${formatScheduleTimes(only, event.timezone)} hs`}
             </span>
           </p>
         )}
@@ -191,7 +270,7 @@ export function Levels({ event, now }: Props) {
               </span>
               <span>
                 {formatEventDates([s], event.timezone, now)} ·{" "}
-                {formatScheduleTimes(s, event.timezone)}
+                {formatScheduleTimes(s, event.timezone)} hs
               </span>
             </li>
           );
@@ -209,7 +288,10 @@ export function MedalsLoading({ spots }: { spots: readonly { id: string }[] }) {
       <p role="status" className="sr-only">
         Cargando tus medallas…
       </p>
-      <ul aria-hidden className="flex flex-wrap gap-x-2 gap-y-6">
+      <ul
+        aria-hidden
+        className="grid grid-cols-[repeat(auto-fill,minmax(8rem,1fr))] justify-items-center gap-y-6"
+      >
         {spots.map((s) => (
           <li key={s.id} className="grid w-32 justify-items-center">
             <div className="size-24 border-2 border-dashed border-lcd-2" />
