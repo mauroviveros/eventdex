@@ -207,6 +207,11 @@
 
   html:has([data-slot="portada-index"]) {
     scroll-padding-top: 8rem;
+
+    /* The index glides to its section; with reduced motion it jumps. */
+    @variant motion-safe {
+      scroll-behavior: smooth;
+    }
   }
 
   ::selection {
