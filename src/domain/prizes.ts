@@ -92,3 +92,9 @@ export function onlyFirstMedal(
     reachable.every((r) => r.minClaims === 1)
   );
 }
+
+/** The line printed on every QR card: why to scan. Null when there is no prize to name. */
+export function prizesHook(prizeCount: number) {
+  if (prizeCount <= 0) return null;
+  return `Escaneá · ${prizeCount === 1 ? "1 premio" : `${prizeCount} premios`} en juego`;
+}

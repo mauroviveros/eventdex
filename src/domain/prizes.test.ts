@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MANY_SPOTS, onlyFirstMedal, prizeLadder } from "./prizes";
+import { MANY_SPOTS, onlyFirstMedal, prizeLadder, prizesHook } from "./prizes";
 
 const bike = { id: "1", title: "Bicicleta", minClaims: 1 };
 const tablet = { id: "2", title: "Tablet", minClaims: 3 };
@@ -109,5 +109,15 @@ describe("onlyFirstMedal", () => {
 
   it("ignores prizes nobody can reach", () => {
     expect(onlyFirstMedal([bike, { ...trip, minClaims: 99 }], 45)).toBe(true);
+  });
+});
+
+describe("prizesHook", () => {
+  it.each([
+    [0, null],
+    [1, "Escaneá · 1 premio en juego"],
+    [3, "Escaneá · 3 premios en juego"],
+  ])("with %i prizes says %j", (count, line) => {
+    expect(prizesHook(count)).toBe(line);
   });
 });

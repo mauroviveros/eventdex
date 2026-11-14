@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { QrCode } from "@/components/panel/QrCode";
 import { PageBody, TopBar } from "@/components/panel/TopBar";
+import { buttonClass } from "@/components/ui/Button";
+import { prizeLadder, prizesHook } from "@/domain/prizes";
 import { spotUrl } from "@/domain/spots";
 import { getPrimaryHostname } from "@/lib/data/organizations";
+import { listEventPrizes } from "@/lib/data/raffles";
 import { listEventSpots } from "@/lib/data/spots";
 import { createClient } from "@/lib/supabase/server";
 import { load } from "../load";
@@ -27,11 +30,14 @@ export default async function QrSheetPage({
   const { org: slug, evento } = await params;
   const { org, event } = await load(slug, evento);
   const supabase = await createClient();
-  const [spots, hostname] = await Promise.all([
+  const [spots, hostname, prizes] = await Promise.all([
     listEventSpots(supabase, event.id),
     getPrimaryHostname(supabase, org.id),
+    listEventPrizes(supabase, event.id),
   ]);
   const active = spots.filter((s) => s.is_active);
+  // Only the prizes a visitor can win count: the same ones the event's page shows.
+  const hook = prizesHook(prizeLadder(prizes, 0, active.length).prizes.length);
   const inactive = spots.length - active.length;
   const base = `/panel/${org.slug}/eventos/${event.slug}`;
 
@@ -45,7 +51,20 @@ export default async function QrSheetPage({
           { label: "Eventos", href: `/panel/${org.slug}` },
           { label: event.title, href: `${base}?tab=spots` },
         ]}
-        actions={hostname && active.length > 0 && <PrintButton />}
+        actions={
+          hostname &&
+          active.length > 0 && (
+            <>
+              <Link
+                href={`${base}/qr/cartel`}
+                className={buttonClass("secondary", "no-underline")}
+              >
+                Cartel de entrada
+              </Link>
+              <PrintButton />
+            </>
+          )
+        }
       />
       <PageBody>
         <div className="grid gap-2 print:hidden">
@@ -54,6 +73,7 @@ export default async function QrSheetPage({
             Una tarjeta por spot activo, para imprimir en A4 y recortar por la
             línea punteada. Cada QR abre la medalla en{" "}
             <strong>{hostname ?? "el dominio de la organización"}</strong>.
+            {hook && ` Cada tarjeta lleva la frase «${hook}».`}
             {inactive > 0 &&
               ` ${inactive === 1 ? "Un spot inactivo no se imprime" : `${inactive.toLocaleString("es-AR")} spots inactivos no se imprimen`}.`}
           </p>
@@ -83,6 +103,9 @@ export default async function QrSheetPage({
                 key={s.id}
                 className="grid break-inside-avoid justify-items-center gap-2 border-2 border-dashed border-lcd-2 p-[5mm] text-center"
               >
+                {hook && (
+                  <p className="font-display text-px-1 leading-tight">{hook}</p>
+                )}
                 <QrCode
                   value={spotUrl(hostname, s.id)}
                   label={`QR de ${s.shown.name}, código ${s.code}`}

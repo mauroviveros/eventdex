@@ -82,6 +82,11 @@ export function spotUrl(hostname: string, eventSpotId: string) {
   return `${publicOrigin(hostname)}/s/${eventSpotId}`;
 }
 
+/** What the entrance poster's QR encodes: the event's page on the org's primary domain. Printed, so it never changes. */
+export function eventUrl(hostname: string, eventSlug: string) {
+  return `${publicOrigin(hostname)}/eventos/${eventSlug}`;
+}
+
 /**
  * What a spot of a published event shows to the public: its override, then its
  * snapshot. Published spots always carry one, so the private catalog is never
