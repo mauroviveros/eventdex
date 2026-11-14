@@ -114,6 +114,20 @@ insert into public.raffles (event_id, organization_id, title, description, min_c
   ('00000000-0000-4000-8004-000000000001', '00000000-0000-4000-8001-000000000001', 'Pase doble para la próxima edición', 'Dos entradas para vos y quien quieras, los tres días.', 2),
   ('00000000-0000-4000-8004-000000000001', '00000000-0000-4000-8001-000000000001', 'Kit de coleccionista', 'Mochila, cuaderno y una lámina firmada por los artistas del evento.', 3);
 
+-- The live event's public page: links and questions. Photos are uploaded from
+-- the panel (they need a file in storage).
+update public.events
+set website_url = 'https://expo.example.com',
+    instagram_url = 'https://www.instagram.com/expoprimavera',
+    tickets_url = 'https://expo.example.com/entradas',
+    map_url = 'https://maps.google.com/?q=Predio+Norte+Tucuman'
+where id = '00000000-0000-4000-8004-000000000001';
+
+insert into public.event_faqs (event_id, organization_id, question, answer, sort_order) values
+  ('00000000-0000-4000-8004-000000000001', '00000000-0000-4000-8001-000000000001', '¿Cuánto cuesta la entrada?', 'La entrada es gratuita. Los talleres tienen cupo y se reservan en el lugar.', 0),
+  ('00000000-0000-4000-8004-000000000001', '00000000-0000-4000-8001-000000000001', '¿Puedo ir con chicos?', 'Sí. Hay una plaza de juegos y los talleres de cerámica son para todas las edades.', 1),
+  ('00000000-0000-4000-8004-000000000001', '00000000-0000-4000-8001-000000000001', '¿Hay estacionamiento?', 'Hay un playón gratuito frente al Pabellón 1 y bicicletero en la entrada.', 2);
+
 -- ---------------------------------------------------------------------------
 -- "Feria del Sorteo": a second org of the same owner, with a live event, 14
 -- visitors and their medals, ready to try the raffle on stage. Two visitors

@@ -1181,6 +1181,17 @@ export type Database = {
         Args: { p_organization_id: string };
         Returns: undefined;
       };
+      past_editions: {
+        Args: { p_event_id: string; p_organization_id: string };
+        Returns: {
+          edition_label: string;
+          ended_at: string;
+          medals: number;
+          slug: string;
+          title: string;
+          visitors: number;
+        }[];
+      };
       publish_event: { Args: { p_event_id: string }; Returns: undefined };
       publish_raffle_winners: {
         Args: { p_raffle_id: string };

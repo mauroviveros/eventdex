@@ -40,13 +40,15 @@ select results_eq(
 set local role anon;
 
 select results_eq(
-  $$ select question from public.event_faqs $$,
+  $$ select question from public.event_faqs
+     where organization_id = '0000000a-0000-0000-0000-00000000000f' $$,
   $$ values ('¿Hay estacionamiento?') $$,
   'anon reads the questions of a published event, and not those of a draft'
 );
 
 select is(
-  (select count(*) from public.event_photos), 1::bigint,
+  (select count(*) from public.event_photos
+   where organization_id = '0000000a-0000-0000-0000-00000000000f'), 1::bigint,
   'anon reads the photos of a published event, and not those of a draft'
 );
 
