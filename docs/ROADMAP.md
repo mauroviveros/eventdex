@@ -873,10 +873,12 @@ antes informa, durante juega, después muestra ganadores y la próxima edición.
 La colección del evento sigue arriba; debajo, plegado, el historial del visitante en
 esa organización. Sin cambios en la base. Branch `feat/mi-historial`.
 
-1. **Backend.** En `src/domain/`, con tests: eventos en que jugó, total de medallas,
+1. ✅ **Backend.** En `src/domain/`, con tests: eventos en que jugó, total de medallas,
    sorteos ganados, ediciones a las que vino («3 de 4»), desde cuándo viene y sellos de
    fidelidad (primera edición, tres seguidas…). La serie de un evento se toma por su
-   `title` (un `shortcut:` en el código); las series de verdad siguen ⏸.
+   `title` (un `shortcut:` en el código); las series de verdad siguen ⏸. Hecho: `src/domain/history.ts` (`buildHistory`: ediciones jugadas, totales,
+   desde cuándo, «3 de 4» por título y cuatro sellos: primera edición, tres seguidas,
+   colección completa y ganador) y `getMyHistory` en `src/lib/data/history.ts`.
 2. **Diseño.** El historial y los sellos: alternativas con `/impeccable`.
 3. **Vista.** «Tu historial» plegado en `/mis-medallas`, con estados vacío, de carga y
    de error. RUTAS al día.
