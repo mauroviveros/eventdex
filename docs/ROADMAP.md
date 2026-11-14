@@ -923,10 +923,19 @@ Lo mismo se dibuja de una sola forma en toda la app. Hoy hay varias. Branch
    El fondo deja ver la silueta (`lcd-0`); el bloqueado lleva el candado encima; el oculto
    es una casilla vacía. Tamaños `xs` 40, `sm` 96, `md` 144, `lg` 160 px. Las alternativas
    (`SpotAlternatives.tsx`, `?alt=`) se borran en el bloque 3.
-3. **Vista.** `Medal`, `LockedMedal`, la medalla de `Celebration` y las casillas de la
+3. ✅ **Vista.** `Medal`, `LockedMedal`, la medalla de `Celebration` y las casillas de la
    tarjeta pasan a usarlo. `/dev/componentes` lo muestra en todos sus estados.
    *Listo cuando* no queda otro lugar que dibuje un spot por su cuenta (búsqueda en el
    código) y los e2e siguen pasando.
+   Hecho: `Spot` (`src/components/visitante/Spot.tsx`) con los seis estados y los tamaños
+   `xs`, `sm`, `md` y `lg`; lo usan `Medal`, `LockedMedal`, `Celebration`, la ficha de
+   `SpotDirectory`, la tarjeta, la consola de la landing y `BrandPreview`. `Logo` pasó a
+   `src/components/pixel/Logo.tsx`. Los estados de `Medal` ahora son los de `Spot`
+   (`conseguido`, `nuevo`, `inactivo`). Quedan con `Sprite` suelto, a propósito, porque
+   son el ícono del tipo y no un spot con estado: las tablas y la ficha del panel, la
+   marquesina y las marcas de ejemplo de la landing y el 404. La tarjeta PNG
+   (`next/og`) sigue aparte. Se borraron las alternativas. `/dev/componentes` tiene la
+   matriz de estados por tamaño. Los 28 e2e pasan.
 4. **Auditoría.** `/code-review` y `/accessibility`.
 
 ## R24 · Fotos ampliables

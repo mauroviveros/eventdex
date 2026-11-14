@@ -89,6 +89,7 @@ import {
 } from "@/components/visitante/Prizes";
 import { Progress } from "@/components/visitante/Progress";
 import { ShareCardButton } from "@/components/visitante/ShareCardButton";
+import { SPOT_STATES, Spot, type SpotSize } from "@/components/visitante/Spot";
 import { SpotDirectory } from "@/components/visitante/SpotDirectory";
 import { VisitorCard } from "@/components/visitante/VisitorCard";
 import { SignInLink, VisitorMenu } from "@/components/visitante/VisitorMenu";
@@ -369,17 +370,56 @@ export default function ComponentesPage() {
         {/* The public app's look: its components, as they ship. */}
         <div className={`contents ${MARQUESINA}`}>
           <Section
+            title="Spot"
+            note="Spot: la forma única de dibujar un spot, en todos sus estados y tamaños. Borde sólido es tuyo (conseguido, nuevo); punteado, todavía no (oculto, bloqueado, pendiente, inactivo). El bloqueado es siempre el sprite en silueta bajo un candado, aunque tenga logo. xs en la tarjeta y la consola, sm en la colección, md en la consola, lg en la celebración."
+          >
+            <Replay>
+              <div className="grid gap-6">
+                {(["xs", "sm", "md", "lg"] as SpotSize[]).map((size) => (
+                  <div key={size} className="grid gap-2">
+                    <p className="font-display text-px-1">{size}</p>
+                    <ul className="flex flex-wrap items-end gap-5">
+                      {SPOT_STATES.map((state) => (
+                        <li
+                          key={state}
+                          className="grid justify-items-center gap-2"
+                        >
+                          <Spot
+                            state={state}
+                            size={size}
+                            type={CAFE.type}
+                            logo={
+                              state === "conseguido" ? CAFE.logo : undefined
+                            }
+                            label={`${CAFE.name}: ${state}`}
+                          />
+                          <span
+                            aria-hidden
+                            className="font-display text-px-1 text-muted-foreground"
+                          >
+                            {state}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </Replay>
+          </Section>
+
+          <Section
             title="Medalla"
             note="El logo original del spot; sin logo, el sprite de su tipo. Pendiente va en gris y apagada; la nueva pasa de gris a color, en pasos."
           >
             <div className="flex flex-wrap items-start gap-6">
-              <Medal {...CAFE} state="conseguida" />
+              <Medal {...CAFE} state="conseguido" />
               <Medal {...RUEDA} state="pendiente" />
               <Replay>
-                <Medal {...CERAMICA} state="nueva" />
+                <Medal {...CERAMICA} state="nuevo" />
               </Replay>
-              <Medal {...BANCO} state="inactiva" />
-              <Medal {...RUEDA} state="conseguida" />
+              <Medal {...BANCO} state="inactivo" />
+              <Medal {...RUEDA} state="conseguido" />
             </div>
           </Section>
 
