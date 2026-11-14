@@ -814,7 +814,7 @@ opcional; el panel del expositor sigue ⏸. Branch `feat/beneficios`.
    `EventHome`, que pasa por `shownPerk`; revisarlo si otra pantalla lee `perk`. Sin
    probar: escritorio, 45 stands y lector de pantalla.
 
-## R21 · La portada como cara del evento
+## R21 · La portada como cara del evento ✅
 
 La portada también es la página del evento para quien quiere saber cómo es. Secciones
 fijas que carga el staff, no un armador de páginas, y el orden cambia con la fase:
@@ -868,7 +868,7 @@ antes informa, durante juega, después muestra ganadores y la próxima edición.
    tres fases (e2e), y Lighthouse en el celular sigue en verde con la galería.
 5. **Auditoría.** `/code-review`, `/accessibility` y `seo`.
 
-## R22 · Mis medallas propia
+## R22 · Mis medallas propia ✅
 
 La colección del evento sigue arriba; debajo, plegado, el historial del visitante en
 esa organización. Sin cambios en la base. Branch `feat/mi-historial`.
@@ -903,7 +903,7 @@ esa organización. Sin cambios en la base. Branch `feat/mi-historial`.
 
 ---
 
-## R23 · Componentes únicos
+## R23 · Componentes únicos ✅
 
 Lo mismo se dibuja de una sola forma en toda la app. Hoy hay varias. Branch
 `refactor/componentes-unicos`.
