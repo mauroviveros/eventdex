@@ -21,7 +21,7 @@ export async function getClaimTarget(
   const { data, error } = await supabase
     .from("event_spots")
     .select(
-      `id, code, booth, points, name_override, description_override, snapshot,
+      `id, code, booth, perk, points, name_override, description_override, snapshot,
        event:events!inner (id, slug, title, timezone)`,
     )
     .eq("id", eventSpotId)
@@ -34,8 +34,8 @@ export async function getClaimTarget(
   if (!data) return null;
   const shown = resolvePublishedSpot(data);
   if (!shown) return null;
-  const { event, id, code, booth, points } = data;
-  return { event, spot: { id, code, booth, points, ...shown } };
+  const { event, id, code, booth, perk, points } = data;
+  return { event, spot: { id, code, booth, perk, points, ...shown } };
 }
 
 /**

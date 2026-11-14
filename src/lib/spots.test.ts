@@ -227,6 +227,42 @@ describe("updateEventSpot", () => {
     if (!result.ok) expect(result.fieldErrors?.points).toBe("Mínimo 1 punto.");
   });
 
+  it("saves the perk trimmed, and an empty one clears it", async () => {
+    const { client, calls } = fakeClient({ data: [{ id: SPOT }], error: null });
+    const update = () => calls.find((c) => c.method === "update")?.args[0];
+    await updateEventSpot(client, {
+      id: SPOT,
+      code: "A12",
+      points: "1",
+      perk: "  10 % de descuento ",
+    });
+    expect(update()).toMatchObject({ perk: "10 % de descuento" });
+
+    const cleared = fakeClient({ data: [{ id: SPOT }], error: null });
+    await updateEventSpot(cleared.client, {
+      id: SPOT,
+      code: "A12",
+      points: "1",
+      perk: "",
+    });
+    expect(
+      cleared.calls.find((c) => c.method === "update")?.args[0],
+    ).toMatchObject({ perk: null });
+  });
+
+  it("rejects a perk longer than 120 characters", async () => {
+    const { client, calls } = fakeClient();
+    const result = await updateEventSpot(client, {
+      id: SPOT,
+      code: "A12",
+      points: "1",
+      perk: "x".repeat(121),
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.fieldErrors?.perk).toBeDefined();
+    expect(calls.some((c) => c.method === "update")).toBe(false);
+  });
+
   it("turns an unchecked box into inactive", async () => {
     const { client, calls } = fakeClient({ data: [{ id: SPOT }], error: null });
     await updateEventSpot(client, { id: SPOT, code: "A12", points: "3" });

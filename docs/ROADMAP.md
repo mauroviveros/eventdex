@@ -777,8 +777,10 @@ opcional; el panel del expositor sigue ⏸. Branch `feat/beneficios`.
    Queda fuera del `snapshot`, así que el staff lo corrige con el evento en vivo, y
    duplicar un evento no lo copia. Solo se actualiza (la org); lo lee quien ya lee el
    spot del evento. pgTAP y tipos.
-2. **Backend.** Guardar el beneficio desde la hoja del spot del evento; leerlo en la
-   portada y en la celebración.
+2. ✅ **Backend.** Guardar el beneficio desde la hoja del spot del evento; leerlo en la
+   portada y en la celebración. `updateEventSpot` valida `perk` (hasta 120, vacío lo
+   borra); `getClaimTarget`, `getPublicEvent` y `listEventSpots` lo devuelven. Sin
+   vista todavía: el campo del panel llega en el bloque 4.
 3. **Diseño.** La ficha del stand, el comprobante del beneficio en la celebración y el
    directorio: alternativas con `/impeccable`.
 4. **Vista.** Tocar una medalla abre la ficha del stand (descripción de `spots` y su

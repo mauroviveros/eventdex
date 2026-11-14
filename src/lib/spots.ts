@@ -89,6 +89,7 @@ const eventSpotUpdateSchema = z.object({
   nameOverride: optionalText(120),
   descriptionOverride: optionalText(500),
   booth: optionalText(60),
+  perk: optionalText(120),
   points,
   isActive: checkbox,
 });
@@ -258,6 +259,7 @@ export async function updateEventSpot(
       name_override: s.nameOverride,
       description_override: s.descriptionOverride,
       booth: s.booth,
+      perk: s.perk,
       points: s.points,
       is_active: s.isActive,
     })
