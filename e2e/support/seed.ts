@@ -210,6 +210,47 @@ export async function seedLiveEvent() {
         }),
       );
     },
+    /** The visitor won a published raffle in the finished event of addPastCollection. */
+    async addPastWin() {
+      const profile = must(
+        await admin
+          .from("profiles")
+          .select("id, email")
+          .eq("email", visitorEmail)
+          .single(),
+      );
+      const past = must(
+        await admin
+          .from("events")
+          .select("id")
+          .eq("organization_id", org.id)
+          .eq("slug", "feria-vieja")
+          .single(),
+      );
+      const raffle = must(
+        await admin
+          .from("raffles")
+          .insert({
+            event_id: past.id,
+            organization_id: org.id,
+            title: "Sorteo viejo",
+            min_claims: 1,
+            winners_published_at: new Date().toISOString(),
+          })
+          .select("id")
+          .single(),
+      );
+      must(
+        await admin.from("raffle_draws").insert({
+          raffle_id: raffle.id,
+          organization_id: org.id,
+          draw_number: 1,
+          eligible_count: 1,
+          winner_name: profile.email,
+          winner_user_id: profile.id,
+        }),
+      );
+    },
     /** A draft with one upcoming schedule: ready to publish. */
     /** A draft with a schedule, ready to publish. */
     async addDraft(title = "Feria Borrador") {

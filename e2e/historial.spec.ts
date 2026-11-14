@@ -51,4 +51,21 @@ test("the visitor's history grows with each edition they play", async ({
     );
     await expect(stamps).toContainText("Ganar un sorteo.");
   });
+
+  await test.step("a published raffle win adds to the totals and earns the stamp", async () => {
+    await seed.addPastWin();
+    await page.goto(`${seed.origin}/mis-medallas`);
+    const history = page.getByRole("region", { name: "Tu historial" });
+    await history.getByText("Tu historial").click();
+    await expect(history).toContainText(
+      "Jugaste 2 eventos, juntaste 2 medallas y ganaste 1 sorteo.",
+    );
+    await expect(history).toContainText("ganaste un sorteo");
+    await expect(
+      page
+        .getByRole("list", { name: "Tus sellos" })
+        .getByRole("listitem")
+        .filter({ hasText: "Ganaste un sorteo" }),
+    ).toContainText("Ganado");
+  });
 });
