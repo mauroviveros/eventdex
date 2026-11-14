@@ -733,8 +733,18 @@ el caso es la frase. Branch `feat/premios`.
    (mínimo mayor que los stands), con tests. `updateRafflePrize` guarda descripción e
    imagen (mismo manejo de archivos que el banner) y `listEventPrizes` es la lectura
    pública, sin extracciones.
-3. **Diseño.** La sección Premios, el aviso en la celebración y el progreso en Mis
-   medallas: alternativas con `/impeccable`.
+3. ✅ **Diseño.** Alternativas A (escalera), B (vitrina) y C (la barra con copas) sobre
+   la página real. Eligió Mauro, por superficie:
+   - **Portada: B**, la placa por premio. Con imagen, ella manda; sin imagen, la placa es
+     una fila compacta con el sello de las medallas, para que un premio sin foto no sea
+     un hueco. De A se tomó el sello con el número.
+   - **Escaneo: B con la copa de C.** La barra de progreso lleva una copa donde abre cada
+     premio, y debajo va la placa del próximo (sin mini barra, para no repetir la barra).
+   - **Mis medallas: A**, la escalera: ahí se revisa el estado, y funciona como lista.
+   - **Un premio de una medalla** no lleva copa ni mini barra: no es una meta. El sorteo
+     entonces solo empuja el primer escaneo; el panel avisa (con más de 5 stands) y la
+     palanca es subir el mínimo o sumar otro premio. Cada visitante entra una sola vez,
+     sin importar cuántas medallas tenga.
 4. **Vista.** Premios en la portada; «te faltan N para X» en la celebración, con los
    stands que faltan; el progreso a cada premio en Mis medallas; descripción e imagen
    en la pestaña Sorteo del panel, con el aviso del mínimo imposible. La Hoja de QR suma
@@ -742,6 +752,11 @@ el caso es la frase. Branch `feat/premios`.
    portada. RUTAS al día.
    *Listo cuando* un visitante ve cuánto le falta para cada premio en la portada, al
    escanear y en Mis medallas, con datos reales (e2e).
+
+   Hecho (e2e `premios.spec.ts`): los premios en la portada, la celebración y Mis
+   medallas con el diseño elegido, y en la pestaña Sorteo la descripción, la imagen y los
+   avisos (mínimo imposible y «solo motiva el primer escaneo»). Falta: los stands que
+   faltan en la celebración, el gancho de la Hoja de QR y el cartel de entrada.
 5. **Auditoría.** `/code-review` y `/accessibility`.
 
 ## R20 · Stands con algo para dar

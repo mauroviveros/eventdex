@@ -202,6 +202,7 @@ export default async function EventoPage({
               eventSlug={event.slug}
               timezone={event.timezone}
               raffles={raffles}
+              totalSpots={inEvent.filter((s) => s.is_active).length}
               support={support}
             />
           ) : tab === "visitantes" ? (

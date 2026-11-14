@@ -2,11 +2,14 @@ import Link from "next/link";
 import { RaffleDraw } from "@/components/panel/RaffleDraw";
 import { ActionButton } from "@/components/ui/ActionButton";
 import { buttonClass } from "@/components/ui/Button";
+import { onlyFirstMedal } from "@/domain/prizes";
 import {
   drawRaffleAction,
   publishRaffleWinnersAction,
 } from "@/lib/actions/raffles";
+import { prizeImageUrl } from "@/lib/data/organizations";
 import type { EventRaffle } from "@/lib/data/raffles";
+import { PrizeForm } from "./PrizeForm";
 import { NewRaffleForm, VoidDrawForm } from "./RaffleForms";
 
 const participants = (n: number) =>
@@ -22,6 +25,7 @@ export function RaffleTab({
   eventSlug,
   timezone,
   raffles,
+  totalSpots,
   support,
 }: {
   org: { slug: string; id: string };
@@ -29,14 +33,29 @@ export function RaffleTab({
   eventSlug: string;
   timezone: string;
   raffles: EventRaffle[];
+  /** Active stands: a prize asking for more medals than this can never be won. */
+  totalSpots: number;
   support: boolean;
 }) {
+  const minimums = raffles.map((r) => ({
+    id: r.id,
+    title: r.title,
+    minClaims: r.min_claims,
+  }));
   return (
     <>
       <p className="max-w-prose">
         Participan los visitantes con medallas que no estén bloqueados. Cada
         extracción queda registrada: se puede anular, pero no borrar.
       </p>
+
+      {!support && onlyFirstMedal(minimums, totalSpots) && (
+        <p className="max-w-prose border-2 border-lcd-3 px-4 py-3">
+          Con este mínimo, el sorteo solo motiva el primer escaneo. Subí el
+          mínimo, o sumá otro premio que pida más medallas, para que recorran
+          más stands.
+        </p>
+      )}
 
       {raffles.length === 0 ? (
         <div className="grid max-w-prose gap-2 border-2 border-dashed border-lcd-2 px-6 py-8">
@@ -56,6 +75,8 @@ export function RaffleTab({
             eventSlug={eventSlug}
             timezone={timezone}
             readOnly={support}
+            totalSpots={totalSpots}
+            orgRef={org}
           />
         ))
       )}
@@ -81,12 +102,16 @@ function Raffle({
   eventSlug,
   timezone,
   readOnly,
+  totalSpots,
+  orgRef,
 }: {
   raffle: EventRaffle;
   org: string;
   eventSlug: string;
   timezone: string;
   readOnly: boolean;
+  totalSpots: number;
+  orgRef: { slug: string; id: string };
 }) {
   const fields = { org, raffleId: raffle.id };
   const hasWinner = raffle.draws.some((d) => d.voided_at === null);
@@ -110,6 +135,12 @@ function Raffle({
             ? "nadie para sortear por ahora"
             : `${participants(raffle.eligible)} para sortear`}
         </p>
+        {raffle.min_claims > totalSpots && (
+          <p className="font-display text-px-1 text-danger">
+            Pide más medallas que stands activos: los visitantes no ven este
+            premio y nadie puede ganarlo.
+          </p>
+        )}
         {published && (
           <p className="font-display text-px-1">
             Ganadores publicados en la app
@@ -151,6 +182,28 @@ function Raffle({
             />
           )}
         </div>
+      )}
+
+      {!readOnly && (
+        <details className="grid gap-3">
+          <summary
+            aria-label={`Descripción e imagen de ${raffle.title}`}
+            className={buttonClass(
+              "secondary",
+              "w-fit cursor-pointer list-none",
+            )}
+          >
+            Descripción e imagen
+          </summary>
+          <div className="mt-3 max-w-prose">
+            <PrizeForm
+              org={orgRef}
+              raffleId={raffle.id}
+              description={raffle.description}
+              image={prizeImageUrl(raffle.image_path)}
+            />
+          </div>
+        </details>
       )}
 
       {/* Always mounted: a live region added along with its content stays silent. */}
