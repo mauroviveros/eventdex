@@ -113,7 +113,8 @@ test("what the staff loads in Página shows on the event's public page", async (
     await visitor.getByText(QUESTION).click();
     await expect(visitor.getByText(ANSWER)).toBeVisible();
 
-    const photo = visitor.getByRole("img", { name: CAPTION });
+    // The caption names the figure; the image itself carries no second name.
+    const photo = visitor.getByRole("figure", { name: CAPTION }).locator("img");
     const src = await photo.getAttribute("src");
     expect(src).toContain(`/event-photos/${seed.org.id}/`);
     expect((await visitor.request.get(src ?? "")).status()).toBe(200);
@@ -137,6 +138,6 @@ test("what the staff loads in Página shows on the event's public page", async (
     await page.getByRole("button", { name: "Sí, quitar" }).click();
     await expect(page.getByText("Todavía no hay fotos")).toBeVisible();
     await visitor.reload();
-    await expect(visitor.getByRole("img", { name: CAPTION })).toHaveCount(0);
+    await expect(visitor.getByRole("figure", { name: CAPTION })).toHaveCount(0);
   });
 });

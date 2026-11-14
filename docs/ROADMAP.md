@@ -905,6 +905,25 @@ Lo mismo se dibuja de una sola forma en toda la app. Hoy hay varias. Branch
    código) y los e2e siguen pasando.
 4. **Auditoría.** `/code-review` y `/accessibility`.
 
+## R24 · Fotos ampliables
+
+La galería de la portada (R21) muestra miniaturas de 4 por fila y el epígrafe queda
+chico. Tocar una foto la abre grande, con su epígrafe, y se recorre la galería sin
+volver a la grilla. Branch `feat/fotos-ampliables`. Sin cambios en la base: abre el
+mismo archivo que la grilla.
+
+1. **Diseño.** `/impeccable shape` del visor y dos o tres alternativas con
+   `/impeccable` sobre la portada real: la foto entera, sin recortar, y una placa LCD
+   con el epígrafe y «3 de 6»; la placa al costado o abajo en escritorio; a pantalla
+   completa en el celular. Si hace falta más que el epígrafe (crédito, un texto más
+   largo), se decide acá: pide una columna y un campo en la pestaña Página de R21.
+2. **Vista.** Un `Dialog` de Radix como la ficha de los stands: anterior y siguiente,
+   teclas ← → y Esc, deslizar en el celular, el foco entra al visor y vuelve a la
+   miniatura al cerrar, y `prefers-reduced-motion`. En `/dev/componentes`. RUTAS al día.
+   *Listo cuando* se abre una foto, se recorre la galería con el teclado y el epígrafe
+   se lee completo (e2e).
+3. **Auditoría.** `/code-review` y `/accessibility`.
+
 ## ⏸ Estacionado
 
 Fuera de esta versión; vuelve solo con una decisión explícita.
