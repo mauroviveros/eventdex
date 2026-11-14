@@ -58,6 +58,115 @@ export type Database = {
           },
         ];
       };
+      event_faqs: {
+        Row: {
+          answer: string;
+          created_at: string;
+          event_id: string;
+          id: string;
+          organization_id: string;
+          question: string;
+          sort_order: number;
+          updated_at: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          answer: string;
+          created_at?: string;
+          event_id: string;
+          id?: string;
+          organization_id: string;
+          question: string;
+          sort_order?: number;
+          updated_at?: string | null;
+        };
+        Update: {
+          answer?: string;
+          created_at?: string;
+          event_id?: string;
+          id?: string;
+          organization_id?: string;
+          question?: string;
+          sort_order?: number;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "event_faqs_event_id_organization_id_fkey";
+            columns: ["event_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "event_phases";
+            referencedColumns: ["event_id", "organization_id"];
+          },
+          {
+            foreignKeyName: "event_faqs_event_id_organization_id_fkey";
+            columns: ["event_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "event_faqs_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      event_photos: {
+        Row: {
+          caption: string | null;
+          created_at: string;
+          event_id: string;
+          id: string;
+          organization_id: string;
+          path: string;
+          sort_order: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          caption?: string | null;
+          created_at?: string;
+          event_id: string;
+          id?: string;
+          organization_id: string;
+          path: string;
+          sort_order?: number;
+        };
+        Update: {
+          caption?: string | null;
+          created_at?: string;
+          event_id?: string;
+          id?: string;
+          organization_id?: string;
+          path?: string;
+          sort_order?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "event_photos_event_id_organization_id_fkey";
+            columns: ["event_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "event_phases";
+            referencedColumns: ["event_id", "organization_id"];
+          },
+          {
+            foreignKeyName: "event_photos_event_id_organization_id_fkey";
+            columns: ["event_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "event_photos_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       event_registrations: {
         Row: {
           blocked_at: string | null;
@@ -270,17 +379,21 @@ export type Database = {
           description: string | null;
           edition_label: string | null;
           id: string;
+          instagram_url: string | null;
+          map_url: string | null;
           organization_id: string;
           published_at: string | null;
           settings: NonNullable<Json>;
           slug: string;
           status: Database["public"]["Enums"]["event_status"];
           summary: string | null;
+          tickets_url: string | null;
           timezone: string;
           title: string;
           updated_at: string | null;
           venue_id: string | null;
           visibility: Database["public"]["Enums"]["event_visibility"];
+          website_url: string | null;
         };
         ComputedFields: never;
         Insert: {
@@ -291,17 +404,21 @@ export type Database = {
           description?: string | null;
           edition_label?: string | null;
           id?: string;
+          instagram_url?: string | null;
+          map_url?: string | null;
           organization_id: string;
           published_at?: string | null;
           settings?: NonNullable<Json>;
           slug: string;
           status?: Database["public"]["Enums"]["event_status"];
           summary?: string | null;
+          tickets_url?: string | null;
           timezone?: string;
           title: string;
           updated_at?: string | null;
           venue_id?: string | null;
           visibility?: Database["public"]["Enums"]["event_visibility"];
+          website_url?: string | null;
         };
         Update: {
           cover_path?: string | null;
@@ -311,17 +428,21 @@ export type Database = {
           description?: string | null;
           edition_label?: string | null;
           id?: string;
+          instagram_url?: string | null;
+          map_url?: string | null;
           organization_id?: string;
           published_at?: string | null;
           settings?: NonNullable<Json>;
           slug?: string;
           status?: Database["public"]["Enums"]["event_status"];
           summary?: string | null;
+          tickets_url?: string | null;
           timezone?: string;
           title?: string;
           updated_at?: string | null;
           venue_id?: string | null;
           visibility?: Database["public"]["Enums"]["event_visibility"];
+          website_url?: string | null;
         };
         Relationships: [
           {
@@ -959,17 +1080,21 @@ export type Database = {
           description: string | null;
           edition_label: string | null;
           id: string;
+          instagram_url: string | null;
+          map_url: string | null;
           organization_id: string;
           published_at: string | null;
           settings: NonNullable<Json>;
           slug: string;
           status: Database["public"]["Enums"]["event_status"];
           summary: string | null;
+          tickets_url: string | null;
           timezone: string;
           title: string;
           updated_at: string | null;
           venue_id: string | null;
           visibility: Database["public"]["Enums"]["event_visibility"];
+          website_url: string | null;
         }[];
         SetofOptions: {
           from: "*";
