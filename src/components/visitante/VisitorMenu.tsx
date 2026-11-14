@@ -5,7 +5,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useRef } from "react";
 import { Chevron } from "@/components/pixel/Chevron";
 import { GoogleSignIn } from "@/components/ui/GoogleSignIn";
-import { Monogram } from "@/components/ui/Monogram";
+import { UserAvatar } from "@/components/ui/UserAvatar";
 
 type Account = {
   name: string;
@@ -37,7 +37,7 @@ export function VisitorMenu({ account }: { account: Account }) {
       }}
     >
       <summary className="flex min-h-11 cursor-pointer list-none items-center gap-3 border-2 border-transparent px-2 py-1 hover:border-lcd-3 group-open:border-lcd-3 group-open:bg-lcd-1 [&::-webkit-details-marker]:hidden">
-        <Avatar account={account} />
+        <UserAvatar name={account.name} src={account.avatarUrl} size="sm" />
         <span className="hidden min-w-0 max-w-48 text-left sm:grid">
           <span className="truncate font-display text-px-1">
             {account.name}
@@ -80,21 +80,6 @@ export function VisitorMenu({ account }: { account: Account }) {
         </form>
       </div>
     </details>
-  );
-}
-
-function Avatar({ account }: { account: Account }) {
-  if (!account.avatarUrl) return <Monogram text={account.name} size="sm" />;
-  return (
-    // biome-ignore lint/performance/noImgElement: a 32 px external photo; next/image would need every provider's host in the config
-    <img
-      src={account.avatarUrl}
-      alt=""
-      width={32}
-      height={32}
-      referrerPolicy="no-referrer"
-      className="size-8 shrink-0 border-2 border-lcd-3 object-cover"
-    />
   );
 }
 

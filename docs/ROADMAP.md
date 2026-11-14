@@ -908,10 +908,12 @@ esa organización. Sin cambios en la base. Branch `feat/mi-historial`.
 Lo mismo se dibuja de una sola forma en toda la app. Hoy hay varias. Branch
 `refactor/componentes-unicos`.
 
-1. **Avatar.** Toda foto de persona pasa por el `Avatar` de shadcn adaptado a los tokens
+1. ✅ **Avatar.** Toda foto de persona pasa por el `Avatar` de shadcn adaptado a los tokens
    (`UserAvatar`): el menú del visitante (hoy tiene su propio `Avatar`), la tarjeta, el
    equipo, la cuenta del panel y el escenario. La imagen PNG de la tarjeta
    (`mis-medallas/tarjeta`) queda afuera: la dibuja `next/og`, sin React del cliente.
+   Hecho: solo faltaba el menú del visitante; el resto ya usaba `UserAvatar`. Pierde el
+   borde que tenía la foto, como las demás.
 2. **Diseño.** Un único componente de spot con todos sus estados: oculto (sprite en
    silueta), bloqueado (con candado), pendiente, nuevo (la revelación), conseguido e
    inactivo, en los tamaños que hoy usan la colección, la celebración, la medalla
