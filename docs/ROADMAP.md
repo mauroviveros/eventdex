@@ -914,10 +914,15 @@ Lo mismo se dibuja de una sola forma en toda la app. Hoy hay varias. Branch
    (`mis-medallas/tarjeta`) queda afuera: la dibuja `next/og`, sin React del cliente.
    Hecho: solo faltaba el menú del visitante; el resto ya usaba `UserAvatar`. Pierde el
    borde que tenía la foto, como las demás.
-2. **Diseño.** Un único componente de spot con todos sus estados: oculto (sprite en
+2. ✅ **Diseño.** Un único componente de spot con todos sus estados: oculto (sprite en
    silueta), bloqueado (con candado), pendiente, nuevo (la revelación), conseguido e
    inactivo, en los tamaños que hoy usan la colección, la celebración, la medalla
    bloqueada, la tarjeta y la consola de la landing. Alternativas con `/impeccable`.
+   Elegida la B (casilla) con los bordes punteados de la A: sólido y placa si es tuyo
+   (conseguido, nuevo); punteado si todavía no (oculto, bloqueado, pendiente, inactivo).
+   El fondo deja ver la silueta (`lcd-0`); el bloqueado lleva el candado encima; el oculto
+   es una casilla vacía. Tamaños `xs` 40, `sm` 96, `md` 144, `lg` 160 px. Las alternativas
+   (`SpotAlternatives.tsx`, `?alt=`) se borran en el bloque 3.
 3. **Vista.** `Medal`, `LockedMedal`, la medalla de `Celebration` y las casillas de la
    tarjeta pasan a usarlo. `/dev/componentes` lo muestra en todos sus estados.
    *Listo cuando* no queda otro lugar que dibuje un spot por su cuenta (búsqueda en el
