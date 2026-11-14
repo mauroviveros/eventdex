@@ -1,5 +1,12 @@
 import { z } from "zod";
-import { type ActionResult, failed, invalid } from "@/lib/results";
+import { COVER_MAX_BYTES } from "@/domain/events";
+import { LOGO_TYPES, storeLogo } from "@/lib/organizations";
+import {
+  type ActionResult,
+  failed,
+  invalid,
+  optionalText,
+} from "@/lib/results";
 import type { Supabase } from "@/lib/supabase/server";
 
 /**
@@ -109,5 +116,86 @@ export async function publishRaffleWinners(
     return failed(error, {
       "23514": "Todavía no hay ganadores para publicar.",
     });
+  return { ok: true, data: null };
+}
+
+const IMAGE_BUCKET = "raffle-images";
+
+// A file input left empty arrives as a 0-byte File; a checkbox, present means on.
+const prizeSchema = z.object({
+  organizationId: z.guid(),
+  raffleId: z.guid(),
+  description: optionalText(500),
+  image: z.preprocess(
+    (v) => (v instanceof File && v.size > 0 ? v : undefined),
+    z
+      .file("Elegí una imagen.")
+      .max(COVER_MAX_BYTES, "La imagen puede pesar hasta 1,5 MB.")
+      .mime(
+        Object.keys(LOGO_TYPES) as (keyof typeof LOGO_TYPES)[],
+        "Subí una imagen PNG, JPG o WebP.",
+      )
+      .optional(),
+  ),
+  removeImage: z
+    .string()
+    .optional()
+    .transform((v) => v !== undefined),
+});
+
+type WithStorage = Pick<Supabase, "from" | "storage">;
+
+/**
+ * Description and image of a prize: all the team can change on a raffle, since
+ * its title and minimum may already have draws made with them. The previous
+ * file is deleted once the raffle points to the new one; one that stays behind
+ * is only an orphan.
+ */
+export async function updateRafflePrize(
+  supabase: WithStorage,
+  input: unknown,
+): Promise<ActionResult<null>> {
+  const parsed = prizeSchema.safeParse(input);
+  if (!parsed.success) return invalid(parsed.error);
+  const v = parsed.data;
+
+  // Both ids in the filter: a raffle of another org reads as not found.
+  const { data: current, error: readError } = await supabase
+    .from("raffles")
+    .select("image_path")
+    .eq("id", v.raffleId)
+    .eq("organization_id", v.organizationId)
+    .maybeSingle();
+  if (readError) return failed(readError);
+  if (!current) return failed(NOT_ALLOWED);
+
+  // Left out of the update when the image isn't touched.
+  let imagePath: string | null | undefined = v.removeImage ? null : undefined;
+  if (v.image) {
+    const stored = await storeLogo(
+      supabase,
+      IMAGE_BUCKET,
+      v.organizationId,
+      v.image,
+    );
+    if (stored.error) return failed(stored.error);
+    imagePath = stored.path;
+  }
+
+  const { data, error } = await supabase
+    .from("raffles")
+    .update({ description: v.description, image_path: imagePath })
+    .eq("id", v.raffleId)
+    .select("id");
+  if (error || data.length === 0) {
+    if (v.image && imagePath) {
+      await supabase.storage.from(IMAGE_BUCKET).remove([imagePath]);
+    }
+    return failed(error ?? NOT_ALLOWED);
+  }
+
+  if (imagePath !== undefined && current.image_path) {
+    await supabase.storage.from(IMAGE_BUCKET).remove([current.image_path]);
+  }
   return { ok: true, data: null };
 }

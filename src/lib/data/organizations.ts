@@ -100,6 +100,11 @@ export function coverUrl(path: string | null) {
   return path ? logoUrl(path, "event-covers") : undefined;
 }
 
+/** Same for a raffle's prize image. */
+export function prizeImageUrl(path: string | null) {
+  return path ? logoUrl(path, "raffle-images") : undefined;
+}
+
 /** The org's primary hostname: where its public app (and every QR) points. */
 export async function getPrimaryHostname(
   supabase: Supabase,
