@@ -653,12 +653,15 @@ producción solo hay Google, así que esa parada sobra. Branch `feat/ingreso-dir
    muestra el sprite del tipo, nunca el logo: el logo es lo que revela la celebración
    al volver. Debajo, el nombre del spot a 40 px y el código chico en secundario: el
    código no le dice nada al visitante.
-3. **Vista.** En producción, `/s/[id]` sin sesión muestra la medalla del stand bloqueada
+3. ✅ **Vista.** En producción, `/s/[id]` sin sesión muestra la medalla del stand bloqueada
    y un solo botón «Ingresá con Google para sumarla»; no redirige a `/ingresar`. En
    desarrollo sigue el link por mail. `/ingresar` queda para desarrollo y para el error
    del callback. RUTAS al día.
    *Listo cuando* escanear sin sesión es un toque hasta Google y la vuelta suma la
    medalla (e2e).
+   Hecho con `LockedMedal`. La cabecera esconde «Ingresar» en `/s/[id]`, porque la
+   página ya es el ingreso. En producción, `requireVisitor` (`/mis-medallas` y su
+   tarjeta) también va directo a `/auth/google`. El panel sigue pasando por `/ingresar`.
 4. **Auditoría.** `/code-review` y `/accessibility`.
 
 ## R19 · Premios a la vista

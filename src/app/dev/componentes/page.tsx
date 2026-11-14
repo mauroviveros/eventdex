@@ -55,6 +55,7 @@ import {
   MedalsLoading,
   type PublicEvent,
 } from "@/components/visitante/EventHome";
+import { LockedMedal } from "@/components/visitante/LockedMedal";
 import { Medal } from "@/components/visitante/Medal";
 import { MARQUESINA } from "@/components/visitante/marquesina";
 import { PhaseBadge } from "@/components/visitante/PhaseBadge";
@@ -411,6 +412,24 @@ export default function ComponentesPage() {
                 {...CELEBRATION}
                 spot={CAFE}
                 outcome={{ kind: "bloqueado" }}
+              />
+            </div>
+          </Section>
+
+          <Section
+            title="Medalla bloqueada"
+            note="LockedMedal: /s/[id] sin sesión. Siempre el sprite del tipo en silueta, aunque el spot tenga logo; el logo lo revela la celebración al volver de Google. El link por mail aparece solo en desarrollo."
+          >
+            <div className="grid items-start justify-items-center gap-6 md:grid-cols-2">
+              <LockedMedal spot={CAFE} next="/s/demo" headingLevel={3} />
+              <LockedMedal
+                spot={{
+                  name: "Asociación de Artesanos y Productores Regionales",
+                  code: "C07",
+                  type: "sponsor",
+                }}
+                next="/s/demo"
+                headingLevel={3}
               />
             </div>
           </Section>
