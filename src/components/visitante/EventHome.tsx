@@ -4,6 +4,7 @@ import { ClockIcon } from "@/components/pixel/ClockIcon";
 import { buttonClass } from "@/components/ui/Button";
 import { Countdown } from "@/components/visitante/Countdown";
 import { MedalGrid } from "@/components/visitante/MedalGrid";
+import { PrizesSection } from "@/components/visitante/Prizes";
 import { collectionProgress } from "@/domain/claims";
 import {
   countdownState,
@@ -13,6 +14,7 @@ import {
 import { listMyClaims } from "@/lib/data/claims";
 import { coverUrl } from "@/lib/data/organizations";
 import type { getActiveEvent } from "@/lib/data/public";
+import { listEventPrizes } from "@/lib/data/raffles";
 import { getVisitorAccount } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
 
@@ -43,6 +45,9 @@ export function EventHome({ event, now }: Props) {
         </Link>
       )}
       {event.schedules.length > 1 && <Levels event={event} now={now} />}
+      <Suspense>
+        <Prizes event={event} />
+      </Suspense>
       <Suspense fallback={<MedalsLoading spots={event.spots} />}>
         <Medals event={event} />
       </Suspense>
@@ -226,6 +231,22 @@ async function myClaims(eventId: string) {
     console.error("reading the visitor's medals failed", error);
     return null;
   }
+}
+
+/** The prizes and how far this visitor is from each. */
+async function Prizes({ event }: { event: PublicEvent }) {
+  const [prizes, claimed] = await Promise.all([
+    listEventPrizes(await createClient(), event.id),
+    myClaims(event.id),
+  ]);
+  if (!claimed) return null;
+  return (
+    <PrizesSection
+      prizes={prizes}
+      claimed={collectionProgress(event.spots, claimed).medals}
+      total={event.spots.length}
+    />
+  );
 }
 
 /** The collection: what this visitor already has, and silhouettes for the rest. */

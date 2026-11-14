@@ -31,8 +31,10 @@ function phraseFor(
   reached: boolean,
 ) {
   if (reached) return `Ya estás en el sorteo de ${title}`;
-  if (claimed > 0)
-    return `Te faltan ${minClaims - claimed} para el sorteo de ${title}`;
+  if (claimed > 0) {
+    const missing = minClaims - claimed;
+    return `${missing === 1 ? "Te falta 1" : `Te faltan ${missing}`} para el sorteo de ${title}`;
+  }
   if (minClaims === 1) {
     return `Con tu primera medalla ya entrás al sorteo de ${title}`;
   }
@@ -70,4 +72,23 @@ export function prizeLadder(
     reached: prizes.findLast((p) => p.status === "reached") ?? null,
     unreachable,
   };
+}
+
+/** From here on an event has "many" stands: a raffle that asks for one medal stops pulling visitors along. */
+export const MANY_SPOTS = 5;
+
+/**
+ * The panel's soft warning: every prize the event can give asks for a single
+ * medal, so the raffle only motivates the first scan and no more.
+ */
+export function onlyFirstMedal(
+  raffles: readonly PrizeInput[],
+  totalSpots: number,
+) {
+  const reachable = raffles.filter((r) => r.minClaims <= totalSpots);
+  return (
+    totalSpots > MANY_SPOTS &&
+    reachable.length > 0 &&
+    reachable.every((r) => r.minClaims === 1)
+  );
 }

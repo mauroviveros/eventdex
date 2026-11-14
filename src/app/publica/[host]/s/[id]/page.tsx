@@ -3,10 +3,12 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { Celebration } from "@/components/visitante/Celebration";
 import { LockedMedal } from "@/components/visitante/LockedMedal";
+import { hasPrizes, PrizeNotice } from "@/components/visitante/Prizes";
 import { Progress } from "@/components/visitante/Progress";
 import { claimSpot } from "@/lib/claims";
 import { getClaimTarget, getMyProgress } from "@/lib/data/claims";
 import { spotLogoUrl } from "@/lib/data/organizations";
+import { listEventPrizes } from "@/lib/data/raffles";
 import { getVisitorAccount } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
 import { requireHostOrganization } from "../../organization";
@@ -76,7 +78,13 @@ async function Claim({
   let progress = null;
   if (outcome.kind === "nueva" || outcome.kind === "repetida") {
     const p = await getMyProgress(supabase, event.id, visitorId);
-    progress = <Progress claimed={p.medals} total={p.total} />;
+    const prizes = await listEventPrizes(supabase, event.id);
+    // With prizes, the bar carries their cups; without, the plain progress.
+    progress = hasPrizes(prizes, p.medals, p.total) ? (
+      <PrizeNotice prizes={prizes} claimed={p.medals} total={p.total} />
+    ) : (
+      <Progress claimed={p.medals} total={p.total} />
+    );
   }
 
   return (

@@ -59,6 +59,11 @@ import { LockedMedal } from "@/components/visitante/LockedMedal";
 import { Medal } from "@/components/visitante/Medal";
 import { MARQUESINA } from "@/components/visitante/marquesina";
 import { PhaseBadge } from "@/components/visitante/PhaseBadge";
+import {
+  PrizeNotice,
+  PrizesLadder,
+  PrizesSection,
+} from "@/components/visitante/Prizes";
 import { Progress } from "@/components/visitante/Progress";
 import { ShareCardButton } from "@/components/visitante/ShareCardButton";
 import { VisitorCard } from "@/components/visitante/VisitorCard";
@@ -191,6 +196,32 @@ const CARD = {
 };
 
 // Synthetic spots and logos, only for the catalog.
+type Prize = Parameters<typeof PrizesSection>[0]["prizes"][number];
+
+const PRIZES: Prize[] = [
+  {
+    id: "p1",
+    title: "Pase doble",
+    description: "Dos entradas para la próxima edición.",
+    imageUrl: undefined,
+    minClaims: 1,
+  },
+  {
+    id: "p2",
+    title: "Kit de coleccionista",
+    description: "Mochila, cuaderno y una lámina firmada.",
+    imageUrl: undefined,
+    minClaims: 3,
+  },
+  {
+    id: "p3",
+    title: "Viaje",
+    description: null,
+    imageUrl: undefined,
+    minClaims: 9,
+  },
+];
+
 const CAFE = {
   name: "Café de la Esquina",
   code: "A12",
@@ -432,6 +463,26 @@ export default function ComponentesPage() {
                 failed
                 headingLevel={3}
               />
+            </div>
+          </Section>
+
+          <Section
+            title="Premios"
+            note="PrizesSection (portada: placa por premio, compacta sin imagen), PrizesLadder (Mis medallas) y PrizeNotice (celebración: la barra con la copa de cada premio y el próximo). Un premio de una medalla no lleva copa ni barra: no es una meta. Los premios que piden más medallas que stands no se muestran."
+          >
+            <div className="grid items-start gap-10">
+              <PrizesSection prizes={PRIZES} claimed={1} total={4} />
+              <PrizesLadder prizes={PRIZES} claimed={2} total={4} />
+              <div className="panel w-full max-w-sm p-6">
+                <PrizeNotice prizes={PRIZES} claimed={1} total={4} />
+              </div>
+              <div className="panel w-full max-w-sm p-6">
+                <PrizeNotice
+                  prizes={[PRIZES[0] as Prize]}
+                  claimed={1}
+                  total={45}
+                />
+              </div>
             </div>
           </Section>
 

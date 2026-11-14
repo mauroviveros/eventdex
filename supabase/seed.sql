@@ -101,8 +101,9 @@ insert into public.spot_claims (event_spot_id, registration_id, event_id, organi
   ('00000000-0000-4000-8005-000000000002', '00000000-0000-4000-8006-000000000001', '00000000-0000-4000-8004-000000000001', '00000000-0000-4000-8001-000000000001', '00000000-0000-4000-8000-000000000004'),
   ('00000000-0000-4000-8005-000000000004', '00000000-0000-4000-8006-000000000002', '00000000-0000-4000-8004-000000000002', '00000000-0000-4000-8001-000000000001', '00000000-0000-4000-8000-000000000004');
 
-insert into public.raffles (event_id, organization_id, title, min_claims) values
-  ('00000000-0000-4000-8004-000000000001', '00000000-0000-4000-8001-000000000001', 'Pase doble para la próxima edición', 2);
+insert into public.raffles (event_id, organization_id, title, description, min_claims) values
+  ('00000000-0000-4000-8004-000000000001', '00000000-0000-4000-8001-000000000001', 'Pase doble para la próxima edición', 'Dos entradas para vos y quien quieras, los tres días.', 2),
+  ('00000000-0000-4000-8004-000000000001', '00000000-0000-4000-8001-000000000001', 'Kit de coleccionista', 'Mochila, cuaderno y una lámina firmada por los artistas del evento.', 3);
 
 -- ---------------------------------------------------------------------------
 -- "Feria del Sorteo": a second org of the same owner, with a live event, 14

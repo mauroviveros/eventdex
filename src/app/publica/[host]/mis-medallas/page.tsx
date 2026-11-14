@@ -3,6 +3,7 @@ import Link from "next/link";
 import { buttonClass } from "@/components/ui/Button";
 import type { Medal } from "@/components/visitante/Medal";
 import { MedalGrid } from "@/components/visitante/MedalGrid";
+import { PrizesLadder } from "@/components/visitante/Prizes";
 import { Progress } from "@/components/visitante/Progress";
 import { ShareCardButton } from "@/components/visitante/ShareCardButton";
 import { VisitorCard } from "@/components/visitante/VisitorCard";
@@ -10,6 +11,7 @@ import { collectionProgress } from "@/domain/claims";
 import { eventPhase } from "@/domain/events";
 import { listMyClaims, listMyEvents } from "@/lib/data/claims";
 import { getActiveEvent, getPublicEvent } from "@/lib/data/public";
+import { listEventPrizes } from "@/lib/data/raffles";
 import { requireVisitor } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
 import { requireHostOrganization } from "../organization";
@@ -50,6 +52,7 @@ export default async function MisMedallasPage({
       : active;
   const mine = event ? await listMyClaims(supabase, event.id, visitor.id) : [];
   const claimed = new Set(mine.map((c) => c.event_spot_id));
+  const prizes = event ? await listEventPrizes(supabase, event.id) : [];
   const medals = event?.spots.filter((s) => claimed.has(s.id)) ?? [];
 
   return (
@@ -111,6 +114,7 @@ export default async function MisMedallasPage({
             </div>
           )}
           <Collection
+            prizes={prizes}
             spots={event.spots}
             claimed={claimed}
             finished={
@@ -140,10 +144,12 @@ type Spot = Parameters<typeof collectionProgress>[0][number] & {
 };
 
 function Collection({
+  prizes,
   spots,
   claimed,
   finished,
 }: {
+  prizes: Parameters<typeof PrizesLadder>[0]["prizes"];
   spots: readonly Spot[];
   claimed: ReadonlySet<string>;
   finished: boolean;
@@ -160,6 +166,7 @@ function Collection({
   return (
     <>
       <Progress claimed={p.medals} total={p.total} finished={finished} />
+      <PrizesLadder prizes={prizes} claimed={p.medals} total={p.total} />
       <MedalGrid spots={spots} claimed={claimed} label="Tu colección" />
     </>
   );
