@@ -8,6 +8,8 @@ type Props = {
   spot: { name: string; code: string; type: SpotType };
   /** This page, to come back to and claim the medal. */
   next: string;
+  /** 1 on /s/[id]; lower where it sits under other headings (the catalog). */
+  headingLevel?: 1 | 2 | 3;
 };
 
 /**
@@ -15,11 +17,12 @@ type Props = {
  * Locked, it is always the sprite of its type in silhouette; the logo is what
  * the celebration reveals once the page claims it, back from Google.
  */
-export function LockedMedal({ spot, next }: Props) {
+export function LockedMedal({ spot, next, headingLevel = 1 }: Props) {
+  const Heading = `h${headingLevel}` as const;
   return (
     <article className="panel grid w-full max-w-sm gap-6 px-6 py-8">
       <div className="grid justify-items-center gap-4 text-center">
-        <h1 className="font-wide text-title">¡Bien ahí!</h1>
+        <Heading className="font-wide text-title">¡Bien ahí!</Heading>
         <div className="relative">
           <div className="grid size-40 place-items-center border-2 border-dashed border-lcd-2">
             <Sprite type={spot.type} scale={11} mode="silueta" label="" />

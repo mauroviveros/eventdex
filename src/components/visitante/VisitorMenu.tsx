@@ -105,7 +105,9 @@ function Avatar({ account }: { account: Account }) {
 export function SignInLink() {
   const pathname = usePathname();
   const query = useSearchParams().toString();
-  if (pathname.startsWith("/ingresar")) return null;
+  // Both pages already are the sign-in: /s/[id] shows the locked medal with its own button.
+  if (pathname.startsWith("/ingresar") || pathname.startsWith("/s/"))
+    return null;
   const next = query ? `${pathname}?${query}` : pathname;
   // Production only has Google, so straight to it; /ingresar also offers the mail link.
   if (process.env.NODE_ENV === "production") {

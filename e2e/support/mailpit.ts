@@ -25,7 +25,7 @@ export async function magicLink(email: string) {
   return link;
 }
 
-/** Signs in on the page's current /ingresar with the dev mail link. */
+/** Signs in with the dev mail link on the page's form (/ingresar, or /s/[id] without a session). */
 export async function signInByMail(page: Page, email: string) {
   await page.getByLabel("Mail").fill(email);
   await page.getByRole("button", { name: "Mandarme el link" }).click();

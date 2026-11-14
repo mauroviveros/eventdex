@@ -20,12 +20,20 @@ test("a visitor scans a QR, signs in, collects, and staff can block them", async
   const [cafe, rueda] = seed.spots;
   if (!cafe || !rueda) throw new Error("seed without spots");
 
-  await test.step("scanning without a session asks to sign in and comes back", async () => {
+  await test.step("scanning without a session shows the locked medal, signs in there and comes back", async () => {
     await page.goto(`${seed.origin}/s/${cafe.id}`);
-    await expect(page).toHaveURL(/\/ingresar\?next=%2Fs%2F/);
+    await expect(page).toHaveURL(`${seed.origin}/s/${cafe.id}`);
     await expect(
-      page.getByRole("heading", { name: "Ingresá para sumar la medalla" }),
+      page.getByRole("heading", { level: 1, name: "¡Bien ahí!" }),
     ).toBeVisible();
+    await expect(page.getByText("Café de la Esquina")).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Ingresá con Google para sumarla" }),
+    ).toBeVisible();
+    // The page is the sign-in: the header doesn't repeat it.
+    await expect(
+      page.locator("header").getByText("Ingresar", { exact: true }),
+    ).toHaveCount(0);
 
     await signInByMail(page, seed.visitorEmail);
     await expect(page).toHaveURL(`${seed.origin}/s/${cafe.id}`);
