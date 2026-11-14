@@ -25,7 +25,12 @@ export function LockedMedal({ spot, next, headingLevel = 1 }: Props) {
         <Heading className="font-wide text-title">¡Bien ahí!</Heading>
         <div className="relative">
           <div className="grid size-40 place-items-center border-2 border-dashed border-lcd-2">
-            <Sprite type={spot.type} scale={11} mode="silueta" label="" />
+            <Sprite
+              type={spot.type}
+              scale={11}
+              mode="silueta"
+              label="Medalla bloqueada"
+            />
           </div>
           <span className="absolute -right-4 -bottom-4 grid size-12 place-items-center border-2 border-lcd-3 bg-plate text-lcd-3 shadow-plate">
             <PixelIcon name="candado" size={32} />

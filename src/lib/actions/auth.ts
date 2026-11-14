@@ -3,15 +3,10 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { googleSignInUrl } from "@/lib/auth";
+import { callbackUrl, googleSignInUrl } from "@/lib/auth";
 import type { ActionResult } from "@/lib/results";
 import { requestOrigin, safeNext } from "@/lib/session";
 import { createClient } from "@/lib/supabase/server";
-
-/** Where the provider sends the user back: this same host, so the cookie lands here. */
-async function callbackUrl(next: string) {
-  return `${requestOrigin(await headers())}/auth/callback?next=${encodeURIComponent(next)}`;
-}
 
 /** Starts Google sign-in. */
 export async function signInWithGoogle(formData: FormData) {
@@ -41,7 +36,9 @@ export async function signInWithEmail(
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithOtp({
     email: email.data,
-    options: { emailRedirectTo: await callbackUrl(next) },
+    options: {
+      emailRedirectTo: callbackUrl(requestOrigin(await headers()), next),
+    },
   });
   if (error) {
     console.error("email sign-in failed", error);

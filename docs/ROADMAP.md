@@ -637,7 +637,7 @@ ediciones anteriores. Promedio real: de 2 a 3 medallas por persona (ver
 Orden: primero lo que más mueve el escaneo (R18 → R19 → R20), después lo personal
 (R22) y al final la portada grande (R21).
 
-## R18 · Ingreso directo ▶
+## R18 · Ingreso directo ✅
 
 Escanear sin sesión es el camino más importante, y hoy pasa por `/ingresar`. En
 producción solo hay Google, así que esa parada sobra. Branch `feat/ingreso-directo`.
@@ -662,7 +662,16 @@ producción solo hay Google, así que esa parada sobra. Branch `feat/ingreso-dir
    Hecho con `LockedMedal`. La cabecera esconde «Ingresar» en `/s/[id]`, porque la
    página ya es el ingreso. En producción, `requireVisitor` (`/mis-medallas` y su
    tarjeta) también va directo a `/auth/google`. El panel sigue pasando por `/ingresar`.
-4. **Auditoría.** `/code-review` y `/accessibility`.
+4. ✅ **Auditoría.** `/code-review` y `/accessibility`. Se arreglaron estas cosas:
+   - La medalla bloqueada se anuncia como «Medalla bloqueada» y no queda muda.
+   - Una sola `callbackUrl` para Google y para el mail.
+   - Un log cuando Google no devuelve URL.
+   - Un test de `requireVisitor` en producción y en desarrollo.
+
+   Quedaron sin cambiar, por decisión:
+   - El 404 de un QR roto no muestra «Ingresar» en la cabecera.
+   - Los `NODE_ENV` del ingreso por mail siguen sueltos en cuatro lugares; se juntan cuando se decida otro método de ingreso.
+   - La navegación del cliente a una página con sesión vencida puede pasar por una carga completa antes de llegar a Google.
 
 ## R19 · Premios a la vista
 
