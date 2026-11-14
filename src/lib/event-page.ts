@@ -176,9 +176,16 @@ export async function addPhoto(
   });
   if (error) {
     await supabase.storage.from(PHOTO_BUCKET).remove([path]);
-    return failed(error, {
-      "23514": `Una portada puede tener hasta ${MAX_PHOTOS} fotos. Borrá alguna para sumar otra.`,
-    });
+    // 23514 is also any other check; only the trigger's own message is the cap.
+    const atCap = error.code === "23514" && error.message?.includes("at most");
+    return failed(
+      error,
+      atCap
+        ? {
+            "23514": `Una portada puede tener hasta ${MAX_PHOTOS} fotos. Borrá alguna para sumar otra.`,
+          }
+        : {},
+    );
   }
   return { ok: true, data: null };
 }

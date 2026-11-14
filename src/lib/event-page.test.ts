@@ -168,7 +168,7 @@ describe("photos", () => {
   it("deletes the file again when the 13th photo is refused", async () => {
     const { client, upload, remove } = withStorage({
       data: null,
-      error: { code: "23514" },
+      error: { code: "23514", message: "an event holds at most 12 photos" },
     });
     const result = await addPhoto(client, {
       organizationId: ORG,
@@ -178,6 +178,20 @@ describe("photos", () => {
     expect(result).toMatchObject({ ok: false });
     expect(result.ok === false && result.error).toMatch(/hasta 12 fotos/);
     expect(remove).toHaveBeenCalledWith([upload.mock.calls[0]?.[0]]);
+  });
+
+  it("does not blame the cap for another refused check", async () => {
+    const { client, remove } = withStorage({
+      data: null,
+      error: { code: "23514", message: "violates check constraint" },
+    });
+    const result = await addPhoto(client, {
+      organizationId: ORG,
+      eventId: EVENT,
+      photo: jpg(),
+    });
+    expect(result.ok === false && result.error).not.toMatch(/12 fotos/);
+    expect(remove).toHaveBeenCalled();
   });
 
   it("deletes the row, then its file", async () => {
