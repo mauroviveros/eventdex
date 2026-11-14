@@ -831,8 +831,16 @@ antes informa, durante juega, después muestra ganadores y la próxima edición.
    evento publicado; escribe la org. Fuera del snapshot y sin copiar al duplicar.
    *Límite conocido:* el tope de 12 cuenta sin lock (`// shortcut:` en la migración).
    **Antes del merge: correr `pnpm db:push` (dry-run primero).**
-2. **Backend.** Lecturas públicas y acciones del panel; cifras de ediciones anteriores
-   con datos reales (visitantes y medallas).
+2. ✅ **Backend.** Lecturas públicas y acciones del panel; cifras de ediciones anteriores
+   con datos reales (visitantes y medallas). Hecho: `getPublicEvent` y `getActiveEvent`
+   devuelven `links`, `faqs` y `photos` (en el orden del staff); `getEventBySlug` (panel)
+   los suma. `getPastEditions` llama a `past_editions()` (migración
+   `20261114170000`, security definer): hasta 6 ediciones públicas terminadas con
+   visitantes y medallas, solo totales. Acciones en `src/lib/event-page.ts`: links
+   (https), preguntas (alta, edición, baja) y fotos (alta con tope de 12, epígrafe,
+   baja con su archivo), con sus Server Actions. El seed carga links y tres preguntas.
+   *Falta, para la vista:* subir y bajar el orden de las preguntas (`sort_order` ya está
+   en la base). **Antes del merge: `pnpm db:push` (dry-run primero).**
 3. **Diseño.** `/impeccable shape` de la portada en sus tres fases y alternativas antes
    de escribirla.
 4. **Vista.** La portada por fase: sobre el evento, premios (R19), stands (R20), cómo

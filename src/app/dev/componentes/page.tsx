@@ -156,6 +156,9 @@ const sampleEvent = (
   schedules,
   spots: [],
   hasWinners: false,
+  links: { website: null, instagram: null, tickets: null, map: null },
+  faqs: [],
+  photos: [],
 });
 const SAMPLE = {
   upcoming: sampleEvent([

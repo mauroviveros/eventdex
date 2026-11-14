@@ -105,6 +105,11 @@ export function prizeImageUrl(path: string | null) {
   return path ? logoUrl(path, "raffle-images") : undefined;
 }
 
+/** Same for a photo of an event's gallery. */
+export function photoUrl(path: string) {
+  return logoUrl(path, "event-photos");
+}
+
 /** The org's primary hostname: where its public app (and every QR) points. */
 export async function getPrimaryHostname(
   supabase: Supabase,

@@ -45,7 +45,10 @@ const EVENT_COLUMNS = `id, slug, title, edition_label, summary, description, cov
   schedules:event_schedules (id, label, starts_at, ends_at),
   spots:event_spots (id, code, booth, perk, perk_hidden, points, is_active, sort_order,
                      name_override, description_override, snapshot),
-  raffles (winners_published_at)`;
+  raffles (winners_published_at),
+  website_url, instagram_url, tickets_url, map_url,
+  faqs:event_faqs (id, question, answer),
+  photos:event_photos (id, path, caption)`;
 
 /**
  * A published event of the org by slug, with its schedules in order and its
@@ -67,6 +70,10 @@ export async function getPublicEvent(
     .order("starts_at", { referencedTable: "event_schedules" })
     .order("sort_order", { referencedTable: "event_spots" })
     .order("code", { referencedTable: "event_spots" })
+    .order("sort_order", { referencedTable: "event_faqs" })
+    .order("created_at", { referencedTable: "event_faqs" })
+    .order("sort_order", { referencedTable: "event_photos" })
+    .order("created_at", { referencedTable: "event_photos" })
     .maybeSingle();
   if (error) throw error;
   return data && toPublicEvent(data);
@@ -87,6 +94,10 @@ export async function getActiveEvent(
     .order("starts_at", { referencedTable: "event_schedules" })
     .order("sort_order", { referencedTable: "event_spots" })
     .order("code", { referencedTable: "event_spots" })
+    .order("sort_order", { referencedTable: "event_faqs" })
+    .order("created_at", { referencedTable: "event_faqs" })
+    .order("sort_order", { referencedTable: "event_photos" })
+    .order("created_at", { referencedTable: "event_photos" })
     .maybeSingle();
   if (error) throw error;
   return data && toPublicEvent(data);
@@ -98,9 +109,23 @@ const eventQuery = (supabase: Supabase) =>
 type EventRow = QueryData<ReturnType<typeof eventQuery>>[number];
 
 /** Keeps the active spots and resolves what each shows from its snapshot. */
-function toPublicEvent({ spots, raffles, ...event }: EventRow) {
+function toPublicEvent({
+  spots,
+  raffles,
+  website_url,
+  instagram_url,
+  tickets_url,
+  map_url,
+  ...event
+}: EventRow) {
   return {
     ...event,
+    links: {
+      website: website_url,
+      instagram: instagram_url,
+      tickets: tickets_url,
+      map: map_url,
+    },
     // Checked here: a signed-in member also reads the unpublished ones.
     hasWinners: raffles.some((r) => r.winners_published_at),
     spots: spots.flatMap((s) => {
@@ -120,6 +145,31 @@ function toPublicEvent({ spots, raffles, ...event }: EventRow) {
         : [];
     }),
   };
+}
+
+/**
+ * The org's finished editions with how many people played and how many medals
+ * they got, newest first (up to six). Totals only: the function never returns
+ * a person. `eventId` leaves out the event being shown.
+ */
+export async function getPastEditions(
+  supabase: Supabase,
+  organizationId: string,
+  eventId: string,
+) {
+  const { data, error } = await supabase.rpc("past_editions", {
+    p_organization_id: organizationId,
+    p_event_id: eventId,
+  });
+  if (error) throw error;
+  return data.map((e) => ({
+    slug: e.slug,
+    title: e.title,
+    editionLabel: e.edition_label,
+    endedAt: e.ended_at,
+    visitors: Number(e.visitors),
+    medals: Number(e.medals),
+  }));
 }
 
 /** Published public events for the sitemap, newest change first. */
