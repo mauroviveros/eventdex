@@ -10,8 +10,12 @@ curso y el documento que decide sobre lo que vas a cambiar (ver
 ## Cómo trabajamos
 
 - **Rebanadas verticales.** Cada funcionalidad se hace de punta a punta, con datos
-  reales: DB → Backend → Vista → Auditoría. Ni pantallas con datos inventados ni
-  backend sin una vista que lo use.
+  reales: DB → Backend → Diseño → Vista → Auditoría. Ni pantallas con datos
+  inventados ni backend sin una vista que lo use.
+- **Diseño antes del código.** Toda vista nueva o rediseñada pasa por un bloque
+  **Diseño**: `/impeccable shape`, dos o tres alternativas con `/impeccable` sobre la
+  página real, y Mauro elige antes de escribir la vista (ver
+  [ROADMAP](./docs/ROADMAP.md#cómo-se-lee)).
 - **Bloques chicos, de a uno.** Se hace un bloque del ROADMAP, se prueba y **se para**
   hasta que Mauro lo revise. No se adelanta el bloque siguiente "ya que estamos".
 - **Probar antes de seguir.** Cada bloque se verifica en el navegador o con un test
