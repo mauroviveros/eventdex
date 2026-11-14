@@ -78,8 +78,10 @@ async function Claim({
 
   let progress = null;
   if (outcome.kind === "nueva" || outcome.kind === "repetida") {
-    const p = await getMyProgress(supabase, event.id, visitorId);
-    const prizes = await listEventPrizes(supabase, event.id);
+    const [p, prizes] = await Promise.all([
+      getMyProgress(supabase, event.id, visitorId),
+      listEventPrizes(supabase, event.id),
+    ]);
     // With prizes, the bar carries their cups; without, the plain progress.
     progress = (
       <div className="grid gap-5">

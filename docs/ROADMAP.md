@@ -705,7 +705,7 @@ producción solo hay Google, así que esa parada sobra. Branch `feat/ingreso-dir
 
    Queda para R23 la línea de la organización, copiada de `VisitorCard`. Accesibilidad sin hallazgos: un solo `h1`, el aviso como `alert`, el foco visible en el botón de Google y contraste de 7:1 o más.
 
-## R19 · Premios a la vista
+## R19 · Premios a la vista ✅
 
 El visitante ve qué se gana y cuánto le falta. Revierte lo decidido en R5/R6 (el
 mínimo oculto): el mínimo se muestra siempre que haya sorteos, y lo que cambia según
@@ -760,7 +760,12 @@ el caso es la frase. Branch `feat/premios`.
    marquesina, el premio mayor destacado y el QR de la portada; elegido sobre dos
    alternativas: el aspecto de A con lo destacado de B, e impreso con sus colores). La
    celebración nombra los 3 primeros stands que faltan. Con esto el bloque 4 está hecho.
-5. **Auditoría.** `/code-review` y `/accessibility`.
+5. ✅ **Auditoría.** `/code-review` y `/accessibility`. Se arreglaron estas cosas:
+   - La celebración lee el progreso y los premios en paralelo, y la portada lee las medallas del visitante una sola vez.
+   - «Verlos todos» tiene el alto de un toque (44 px) y la mini barra de cada premio dice para cuál es.
+   - El cartel avisa si el evento aún es un borrador: su QR no abre nada hasta publicarlo.
+
+   Quedan: los ids repetidos de «Premios» solo en `/dev/componentes`, y las imágenes de los e2e que quedan en Storage (como ya pasa con banners y logos). Sin hallazgos de contraste, títulos ni alternativas de imagen.
 
 ## R20 · Stands con algo para dar
 

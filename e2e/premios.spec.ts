@@ -38,6 +38,14 @@ test("the visitor sees what is won and how far they are, from the event to Mis m
     const raffle = staff.getByRole("region", { name: "Tablet" });
     await expect(raffle).toContainText("Hacen falta 2 medallas");
 
+    await staff.getByLabel("Premio").fill("Viaje");
+    await staff.getByLabel("Medallas para participar").fill("9");
+    await staff.getByRole("button", { name: "Crear sorteo" }).click();
+    // A prize nobody can reach is flagged to staff (and hidden from visitors, below).
+    await expect(staff.getByRole("region", { name: "Viaje" })).toContainText(
+      "Pide más medallas que stands activos",
+    );
+
     await raffle.getByText("Descripción e imagen", { exact: true }).click();
     await raffle
       .getByRole("textbox", { name: "Descripción" })
@@ -51,20 +59,8 @@ test("the visitor sees what is won and how far they are, from the event to Mis m
     await expect(
       raffle.getByRole("img", { name: "Imagen actual del premio" }),
     ).toBeVisible();
-    // The toast sits over the next form on a phone: let it go before clicking under it.
-    await expect(staff.getByText("Premio actualizado.")).toBeHidden({
-      timeout: 10_000,
-    });
   });
 
-  await test.step("a prize nobody can reach is flagged to staff and hidden from visitors", async () => {
-    await staff.getByLabel("Premio").fill("Viaje");
-    await staff.getByLabel("Medallas para participar").fill("9");
-    await staff.getByRole("button", { name: "Crear sorteo" }).click();
-    await expect(staff.getByRole("region", { name: "Viaje" })).toContainText(
-      "Pide más medallas que stands activos",
-    );
-  });
   await staff.close();
 
   await test.step("signed out, the event shows the prize with its picture and what to do", async () => {

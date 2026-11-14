@@ -67,11 +67,19 @@ function Minimum({ n }: { n: number }) {
   );
 }
 
-function Segments({ done, of }: { done: number; of: number }) {
+function Segments({
+  done,
+  of,
+  prize,
+}: {
+  done: number;
+  of: number;
+  prize: string;
+}) {
   return (
     <div
       role="img"
-      aria-label={`${done} de ${of} medallas`}
+      aria-label={`${done} de ${of} medallas para ${prize}`}
       className="flex h-4 gap-0.5 border-2 border-lcd-3 bg-plate p-0.5"
     >
       {Array.from({ length: of }, (_, i) => (
@@ -146,6 +154,7 @@ export function PrizesSection({ prizes, claimed, total }: Props) {
               <Segments
                 done={Math.min(claimed, p.minClaims)}
                 of={p.minClaims}
+                prize={p.title}
               />
             )}
             <span className="text-sm">{p.phrase}</span>

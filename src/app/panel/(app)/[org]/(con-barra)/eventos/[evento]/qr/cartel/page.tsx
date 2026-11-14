@@ -58,6 +58,8 @@ export default async function PosterPage({
           <p className="max-w-prose">
             Un A4 para la puerta del predio: cuenta qué se gana y lleva el QR de
             la página del evento.
+            {event.status !== "published" &&
+              " El evento todavía no está publicado: el QR no abre nada hasta que lo publiques, así que imprimilo después."}
           </p>
         </div>
         {hostname ? (

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Suspense } from "react";
+import { cache, Suspense } from "react";
 import { ClockIcon } from "@/components/pixel/ClockIcon";
 import { buttonClass } from "@/components/ui/Button";
 import { Countdown } from "@/components/visitante/Countdown";
@@ -219,8 +219,8 @@ export function MedalsLoading({ spots }: { spots: readonly { id: string }[] }) {
   );
 }
 
-/** Which spots this visitor has; empty signed out, null if the read failed. */
-async function myClaims(eventId: string) {
+/** Which spots this visitor has; empty signed out, null if the read failed. One read per request, shared by Premios and Medallas. */
+const myClaims = cache(async (eventId: string) => {
   const account = await getVisitorAccount();
   if (!account) return new Set<string>();
   try {
@@ -231,7 +231,7 @@ async function myClaims(eventId: string) {
     console.error("reading the visitor's medals failed", error);
     return null;
   }
-}
+});
 
 /** The prizes and how far this visitor is from each. */
 async function Prizes({ event }: { event: PublicEvent }) {
