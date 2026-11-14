@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { googleSignInUrl } from "./auth";
+import { googleSignInUrl, signInErrorUrl } from "./auth";
 
 const ORIGIN = "https://expo.example.com";
 
@@ -29,14 +29,26 @@ describe("googleSignInUrl", () => {
     });
   });
 
-  it("falls back to /ingresar with the error when the provider fails", async () => {
+  it("lands on the sign-in error when the provider fails", async () => {
     const { client } = clientReturning({
       data: { url: null },
       error: new Error("down"),
     });
 
     expect(await googleSignInUrl(client, ORIGIN, "/s/abc")).toBe(
-      `/ingresar?error=auth&next=${encodeURIComponent("/s/abc")}`,
+      "/s/abc?error=auth",
+    );
+  });
+});
+
+describe("signInErrorUrl", () => {
+  it("sends a failed sign-in from a QR back to that QR, with the error", () => {
+    expect(signInErrorUrl("/s/abc")).toBe("/s/abc?error=auth");
+  });
+
+  it("sends any other failed sign-in to /ingresar, keeping where it was going", () => {
+    expect(signInErrorUrl("/mis-medallas?evento=feria")).toBe(
+      `/ingresar?error=auth&next=${encodeURIComponent("/mis-medallas?evento=feria")}`,
     );
   });
 });

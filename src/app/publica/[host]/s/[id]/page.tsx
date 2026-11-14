@@ -24,6 +24,7 @@ export const metadata: Metadata = {
  */
 export default async function ClaimPage({
   params,
+  searchParams,
 }: PageProps<"/publica/[host]/s/[id]">) {
   const { host, id } = await params;
   const { org } = await requireHostOrganization(host);
@@ -36,7 +37,11 @@ export default async function ClaimPage({
     const { name, code, type } = target.spot;
     return (
       <main className="mx-auto grid w-full max-w-3xl justify-items-center px-4 py-10 sm:px-6">
-        <LockedMedal spot={{ name, code, type }} next={`/s/${id}`} />
+        <LockedMedal
+          spot={{ name, code, type }}
+          next={`/s/${id}`}
+          failed={(await searchParams).error === "auth"}
+        />
       </main>
     );
   }

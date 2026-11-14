@@ -689,7 +689,7 @@ producción solo hay Google, así que esa parada sobra. Branch `feat/ingreso-dir
      guarda de Google («tu nombre, tu mail y tu foto», que la org ve junto con los stands
      visitados). Todo entra en la primera pantalla. La D se descartó porque dejaba el
      botón abajo del pliegue. `SignInCard` queda solo para el panel.
-6. **Vista.**
+6. ✅ **Vista.**
    - `/ingresar` es la pantalla de título (ya aplicada al elegirla).
    - Un error de Google al escanear vuelve a `/s/[id]?error=auth` y la medalla bloqueada
      muestra el aviso con el botón para reintentar; `/ingresar` se queda con el error de

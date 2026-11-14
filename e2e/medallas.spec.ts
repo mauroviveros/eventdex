@@ -200,3 +200,38 @@ test("a QR of another org or a broken one is a 404, without asking to sign in", 
   const broken = await page.goto(`${seed.origin}/s/no-es-un-qr`);
   expect(broken?.status()).toBe(404);
 });
+
+test("a failed Google sign-in from a QR comes back to the locked medal", async ({
+  page,
+}) => {
+  const [cafe] = seed.spots;
+  if (!cafe) throw new Error("seed without spots");
+
+  // Google sent the visitor back without a code (cancelled or refused).
+  await page.goto(
+    `${seed.origin}/auth/callback?next=${encodeURIComponent(`/s/${cafe.id}`)}`,
+  );
+  await expect(page).toHaveURL(`${seed.origin}/s/${cafe.id}?error=auth`);
+  await expect(
+    page.getByRole("heading", { level: 1, name: "¡Bien ahí!" }),
+  ).toBeVisible();
+  await expect(
+    page
+      .getByRole("alert")
+      .filter({ hasText: "No pudimos completar el ingreso" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Ingresá con Google para sumarla" }),
+  ).toBeVisible();
+
+  // Anywhere else, the error lands on /ingresar, which keeps where it was going.
+  await page.goto(`${seed.origin}/auth/callback?next=%2Fmis-medallas`);
+  await expect(page).toHaveURL(
+    `${seed.origin}/ingresar?error=auth&next=%2Fmis-medallas`,
+  );
+  await expect(
+    page
+      .getByRole("alert")
+      .filter({ hasText: "No pudimos completar el ingreso" }),
+  ).toBeVisible();
+});

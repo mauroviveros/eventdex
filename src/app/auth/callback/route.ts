@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { signInErrorUrl } from "@/lib/auth";
 import { requestOrigin, safeNext } from "@/lib/session";
 import { createClient } from "@/lib/supabase/server";
 
@@ -15,7 +16,6 @@ export async function GET(request: NextRequest) {
     if (!error) return NextResponse.redirect(new URL(next, origin));
   }
 
-  return NextResponse.redirect(
-    new URL(`/ingresar?error=auth&next=${encodeURIComponent(next)}`, origin),
-  );
+  // No code (Google cancelled or refused) or an expired one.
+  return NextResponse.redirect(new URL(signInErrorUrl(next), origin));
 }

@@ -6,9 +6,23 @@ export function callbackUrl(origin: string, next: string) {
 }
 
 /**
+ * Where a failed sign-in lands (`next` already checked with safeNext): a QR
+ * goes back to its locked medal, so the visitor keeps the stand in front of
+ * them; anything else to /ingresar, which keeps where it was going.
+ */
+export function signInErrorUrl(next: string) {
+  if (next.startsWith("/s/")) {
+    const url = new URL(next, "http://same.invalid");
+    url.searchParams.set("error", "auth");
+    return url.pathname + url.search;
+  }
+  return `/ingresar?error=auth&next=${encodeURIComponent(next)}`;
+}
+
+/**
  * Starts Google sign-in and returns where to send the browser: Google, which
- * comes back to /auth/callback and then to `next`; or /ingresar with the error
- * if the provider fails. `next` must already be checked with safeNext.
+ * comes back to /auth/callback and then to `next`; or signInErrorUrl if the
+ * provider fails. `next` must already be checked with safeNext.
  */
 export async function googleSignInUrl(
   supabase: Supabase,
@@ -21,7 +35,7 @@ export async function googleSignInUrl(
   });
   if (error || !data.url) {
     console.error("google sign-in failed", error ?? "no provider url");
-    return `/ingresar?error=auth&next=${encodeURIComponent(next)}`;
+    return signInErrorUrl(next);
   }
   return data.url;
 }

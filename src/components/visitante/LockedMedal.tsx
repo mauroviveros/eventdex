@@ -1,3 +1,4 @@
+import { AlertIcon } from "@/components/pixel/AlertIcon";
 import { PixelIcon } from "@/components/pixel/icons";
 import { Sprite } from "@/components/pixel/Sprite";
 import { EmailSignIn } from "@/components/ui/EmailSignIn";
@@ -8,6 +9,8 @@ type Props = {
   spot: { name: string; code: string; type: SpotType };
   /** This page, to come back to and claim the medal. */
   next: string;
+  /** Google sent back an error (`?error=auth`): say so above the button, to retry. */
+  failed?: boolean;
   /** 1 on /s/[id]; lower where it sits under other headings (the catalog). */
   headingLevel?: 1 | 2 | 3;
 };
@@ -17,7 +20,12 @@ type Props = {
  * Locked, it is always the sprite of its type in silhouette; the logo is what
  * the celebration reveals once the page claims it, back from Google.
  */
-export function LockedMedal({ spot, next, headingLevel = 1 }: Props) {
+export function LockedMedal({
+  spot,
+  next,
+  failed = false,
+  headingLevel = 1,
+}: Props) {
   const Heading = `h${headingLevel}` as const;
   return (
     <article className="panel grid w-full max-w-sm gap-6 px-6 py-8">
@@ -44,6 +52,15 @@ export function LockedMedal({ spot, next, headingLevel = 1 }: Props) {
         </div>
         <p>Desbloqueala con un toque: entrás con Google y es tuya.</p>
       </div>
+      {failed && (
+        <p role="alert" className="flex items-start gap-2 text-danger">
+          <span className="mt-1">
+            <AlertIcon />
+          </span>
+          No pudimos completar el ingreso. Probá de nuevo: la medalla te sigue
+          esperando.
+        </p>
+      )}
       <GoogleSignIn next={next} className="w-full">
         Ingresá con Google para sumarla
       </GoogleSignIn>

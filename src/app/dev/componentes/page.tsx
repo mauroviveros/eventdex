@@ -418,7 +418,7 @@ export default function ComponentesPage() {
 
           <Section
             title="Medalla bloqueada"
-            note="LockedMedal: /s/[id] sin sesión. Siempre el sprite del tipo en silueta, aunque el spot tenga logo; el logo lo revela la celebración al volver de Google. El link por mail aparece solo en desarrollo."
+            note="LockedMedal: /s/[id] sin sesión (la segunda, con ?error=auth: Google falló y se reintenta). Siempre el sprite del tipo en silueta, aunque el spot tenga logo; el logo lo revela la celebración al volver de Google. El link por mail aparece solo en desarrollo."
           >
             <div className="grid items-start justify-items-center gap-6 md:grid-cols-2">
               <LockedMedal spot={CAFE} next="/s/demo" headingLevel={3} />
@@ -429,6 +429,7 @@ export default function ComponentesPage() {
                   type: "sponsor",
                 }}
                 next="/s/demo"
+                failed
                 headingLevel={3}
               />
             </div>
