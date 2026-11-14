@@ -24,6 +24,7 @@ const HINT: Record<StampId, string> = {
   ganador: "Ganar un sorteo.",
 };
 
+// shortcut: the month is read in UTC, not in the event's zone; it only shifts for an event starting in the last hours of a month, store the zone with the edition if it matters
 const MONTH = new Intl.DateTimeFormat("es-AR", {
   month: "long",
   year: "numeric",
@@ -78,6 +79,7 @@ export function History({ history }: { history: History }) {
                 >
                   <PixelIcon name={ICON[id]} size={40} />
                   <span className="font-display text-px-1">{STAMPS[id]}</span>
+                  <span className="sr-only">Ganado</span>
                 </li>
               ) : (
                 <li
@@ -86,6 +88,7 @@ export function History({ history }: { history: History }) {
                 >
                   <PixelIcon name="candado" size={40} />
                   <span className="font-display text-px-1">{STAMPS[id]}</span>
+                  <span className="sr-only">Por ganar:</span>
                   <span className="text-sm">{HINT[id]}</span>
                 </li>
               ),

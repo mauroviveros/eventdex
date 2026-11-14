@@ -15,6 +15,7 @@ export function fakeClient(...results: { data: unknown; error: unknown }[]) {
     "select",
     "eq",
     "is",
+    "not",
     "single",
     "maybeSingle",
     "like",

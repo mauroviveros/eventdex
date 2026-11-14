@@ -894,7 +894,12 @@ esa organización. Sin cambios en la base. Branch `feat/mi-historial`.
    Hecho: `History` en `src/components/visitante/History.tsx` (con `HistoryLoading` y
    `HistoryFailed`), `MyHistory` con `Suspense` en `/mis-medallas`, la sección en
    `/dev/componentes` y `e2e/historial.spec.ts`. Se borraron las alternativas.
-4. **Auditoría.** `/code-review` y `/accessibility`.
+4. ✅ **Auditoría.** `/code-review` y `/accessibility`. Hecho: `/code-review` halló 5 y se
+   arreglaron 4: las medallas no pasan del total de stands activos, `getMyHistory` tiene
+   tests, los sellos dicen «Ganado» / «Por ganar:» a quien lee con pantalla y se corrigió
+   un comentario viejo. Queda como `shortcut:` el mes de «Venís desde» leído en UTC.
+   Accesibilidad: un solo bloque plegable nativo, objetivo de 68 px, contraste del texto
+   secundario de ~5:1; sin pasar lector de pantalla.
 
 ---
 

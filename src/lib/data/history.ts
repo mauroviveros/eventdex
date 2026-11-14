@@ -2,8 +2,8 @@ import { buildHistory, type HistoryEdition } from "@/domain/history";
 import type { Supabase } from "@/lib/supabase/server";
 
 /**
- * The visitor's history in one organization. A failed read throws, so
- * error.tsx shows it. Filtered by user: the org team reads everyone's rows
+ * The visitor's history in one organization. A failed read throws: the caller
+ * decides what the page shows. Filtered by user: the org team reads everyone's rows
  * under RLS, and this is "mine" for them too.
  */
 export async function getMyHistory(
@@ -50,6 +50,7 @@ export async function getMyHistory(
       .at(0);
     // An edition that hasn't started yet is not part of the past.
     if (!startsAt || Date.parse(startsAt) > now.getTime()) return [];
+    const total = e.spots[0]?.count ?? 0;
     return [
       {
         id: e.id,
@@ -57,8 +58,9 @@ export async function getMyHistory(
         editionLabel: e.edition_label,
         startsAt,
         came: medals.has(e.id),
-        medals: medals.get(e.id) ?? 0,
-        total: e.spots[0]?.count ?? 0,
+        // A stand deactivated after a scan keeps its claim but leaves the total.
+        medals: Math.min(medals.get(e.id) ?? 0, total),
+        total,
         wins: won.get(e.id) ?? 0,
       },
     ];
