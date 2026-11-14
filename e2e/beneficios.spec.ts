@@ -72,11 +72,9 @@ test("a perk loaded in the panel is a surprise until the medal, then a coupon on
     await page
       .getByRole("link", { name: "Su beneficio está en la ficha del stand" })
       .click();
-    await expect(page).toHaveURL(/#medallas$/);
   });
 
-  await test.step("the sheet keeps it for whoever holds the medal", async () => {
-    await page.getByRole("button", { name: new RegExp(NAME) }).click();
+  await test.step("the link opens the sheet, which keeps it for whoever holds the medal", async () => {
     const sheet = page.getByRole("dialog", { name: NAME });
     await expect(sheet).toContainText("Ya la tenés");
     await expect(sheet).toContainText("Tu beneficio");

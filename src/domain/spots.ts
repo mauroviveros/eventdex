@@ -107,6 +107,7 @@ export function resolvePublishedSpot(eventSpot: EventSpotFields) {
  * What a visitor may read of a spot's perk. A surprise stays hidden until they
  * hold the medal: `surprise` tells the page to say so without the text.
  */
+// shortcut: hidden only in the app, the database still lets anyone read `perk` through the API; hide it there (own table or function) if a perk ever becomes sensitive
 export function shownPerk(
   spot: { perk: string | null; perkHidden: boolean },
   claimed: boolean,

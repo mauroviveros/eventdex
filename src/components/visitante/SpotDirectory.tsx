@@ -1,7 +1,7 @@
 "use client";
 
 import { Dialog } from "radix-ui";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Sprite } from "@/components/pixel/Sprite";
 import { buttonClass } from "@/components/ui/Button";
 import type { SpotType } from "@/domain/spots";
@@ -34,6 +34,12 @@ type Props = {
  */
 export function SpotDirectory({ spots, claimedIds }: Props) {
   const [openId, setOpenId] = useState<string | null>(null);
+  // The celebration links here with #ficha=<id>: open that stand's sheet once.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: only on arrival; reopening on every refresh would undo a close
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.hash.slice(1)).get("ficha");
+    if (id && spots.some((s) => s.id === id)) setOpenId(id);
+  }, []);
   const claimed = new Set(claimedIds);
   const open = spots.find((s) => s.id === openId);
   return (
@@ -78,7 +84,14 @@ export function SpotDirectory({ spots, claimedIds }: Props) {
       >
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-50 bg-lcd-3/60" />
-          <Dialog.Content className="fixed inset-x-0 bottom-0 z-50 grid max-h-[85dvh] gap-5 overflow-y-auto border-t-2 border-lcd-3 bg-background p-6 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:w-full sm:max-w-md sm:-translate-x-1/2 sm:-translate-y-1/2 sm:border-2">
+          <Dialog.Content
+            // The first thing to read is the sheet's top, not its "Cerrar" at the foot.
+            onOpenAutoFocus={(e) => {
+              e.preventDefault();
+              (e.currentTarget as HTMLElement | null)?.focus();
+            }}
+            className="fixed inset-x-0 bottom-0 z-50 grid max-h-[85dvh] gap-5 overflow-y-auto border-t-2 border-lcd-3 bg-background p-6 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:w-full sm:max-w-md sm:-translate-x-1/2 sm:-translate-y-1/2 sm:border-2"
+          >
             {open && <Sheet spot={open} claimed={claimed.has(open.id)} />}
           </Dialog.Content>
         </Dialog.Portal>

@@ -767,7 +767,7 @@ el caso es la frase. Branch `feat/premios`.
 
    Quedan: los ids repetidos de «Premios» solo en `/dev/componentes`, y las imágenes de los e2e que quedan en Storage (como ya pasa con banners y logos). Sin hallazgos de contraste, títulos ni alternativas de imagen.
 
-## R20 · Stands con algo para dar
+## R20 · Stands con algo para dar ✅
 
 Escanear en un stand da algo concreto: un descuento, una muestra, una chance más. El
 stand tiene un motivo para pedir el escaneo sin perseguir a nadie. Lo carga el staff,
@@ -806,7 +806,13 @@ opcional; el panel del expositor sigue ⏸. Branch `feat/beneficios`.
    del spot del evento. La semilla trae un beneficio visible y uno sorpresa.
    *Listo cuando* un beneficio cargado en el panel aparece en la ficha y al escanear:
    `e2e/beneficios.spec.ts`. Los componentes están en `/dev/componentes` («Beneficios»).
-5. **Auditoría.** `/code-review` y `/accessibility`.
+5. ✅ **Auditoría.** `/code-review` y `/accessibility`. Se corrigió: el enlace «Su
+   beneficio está en la ficha del stand» abre la ficha (`#ficha=<id>`), la hoja enfoca
+   su inicio y no el «Cerrar» del pie, `perkFor` usa el tipo de `ClaimResult`, el
+   límite de 120 mide el texto guardado, y `shownPerk` lleva su `// shortcut:`. Queda
+   `toPublicEvent`, que devuelve el texto crudo de una sorpresa: hoy solo lo lee
+   `EventHome`, que pasa por `shownPerk`; revisarlo si otra pantalla lee `perk`. Sin
+   probar: escritorio, 45 stands y lector de pantalla.
 
 ## R21 · La portada como cara del evento
 

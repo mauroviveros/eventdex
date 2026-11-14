@@ -423,7 +423,7 @@ export default function ComponentesPage() {
                 spot={RUEDA}
                 outcome={{ kind: "repetida", claimedAt: SAMPLE_CLAIM }}
                 progress={<Progress claimed={6} total={12} />}
-                perk={<PerkInSheet href="#beneficios" />}
+                perk={<PerkInSheet href="#" />}
               />
               <Celebration
                 {...CELEBRATION}
