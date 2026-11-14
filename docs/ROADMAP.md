@@ -773,7 +773,10 @@ Escanear en un stand da algo concreto: un descuento, una muestra, una chance má
 stand tiene un motivo para pedir el escaneo sin perseguir a nadie. Lo carga el staff,
 opcional; el panel del expositor sigue ⏸. Branch `feat/beneficios`.
 
-1. **DB.** `event_spots` suma `perk` (texto corto, opcional, por evento). pgTAP y tipos.
+1. ✅ **DB.** `event_spots` suma `perk` (texto de 1 a 120, opcional, por evento).
+   Queda fuera del `snapshot`, así que el staff lo corrige con el evento en vivo, y
+   duplicar un evento no lo copia. Solo se actualiza (la org); lo lee quien ya lee el
+   spot del evento. pgTAP y tipos.
 2. **Backend.** Guardar el beneficio desde la hoja del spot del evento; leerlo en la
    portada y en la celebración.
 3. **Diseño.** La ficha del stand, el comprobante del beneficio en la celebración y el
