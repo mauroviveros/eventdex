@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Suspense } from "react";
-import { buttonClass } from "@/components/ui/Button";
+import { Countdown } from "@/components/visitante/Countdown";
 import {
   History,
   HistoryFailed,
@@ -14,7 +13,7 @@ import { ProfileHeader } from "@/components/visitante/ProfileHeader";
 import { Progress } from "@/components/visitante/Progress";
 import { ShareCardButton } from "@/components/visitante/ShareCardButton";
 import { collectionProgress } from "@/domain/claims";
-import { eventPhase } from "@/domain/events";
+import { countdownState, eventPhase } from "@/domain/events";
 import { listMyClaims, listMyEvents } from "@/lib/data/claims";
 import { getMyHistory } from "@/lib/data/history";
 import { getActiveEvent, getPublicEvent } from "@/lib/data/public";
@@ -50,13 +49,8 @@ export default async function MisMedallasPage({
     getActiveEvent(supabase, org.id),
     listMyEvents(supabase, org.id, visitor.id),
   ]);
-  // A live event is where the visitor is collecting now. Otherwise the active
-  // one may be next week's: show the last event they collected in instead.
-  const live =
-    active && eventPhase(active.status, active.schedules) === "en-curso";
-  const slug =
-    myEvents.find((e) => e.slug === evento)?.slug ??
-    (live ? undefined : myEvents[0]?.slug);
+  // The same event as the home; `?evento=` is how the history opens another.
+  const slug = myEvents.find((e) => e.slug === evento)?.slug;
   const event =
     slug && slug !== active?.slug
       ? ((await getPublicEvent(supabase, org.id, slug)) ?? active)
@@ -103,6 +97,11 @@ export default async function MisMedallasPage({
             finished={
               eventPhase(event.status, event.schedules) === "finalizado"
             }
+            waiting={
+              mine.length === 0
+                ? countdownState(event.schedules, event.timezone, new Date())
+                : null
+            }
           />
           <Suspense fallback={<HistoryLoading />}>
             <MyHistory
@@ -111,15 +110,6 @@ export default async function MisMedallasPage({
               current={event.slug}
             />
           </Suspense>
-          <Link
-            href={`/eventos/${event.slug}`}
-            className={buttonClass(
-              "secondary",
-              "justify-self-start no-underline",
-            )}
-          >
-            Ver el evento
-          </Link>
         </>
       )}
     </main>
@@ -138,11 +128,13 @@ function Collection({
   spots,
   claimed,
   finished,
+  waiting,
 }: {
   prizes: Parameters<typeof PrizesLadder>[0]["prizes"];
   spots: readonly Spot[];
   claimed: ReadonlySet<string>;
   finished: boolean;
+  waiting: Parameters<typeof Countdown>[0]["state"] | null;
 }) {
   const p = collectionProgress(spots, claimed);
   if (spots.length === 0) {
@@ -155,6 +147,15 @@ function Collection({
   }
   return (
     <>
+      {waiting?.kind === "faltan" && (
+        <div className="grid gap-3 justify-items-center border-2 border-dashed border-lcd-2 px-6 py-8 text-center">
+          <Countdown state={waiting} />
+          <p className="max-w-prose">
+            Cuando empiece, escaneá el QR de cada stand y las medallas van
+            apareciendo acá.
+          </p>
+        </div>
+      )}
       <Progress claimed={p.medals} total={p.total} finished={finished} />
       <PrizesLadder prizes={prizes} claimed={p.medals} total={p.total} />
       <MedalGrid spots={spots} claimed={claimed} label="Tu colección" />
