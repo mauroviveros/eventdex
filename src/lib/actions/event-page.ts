@@ -5,6 +5,7 @@ import {
   addPhoto,
   deleteFaq,
   deletePhoto,
+  moveFaq,
   updateEventLinks,
   updateFaq,
   updatePhotoCaption,
@@ -44,6 +45,14 @@ export async function deleteFaqAction(
   const r = await runFormWrite(formData, (supabase, v) =>
     deleteFaq(supabase, v.faqId),
   );
+  return r.ok ? { ok: true } : r.state;
+}
+
+export async function moveFaqAction(
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const r = await runFormWrite(formData, moveFaq);
   return r.ok ? { ok: true } : r.state;
 }
 

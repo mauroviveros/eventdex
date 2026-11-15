@@ -140,6 +140,30 @@ export async function deleteFaq(
   return { ok: true, data: null };
 }
 
+const moveFaqSchema = z.object({
+  faqId: z.guid(),
+  direction: z.enum(["up", "down"]),
+});
+
+/**
+ * Moves a question one place up or down. The database renumbers the event's
+ * questions in one go and checks the org: someone else's reads as no permission.
+ */
+export async function moveFaq(
+  supabase: Pick<Supabase, "rpc">,
+  input: unknown,
+): Promise<ActionResult<null>> {
+  const parsed = moveFaqSchema.safeParse(input);
+  if (!parsed.success) return invalid(parsed.error);
+
+  const { error } = await supabase.rpc("move_event_faq", {
+    p_faq_id: parsed.data.faqId,
+    p_direction: parsed.data.direction === "up" ? -1 : 1,
+  });
+  if (error) return failed(error);
+  return { ok: true, data: null };
+}
+
 const photoSchema = ref.extend({
   caption: optionalText(120),
   photo: z

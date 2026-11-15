@@ -4,6 +4,7 @@ import {
   addPhoto,
   deleteFaq,
   deletePhoto,
+  moveFaq,
   updateEventLinks,
   updateFaq,
 } from "./event-page";
@@ -107,6 +108,50 @@ describe("faqs", () => {
     expect(await deleteFaq(miss.client, ID)).toMatchObject({ ok: false });
     expect(await deleteFaq(miss.client, "no-es-un-id")).toMatchObject({
       ok: false,
+    });
+  });
+});
+
+describe("moveFaq", () => {
+  it("moves a question up or down by one place", async () => {
+    const { client, rpc } = fakeClient(
+      { data: null, error: null },
+      { data: null, error: null },
+    );
+
+    expect((await moveFaq(client, { faqId: ID, direction: "up" })).ok).toBe(
+      true,
+    );
+    expect(rpc).toHaveBeenCalledWith("move_event_faq", {
+      p_faq_id: ID,
+      p_direction: -1,
+    });
+
+    await moveFaq(client, { faqId: ID, direction: "down" });
+    expect(rpc).toHaveBeenLastCalledWith("move_event_faq", {
+      p_faq_id: ID,
+      p_direction: 1,
+    });
+  });
+
+  it("refuses a bad id or direction without calling the database", async () => {
+    const { client, rpc } = fakeClient();
+
+    expect(
+      await moveFaq(client, { faqId: "x", direction: "up" }),
+    ).toMatchObject({ ok: false });
+    expect(
+      await moveFaq(client, { faqId: ID, direction: "sideways" }),
+    ).toMatchObject({ ok: false });
+    expect(rpc).not.toHaveBeenCalled();
+  });
+
+  it("reads as no permission when the database refuses", async () => {
+    const { client } = fakeClient({ data: null, error: { code: "42501" } });
+
+    expect(await moveFaq(client, { faqId: ID, direction: "up" })).toEqual({
+      ok: false,
+      error: "No tenés permiso para hacer esto.",
     });
   });
 });

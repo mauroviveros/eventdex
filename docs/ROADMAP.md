@@ -1074,8 +1074,10 @@ ya existe: puede no necesitar cambios en la base.
 1. **Diseño ✅.** Mauro eligió botones ▲▼ en cada pregunta, sin arrastrar: sirven en el
    celular y con el teclado. La primera sin ▲, la última sin ▼. Queda `FaqList.tsx` con
    el orden en estado local: se conecta al guardado en el bloque 2.
-2. **Backend.** Acción para mover una pregunta arriba o abajo, validada con Zod y con
-   RLS; el orden queda estable al cargar una nueva. Tests.
+2. **Backend ✅.** Hizo falta una migración (`20261115120000_faq_order.sql`): una
+   pregunta nueva va al final (trigger) y `move_event_faq` mueve una pregunta un lugar
+   renumerando las del evento en una sola transacción, con RLS y chequeo de la org.
+   Acción `moveFaqAction` validada con Zod. Tests pgTAP (`19_faq_order`) y de la acción.
 3. **Vista.** El control elegido en la pestaña Página, con sus estados (primera y última
    sin su botón, guardando, error). `/dev/componentes` y RUTAS al día.
    *Listo cuando* se mueve una pregunta y la portada pública la muestra en el nuevo
