@@ -997,11 +997,20 @@ la fecha salen de lo que ya se lee.
    página. A otra edición se llega desde «Tu historial» (cada una es un link) y
    «Ir al sorteo» vive en el menú de la cuenta, solo con rol. El encabezado de prueba
    (`ProfileHeaderAlternatives.tsx`, `?alt=a`, `?demo=`) se vuelve el real en el bloque 3.
-2. **Backend.** `getVisitorAccount` suma el rol en la organización del dominio
+2. ✅ **Backend.** `getVisitorAccount` suma el rol en la organización del dominio
    (`owner` o `staff`, nada para un visitante) y «desde» (la primera vez que se
    registró en un evento de la org). Una función arma el link al sorteo del evento activo
    en el dominio raíz, que es donde vive `/panel` (en el dominio de una org es un 404).
    Tests de lo que se arma.
+   Hecho: en vez de ensanchar `getVisitorAccount` (que no conoce la org), `readStanding`
+   (`src/lib/data/standing.ts`) lee el rol propio en `organization_members` y la primera
+   inscripción en `event_registrations`, y `getVisitorStanding` (en `viewer.ts`) la
+   comparte entre el header y la página en un mismo request. `getRaffleHref` pide el
+   evento activo (`active_event`, solo el `slug`) y `raffleLink` (`src/domain/panelLink.ts`)
+   arma el link absoluto al dominio raíz. La sesión es por dominio (ARQUITECTURA), así que
+   quien llega al panel desde el dominio de la org entra con Google de nuevo: la pregunta
+   abierta 2 de ARQUITECTURA sigue abierta y el link no la cambia. Sin cambios en la
+   base: RLS ya deja leer la fila propia. 10 tests.
 3. **Vista.** El encabezado elegido, sin la fila de ediciones ni la tarjeta; «Tu
    historial» con las ediciones como links a su colección; compartir la tarjeta discreto;
    el enlace «Ir al sorteo» en el menú de la cuenta, solo con rol. Estados vacío, de carga
