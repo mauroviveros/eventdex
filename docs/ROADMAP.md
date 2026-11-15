@@ -1097,7 +1097,7 @@ Lo que salió de revisar la app con el evento real: el público ve una sola port
 del evento actual; el equipo ve cualquier evento desde el panel; y el organizador
 consigue números para venderle el evento a más sponsors.
 
-## R28 · Retoques
+## R28 · Retoques ✅
 
 Branch `fix/retoques-portada`.
 

@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { type CSSProperties, Suspense } from "react";
 import { Logo } from "@/components/pixel/Logo";
 import { Monogram } from "@/components/ui/Monogram";
+import { MadeWith } from "@/components/visitante/MadeWith";
 import { MARQUESINA } from "@/components/visitante/marquesina";
 import { SignInLink, VisitorMenu } from "@/components/visitante/VisitorMenu";
-import { EVENTDEX_HUE, ramp, rampFromHex } from "@/domain/palette";
+import { EVENTDEX_HUE, ramp, rampFromHex, toHex } from "@/domain/palette";
 import { logoUrl } from "@/lib/data/organizations";
 import { getRaffleHref } from "@/lib/data/standing";
 import { getVisitorAccount, getVisitorRole } from "@/lib/data/viewer";
@@ -20,6 +21,29 @@ export async function generateMetadata({
   return { title: { default: org.name, template: `%s · ${org.name}` } };
 }
 
+const orgTones = (color: string | null) =>
+  color ? rampFromHex(color) : ramp(EVENTDEX_HUE);
+
+/** The browser bar and the overscroll take the org's ground, light and dark. */
+export async function generateViewport({
+  params,
+}: LayoutProps<"/publica/[host]">): Promise<Viewport> {
+  const { org } = await requireHostOrganization((await params).host);
+  const tones = orgTones(org.brand_color);
+  return {
+    themeColor: [
+      {
+        media: "(prefers-color-scheme: light)",
+        color: toHex(tones[0] as string),
+      },
+      {
+        media: "(prefers-color-scheme: dark)",
+        color: toHex(tones[3] as string),
+      },
+    ],
+  };
+}
+
 /**
  * The public app of one organization, painted with its own ramp: the brand
  * leads, Eventdex stays out of sight. An unknown host (or a suspended org) is a
@@ -31,18 +55,21 @@ export default async function PublicaLayout({
   params,
 }: LayoutProps<"/publica/[host]">) {
   const { org } = await requireHostOrganization((await params).host);
-  const tones = org.brand_color
-    ? rampFromHex(org.brand_color)
-    : ramp(EVENTDEX_HUE);
+  const tones = orgTones(org.brand_color);
   const style = Object.fromEntries(
     tones.map((tone, i) => [`--ramp-${i}`, tone]),
   ) as CSSProperties;
+
+  // The same ramp on the root: dialogs, menus and the toaster mount on <body>,
+  // outside the scope below, and the overscroll shows <html>'s ground.
+  const root = `:root{${tones.map((t, i) => `--ramp-${i}:${t}`).join(";")}}html{background:var(--lcd-0)}`;
 
   return (
     <div
       style={style}
       className={`ramp-scope scanlines min-h-dvh bg-lcd-0 text-lcd-3 ${MARQUESINA}`}
     >
+      <style>{root}</style>
       <header
         data-slot="public-header"
         className="sticky top-0 z-30 border-b-2 border-lcd-3 bg-lcd-0"
@@ -70,6 +97,7 @@ export default async function PublicaLayout({
         </div>
       </header>
       {children}
+      <MadeWith />
     </div>
   );
 }

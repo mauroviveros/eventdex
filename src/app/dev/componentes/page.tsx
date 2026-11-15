@@ -68,6 +68,7 @@ import {
   HistoryLoading,
 } from "@/components/visitante/History";
 import { LockedMedal } from "@/components/visitante/LockedMedal";
+import { MadeWith } from "@/components/visitante/MadeWith";
 import { Medal } from "@/components/visitante/Medal";
 import { MARQUESINA } from "@/components/visitante/marquesina";
 import {
@@ -808,6 +809,13 @@ export default function ComponentesPage() {
               <Countdown state={{ kind: "en-curso", endsAt: "22:00" }} />
               <Countdown state={{ kind: "finalizado" }} />
             </div>
+          </Section>
+
+          <Section
+            title="Hecho con"
+            note="La firma al pie de la app pública: discreta, en texto apagado, con el corazón en rojo de acento. Lleva a la web del autor (src/lib/author.ts)."
+          >
+            <MadeWith />
           </Section>
 
           <Section

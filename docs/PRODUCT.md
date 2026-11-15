@@ -64,7 +64,7 @@ Es una **mecánica de colección** atada al espacio físico: cada medalla prueba
 - Voz con el staff y el owner: clara, directa y operativa. Dice qué pasó y qué hacer, sin chistes.
 - Voz en la plataforma: precisa y sin ambigüedad. Las acciones destructivas dicen exactamente a qué afectan.
 - Los errores nunca culpan al usuario y siempre ofrecen el paso siguiente.
-- La marca de cada organización (logo y color en `organizations`) manda en la app pública. Eventdex se ve en la landing, el admin y la plataforma.
+- La marca de cada organización (logo y color en `organizations`) manda en la app pública. Eventdex se ve en la landing, el admin y la plataforma. La única firma en la app pública es «Hecho con ♥ por Mauro Viveros» al pie, discreta y con link al autor (`MadeWith`).
 
 ## Evidence on Hand
 

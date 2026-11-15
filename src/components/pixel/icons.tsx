@@ -160,6 +160,17 @@ export const ICONS = {
     "#..#...#",
     "########",
   ],
+  // A heart, for the "made with" credit.
+  corazon: [
+    ".##..##.",
+    "########",
+    "########",
+    "########",
+    ".######.",
+    "..####..",
+    "...##...",
+    "........",
+  ],
 } as const;
 
 export type IconName = keyof typeof ICONS;
