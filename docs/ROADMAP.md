@@ -1025,7 +1025,16 @@ la fecha salen de lo que ya se lee.
    lectura falla; si falla el rol en la página, esta sigue sin badge. `/dev/componentes` y
    RUTAS al día. e2e: `encabezado.spec.ts` (dueño con badge y link, visitante sin
    ninguno) y los de medallas actualizados.
-4. **Auditoría.** `/code-review` y `/accessibility`.
+4. ✅ **Auditoría.** `/code-review` y `/accessibility`. Hecho: la cabecera pedía el
+   «desde» (una lectura de inscripciones) en cada página para quien tiene sesión, y solo
+   `/mis-medallas` lo muestra; ahora el rol (`getVisitorRole`, en la cabecera y en la
+   página) y el «desde» (`getVisitorSince`, solo en la página) se leen por separado. El
+   nombre accesible de cada edición del historial se leía «actual2 de 3 medallas» (flex
+   esconde el espacio entre los dos textos); ahora lleva el espacio. Accesibilidad: un
+   solo `h1`, el encabezado es una región con nombre, los links del historial y del menú
+   y el botón de compartir miden 44 px y ningún objetivo mide menos de 24; sin pasar
+   lector de pantalla. Queda a decidir si «Venís desde …» del historial sobra, ahora que
+   el encabezado dice «Desde».
 
 ## R25 · La portada, a la vista de buscadores y redes
 
