@@ -4,6 +4,7 @@ import { buttonClass } from "@/components/ui/Button";
 import { photoUrl } from "@/lib/data/organizations";
 import type { getPastEditions } from "@/lib/data/public";
 import type { PublicEvent } from "./EventHome";
+import { GalleryViewer } from "./GalleryViewer";
 
 /**
  * The event's own page, the parts the staff loads from the panel: about,
@@ -127,26 +128,13 @@ export function Faq({ faqs }: { faqs: PublicEvent["faqs"] }) {
 /** The gallery: lazy, with its box reserved so the page doesn't jump while it loads. */
 export function Gallery({ photos }: { photos: PublicEvent["photos"] }) {
   return (
-    <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-      {photos.map((p) => (
-        <li key={p.id}>
-          <figure className="grid gap-1">
-            {/* biome-ignore lint/performance/noImgElement: photos come from Storage, at most 1.5 MB; next/image adds nothing here */}
-            <img
-              src={photoUrl(p.path)}
-              // The caption below names the figure: repeating it here reads it twice.
-              alt=""
-              loading="lazy"
-              decoding="async"
-              className="aspect-[4/3] w-full border-2 border-lcd-3 object-cover"
-            />
-            {p.caption && (
-              <figcaption className="text-sm">{p.caption}</figcaption>
-            )}
-          </figure>
-        </li>
-      ))}
-    </ul>
+    <GalleryViewer
+      photos={photos.map((p) => ({
+        id: p.id,
+        src: photoUrl(p.path),
+        caption: p.caption,
+      }))}
+    />
   );
 }
 

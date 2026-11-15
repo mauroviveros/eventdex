@@ -210,6 +210,20 @@ export async function seedLiveEvent() {
         }),
       );
     },
+    /** Photos on the live event's page; the files are not uploaded, only the rows. */
+    async addPhotos(captions: readonly (string | null)[]) {
+      must(
+        await admin.from("event_photos").insert(
+          captions.map((caption, i) => ({
+            event_id: event.id,
+            organization_id: org.id,
+            path: `${org.id}/${event.id}-e2e-${i}.png`,
+            caption,
+            sort_order: i,
+          })),
+        ),
+      );
+    },
     /** The visitor won a published raffle in the finished event of addPastCollection. */
     async addPastWin() {
       const profile = must(
