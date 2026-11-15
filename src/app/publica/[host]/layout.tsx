@@ -7,7 +7,10 @@ import { MARQUESINA } from "@/components/visitante/marquesina";
 import { SignInLink, VisitorMenu } from "@/components/visitante/VisitorMenu";
 import { EVENTDEX_HUE, ramp, rampFromHex } from "@/domain/palette";
 import { logoUrl } from "@/lib/data/organizations";
-import { getVisitorAccount } from "@/lib/data/viewer";
+import { getRaffleHref } from "@/lib/data/standing";
+import { getVisitorAccount, getVisitorStanding } from "@/lib/data/viewer";
+import { env } from "@/lib/env";
+import { createClient } from "@/lib/supabase/server";
 import { requireHostOrganization } from "./organization";
 
 export async function generateMetadata({
@@ -62,7 +65,7 @@ export default async function PublicaLayout({
             <span className="truncate">{org.name}</span>
           </Link>
           <Suspense fallback={<span className="min-h-11" />}>
-            <Account />
+            <Account org={org} />
           </Suspense>
         </div>
       </header>
@@ -72,7 +75,30 @@ export default async function PublicaLayout({
 }
 
 /** Who is signed in on this domain, or the way in. Streams after the header. */
-async function Account() {
+async function Account({ org }: { org: { id: string; slug: string } }) {
   const account = await getVisitorAccount();
-  return account ? <VisitorMenu account={account} /> : <SignInLink />;
+  if (!account) return <SignInLink />;
+  return (
+    <VisitorMenu
+      account={account}
+      raffleHref={await raffleHref(org, account.id)}
+    />
+  );
+}
+
+/** Only the team gets the way to the raffle; if it can't be read the menu is the same without it. */
+async function raffleHref(org: { id: string; slug: string }, userId: string) {
+  try {
+    const { role } = await getVisitorStanding(org.id, userId);
+    if (!role) return undefined;
+    const href = await getRaffleHref(
+      await createClient(),
+      org,
+      env.NEXT_PUBLIC_ROOT_DOMAIN,
+    );
+    return href ?? undefined;
+  } catch (error) {
+    console.error("public layout: raffle link", error);
+    return undefined;
+  }
 }

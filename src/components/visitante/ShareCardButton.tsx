@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/Button";
+import { Button, type Variant } from "@/components/ui/Button";
 import { FormMessage } from "@/components/ui/Field";
 
 function download(file: File) {
@@ -17,9 +17,11 @@ function download(file: File) {
 export function ShareCardButton({
   href,
   fileName,
+  variant = "primary",
 }: {
   href: string;
   fileName: string;
+  variant?: Variant;
 }) {
   const [file, setFile] = useState<File | null>(null);
   const [pending, setPending] = useState(false);
@@ -60,6 +62,7 @@ export function ShareCardButton({
   return (
     <div className="grid justify-items-start gap-3">
       <Button
+        variant={variant}
         onClick={share}
         pending={pending}
         pendingLabel="Armando tu tarjeta…"

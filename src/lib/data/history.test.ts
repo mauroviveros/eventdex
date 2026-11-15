@@ -6,6 +6,7 @@ const NOW = new Date("2026-11-14T12:00:00Z");
 const ok = (data: unknown) => ({ data, error: null });
 const event = (id: string, startsAt: string | null, spots = 5) => ({
   id,
+  slug: `expo-${id}`,
   title: "Expo",
   edition_label: id,
   schedules: startsAt ? [{ starts_at: startsAt }] : [],
@@ -28,6 +29,7 @@ describe("getMyHistory", () => {
     const history = await getMyHistory(client, "org", "me", NOW);
 
     expect(history.played).toHaveLength(1);
+    expect(history.played[0]?.slug).toBe("expo-a");
     expect(history.played[0]).toMatchObject({ id: "a", medals: 2, wins: 1 });
     expect(history.totals).toEqual({ events: 1, medals: 2, wins: 1 });
   });

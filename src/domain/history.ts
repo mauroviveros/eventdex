@@ -7,6 +7,8 @@
 /** One published edition of the org, whether or not the visitor came. */
 export type HistoryEdition = {
   id: string;
+  /** The edition's page, to link to the visitor's collection in it. */
+  slug: string;
   title: string;
   editionLabel: string | null;
   /** First schedule's start. */

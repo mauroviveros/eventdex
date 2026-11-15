@@ -16,7 +16,7 @@ export async function getMyHistory(
     supabase
       .from("events")
       .select(
-        `id, title, edition_label, schedules:event_schedules (starts_at),
+        `id, slug, title, edition_label, schedules:event_schedules (starts_at),
          spots:event_spots (count)`,
       )
       .eq("organization_id", organizationId)
@@ -54,6 +54,7 @@ export async function getMyHistory(
     return [
       {
         id: e.id,
+        slug: e.slug,
         title: e.title,
         editionLabel: e.edition_label,
         startsAt,

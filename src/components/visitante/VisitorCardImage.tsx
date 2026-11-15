@@ -67,7 +67,7 @@ function Picture({
   );
 }
 
-/** La Pantalla for sharing: a 9:16 image, what VisitorCard shows. */
+/** La Pantalla for sharing: a 9:16 image, what the card shows. */
 export function VisitorCardImage({
   theme,
   title,

@@ -10,16 +10,16 @@ import {
 import type { Medal } from "@/components/visitante/Medal";
 import { MedalGrid } from "@/components/visitante/MedalGrid";
 import { PrizesLadder } from "@/components/visitante/Prizes";
+import { ProfileHeader } from "@/components/visitante/ProfileHeader";
 import { Progress } from "@/components/visitante/Progress";
 import { ShareCardButton } from "@/components/visitante/ShareCardButton";
-import { VisitorCard } from "@/components/visitante/VisitorCard";
 import { collectionProgress } from "@/domain/claims";
 import { eventPhase } from "@/domain/events";
 import { listMyClaims, listMyEvents } from "@/lib/data/claims";
 import { getMyHistory } from "@/lib/data/history";
 import { getActiveEvent, getPublicEvent } from "@/lib/data/public";
 import { listEventPrizes } from "@/lib/data/raffles";
-import { requireVisitor } from "@/lib/data/viewer";
+import { getVisitorStanding, requireVisitor } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
 import { requireHostOrganization } from "../organization";
 
@@ -61,40 +61,29 @@ export default async function MisMedallasPage({
   const claimed = new Set(mine.map((c) => c.event_spot_id));
   const prizes = event ? await listEventPrizes(supabase, event.id) : [];
   const medals = event?.spots.filter((s) => claimed.has(s.id)) ?? [];
-
+  const standing = await standingOrNone(org.id, visitor.id);
   return (
     <main className="mx-auto grid w-full max-w-3xl gap-10 px-4 py-8 sm:px-6">
       <div className="grid gap-2">
         <h1 className="font-wide text-title sm:text-title-lg">Mis medallas</h1>
-        {event && medals.length === 0 && (
-          <p className="font-display text-px-1">{eventName(event)}</p>
-        )}
+        {event && <p className="font-display text-px-1">{eventName(event)}</p>}
       </div>
 
-      {myEvents.some((e) => e.slug !== event?.slug) && (
-        <nav aria-label="Tus eventos">
-          <ul className="flex flex-wrap gap-2">
-            {myEvents.map((e) => {
-              const current = e.slug === event?.slug;
-              return (
-                <li key={e.slug}>
-                  <Link
-                    href={`/mis-medallas?evento=${e.slug}`}
-                    aria-current={current ? "page" : undefined}
-                    className={`flex min-h-11 items-center border-2 border-lcd-3 px-3 py-2 font-display text-px-1 no-underline ${
-                      current
-                        ? "bg-lcd-1"
-                        : "bg-plate shadow-plate hover:bg-lcd-1"
-                    }`}
-                  >
-                    {eventName(e)}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-      )}
+      <ProfileHeader
+        account={visitor}
+        teamRole={standing.role ?? undefined}
+        since={standing.since}
+        share={
+          event && medals.length > 0 ? (
+            <ShareCardButton
+              key={event.slug}
+              href={`/mis-medallas/tarjeta?evento=${event.slug}`}
+              fileName={`tarjeta-${event.slug}.png`}
+              variant="secondary"
+            />
+          ) : null
+        }
+      />
 
       {!event ? (
         <p className="max-w-prose border-2 border-dashed border-lcd-2 px-6 py-8">
@@ -103,23 +92,6 @@ export default async function MisMedallasPage({
         </p>
       ) : (
         <>
-          {medals.length > 0 && (
-            <div className="grid gap-4">
-              <VisitorCard
-                account={visitor}
-                org={org}
-                event={event}
-                medals={medals}
-                total={event.spots.length}
-                now={new Date()}
-              />
-              <ShareCardButton
-                key={event.slug}
-                href={`/mis-medallas/tarjeta?evento=${event.slug}`}
-                fileName={`tarjeta-${event.slug}.png`}
-              />
-            </div>
-          )}
           <Collection
             prizes={prizes}
             spots={event.spots}
@@ -129,7 +101,11 @@ export default async function MisMedallasPage({
             }
           />
           <Suspense fallback={<HistoryLoading />}>
-            <MyHistory organizationId={org.id} userId={visitor.id} />
+            <MyHistory
+              organizationId={org.id}
+              userId={visitor.id}
+              current={event.slug}
+            />
           </Suspense>
           <Link
             href={`/eventos/${event.slug}`}
@@ -182,13 +158,25 @@ function Collection({
   );
 }
 
+/** Role and "since" for the header; if the read fails the page stands without them. */
+async function standingOrNone(organizationId: string, userId: string) {
+  try {
+    return await getVisitorStanding(organizationId, userId);
+  } catch (error) {
+    console.error("mis-medallas: standing", error);
+    return { role: null, since: null };
+  }
+}
+
 /** The visitor's history; if the read fails, only this section says so. */
 async function MyHistory({
   organizationId,
   userId,
+  current,
 }: {
   organizationId: string;
   userId: string;
+  current: string;
 }) {
   try {
     const history = await getMyHistory(
@@ -196,7 +184,7 @@ async function MyHistory({
       organizationId,
       userId,
     );
-    return <History history={history} />;
+    return <History history={history} current={current} />;
   } catch (error) {
     console.error("reading the visitor's history failed", error);
     return <HistoryFailed />;

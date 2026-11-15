@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Chevron } from "@/components/pixel/Chevron";
 import { type IconName, PixelIcon } from "@/components/pixel/icons";
 import {
@@ -42,7 +43,14 @@ const BOX = "border-2 border-lcd-3";
  * The visitor's history in this organization, folded under their collection:
  * the stamps first (the ones still to earn as a goal), then what they played.
  */
-export function History({ history }: { history: History }) {
+export function History({
+  history,
+  current,
+}: {
+  history: History;
+  /** The slug of the edition whose collection the page is showing. */
+  current?: string;
+}) {
   const { played, totals, since, stamps } = history;
   if (played.length === 0) {
     return (
@@ -100,17 +108,22 @@ export function History({ history }: { history: History }) {
             {plural(totals.wins, "sorteo", "sorteos")}.
             {since && ` Venís desde ${MONTH.format(new Date(since))}.`}
           </p>
-          <ul className="grid gap-2">
+          <ul aria-label="Tus ediciones" className="grid">
             {played.map((e) => (
-              <li
-                key={e.id}
-                className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b-2 border-lcd-1 pb-2"
-              >
-                <span className="font-display text-px-1">{editionName(e)}</span>
-                <span className="text-sm tabular-nums">
-                  {e.medals} de {plural(e.total, "medalla", "medallas")}
-                  {e.wins > 0 && " · ganaste un sorteo"}
-                </span>
+              <li key={e.id}>
+                <Link
+                  href={`/mis-medallas?evento=${e.slug}`}
+                  aria-current={e.slug === current ? "page" : undefined}
+                  className="flex min-h-11 flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b-2 border-lcd-1 py-2 no-underline hover:bg-lcd-1 aria-[current=page]:bg-lcd-1"
+                >
+                  <span className="font-display text-px-1">
+                    {editionName(e)}
+                  </span>
+                  <span className="text-sm tabular-nums">
+                    {e.medals} de {plural(e.total, "medalla", "medallas")}
+                    {e.wins > 0 && " · ganaste un sorteo"}
+                  </span>
+                </Link>
               </li>
             ))}
           </ul>

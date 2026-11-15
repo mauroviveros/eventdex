@@ -4,6 +4,7 @@ import { buildHistory, type HistoryEdition } from "./history";
 let n = 0;
 const edition = (over: Partial<HistoryEdition> = {}): HistoryEdition => ({
   id: `e${++n}`,
+  slug: `e${n}`,
   title: "Expo",
   editionLabel: null,
   startsAt: "2026-04-01T12:00:00Z",

@@ -16,10 +16,17 @@ type Account = {
 
 /**
  * The visitor's account in the public header: photo, name and mail, and a menu
- * with their medals and sign-out. A <details>, so it works before any JS. On
+ * with their medals, sign-out and, for the team, the way to the raffle. A <details>, so it works before any JS. On
  * phones only the photo shows; the name moves into the menu.
  */
-export function VisitorMenu({ account }: { account: Account }) {
+export function VisitorMenu({
+  account,
+  raffleHref,
+}: {
+  account: Account;
+  /** The team's way to the active event's raffle, in the panel on the root domain. */
+  raffleHref?: string;
+}) {
   const ref = useRef<HTMLDetailsElement>(null);
   const pathname = usePathname();
 
@@ -66,6 +73,15 @@ export function VisitorMenu({ account }: { account: Account }) {
         >
           Mis medallas
         </Link>
+        {raffleHref && (
+          // A plain <a>: it leaves this domain for the panel's.
+          <a
+            href={raffleHref}
+            className="flex min-h-11 items-center border-t-2 border-lcd-3 px-3 font-display text-px-1 no-underline hover:bg-lcd-1"
+          >
+            Ir al sorteo
+          </a>
+        )}
         <form
           action="/auth/salir"
           method="post"
