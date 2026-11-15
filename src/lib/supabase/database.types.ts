@@ -1181,6 +1181,10 @@ export type Database = {
         Args: { p_organization_id: string };
         Returns: undefined;
       };
+      move_event_faq: {
+        Args: { p_direction: number; p_faq_id: string };
+        Returns: undefined;
+      };
       past_editions: {
         Args: { p_event_id: string; p_organization_id: string };
         Returns: {
