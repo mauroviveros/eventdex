@@ -1071,9 +1071,9 @@ Las preguntas frecuentes (R21) salen en el orden en que se cargaron. El staff ne
 subir las que más se preguntan. Branch `feat/orden-faq`. Usa `event_faqs.sort_order`, que
 ya existe: puede no necesitar cambios en la base.
 
-1. **Diseño.** `/impeccable shape` de cómo se reordena en la pestaña Página: subir y
-   bajar con botones (sin arrastrar, para el celular y el teclado) frente a arrastrar;
-   dos o tres alternativas sobre la pestaña real y Mauro elige.
+1. **Diseño ✅.** Mauro eligió botones ▲▼ en cada pregunta, sin arrastrar: sirven en el
+   celular y con el teclado. La primera sin ▲, la última sin ▼. Queda `FaqList.tsx` con
+   el orden en estado local: se conecta al guardado en el bloque 2.
 2. **Backend.** Acción para mover una pregunta arriba o abajo, validada con Zod y con
    RLS; el orden queda estable al cargar una nueva. Tests.
 3. **Vista.** El control elegido en la pestaña Página, con sus estados (primera y última

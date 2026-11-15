@@ -8,14 +8,9 @@ import {
 } from "@/components/visitante/PortadaSections";
 import { photoUrl } from "@/lib/data/organizations";
 import { MAX_PHOTOS } from "@/lib/event-page";
+import { FaqList } from "./FaqList";
 import type { load } from "./load";
-import {
-  AddFaqForm,
-  AddPhotoForm,
-  FaqRow,
-  PageDataForm,
-  PhotoRow,
-} from "./PageForms";
+import { AddFaqForm, AddPhotoForm, PageDataForm, PhotoRow } from "./PageForms";
 
 type Loaded = Awaited<ReturnType<typeof load>>;
 
@@ -111,13 +106,7 @@ export function PageTab({
                 entradas, cómo llegar.
               </Empty>
             ) : (
-              <ul className="grid gap-2">
-                {event.faqs.map((f) => (
-                  <li key={f.id}>
-                    <FaqRow org={org.slug} faq={f} />
-                  </li>
-                ))}
-              </ul>
+              <FaqList org={org.slug} faqs={event.faqs} />
             )}
             <div className="panel grid gap-4 p-6">
               <h3 className="text-px-2">Nueva pregunta</h3>
