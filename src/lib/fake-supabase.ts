@@ -21,6 +21,7 @@ export function fakeClient(...results: { data: unknown; error: unknown }[]) {
     "like",
     "order",
     "range",
+    "limit",
   ]) {
     chain[method] = (...args: unknown[]) => {
       calls.push({ method, args });
@@ -29,7 +30,8 @@ export function fakeClient(...results: { data: unknown; error: unknown }[]) {
   }
   // biome-ignore lint/suspicious/noThenProperty: the fake must be awaitable like the real query builder.
   chain.then = (resolve: (v: unknown) => void) => resolve(results.shift());
-  const rpc = vi.fn(async () => results.shift());
+  // Like the real builder: awaited it gives the next result, and it can still be chained (.select).
+  const rpc = vi.fn((..._args: unknown[]) => chain);
   return { client: { ...chain, rpc } as never, calls, rpc };
 }
 

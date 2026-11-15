@@ -8,6 +8,7 @@ import {
   isDeveloper,
   listMyOrganizations,
 } from "./organizations";
+import { readStanding } from "./standing";
 
 /**
  * Who is looking at this request, resolved once per request (layouts, pages
@@ -112,3 +113,12 @@ export const getVisitorAccount = cache(async () => {
 export async function requireVisitor() {
   return (await getVisitorAccount()) ?? signInAndComeBack();
 }
+
+/**
+ * The visitor's role and "since" in one organization, read once per request
+ * however many components ask (the public header and the page).
+ */
+export const getVisitorStanding = cache(
+  async (organizationId: string, userId: string) =>
+    readStanding(await createClient(), organizationId, userId),
+);
