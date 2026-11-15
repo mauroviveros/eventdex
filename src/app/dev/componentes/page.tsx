@@ -88,11 +88,11 @@ import {
   PrizesLadder,
   PrizesSection,
 } from "@/components/visitante/Prizes";
+import { ProfileHeader } from "@/components/visitante/ProfileHeader";
 import { Progress } from "@/components/visitante/Progress";
 import { ShareCardButton } from "@/components/visitante/ShareCardButton";
 import { SPOT_STATES, Spot, type SpotSize } from "@/components/visitante/Spot";
 import { SpotDirectory } from "@/components/visitante/SpotDirectory";
-import { VisitorCard } from "@/components/visitante/VisitorCard";
 import { SignInLink, VisitorMenu } from "@/components/visitante/VisitorMenu";
 import { buildHistory, type HistoryEdition } from "@/domain/history";
 import banco from "./logos/banco.svg";
@@ -203,6 +203,7 @@ const SAMPLE = {
 
 const sampleEdition = (over: Partial<HistoryEdition>): HistoryEdition => ({
   id: "e",
+  slug: "expo-primavera",
   title: "Expo Primavera",
   editionLabel: "2026",
   startsAt: "2026-10-10T12:00:00Z",
@@ -245,26 +246,11 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
-const CARD_TYPES = ["stand", "attraction", "sponsor", "activity"] as const;
-const CARD_MEDALS = Array.from({ length: 14 }, (_, i) => ({
-  id: `m${i}`,
-  name: `Stand ${i + 1}`,
-  type: CARD_TYPES[i % 4] ?? "stand",
-  logoPath: null,
-}));
 const CARD_ACCOUNT = {
   name: "Ana García",
   email: "ana@example.com",
   avatarUrl: retrato.src,
 };
-const CARD = {
-  org: { name: "Expo de ejemplo", logo_path: null },
-  event: SAMPLE.live,
-  medals: CARD_MEDALS,
-  total: 48,
-  now: SAMPLE_NOW,
-};
-
 // Synthetic spots and logos, only for the catalog.
 type Prize = Parameters<typeof PrizesSection>[0]["prizes"][number];
 
@@ -448,7 +434,7 @@ export default function ComponentesPage() {
 
           <Section
             title="Cuenta del visitante"
-            note="Fin de la cabecera del dominio de la org. Con sesión: foto (o iniciales), nombre y mail; en el celular solo la foto, y el nombre pasa al menú. Sin sesión: Ingresar, que vuelve a la página actual; en producción, el botón que va directo a Google, con su estado de carga."
+            note="Fin de la cabecera del dominio de la org. Con sesión: foto (o iniciales), nombre y mail; en el celular solo la foto, y el nombre pasa al menú. El equipo suma «Ir al sorteo» (el primero; el visitante común no lo ve), que lleva al panel del dominio raíz. Sin sesión: Ingresar, que vuelve a la página actual; en producción, el botón que va directo a Google, con su estado de carga."
           >
             <div className="flex flex-wrap items-start gap-8 pb-40">
               <VisitorMenu
@@ -457,6 +443,7 @@ export default function ComponentesPage() {
                   email: "mauro@ejemplo.com",
                   avatarUrl: null,
                 }}
+                raffleHref="/dev/sorteo"
               />
               <VisitorMenu
                 account={{
@@ -494,35 +481,52 @@ export default function ComponentesPage() {
           </Section>
 
           <Section
-            title="Tarjeta de visitante"
-            note="Encabeza Mis medallas desde la primera medalla: muestra hasta 12 y cuenta todas. La foto va tal cual, como un logo; sin foto, el monograma. Sin nombre dice Visitante: nunca el mail. El botón de acá no tiene imagen: al tocarlo muestra el error."
+            title="Encabezado del visitante"
+            note="ProfileHeader: arriba de Mis medallas. Arriba la persona (foto o monograma, nombre y mail; si el nombre es el mail, no se repite). Bajo una línea, a la izquierda el badge de rol (solo si es del equipo: Dueño o Equipo) y desde cuándo juega, y a la derecha compartir la tarjeta, que existe desde la primera medalla. Sin nada de eso el pie desaparece. El botón de acá no tiene imagen: al tocarlo muestra el error."
           >
-            <div className="flex flex-wrap items-start gap-6">
-              <VisitorCard
-                {...CARD}
+            <div className="grid gap-6">
+              <ProfileHeader
                 account={CARD_ACCOUNT}
-                medals={CARD_MEDALS.slice(0, 1)}
+                teamRole="owner"
+                since="2026-03-29T12:00:00Z"
+                share={
+                  <ShareCardButton
+                    href="/dev/sin-imagen"
+                    fileName="tarjeta.png"
+                    variant="secondary"
+                  />
+                }
               />
-              <VisitorCard {...CARD} account={CARD_ACCOUNT} total={14} />
-              <VisitorCard
-                {...CARD}
-                event={SAMPLE.single}
+              <ProfileHeader
+                account={CARD_ACCOUNT}
+                since="2026-03-29T12:00:00Z"
+                share={null}
+              />
+              <ProfileHeader
                 account={{
                   name: "María Victoria Fernández de la Fuente",
-                  email: "maria@example.com",
+                  email: "maria.victoria.fernandez.de.la.fuente@ejemplo.com",
                   avatarUrl: null,
                 }}
+                teamRole="staff"
+                since={null}
+                share={
+                  <ShareCardButton
+                    href="/dev/sin-imagen"
+                    fileName="tarjeta.png"
+                    variant="secondary"
+                  />
+                }
               />
-              <VisitorCard
-                {...CARD}
+              <ProfileHeader
                 account={{
                   name: "ana@example.com",
                   email: "ana@example.com",
                   avatarUrl: null,
                 }}
-                medals={CARD_MEDALS.slice(0, 5)}
+                since={null}
+                share={null}
               />
-              <ShareCardButton href="/dev/sin-imagen" fileName="tarjeta.png" />
             </div>
           </Section>
 
@@ -658,7 +662,7 @@ export default function ComponentesPage() {
             note="El historial del visitante en /mis-medallas, plegado bajo su colección. Con varias ediciones (sellos ganados y por ganar), con una sola, sin historial, cargando y con error: el resto de la página sigue en pie."
           >
             <div className="grid max-w-3xl gap-6">
-              <History history={SAMPLE_HISTORY} />
+              <History history={SAMPLE_HISTORY} current="expo-primavera" />
               <History
                 history={buildHistory([sampleEdition({ id: "solo" })])}
               />

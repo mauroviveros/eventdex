@@ -1011,12 +1011,20 @@ la fecha salen de lo que ya se lee.
    quien llega al panel desde el dominio de la org entra con Google de nuevo: la pregunta
    abierta 2 de ARQUITECTURA sigue abierta y el link no la cambia. Sin cambios en la
    base: RLS ya deja leer la fila propia. 10 tests.
-3. **Vista.** El encabezado elegido, sin la fila de ediciones ni la tarjeta; «Tu
+3. ✅ **Vista.** El encabezado elegido, sin la fila de ediciones ni la tarjeta; «Tu
    historial» con las ediciones como links a su colección; compartir la tarjeta discreto;
    el enlace «Ir al sorteo» en el menú de la cuenta, solo con rol. Estados vacío, de carga
    y de error. `/dev/componentes` y RUTAS al día. El PNG de la tarjeta no cambia.
    *Listo cuando* el visitante ve su perfil arriba, llega a otra edición desde el
    historial, comparte la tarjeta, y el equipo llega al sorteo desde su menú (e2e).
+   Hecho: `ProfileHeader` (`src/components/visitante/ProfileHeader.tsx`, con `teamRole`
+   porque Biome confunde `role` con un rol ARIA); `/mis-medallas` sin la fila de ediciones
+   ni la tarjeta (se borró `VisitorCard`; el PNG sigue con `VisitorCardImage`); «Tu
+   historial» lista cada edición como link (`HistoryEdition` suma `slug`); «Ir al sorteo»
+   en `VisitorMenu`, resuelto en el layout solo si hay rol y sin romper el header si la
+   lectura falla; si falla el rol en la página, esta sigue sin badge. `/dev/componentes` y
+   RUTAS al día. e2e: `encabezado.spec.ts` (dueño con badge y link, visitante sin
+   ninguno) y los de medallas actualizados.
 4. **Auditoría.** `/code-review` y `/accessibility`.
 
 ## R25 · La portada, a la vista de buscadores y redes

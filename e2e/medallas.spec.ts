@@ -70,10 +70,14 @@ test("a visitor scans a QR, signs in, collects, and staff can block them", async
       collection.getByRole("figure", { name: /Rueda gigante.*Te falta/ }),
     ).toBeVisible();
 
-    const card = page.getByRole("region", { name: "Tu tarjeta de visitante" });
-    await expect(card.getByRole("heading")).toHaveText("Feria E2E");
-    await expect(card).toContainText("1 medalla");
-    await expect(card).not.toContainText(seed.visitorEmail);
+    // The header names the visitor; the event is the line under the title.
+    const profile = page.getByRole("region", { name: "Tu perfil" });
+    await expect(profile).toContainText(seed.visitorEmail);
+    await expect(profile).toContainText("Desde");
+    await expect(
+      profile.getByRole("button", { name: "Compartir mi tarjeta" }),
+    ).toBeVisible();
+    await expect(page.getByText("Feria E2E", { exact: true })).toBeVisible();
   });
 
   await test.step("the card can be shared as a private image", async () => {
@@ -162,10 +166,13 @@ test("a visitor picks which event's collection to see", async ({ page }) => {
     await own.addPastCollection();
 
     await page.goto(`${own.origin}/mis-medallas`);
-    const picker = page.getByRole("navigation", { name: "Tus eventos" });
+    const history = page.getByRole("region", { name: "Tu historial" });
     const collection = page.getByRole("list", { name: "Tu colección" });
+    await expect(history).toContainText("2 eventos");
+    await history.getByText("Tu historial", { exact: true }).click();
+    const editions = history.getByRole("list", { name: "Tus ediciones" });
     await expect(
-      picker.getByRole("link", { name: "Feria E2E", exact: true }),
+      editions.getByRole("link", { name: /^Feria E2E \d de/ }),
     ).toHaveAttribute("aria-current", "page");
     await expect(
       collection.getByRole("figure", {
@@ -173,7 +180,7 @@ test("a visitor picks which event's collection to see", async ({ page }) => {
       }),
     ).toBeVisible();
 
-    await picker.getByRole("link", { name: "Feria E2E · Abril" }).click();
+    await editions.getByRole("link", { name: /Feria E2E · Abril/ }).click();
     await expect(page).toHaveURL(/\?evento=feria-vieja$/);
     await expect(
       collection.getByRole("figure", { name: /Stand viejo.*Conseguida/ }),
