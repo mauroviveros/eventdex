@@ -1065,7 +1065,7 @@ WhatsApp o Instagram ve una tarjeta pobre, y Google no sabe que es un evento. Br
    validador de Google y las vistas previas de WhatsApp e Instagram con el sitio
    publicado.
 
-## R26 · Preguntas frecuentes en el orden que el staff quiere
+## R26 · Preguntas frecuentes en el orden que el staff quiere ✅
 
 Las preguntas frecuentes (R21) salen en el orden en que se cargaron. El staff necesita
 subir las que más se preguntan. Branch `feat/orden-faq`. Usa `event_faqs.sort_order`, que
