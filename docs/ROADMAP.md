@@ -1084,7 +1084,12 @@ ya existe: puede no necesitar cambios en la base.
    movida. En `/dev/componentes` (el error se ve ahí: la acción falla) y en RUTAS.
    *Listo cuando* se mueve una pregunta y la portada pública la muestra en el nuevo
    orden: lo cubre `e2e/orden-faq.spec.ts`.
-4. **Auditoría.** `/code-review` y `/accessibility`.
+4. **Auditoría ✅.** `/code-review` y `/accessibility`. Salieron tres arreglos: las
+   lecturas desempatan por `id`, como `move_event_faq`; el aviso «pasó al lugar…» se dice
+   al guardarse y no antes; y el atajo del trigger de alta lleva su `shortcut:`. Quedan
+   sin tocar el `GRANT` de `sort_order` en el alta (lo pisa el trigger) y un test
+   automático del error de `FaqList` (se ve en `/dev/componentes`). Pendiente: probar con
+   un lector de pantalla y con el dedo en un celular real.
 
 ## ⏸ Estacionado
 

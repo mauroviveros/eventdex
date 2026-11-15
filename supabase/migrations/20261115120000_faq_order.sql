@@ -7,6 +7,7 @@
 --     el orden queda completo y estable aunque venga de filas con el mismo valor.
 
 -- Al final del evento. Corre como quien inserta: RLS ya limitó qué puede ver.
+-- shortcut: max + 1 no es atómico, dos altas a la vez pueden empatar; el empate se desempata por created_at y el primer movimiento lo renumera
 create function public.event_faqs_append()
 returns trigger
 language plpgsql

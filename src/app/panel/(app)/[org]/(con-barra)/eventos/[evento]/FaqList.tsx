@@ -71,6 +71,7 @@ export function FaqList({ org, faqs }: { org: string; faqs: Faq[] }) {
   );
   const [said, setSaid] = useState("");
   const focus = useRef<{ id: string; dir: Dir } | null>(null);
+  const moved = useRef("");
   const last = list.length - 1;
 
   // The moved question keeps the focus, on the arrow it has left.
@@ -86,6 +87,11 @@ export function FaqList({ org, faqs }: { org: string; faqs: Faq[] }) {
     (arrow ?? row?.querySelector<HTMLElement>("[data-arrow]"))?.focus();
   }, [list]);
 
+  // Said once it is saved, not before: a refused move says only the error.
+  useEffect(() => {
+    if (state?.ok) setSaid(moved.current);
+  }, [state]);
+
   const shift = (i: number, dir: Dir) => {
     if (pending) return;
     const faq = list[i];
@@ -96,7 +102,7 @@ export function FaqList({ org, faqs }: { org: string; faqs: Faq[] }) {
     data.set("faqId", faq.id);
     data.set("direction", dir);
     focus.current = { id: faq.id, dir };
-    setSaid(`«${faq.question}» pasó al lugar ${i + by + 1} de ${list.length}.`);
+    moved.current = `«${faq.question}» pasó al lugar ${i + by + 1} de ${list.length}.`;
     startTransition(() => {
       moveOptimistic({ id: faq.id, by });
       run(data);

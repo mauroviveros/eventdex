@@ -72,6 +72,7 @@ export async function getPublicEvent(
     .order("code", { referencedTable: "event_spots" })
     .order("sort_order", { referencedTable: "event_faqs" })
     .order("created_at", { referencedTable: "event_faqs" })
+    .order("id", { referencedTable: "event_faqs" })
     .order("sort_order", { referencedTable: "event_photos" })
     .order("created_at", { referencedTable: "event_photos" })
     .maybeSingle();
@@ -96,6 +97,7 @@ export async function getActiveEvent(
     .order("code", { referencedTable: "event_spots" })
     .order("sort_order", { referencedTable: "event_faqs" })
     .order("created_at", { referencedTable: "event_faqs" })
+    .order("id", { referencedTable: "event_faqs" })
     .order("sort_order", { referencedTable: "event_photos" })
     .order("created_at", { referencedTable: "event_photos" })
     .maybeSingle();

@@ -140,6 +140,7 @@ export async function getEventBySlug(
     .order("starts_at", { referencedTable: "event_schedules" })
     .order("sort_order", { referencedTable: "event_faqs" })
     .order("created_at", { referencedTable: "event_faqs" })
+    .order("id", { referencedTable: "event_faqs" })
     .order("sort_order", { referencedTable: "event_photos" })
     .order("created_at", { referencedTable: "event_photos" })
     .maybeSingle();
