@@ -1139,7 +1139,7 @@ que no hay URLs viejas que cuidar. Branch `feat/una-portada`.
    El inicio deja «Ediciones anteriores» solo con cifras, sin links.
    *Listo cuando* `/eventos/x` da 404, un miembro ve un borrador desde el panel y alguien
    de afuera no (e2e).
-4. **Docs.** `unlisted` pasa a ser «sin portada, solo QR» (RUTAS, PROYECTO y el panel);
+4. **Docs ✅.** `unlisted` pasa a ser «sin portada, solo QR» (RUTAS, PROYECTO y el panel);
    RUTAS y ARQUITECTURA al día.
 5. **Auditoría.** `/code-review` y `/accessibility`.
 
