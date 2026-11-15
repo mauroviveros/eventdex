@@ -1036,7 +1036,7 @@ la fecha salen de lo que ya se lee.
    lector de pantalla. Queda a decidir si «Venís desde …» del historial sobra, ahora que
    el encabezado dice «Desde».
 
-## R25 · La portada, a la vista de buscadores y redes
+## R25 · La portada, a la vista de buscadores y redes ✅
 
 Hoy la página del evento solo declara título y descripción. Quien comparte el link por
 WhatsApp o Instagram ve una tarjeta pobre, y Google no sabe que es un evento. Branch
@@ -1056,7 +1056,14 @@ WhatsApp o Instagram ve una tarjeta pobre, y Google no sabe que es un evento. Br
    y no está en el sitemap; `robots` ya dejaba fuera `/s/`, `/ingresar` y
    `/mis-medallas`. Sin probar: el validador de Google y las vistas previas de
    WhatsApp e Instagram piden una URL pública, así que quedan para después del deploy.
-3. **Auditoría.** `/code-review` y `/seo`.
+3. **Auditoría ✅.** `/code-review` y `/seo`. Salieron cinco puntos y se arreglaron
+   cuatro: un evento sin sede no emite `Event` (Google exige `location`); la canónica
+   va al dominio principal de la org y no al host del pedido; el armado de la tarjeta
+   pasó a `eventShare` en el dominio, con tests; y las imágenes llevan `alt`. Quedan
+   como advertencia conocida el `offers` sin precio ni disponibilidad (la base no guarda
+   precio) y el ancho y alto de la imagen (el banner no los guarda). Falta pasar el
+   validador de Google y las vistas previas de WhatsApp e Instagram con el sitio
+   publicado.
 
 ## R26 · Preguntas frecuentes en el orden que el staff quiere
 
