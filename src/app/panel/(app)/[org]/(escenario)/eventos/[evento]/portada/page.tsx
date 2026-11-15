@@ -6,6 +6,7 @@ import { PreviewFrame } from "@/components/panel/PreviewFrame";
 import { EventHome } from "@/components/visitante/EventHome";
 import { MadeWith } from "@/components/visitante/MadeWith";
 import { MARQUESINA } from "@/components/visitante/marquesina";
+import { OrgBrand } from "@/components/visitante/OrgBrand";
 import { countdownState } from "@/domain/events";
 import { orgRamp } from "@/domain/palette";
 import { type PortadaPhase, previewNow } from "@/domain/portada";
@@ -75,6 +76,14 @@ export default async function PortadaPage({
         style={style}
         className={`ramp-scope scanlines min-h-dvh bg-lcd-0 text-lcd-3 ${MARQUESINA}`}
       >
+        {/* The public header without the visitor's menu: not sticky, the index sticks under the team's bar. */}
+        <header className="border-b-2 border-lcd-3 bg-lcd-0">
+          <div className="mx-auto flex min-h-16 max-w-5xl items-center px-4 sm:px-6">
+            <PreviewFrame>
+              <OrgBrand org={org} />
+            </PreviewFrame>
+          </div>
+        </header>
         <PreviewFrame>
           <EventHome event={event} now={now} />
         </PreviewFrame>

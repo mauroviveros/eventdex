@@ -1,13 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import Link from "next/link";
 import { type CSSProperties, Suspense } from "react";
-import { Logo } from "@/components/pixel/Logo";
-import { Monogram } from "@/components/ui/Monogram";
 import { MadeWith } from "@/components/visitante/MadeWith";
 import { MARQUESINA } from "@/components/visitante/marquesina";
+import { OrgBrand } from "@/components/visitante/OrgBrand";
 import { SignInLink, VisitorMenu } from "@/components/visitante/VisitorMenu";
 import { orgRamp, toHex } from "@/domain/palette";
-import { logoUrl } from "@/lib/data/organizations";
 import { getRaffleHref } from "@/lib/data/standing";
 import { getVisitorAccount, getVisitorRole } from "@/lib/data/viewer";
 import { env } from "@/lib/env";
@@ -72,22 +69,7 @@ export default async function PublicaLayout({
         className="sticky top-0 z-30 border-b-2 border-lcd-3 bg-lcd-0"
       >
         <div className="mx-auto flex min-h-16 max-w-5xl items-center justify-between gap-4 px-4 sm:px-6">
-          <Link
-            href="/"
-            className="flex min-h-11 min-w-0 items-center gap-3 font-display text-px-2 no-underline"
-          >
-            {org.logo_path ? (
-              <Logo
-                src={logoUrl(org.logo_path)}
-                mode="lleno"
-                label=""
-                className="size-10 shrink-0 object-contain"
-              />
-            ) : (
-              <Monogram text={org.name} />
-            )}
-            <span className="truncate">{org.name}</span>
-          </Link>
+          <OrgBrand org={org} />
           <Suspense fallback={<span className="min-h-11" />}>
             <Account org={org} />
           </Suspense>
