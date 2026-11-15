@@ -112,6 +112,7 @@ async function Claim({
       outcome={outcome}
       timeZone={event.timezone}
       eventHref={`/eventos/${event.slug}`}
+      collectionHref={`/mis-medallas?evento=${event.slug}`}
       progress={progress}
       perk={perkFor(
         outcome.kind,

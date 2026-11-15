@@ -1,5 +1,5 @@
 /**
- * 8×8 pixel icons for the admin, drawn as grids: "#" is ink, anything else
+ * 8×8 pixel icons, drawn as grids: "#" is ink, anything else
  * is ground. One <path> in currentColor, 16 px by default.
  */
 export const ICONS = {

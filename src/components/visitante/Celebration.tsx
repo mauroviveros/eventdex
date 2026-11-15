@@ -14,6 +14,8 @@ type Props = {
   timeZone: string;
   /** The event's page, for the outcomes that send the visitor back to it. */
   eventHref: string;
+  /** Mis medallas opened on this event: a scanned QR may not be the active one. */
+  collectionHref?: string;
   /** Progress block shown under a new or repeated medal. */
   progress?: ReactNode;
   /** The stand's perk: the coupon with a new medal, a pointer to its sheet with a repeated one. */
@@ -36,6 +38,7 @@ export function Celebration({
   outcome,
   timeZone,
   eventHref,
+  collectionHref = "/mis-medallas",
   progress,
   perk,
   headingLevel = 1,
@@ -44,6 +47,7 @@ export function Celebration({
     outcome,
     (iso) => formatMoment(iso, timeZone),
     eventHref,
+    collectionHref,
   );
   const blocked = outcome.kind === "bloqueado";
   const Heading = `h${headingLevel}` as const;
@@ -100,12 +104,11 @@ type Copy = {
   href: string;
 };
 
-const COLLECTION = "/mis-medallas";
-
 function copyFor(
   o: ClaimResult,
   moment: (iso: string) => string,
   eventHref: string,
+  collectionHref: string,
 ): Copy {
   switch (o.kind) {
     case "nueva":
@@ -113,14 +116,14 @@ function copyFor(
         title: "¡Medalla nueva!",
         body: "Quedó guardada en tu colección.",
         action: "Ver mis medallas",
-        href: COLLECTION,
+        href: collectionHref,
       };
     case "repetida":
       return {
         title: "Esta ya la tenías",
         body: `La conseguiste el ${moment(o.claimedAt)}. Buscá un stand nuevo para sumar.`,
         action: "Ver mis medallas",
-        href: COLLECTION,
+        href: collectionHref,
       };
     case "inactivo":
       return {
@@ -135,7 +138,7 @@ function copyFor(
             title: "El evento terminó",
             body: `Las medallas se sumaban hasta el ${moment(o.endsAt)}. Las que juntaste siguen en tu colección.`,
             action: "Ver mis medallas",
-            href: COLLECTION,
+            href: collectionHref,
           }
         : {
             title: "Todavía no arrancó",
