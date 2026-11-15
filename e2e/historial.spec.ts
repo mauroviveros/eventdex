@@ -35,7 +35,7 @@ test("the visitor's history grows with each edition they play", async ({
 
     const history = page.getByRole("region", { name: "Tu historial" });
     await expect(history).toContainText("2 eventos · 2 medallas");
-    await history.getByText("Tu historial").click();
+    await history.getByText("Tu historial", { exact: true }).click();
     await expect(history).toContainText(
       "Jugaste 2 eventos, juntaste 2 medallas y ganaste 0 sorteos.",
     );
@@ -56,7 +56,9 @@ test("the visitor's history grows with each edition they play", async ({
     await seed.addPastWin();
     await page.goto(`${seed.origin}/mis-medallas`);
     const history = page.getByRole("region", { name: "Tu historial" });
-    await history.getByText("Tu historial").click();
+    // The loading plate has the same title: wait for the real one before opening it.
+    await expect(history).toContainText("2 eventos · 2 medallas");
+    await history.getByText("Tu historial", { exact: true }).click();
     await expect(history).toContainText(
       "Jugaste 2 eventos, juntaste 2 medallas y ganaste 1 sorteo.",
     );

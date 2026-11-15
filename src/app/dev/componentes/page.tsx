@@ -60,6 +60,7 @@ import {
   MedalsLoading,
   type PublicEvent,
 } from "@/components/visitante/EventHome";
+import { GalleryViewer } from "@/components/visitante/GalleryViewer";
 import {
   History,
   HistoryFailed,
@@ -421,6 +422,28 @@ export default function ComponentesPage() {
               <Medal {...BANCO} state="inactivo" />
               <Medal {...RUEDA} state="conseguido" />
             </div>
+          </Section>
+
+          <Section
+            title="Visor de fotos"
+            note="GalleryViewer: la galería de la portada. Tocar una foto la abre entera, con su epígrafe y «3 de 6» en una placa; anterior y siguiente, flechas del teclado, deslizar en el celular y Esc. En escritorio es un diálogo con la placa al costado; en el celular, la foto a pantalla completa con la placa sobre el pie. En los extremos el botón queda sin efecto pero conserva el foco. Al cerrar, el foco vuelve a la miniatura de la última foto vista. Sin animación, así que no hay nada que reducir."
+          >
+            <GalleryViewer
+              photos={[
+                {
+                  id: "1",
+                  src: retrato.src,
+                  caption: "El patio a la apertura",
+                },
+                {
+                  id: "2",
+                  src: cafe.src,
+                  caption:
+                    "Café de la Esquina, con fila desde temprano; la mesa larga se armó para que cada visitante se lleve su pieza.",
+                },
+                { id: "3", src: retrato.src, caption: null },
+              ]}
+            />
           </Section>
 
           <Section

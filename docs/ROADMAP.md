@@ -950,12 +950,18 @@ chico. Tocar una foto la abre grande, con su epígrafe, y se recorre la galería
 volver a la grilla. Branch `feat/fotos-ampliables`. Sin cambios en la base: abre el
 mismo archivo que la grilla.
 
-1. **Diseño.** `/impeccable shape` del visor y dos o tres alternativas con
+1. ✅ **Diseño.** `/impeccable shape` del visor y dos o tres alternativas con
    `/impeccable` sobre la portada real: la foto entera, sin recortar, y una placa LCD
    con el epígrafe y «3 de 6»; la placa al costado o abajo en escritorio; a pantalla
    completa en el celular. Si hace falta más que el epígrafe (crédito, un texto más
    largo), se decide acá: pide una columna y un campo en la pestaña Página de R21.
-2. **Vista.** Un `Dialog` de Radix como la ficha de los stands: anterior y siguiente,
+   Elegida la B en escritorio y la C en el celular: en escritorio, un diálogo con la foto
+   entera y la placa LCD al costado (epígrafe, «3 de 6», anterior, siguiente y cerrar); en
+   el celular, la foto a pantalla completa y la placa como barra sobre el pie. Alcanza con
+   el epígrafe de hoy (120 caracteres se leen completos): no hay columna nueva. Los
+   extremos deshabilitan su botón, sin dar la vuelta. Las alternativas (`?alt=` en
+   `GalleryViewer.tsx`) se borran en el bloque 2.
+2. ✅ **Vista.** Un `Dialog` de Radix como la ficha de los stands: anterior y siguiente,
    teclas ← → y Esc, deslizar en el celular, el foco entra al visor y vuelve a la
    miniatura al cerrar, y `prefers-reduced-motion`. En `/dev/componentes`. RUTAS al día.
    *Listo cuando* se abre una foto, se recorre la galería con el teclado y el epígrafe
