@@ -8,7 +8,7 @@ import { SignInLink, VisitorMenu } from "@/components/visitante/VisitorMenu";
 import { EVENTDEX_HUE, ramp, rampFromHex } from "@/domain/palette";
 import { logoUrl } from "@/lib/data/organizations";
 import { getRaffleHref } from "@/lib/data/standing";
-import { getVisitorAccount, getVisitorStanding } from "@/lib/data/viewer";
+import { getVisitorAccount, getVisitorRole } from "@/lib/data/viewer";
 import { env } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
 import { requireHostOrganization } from "./organization";
@@ -89,7 +89,7 @@ async function Account({ org }: { org: { id: string; slug: string } }) {
 /** Only the team gets the way to the raffle; if it can't be read the menu is the same without it. */
 async function raffleHref(org: { id: string; slug: string }, userId: string) {
   try {
-    const { role } = await getVisitorStanding(org.id, userId);
+    const role = await getVisitorRole(org.id, userId);
     if (!role) return undefined;
     const href = await getRaffleHref(
       await createClient(),

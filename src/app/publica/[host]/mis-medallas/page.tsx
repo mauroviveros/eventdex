@@ -19,7 +19,11 @@ import { listMyClaims, listMyEvents } from "@/lib/data/claims";
 import { getMyHistory } from "@/lib/data/history";
 import { getActiveEvent, getPublicEvent } from "@/lib/data/public";
 import { listEventPrizes } from "@/lib/data/raffles";
-import { getVisitorStanding, requireVisitor } from "@/lib/data/viewer";
+import {
+  getVisitorRole,
+  getVisitorSince,
+  requireVisitor,
+} from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
 import { requireHostOrganization } from "../organization";
 
@@ -161,7 +165,11 @@ function Collection({
 /** Role and "since" for the header; if the read fails the page stands without them. */
 async function standingOrNone(organizationId: string, userId: string) {
   try {
-    return await getVisitorStanding(organizationId, userId);
+    const [role, since] = await Promise.all([
+      getVisitorRole(organizationId, userId),
+      getVisitorSince(organizationId, userId),
+    ]);
+    return { role, since };
   } catch (error) {
     console.error("mis-medallas: standing", error);
     return { role: null, since: null };

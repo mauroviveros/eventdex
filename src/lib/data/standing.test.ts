@@ -1,51 +1,68 @@
 import { describe, expect, it } from "vitest";
 import { fakeClient } from "../fake-supabase";
-import { getRaffleHref, readStanding } from "./standing";
+import { getRaffleHref, readRole, readSince } from "./standing";
 
 const ok = (data: unknown) => ({ data, error: null });
 const failed = { data: null, error: new Error("denied") };
 
-describe("readStanding", () => {
-  it("gives the role in the team and the first registration", async () => {
-    const { client } = fakeClient(
-      ok({ role: "owner" }),
-      ok([{ created_at: "2026-03-29T12:00:00Z" }]),
-    );
-
-    expect(await readStanding(client, "org", "me")).toEqual({
-      role: "owner",
-      since: "2026-03-29T12:00:00Z",
-    });
+describe("readRole", () => {
+  it("gives the role in the team, or null for a plain visitor", async () => {
+    expect(
+      await readRole(fakeClient(ok({ role: "owner" })).client, "o", "u"),
+    ).toBe("owner");
+    expect(await readRole(fakeClient(ok(null)).client, "o", "u")).toBeNull();
   });
 
-  it("is a plain visitor without a row in the team, and new without registrations", async () => {
-    const { client } = fakeClient(ok(null), ok([]));
+  it("filters by this organization and this user", async () => {
+    const { client, calls } = fakeClient(ok(null));
 
-    expect(await readStanding(client, "org", "me")).toEqual({
-      role: null,
-      since: null,
-    });
-  });
-
-  it("filters both reads by this organization and this user", async () => {
-    const { client, calls } = fakeClient(ok(null), ok([]));
-
-    await readStanding(client, "org-1", "user-1");
+    await readRole(client, "org-1", "user-1");
 
     const eqs = calls.filter((c) => c.method === "eq").map((c) => c.args);
-    expect(eqs).toContainEqual(["organization_id", "org-1"]);
-    expect(eqs.filter((a) => a[0] === "user_id")).toEqual([
-      ["user_id", "user-1"],
+    expect(eqs).toEqual([
+      ["organization_id", "org-1"],
       ["user_id", "user-1"],
     ]);
   });
 
-  it("throws when a read fails, so the page decides what to show", async () => {
+  it("throws when the read fails, so the caller decides what to show", async () => {
+    await expect(readRole(fakeClient(failed).client, "o", "u")).rejects.toThrow(
+      "denied",
+    );
+  });
+});
+
+describe("readSince", () => {
+  it("gives the first registration, or null for someone who never registered", async () => {
+    expect(
+      await readSince(
+        fakeClient(ok([{ created_at: "2026-03-29T12:00:00Z" }])).client,
+        "o",
+        "u",
+      ),
+    ).toBe("2026-03-29T12:00:00Z");
+    expect(await readSince(fakeClient(ok([])).client, "o", "u")).toBeNull();
+  });
+
+  it("asks for the earliest one, of this organization and this user", async () => {
+    const { client, calls } = fakeClient(ok([]));
+
+    await readSince(client, "org-1", "user-1");
+
+    const eqs = calls.filter((c) => c.method === "eq").map((c) => c.args);
+    expect(eqs).toEqual([
+      ["organization_id", "org-1"],
+      ["user_id", "user-1"],
+    ]);
+    expect(calls.find((c) => c.method === "order")?.args).toEqual([
+      "created_at",
+    ]);
+    expect(calls.find((c) => c.method === "limit")?.args).toEqual([1]);
+  });
+
+  it("throws when the read fails", async () => {
     await expect(
-      readStanding(fakeClient(failed, ok([])).client, "org", "me"),
-    ).rejects.toThrow("denied");
-    await expect(
-      readStanding(fakeClient(ok(null), failed).client, "org", "me"),
+      readSince(fakeClient(failed).client, "o", "u"),
     ).rejects.toThrow("denied");
   });
 });

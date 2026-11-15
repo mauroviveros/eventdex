@@ -119,6 +119,7 @@ export function History({
                   <span className="font-display text-px-1">
                     {editionName(e)}
                   </span>
+                  {/* The space is for a screen reader: flex hides it, and the link's name would read "actual2 de 3". */}{" "}
                   <span className="text-sm tabular-nums">
                     {e.medals} de {plural(e.total, "medalla", "medallas")}
                     {e.wins > 0 && " · ganaste un sorteo"}

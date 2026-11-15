@@ -16,8 +16,9 @@ type Account = {
 
 /**
  * The visitor's account in the public header: photo, name and mail, and a menu
- * with their medals, sign-out and, for the team, the way to the raffle. A <details>, so it works before any JS. On
- * phones only the photo shows; the name moves into the menu.
+ * with their medals, sign-out and, for the team, the way to the raffle. A
+ * <details>, so it works before any JS. On phones only the photo shows; the
+ * name moves into the menu.
  */
 export function VisitorMenu({
   account,

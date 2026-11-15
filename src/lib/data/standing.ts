@@ -2,37 +2,40 @@ import { raffleLink } from "@/domain/panelLink";
 import type { Supabase } from "@/lib/supabase/server";
 
 /**
- * Who a signed-in visitor is to one organization: their role in its team, if
- * any, and since when they play. A failed read throws: the caller decides what
- * the page shows. Filtered by user: the team reads each other's rows under RLS.
+ * The visitor's role in the organization's team, or null for a plain visitor.
+ * A failed read throws: the caller decides what the page shows. Filtered by
+ * user: the team reads each other's rows under RLS.
  */
-export async function readStanding(
+export async function readRole(
   supabase: Supabase,
   organizationId: string,
   userId: string,
 ) {
-  const [member, first] = await Promise.all([
-    supabase
-      .from("organization_members")
-      .select("role")
-      .eq("organization_id", organizationId)
-      .eq("user_id", userId)
-      .maybeSingle(),
-    supabase
-      .from("event_registrations")
-      .select("created_at")
-      .eq("organization_id", organizationId)
-      .eq("user_id", userId)
-      .order("created_at")
-      .limit(1),
-  ]);
-  if (member.error) throw member.error;
-  if (first.error) throw first.error;
-  return {
-    role: member.data?.role ?? null,
-    /** The first time they registered in an event of the organization. */
-    since: first.data[0]?.created_at ?? null,
-  };
+  const { data, error } = await supabase
+    .from("organization_members")
+    .select("role")
+    .eq("organization_id", organizationId)
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (error) throw error;
+  return data?.role ?? null;
+}
+
+/** The first time the visitor registered in an event of the organization, or null if never. */
+export async function readSince(
+  supabase: Supabase,
+  organizationId: string,
+  userId: string,
+) {
+  const { data, error } = await supabase
+    .from("event_registrations")
+    .select("created_at")
+    .eq("organization_id", organizationId)
+    .eq("user_id", userId)
+    .order("created_at")
+    .limit(1);
+  if (error) throw error;
+  return data[0]?.created_at ?? null;
 }
 
 /**

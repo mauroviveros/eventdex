@@ -8,7 +8,7 @@ import {
   isDeveloper,
   listMyOrganizations,
 } from "./organizations";
-import { readStanding } from "./standing";
+import { readRole, readSince } from "./standing";
 
 /**
  * Who is looking at this request, resolved once per request (layouts, pages
@@ -115,10 +115,16 @@ export async function requireVisitor() {
 }
 
 /**
- * The visitor's role and "since" in one organization, read once per request
- * however many components ask (the public header and the page).
+ * The visitor's role in one organization, read once per request however many
+ * components ask (the public header on every page, and Mis medallas).
  */
-export const getVisitorStanding = cache(
+export const getVisitorRole = cache(
   async (organizationId: string, userId: string) =>
-    readStanding(await createClient(), organizationId, userId),
+    readRole(await createClient(), organizationId, userId),
+);
+
+/** Since when the visitor plays in one organization; only Mis medallas shows it. */
+export const getVisitorSince = cache(
+  async (organizationId: string, userId: string) =>
+    readSince(await createClient(), organizationId, userId),
 );
