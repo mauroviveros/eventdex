@@ -29,7 +29,7 @@ test("an event's banner goes from the panel to the public home", async ({
 
   await test.step("without a banner, the home has no image", async () => {
     await expect(page.getByText("Todavía no hay banner")).toBeVisible();
-    await visitor.goto(`${seed.origin}/eventos/feria`);
+    await visitor.goto(`${seed.origin}/`);
     await expect(cover).toHaveCount(0);
   });
 

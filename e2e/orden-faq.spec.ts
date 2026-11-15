@@ -62,7 +62,7 @@ test("moving a question in Página reorders it on the public page", async ({
 
   await test.step("the public page shows them in the new order", async () => {
     const visitor = await browser.newPage();
-    await visitor.goto(`${seed.origin}/eventos/feria`);
+    await visitor.goto(`${seed.origin}/`);
     await expect(
       visitor
         .getByRole("region", { name: "Preguntas frecuentes" })

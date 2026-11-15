@@ -293,6 +293,58 @@ export async function seedLiveEvent() {
       );
       return draft;
     },
+    /**
+     * A second event, live and published too, that started after the first:
+     * the org's home keeps showing the first, so this one is not "the page".
+     */
+    async addSecondLiveEvent(title = "Feria Paralela") {
+      const second = must(
+        await admin
+          .from("events")
+          .insert({ organization_id: org.id, slug: "feria-paralela", title })
+          .select("id, slug")
+          .single(),
+      );
+      must(
+        await admin.from("event_schedules").insert({
+          event_id: second.id,
+          organization_id: org.id,
+          starts_at: new Date(Date.now() - hour / 2).toISOString(),
+          ends_at: new Date(Date.now() + 6 * hour).toISOString(),
+        }),
+      );
+      const [spot] = must(
+        await admin
+          .from("spots")
+          .insert({
+            id: importedId(),
+            organization_id: org.id,
+            name: "Puesto paralelo",
+            type: "stand",
+          })
+          .select("id"),
+      );
+      const [eventSpot] = must(
+        await admin
+          .from("event_spots")
+          .insert({
+            event_id: second.id,
+            organization_id: org.id,
+            spot_id: (spot as { id: string }).id,
+            code: "B01",
+            sort_order: 0,
+          })
+          .select("id"),
+      );
+      must(await asOwner.rpc("publish_event", { p_event_id: second.id }));
+      return { event: second, spot: eventSpot as { id: string } };
+    },
+    /** Gives a spot of the event a perk, as the stand's coupon. */
+    async setPerk(eventSpotId: string, perk: string) {
+      must(
+        await admin.from("event_spots").update({ perk }).eq("id", eventSpotId),
+      );
+    },
     async cleanup() {
       // Medals restrict deleting their spots: they go first.
       await admin.from("spot_claims").delete().eq("organization_id", org.id);

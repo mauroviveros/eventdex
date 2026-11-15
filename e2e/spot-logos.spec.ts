@@ -69,7 +69,7 @@ test("a spot's logo goes from the form to the visitor's medals", async ({
   const visitor = await browser.newPage();
 
   await test.step("the home shows it, and the file is served", async () => {
-    await visitor.goto(`${seed.origin}/eventos/feria`);
+    await visitor.goto(`${seed.origin}/`);
     const logo = visitor
       .getByRole("figure", { name: new RegExp(NAME) })
       .locator("img");

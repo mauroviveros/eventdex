@@ -11,6 +11,7 @@ import type { ClaimResult } from "@/domain/claims";
 import { claimSpot } from "@/lib/claims";
 import { getClaimTarget, getMyProgress } from "@/lib/data/claims";
 import { spotLogoUrl } from "@/lib/data/organizations";
+import { getActiveEventId } from "@/lib/data/public";
 import { listEventPrizes } from "@/lib/data/raffles";
 import { getVisitorAccount } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
@@ -56,7 +57,7 @@ export default async function ClaimPage({
       {/* Outside the boundary: a live region only announces changes made inside it once it exists. */}
       <div aria-live="polite" className="grid w-full justify-items-center">
         <Suspense fallback={<Claiming />}>
-          <Claim target={target} visitorId={visitor.id} />
+          <Claim target={target} visitorId={visitor.id} orgId={org.id} />
         </Suspense>
       </div>
     </main>
@@ -68,15 +69,20 @@ type Target = NonNullable<Awaited<ReturnType<typeof getClaimTarget>>>;
 async function Claim({
   target: { event, spot },
   visitorId,
+  orgId,
 }: {
   target: Target;
   visitorId: string;
+  orgId: string;
 }) {
   const supabase = await createClient();
   const claim = await claimSpot(supabase, spot.id);
   if (!claim.ok) throw new Error(claim.error);
   if (!claim.data) notFound();
   const outcome = claim.data;
+  // The org has one page, the active event's: a spot of another event has
+  // no page to link to, so the links to it are left out.
+  const onPage = (await getActiveEventId(supabase, orgId)) === event.id;
 
   let progress = null;
   if (outcome.kind === "nueva" || outcome.kind === "repetida") {
@@ -92,11 +98,13 @@ async function Claim({
         ) : (
           <Progress claimed={p.medals} total={p.total} />
         )}
-        <MissingSpots
-          shown={p.missing.shown}
-          more={p.missing.more}
-          href={`/eventos/${event.slug}#medallas`}
-        />
+        {onPage && (
+          <MissingSpots
+            shown={p.missing.shown}
+            more={p.missing.more}
+            href="/#medallas"
+          />
+        )}
       </div>
     );
   }
@@ -111,13 +119,13 @@ async function Claim({
       }}
       outcome={outcome}
       timeZone={event.timezone}
-      eventHref={`/eventos/${event.slug}`}
+      eventHref={onPage ? "/" : undefined}
       collectionHref={`/mis-medallas?evento=${event.slug}`}
       progress={progress}
       perk={perkFor(
         outcome.kind,
         spot.perk,
-        `/eventos/${event.slug}#ficha=${spot.id}`,
+        onPage ? `/#ficha=${spot.id}` : null,
       )}
     />
   );
@@ -130,11 +138,11 @@ async function Claim({
 function perkFor(
   kind: ClaimResult["kind"],
   perk: string | null,
-  sheetHref: string,
+  sheetHref: string | null,
 ) {
   if (!perk) return null;
   if (kind === "nueva") return <PerkVoucher perk={perk} />;
-  if (kind === "repetida") return <PerkInSheet href={sheetHref} />;
+  if (kind === "repetida" && sheetHref) return <PerkInSheet href={sheetHref} />;
   return null;
 }
 

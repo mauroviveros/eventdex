@@ -36,7 +36,7 @@ test("what the staff loads in Página shows on the event's public page", async (
 
   await test.step("the page starts with nothing to show", async () => {
     await expect(page.getByText("Todavía no cargaste nada")).toBeVisible();
-    await visitor.goto(`${seed.origin}/eventos/feria`);
+    await visitor.goto(`${seed.origin}/`);
     await expect(visitor.getByRole("link", { name: /Entradas/ })).toHaveCount(
       0,
     );
@@ -126,11 +126,13 @@ test("what the staff loads in Página shows on the event's public page", async (
     await visitor.goto(`${seed.origin}/mis-medallas`);
     await signInByMail(visitor, seed.visitorEmail);
     await seed.addPastCollection();
-    await visitor.goto(`${seed.origin}/eventos/feria`);
+    await visitor.goto(`${seed.origin}/`);
     const past = visitor.getByRole("region", { name: "Ediciones anteriores" });
-    const edition = past.getByRole("link", { name: /Feria E2E/ });
+    // Figures only: the org has one page, so an edition links nowhere.
+    const edition = past.getByRole("listitem").filter({ hasText: "Abril" });
     await expect(edition).toContainText("Feria E2E · Abril");
     await expect(edition).toContainText("1 visitante · 1 medalla");
+    await expect(past.getByRole("link")).toHaveCount(0);
   });
 
   await test.step("removing the photo takes it off the page", async () => {

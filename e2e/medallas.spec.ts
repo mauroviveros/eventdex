@@ -109,7 +109,7 @@ test("a visitor scans a QR, signs in, collects, and staff can block them", async
   });
 
   await test.step("the event's page shows what the visitor already has", async () => {
-    await page.goto(`${seed.origin}/eventos/${seed.event.slug}`);
+    await page.goto(`${seed.origin}/`);
     await expect(
       page.getByRole("heading", { name: "Medallas: 1 de 2" }),
     ).toBeVisible();

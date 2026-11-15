@@ -12,8 +12,8 @@ type Props = {
   outcome: ClaimResult;
   /** Dates show in the event's zone, wherever the visitor is. */
   timeZone: string;
-  /** The event's page, for the outcomes that send the visitor back to it. */
-  eventHref: string;
+  /** The org's page, for the outcomes that send the visitor back to it. Missing when this event is not the one it shows: they go to Mis medallas instead. */
+  eventHref?: string;
   /** Mis medallas opened on this event: a scanned QR may not be the active one. */
   collectionHref?: string;
   /** Progress block shown under a new or repeated medal. */
@@ -107,9 +107,10 @@ type Copy = {
 function copyFor(
   o: ClaimResult,
   moment: (iso: string) => string,
-  eventHref: string,
+  eventHref: string | undefined,
   collectionHref: string,
 ): Copy {
+  const toCollection = { action: "Ver mis medallas", href: collectionHref };
   switch (o.kind) {
     case "nueva":
       return {
@@ -129,8 +130,9 @@ function copyFor(
       return {
         title: "Este spot no suma",
         body: "No está activo en este evento. Probá con otro stand.",
-        action: "Ver los stands",
-        href: `${eventHref}#medallas`,
+        ...(eventHref
+          ? { action: "Ver los stands", href: `${eventHref}#medallas` }
+          : toCollection),
       };
     case "fuera-de-fase":
       return o.ended
@@ -143,8 +145,9 @@ function copyFor(
         : {
             title: "Todavía no arrancó",
             body: `Las medallas se suman durante el evento. Volvé el ${moment(o.startsAt)}.`,
-            action: "Ver el evento",
-            href: eventHref,
+            ...(eventHref
+              ? { action: "Ver el evento", href: eventHref }
+              : toCollection),
           };
     case "bloqueado":
       return {
