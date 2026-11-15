@@ -1042,15 +1042,20 @@ Hoy la página del evento solo declara título y descripción. Quien comparte el
 WhatsApp o Instagram ve una tarjeta pobre, y Google no sabe que es un evento. Branch
 `feat/portada-compartible`. Sin cambios en la base: usa lo que ya carga el staff en R21.
 
-1. **Backend.** Metadatos de la página del evento: Open Graph y Twitter con el banner
+1. **Backend ✅.** Metadatos de la página del evento: Open Graph y Twitter con el banner
    (o el logo de la org si no hay), título, descripción y URL canónica por dominio; y
    JSON-LD `Event` (nombre, fechas con zona, lugar, imagen, link de entradas) más
    `FAQPage` si tiene preguntas. Salen de `getPublicEvent`; un evento sin fecha no emite
    `Event`. Tests de lo que se arma.
-2. **Vista.** Sin pantalla nueva: se ve en la tarjeta compartida. Se prueba con el
+2. **Vista ✅.** Sin pantalla nueva: se ve en la tarjeta compartida. Se prueba con el
    validador de resultados enriquecidos y con una vista previa de Open Graph. RUTAS y
    `robots` al día (un borrador o un evento sin publicar no se indexa).
    *Listo cuando* el JSON-LD valida sin errores y el link se ve con imagen y título.
+   Hecho: el HTML trae `og:*`, `twitter:*`, la canónica y el JSON-LD; con banner la
+   tarjeta es grande y la imagen sale en los tres; un evento no listado lleva `noindex`
+   y no está en el sitemap; `robots` ya dejaba fuera `/s/`, `/ingresar` y
+   `/mis-medallas`. Sin probar: el validador de Google y las vistas previas de
+   WhatsApp e Instagram piden una URL pública, así que quedan para después del deploy.
 3. **Auditoría.** `/code-review` y `/seo`.
 
 ## R26 · Preguntas frecuentes en el orden que el staff quiere
