@@ -1091,6 +1091,106 @@ ya existe: puede no necesitar cambios en la base.
    automático del error de `FaqList` (se ve en `/dev/componentes`). Pendiente: probar con
    un lector de pantalla y con el dedo en un celular real.
 
+## Una portada por organización y el impacto del evento
+
+Lo que salió de revisar la app con el evento real: el público ve una sola portada, la
+del evento actual; el equipo ve cualquier evento desde el panel; y el organizador
+consigue números para venderle el evento a más sponsors.
+
+## R28 · Retoques
+
+Branch `fix/retoques-portada`.
+
+1. **Mis medallas en el mismo evento que el inicio.** Hoy, si el evento activo todavía no
+   empezó, Mis medallas muestra el último en el que el visitante coleccionó, y el inicio
+   el activo. Pasa a mostrar siempre el activo, con un estado vacío útil (la cuenta
+   regresiva) y el historial de ediciones debajo.
+2. **Sin «Ver el evento» en Mis medallas.** Queda el de la celebración al sumar una
+   medalla.
+3. **Marca de agua.** Componente `MadeWith` («Hecho con ♥ por Mauro Viveros», con el link
+   y el corazón en pixel art), en el pie de la app pública y en `/dev/componentes`.
+   Anotar en PRODUCT que un crédito chico en el pie convive con «la app es de la expo».
+4. **Diálogos y overscroll con la marca.** La paleta de la org vive en un contenedor, y
+   los diálogos, menús, hojas, el toaster y el fondo que asoma al estirar el scroll en
+   Mac quedan afuera, en el verde de Eventdex. Se define la paleta en `:root` en el
+   layout público, más `theme-color`. Se prueba con otra paleta en Mac y en un celular.
+
+## R29 · Una sola portada por organización
+
+El público ve solo el evento actual, en `/`: nadie cae en un evento que no es el de
+hoy y los buscadores indexan una sola página. Los carteles nunca se imprimieron, así
+que no hay URLs viejas que cuidar. Branch `feat/una-portada`.
+
+1. **Diseño.** La vista «Ver portada» del panel (bloque 3): franja «Vista del equipo»,
+   selector de fase y cómo se ve un borrador a medio cargar.
+2. **Backend.** Se borra `publica/[host]/eventos/[slug]`: una URL vieja da el 404 propio.
+   `eventUrl` sale a favor de `publicOrigin`: el QR del cartel, la canónica, los datos
+   estructurados y el sitemap apuntan a `/`. En `/s/[id]`, los links a las medallas y a
+   la ficha van a `/#medallas` y `/#ficha=<spot>` solo si el spot es del evento actual
+   (`resolve_active_event`); si es de otro, no se muestran. Tests de los dos casos.
+3. **Vista.** «Ver portada» en una página del panel
+   (`/panel/[org]/eventos/[evento]/portada`, pestaña nueva), en lugar de la vista previa
+   de la pestaña Página y de «Ver en el sitio». Cualquier evento y estado, también
+   borradores, solo para el equipo (y developers en soporte), con `noindex`. La portada
+   entera con la paleta y el logo de la org, los links internos desactivados y un
+   selector de fase (`?fase=`) que arranca en la fase real: preparar el próximo pide ver
+   el juego y los ganadores antes de tiempo, y a un sponsor se le muestra «durante».
+   El inicio deja «Ediciones anteriores» solo con cifras, sin links.
+   *Listo cuando* `/eventos/x` da 404, un miembro ve un borrador desde el panel y alguien
+   de afuera no (e2e).
+4. **Docs.** `unlisted` pasa a ser «sin portada, solo QR» (RUTAS, PROYECTO y el panel);
+   RUTAS y ARQUITECTURA al día.
+5. **Auditoría.** `/code-review` y `/accessibility`.
+
+A repensar: en `/s/[id]` de un evento que no es el actual, si conviene un único «Ir al
+evento actual» y qué alternativas hay para que no confunda.
+
+## R30 · Lo que se muestra, ¿se carga?
+
+Una matriz de cada dato que se ve en la portada, Mis medallas, la tarjeta y la ficha del
+stand, contra dónde se carga en el panel: ya está, falta el campo o es derivado. Lo que
+falte se vuelve un bloque. No se agregan campos sin ver la matriz.
+
+## R31 · Premios por mérito
+
+Además del sorteo (azar), premios por lo que hizo el visitante: el primero en completar
+todas, los primeros 5 en llegar a la mitad, todos los que junten N. Las preguntas
+(reglas, entrega, si un sorteo puede pedir un premio) se responden al empezar.
+
+- `event_awards` (regla por cantidad o porcentaje, umbral y cupo) y `award_winners`
+  (con posición), con los ganadores calculados en la base al escanear, bloqueando la
+  fila del premio: «los primeros N» tiene que ser exacto con escaneos simultáneos.
+- Se anuncia **al reclamar un spot** («con esta vas por la mitad», «ganaste…») y **en el
+  inicio**, con los cupos que quedan: es parte de lo que atrae del evento.
+
+## R32 · Overview y actividad
+
+Un resumen con sentido, de la org y de cada evento, con el estilo del sistema de diseño
+(no una plantilla de cifras con porcentajes sin base).
+
+- **Org:** estado del evento activo, visitantes únicos y cuántos volvieron a más de una
+  edición, qué les falta a los borradores y la actividad de todos los eventos.
+- **Evento:** cifras con base (visitantes, medallas, medallas por visitante, stands sin
+  medallas), afluencia por hora, ranking de stands, embudo (registrados → una medalla →
+  la mitad → todas) y actividad reciente.
+- **Actividad:** quién se registró, quién sacó qué medalla, quién ganó un premio o un
+  sorteo, con hora. Solo el equipo. Se ve al refrescar; el tiempo real es un plus
+  (ver Estacionado).
+- Gráficos pixel (barras y escalones), con estados vacío y «pocos datos»; una librería
+  solo con OK.
+
+## R33 · Analítica e informe
+
+Para el organizador durante y después del evento, y como informe para vender el evento
+a sponsors y colaboradores. Antes de diseñar, un cuestionario que define qué se mide,
+qué se exporta y para qué. Regla: cada gráfico responde una decisión; si no cambia
+ninguna, no se hace.
+
+## R34 · Tarjeta para compartir, completa
+
+Al final, cuando existan los premios por mérito y el resto: medallas sobre el total, los
+logros, si ganó un sorteo y «desde». Tope de tres líneas.
+
 ## ⏸ Estacionado
 
 Fuera de esta versión; vuelve solo con una decisión explícita.
@@ -1104,3 +1204,9 @@ Fuera de esta versión; vuelve solo con una decisión explícita.
 - Series de eventos y métricas entre ediciones.
 - Métricas avanzadas (cohortes de visitantes nuevos y recurrentes).
 - Staging (ver [ARQUITECTURA](./ARQUITECTURA.md#entornos)).
+- **Actividad en tiempo real** (Supabase Realtime): un plus visual del R32; va junto con
+  el sorteo en vivo.
+- **Dominio por evento**: hoy los dominios son de la organización; vuelve si una org
+  tiene dos eventos en paralelo.
+- **Comodín `*.eventdex.com`**: al comprar el dominio raíz, cada org en
+  `<org>.eventdex.com` sin cargarlo a mano en Vercel.
