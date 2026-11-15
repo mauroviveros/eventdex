@@ -1,20 +1,23 @@
 import { expect, test } from "@playwright/test";
 import { signInByMail } from "./support/mailpit";
-import { seedLiveEvent } from "./support/seed";
+import { seedDeveloper, seedLiveEvent } from "./support/seed";
 
 let seed: Awaited<ReturnType<typeof seedLiveEvent>>;
 let parallel: Awaited<ReturnType<typeof seed.addSecondLiveEvent>>;
+let developer: Awaited<ReturnType<typeof seedDeveloper>>;
 
 test.beforeAll(async () => {
   seed = await seedLiveEvent();
   await seed.addDraft();
   parallel = await seed.addSecondLiveEvent();
+  developer = await seedDeveloper();
   for (const spot of [seed.spots[0], parallel.spot])
     if (spot) await seed.setPerk(spot.id, "Un café de regalo");
 });
 
 test.afterAll(async () => {
   await seed?.cleanup();
+  await developer?.cleanup();
 });
 
 test("the org has one page: an event's own URL is a 404", async ({ page }) => {
@@ -42,6 +45,12 @@ test("the team sees a draft's page from the panel, and a stranger does not", asy
     await expect(
       bar.getByRole("link", { name: "Volver al evento" }),
     ).toBeVisible();
+    // The org's own mark heads the page, and it stays out of the search index.
+    await expect(page.getByRole("link", { name: seed.org.name })).toBeVisible();
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+      "content",
+      /noindex/,
+    );
   });
 
   await test.step("the phase menu reads it as upcoming, in course or finished", async () => {
@@ -50,6 +59,17 @@ test("the team sees a draft's page from the panel, and a stranger does not", asy
     await page.getByRole("menuitem", { name: "En curso" }).click();
     await expect(page).toHaveURL(/fase=en-curso/);
     await expect(page.getByRole("main").getByText("En curso")).toBeVisible();
+  });
+
+  await test.step("the platform's developer reads it too, in support mode", async () => {
+    const support = await browser.newPage();
+    await support.goto(preview);
+    await signInByMail(support, developer.email);
+    await expect(support).toHaveURL(preview);
+    await expect(
+      support.getByRole("heading", { name: "Feria Borrador", level: 1 }),
+    ).toBeVisible();
+    await support.close();
   });
 
   await test.step("someone without a session is sent to sign in, and never sees it", async () => {

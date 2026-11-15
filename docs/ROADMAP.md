@@ -1129,7 +1129,7 @@ que no hay URLs viejas que cuidar. Branch `feat/una-portada`.
    estructurados y el sitemap apuntan a `/`. En `/s/[id]`, los links a las medallas y a
    la ficha van a `/#medallas` y `/#ficha=<spot>` solo si el spot es del evento actual
    (`resolve_active_event`); si es de otro, no se muestran. Tests de los dos casos.
-3. **Vista.** «Ver portada» en una página del panel
+3. **Vista ✅.** «Ver portada» en una página del panel
    (`/panel/[org]/eventos/[evento]/portada`, pestaña nueva), en lugar de la vista previa
    de la pestaña Página y de «Ver en el sitio». Cualquier evento y estado, también
    borradores, solo para el equipo (y developers en soporte), con `noindex`. La portada

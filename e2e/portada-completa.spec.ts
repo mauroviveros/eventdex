@@ -35,7 +35,7 @@ test("what the staff loads in Página shows on the event's public page", async (
   const visitor = await browser.newPage();
 
   await test.step("the page starts with nothing to show", async () => {
-    await expect(page.getByText("Todavía no cargaste nada")).toBeVisible();
+    await expect(page.getByRole("link", { name: "Ver portada" })).toBeVisible();
     await visitor.goto(`${seed.origin}/`);
     await expect(visitor.getByRole("link", { name: /Entradas/ })).toHaveCount(
       0,
@@ -54,9 +54,7 @@ test("what the staff loads in Página shows on the event's public page", async (
       page.getByText("Datos de la portada guardados."),
     ).toBeVisible();
     // The page re-renders with what was saved, and the form resets with it.
-    await expect(
-      page.getByRole("region", { name: "Vista previa" }),
-    ).toContainText(ABOUT);
+    await expect(data.getByLabel("Sobre el evento")).toHaveValue(ABOUT);
   });
 
   await test.step("a link that is not https is refused", async () => {
@@ -87,10 +85,16 @@ test("what the staff loads in Página shows on the event's public page", async (
     await expect(page.getByText("Foto agregada.")).toBeVisible();
   });
 
-  await test.step("the preview shows what was loaded", async () => {
-    const preview = page.getByRole("region", { name: "Vista previa" });
-    await expect(preview).toContainText(ABOUT);
+  await test.step("Ver portada shows what was loaded, in the team's view", async () => {
+    // Its own tab, in the same session: the Página tab stays where it is.
+    const preview = await page.context().newPage();
+    await preview.goto(
+      `http://localhost:3000/panel/${seed.org.slug}/eventos/feria/portada`,
+    );
+    await expect(preview.getByText(ABOUT)).toBeVisible();
     await expect(preview.getByRole("link", { name: /Entradas/ })).toBeVisible();
+    await expect(preview.getByText(QUESTION)).toBeVisible();
+    await preview.close();
   });
 
   await test.step("the public page shows it, in the order of a live event", async () => {
