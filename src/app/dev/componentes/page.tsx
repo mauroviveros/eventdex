@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
+import { FaqList } from "@/app/panel/(app)/[org]/(con-barra)/eventos/[evento]/FaqList";
 import { ConsoleDemo } from "@/components/landing/ConsoleDemo";
 import { AccountMenu } from "@/components/panel/AccountMenu";
 import { ActiveEvent } from "@/components/panel/ActiveEvent";
@@ -674,7 +675,7 @@ export default function ComponentesPage() {
 
           <Section
             title="La página del evento"
-            note="Lo que carga el staff en la pestaña Página. About: la descripción, un párrafo por línea en blanco. LinksBar: los links como botones, entradas lleno. HowToGet: la sede y el mapa. Faq: preguntas como acordeón nativo. PastEditions: ediciones anteriores con sus cifras. La galería usa fotos del Storage y se ve en la portada. TextareaField: el campo de varias líneas del panel."
+            note="Lo que carga el staff en la pestaña Página. About: la descripción, un párrafo por línea en blanco. LinksBar: los links como botones, entradas lleno. HowToGet: la sede y el mapa. Faq: preguntas como acordeón nativo. FaqList: las preguntas del panel con ▲▼ para subir y bajar (la primera sin ▲, la última sin ▼); se mueve al instante y, si no se puede guardar —acá no, el evento no existe—, vuelve a su lugar y avisa. PastEditions: ediciones anteriores con sus cifras. La galería usa fotos del Storage y se ve en la portada. TextareaField: el campo de varias líneas del panel."
           >
             <div className="grid max-w-3xl gap-10">
               <About
@@ -713,6 +714,31 @@ export default function ComponentesPage() {
                   },
                 ]}
               />
+              <div className="grid gap-3">
+                <p className="font-display text-px-1">
+                  Ordenar las preguntas (panel)
+                </p>
+                <FaqList
+                  org="demo"
+                  faqs={[
+                    {
+                      id: "00000000-0000-4000-8000-0000000000a1",
+                      question: "¿Cuánto cuesta la entrada?",
+                      answer: "Es gratuita.",
+                    },
+                    {
+                      id: "00000000-0000-4000-8000-0000000000a2",
+                      question: "¿Hay estacionamiento?",
+                      answer: "Sí, un playón frente a la entrada.",
+                    },
+                    {
+                      id: "00000000-0000-4000-8000-0000000000a3",
+                      question: "¿Puedo ir con chicos?",
+                      answer: "Sí, hay una plaza de juegos.",
+                    },
+                  ]}
+                />
+              </div>
               <PastEditions
                 editions={[
                   {

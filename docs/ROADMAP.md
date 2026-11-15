@@ -1078,10 +1078,12 @@ ya existe: puede no necesitar cambios en la base.
    pregunta nueva va al final (trigger) y `move_event_faq` mueve una pregunta un lugar
    renumerando las del evento en una sola transacción, con RLS y chequeo de la org.
    Acción `moveFaqAction` validada con Zod. Tests pgTAP (`19_faq_order`) y de la acción.
-3. **Vista.** El control elegido en la pestaña Página, con sus estados (primera y última
-   sin su botón, guardando, error). `/dev/componentes` y RUTAS al día.
+3. **Vista ✅.** `FaqList` en la pestaña Página: ▲▼ por pregunta, la primera sin ▲ y la
+   última sin ▼. La lista se mueve al instante y, si no se puede guardar, vuelve a su
+   lugar y avisa; mientras guarda ignora los toques y el foco sigue a la pregunta
+   movida. En `/dev/componentes` (el error se ve ahí: la acción falla) y en RUTAS.
    *Listo cuando* se mueve una pregunta y la portada pública la muestra en el nuevo
-   orden (e2e).
+   orden: lo cubre `e2e/orden-faq.spec.ts`.
 4. **Auditoría.** `/code-review` y `/accessibility`.
 
 ## ⏸ Estacionado
