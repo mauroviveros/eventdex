@@ -1192,6 +1192,34 @@ ninguna, no se hace.
 Al final, cuando existan los premios por mérito y el resto: medallas sobre el total, los
 logros, si ganó un sorteo y «desde». Tope de tres líneas.
 
+## R35 · Login con nombre propio
+
+Al entrar con Google, el selector de cuenta dice «Ir a `<proyecto>.supabase.co`»: es el
+dominio del callback de Supabase y le quita confianza al visitante. Se busca que diga
+«Ir a Eventdex», con el logo.
+
+**Decisión: B, verificar la marca** en la pantalla de consentimiento de Google. Sin
+verificar, Google muestra solo el dominio; verificada y publicada, muestra el nombre y
+el logo. No suma costos de Supabase. **A, el dominio propio de Supabase**
+(`auth.<dominio>`, de pago) queda como mejora si la verificación no sale: da una URL
+limpia, no el nombre. **Por org no**: un cliente de Google es una sola app, así que el
+nombre sería siempre Eventdex, y cada dominio de org habría que cargarlo a mano como
+origen autorizado.
+
+- **Requisito previo:** un dominio propio de Eventdex, no `*.vercel.app`: Google pide
+  verificarlo en Search Console y los subdominios de plataforma no se pueden. En ese
+  dominio van la landing (con el nombre y para qué sirve), la política de privacidad y
+  los términos.
+- **Google Cloud:** nombre «Eventdex», logo, página de inicio, política de privacidad y
+  dominios autorizados; enviar la verificación de marca (2 a 3 días hábiles) y
+  **publicarla** dentro de los 7 días.
+- **Probar:** que el selector de cuenta diga «Ir a Eventdex» desde el dominio de una org
+  y desde el de Eventdex. No cambia ninguna URL de Supabase: sesiones y fotos siguen.
+- **Riesgos:** hay reportes de verificaciones trabadas porque el revisor compara el nombre
+  con `supabase.co`; cambiar el nombre, el logo o los links obliga a verificar de nuevo.
+- *Listo cuando* el selector de cuenta de Google, en producción, muestra el nombre y el
+  logo de Eventdex y no el del proyecto de Supabase.
+
 ## ⏸ Estacionado
 
 Fuera de esta versión; vuelve solo con una decisión explícita.
