@@ -1152,6 +1152,44 @@ Una matriz de cada dato que se ve en la portada, Mis medallas, la tarjeta y la f
 stand, contra dónde se carga en el panel: ya está, falta el campo o es derivado. Lo que
 falte se vuelve un bloque. No se agregan campos sin ver la matriz.
 
+**La matriz** (leída del código el 2026-11-15; ✅ se carga, 🧮 derivado, ⚠️ no se carga o no
+se ve):
+
+| Dato que se ve | Dónde se ve | Dónde se carga | |
+|---|---|---|---|
+| Título, edición, resumen | Portada (placa y subtítulo), tarjeta (edición), SEO | Evento: `title`, `editionLabel`, `summary` | ✅ |
+| Banner | Portada | Pestaña Página: banner | ✅ |
+| Fechas, horas, nombre de cada jornada | Portada (placa, «Jornadas»), tarjeta | Jornadas del evento (`label`, desde, hasta) | ✅ |
+| Sede: nombre, dirección, ciudad, provincia | Portada («Cómo llegar»), tarjeta, SEO | Sedes (`name`, `addressLine`, `city`, `state`) | ✅ |
+| Zona horaria | Todas las horas | Sede (`timezone`) | ✅ |
+| Links (tickets, web, Instagram, mapa) | Portada | Pestaña Página | ✅ |
+| Sobre el evento, preguntas (con orden), fotos y epígrafes | Portada | Pestaña Página | ✅ |
+| Nombre, logo, color de la org | Cabecera, paleta, tarjeta | Ajustes (`name`, logo, `brandColor`) | ✅ |
+| Stand: nombre, tipo, logo, descripción | Medallas, ficha, tarjeta | Catálogo de spots | ✅ |
+| Stand en este evento: nombre y descripción propios, puesto, beneficio (visible o sorpresa), activo | Ficha, medallas | Spots del evento | ✅ |
+| Código del stand | Medalla, ficha | Spots del evento (`code`) | ✅ |
+| Premios: título, medallas mínimas, descripción, imagen | Portada, Mis medallas, cartel | Pestaña Sorteo | ✅ |
+| Ganadores del sorteo | Portada, `/sorteo` | Sorteo del evento (se sortea y se publica) | ✅ |
+| Cuenta regresiva y fase | Portada, Mis medallas | Derivado de las jornadas | 🧮 |
+| Medallas sobre el total, progreso a cada premio | Portada, Mis medallas, tarjeta | Derivado de los escaneos | 🧮 |
+| «Día N» cuando la jornada no tiene nombre | Portada | Derivado del orden | 🧮 |
+| Nombre, foto y mail del visitante, «Desde» | Mis medallas, tarjeta | El visitante, desde Google o su mail | 🧮 |
+| Historial, sellos, «jugaste N eventos» | Mis medallas | Derivado de los escaneos | 🧮 |
+| Puntos de cada stand | Nada: se cargan y se suman, pero ninguna pantalla los muestra | Spots del evento (`points`) | ⚠️ |
+
+**Lo que sale de la matriz**
+
+- **Los puntos están cargados sin uso.** El equipo los completa (de 1 a 1000) y hoy no
+  cambian nada de lo que ve el visitante. Antes de seguir hay que decidir: se muestran
+  (en la medalla, la ficha y la tarjeta), se usan (R31, premios por mérito) o se sacan
+  del formulario.
+- **Nada del visitante falta de cargar:** todo lo que se muestra tiene dónde cargarse o
+  se calcula.
+- **Mirar con más detalle** (se vio por arriba y puede haber huecos): el alt del banner
+  («Cartel de …») sale del título, no se carga; el cartel imprimible del stand no entró
+  en esta pasada; los textos fijos (por ejemplo «Escaneá el QR…») no se pueden cambiar
+  por org.
+
 ## R31 · Premios por mérito
 
 Además del sorteo (azar), premios por lo que hizo el visitante: el primero en completar
