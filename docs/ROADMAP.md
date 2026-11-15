@@ -966,7 +966,12 @@ mismo archivo que la grilla.
    miniatura al cerrar, y `prefers-reduced-motion`. En `/dev/componentes`. RUTAS al día.
    *Listo cuando* se abre una foto, se recorre la galería con el teclado y el epígrafe
    se lee completo (e2e).
-3. **Auditoría.** `/code-review` y `/accessibility`.
+3. ✅ **Auditoría.** `/code-review` y `/accessibility`. Hecho: el visor anuncia «Foto 2
+   de 6: …» al recorrerlo con teclas o deslizando (región `status`); el epígrafe de la
+   miniatura ya no se lee dos veces (el botón lo dice); las dos fotos vecinas se
+   precargan; y el foco de retorno se guarda en un efecto, no al renderizar. Accesibilidad:
+   el diálogo tiene nombre, lo de atrás queda inerte, el foco entra y vuelve, y los
+   botones miden 44 px o más; sin pasar lector de pantalla ni deslizar con un dedo real.
 
 ## R25 · La portada, a la vista de buscadores y redes
 

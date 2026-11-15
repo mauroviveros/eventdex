@@ -426,7 +426,7 @@ export default function ComponentesPage() {
 
           <Section
             title="Visor de fotos"
-            note="GalleryViewer: la galería de la portada. Tocar una foto la abre entera, con su epígrafe y «3 de 6» en una placa; anterior y siguiente, flechas del teclado, deslizar en el celular y Esc. En escritorio es un diálogo con la placa al costado; en el celular, la foto a pantalla completa con la placa sobre el pie. En los extremos el botón queda sin efecto pero conserva el foco. Al cerrar, el foco vuelve a la miniatura de la última foto vista. Sin animación, así que no hay nada que reducir."
+            note="GalleryViewer: la galería de la portada. Tocar una foto la abre entera, con su epígrafe y «3 de 6» en una placa; anterior y siguiente, flechas del teclado, deslizar en el celular y Esc. En escritorio es un diálogo con la placa al costado; en el celular, la foto casi a pantalla completa (queda un borde de 12 px de la página, que al tocarlo cierra) con la placa sobre el pie. En los extremos el botón queda sin efecto pero conserva el foco. Al cerrar, el foco vuelve a la miniatura de la última foto vista. Sin animación, así que no hay nada que reducir."
           >
             <GalleryViewer
               photos={[
