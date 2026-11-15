@@ -973,6 +973,43 @@ mismo archivo que la grilla.
    el diálogo tiene nombre, lo de atrás queda inerte, el foco entra y vuelve, y los
    botones miden 44 px o más; sin pasar lector de pantalla ni deslizar con un dedo real.
 
+## R27 · Mis medallas con encabezado propio
+
+Arriba de todo, `/mis-medallas` hoy muestra un botón por edición y la tarjeta de
+visitante con un botón grande para compartirla. Se lee como un panel de la app y no
+como el perfil de la persona. Se quitan los dos: el primero pasa a vivir en «Tu
+historial» (cada edición jugada es un link a su colección) y la tarjeta se reemplaza por
+un encabezado del visitante, como el de la primera versión: foto, nombre, mail y desde
+cuándo, con un badge de rol solo si es del equipo. Compartir la tarjeta queda como una
+acción discreta. Y quien es del equipo o dueño tiene en el menú de su cuenta un enlace
+para ir al sorteo. Branch `feat/encabezado-visitante`. Sin cambios en la base: el rol y
+la fecha salen de lo que ya se lee.
+
+1. ✅ **Diseño.** `/impeccable shape` y dos o tres alternativas con `/impeccable` sobre la
+   página real: el encabezado del visitante (ficha como la primera versión, línea
+   compacta, centrado), dónde y cómo se ve compartir la tarjeta, el nombre del evento
+   (hoy lo lleva la tarjeta) y el badge de rol. Se decide también cómo se llega a otra
+   edición sin la fila de botones.
+   Elegida la A (ficha) y pulida: arriba la persona (foto, nombre de 24 px y mail) y, bajo
+   una línea, el badge de rol y «Desde marzo de 2026» a la izquierda y «Compartir mi
+   tarjeta» a la derecha como botón secundario. Sin rol no hay badge; sin «desde» ni
+   medallas el pie desaparece. El nombre del evento queda como línea bajo el título de la
+   página. A otra edición se llega desde «Tu historial» (cada una es un link) y
+   «Ir al sorteo» vive en el menú de la cuenta, solo con rol. El encabezado de prueba
+   (`ProfileHeaderAlternatives.tsx`, `?alt=a`, `?demo=`) se vuelve el real en el bloque 3.
+2. **Backend.** `getVisitorAccount` suma el rol en la organización del dominio
+   (`owner` o `staff`, nada para un visitante) y «desde» (la primera vez que se
+   registró en un evento de la org). Una función arma el link al sorteo del evento activo
+   en el dominio raíz, que es donde vive `/panel` (en el dominio de una org es un 404).
+   Tests de lo que se arma.
+3. **Vista.** El encabezado elegido, sin la fila de ediciones ni la tarjeta; «Tu
+   historial» con las ediciones como links a su colección; compartir la tarjeta discreto;
+   el enlace «Ir al sorteo» en el menú de la cuenta, solo con rol. Estados vacío, de carga
+   y de error. `/dev/componentes` y RUTAS al día. El PNG de la tarjeta no cambia.
+   *Listo cuando* el visitante ve su perfil arriba, llega a otra edición desde el
+   historial, comparte la tarjeta, y el equipo llega al sorteo desde su menú (e2e).
+4. **Auditoría.** `/code-review` y `/accessibility`.
+
 ## R25 · La portada, a la vista de buscadores y redes
 
 Hoy la página del evento solo declara título y descripción. Quien comparte el link por
