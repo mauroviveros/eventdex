@@ -1115,14 +1115,15 @@ Branch `fix/retoques-portada`.
    Mac quedan afuera, en el verde de Eventdex. Se define la paleta en `:root` en el
    layout público, más `theme-color`. Se prueba con otra paleta en Mac y en un celular.
 
-## R29 · Una sola portada por organización
+## R29 · Una sola portada por organización ▶
 
 El público ve solo el evento actual, en `/`: nadie cae en un evento que no es el de
 hoy y los buscadores indexan una sola página. Los carteles nunca se imprimieron, así
 que no hay URLs viejas que cuidar. Branch `feat/una-portada`.
 
-1. **Diseño.** La vista «Ver portada» del panel (bloque 3): franja «Vista del equipo»,
-   selector de fase y cómo se ve un borrador a medio cargar.
+1. **Diseño ✅.** La vista «Ver portada» del panel (bloque 3): barra «Vista del equipo»
+   como la de un CMS (oscura, una línea, fija arriba: volver al evento, menú de fase,
+   menú «Faltan N» y «Editar página»), y un borrador se ve tal cual sale.
 2. **Backend.** Se borra `publica/[host]/eventos/[slug]`: una URL vieja da el 404 propio.
    `eventUrl` sale a favor de `publicOrigin`: el QR del cartel, la canónica, los datos
    estructurados y el sitemap apuntan a `/`. En `/s/[id]`, los links a las medallas y a

@@ -12,6 +12,7 @@ import { EventActions } from "@/components/panel/EventActions";
 import { EventFilters } from "@/components/panel/EventFilters";
 import { OrgSwitcher } from "@/components/panel/OrgSwitcher";
 import { PanelShell } from "@/components/panel/PanelShell";
+import { PortadaStrip } from "@/components/panel/PortadaStrip";
 import { PublishButton } from "@/components/panel/PublishEvent";
 import { QrCode } from "@/components/panel/QrCode";
 import { RaffleDraw } from "@/components/panel/RaffleDraw";
@@ -816,6 +817,42 @@ export default function ComponentesPage() {
             note="La firma al pie de la app pública: discreta, en texto apagado, con el corazón en rojo de acento. Lleva a la web del autor (src/lib/author.ts)."
           >
             <MadeWith />
+          </Section>
+
+          <Section
+            title="Barra de la vista previa"
+            note="La barra del equipo sobre «Ver portada»: oscura, de una línea y fija arriba, como la de un CMS. Vuelve al evento, elige la fase en la que se lee la portada (arranca en la real) y avisa qué falta cargar. Sin jornadas no hay fase para elegir."
+          >
+            <div className="grid gap-6">
+              <PortadaStrip
+                sticky={false}
+                base="/panel/expo/eventos/primavera"
+                draft={false}
+                real="finalizado"
+                shown="finalizado"
+                missing={[]}
+              />
+              <PortadaStrip
+                sticky={false}
+                base="/panel/expo/eventos/primavera"
+                draft={false}
+                real="proximo"
+                shown="en-curso"
+                missing={[{ label: "fotos", href: "#" }]}
+              />
+              <PortadaStrip
+                sticky={false}
+                base="/panel/expo/eventos/primavera"
+                draft
+                real={null}
+                shown={null}
+                missing={[
+                  { label: "descripción", href: "#" },
+                  { label: "preguntas", href: "#" },
+                  { label: "jornadas", href: "#" },
+                ]}
+              />
+            </div>
           </Section>
 
           <Section
