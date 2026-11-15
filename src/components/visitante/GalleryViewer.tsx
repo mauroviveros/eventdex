@@ -1,7 +1,7 @@
 "use client";
 
 import { Dialog } from "radix-ui";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Chevron } from "@/components/pixel/Chevron";
 import { buttonClass } from "@/components/ui/Button";
 
@@ -11,12 +11,13 @@ export type GalleryPhoto = { id: string; src: string; caption: string | null };
 const SWIPE_PX = 50;
 
 /**
- * On a phone the photo takes the whole screen and the plate is a bar over its
+ * On a phone the photo takes the screen but for a 12 px margin that shows the
+ * page behind (and closes the viewer when tapped), and the plate is a bar over its
  * foot; from `sm` up it is a dialog with the photo whole and the plate beside it.
  */
 const LOOK = {
   content:
-    "fixed inset-0 z-50 grid bg-lcd-3 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:max-h-[92dvh] sm:w-[min(94vw,64rem)] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:grid-cols-[minmax(0,1fr)_17rem] sm:border-2 sm:border-lcd-3 sm:bg-background",
+    "fixed inset-3 z-50 grid border-2 border-lcd-3 bg-lcd-3 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:max-h-[92dvh] sm:w-[min(94vw,64rem)] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:grid-cols-[minmax(0,1fr)_17rem] sm:bg-background",
   stage:
     "grid min-h-0 touch-pan-y place-items-center p-2 pb-28 sm:bg-lcd-3 sm:pb-2",
   img: "max-h-full max-w-full object-contain sm:max-h-[88dvh]",
@@ -37,7 +38,14 @@ export function GalleryViewer({ photos }: { photos: readonly GalleryPhoto[] }) {
   const [index, setIndex] = useState<number | null>(null);
   const photo = index === null ? undefined : photos[index];
   const last = photos.length - 1;
-  if (index !== null) lastShown.current = index;
+  useEffect(() => {
+    if (index === null) return;
+    lastShown.current = index;
+    // The neighbours load while this one is read: a photo is up to 1.5 MB, on a phone with little signal.
+    for (const near of [photos[index - 1], photos[index + 1]]) {
+      if (near) new Image().src = near.src;
+    }
+  }, [index, photos]);
   const go = (step: number) =>
     setIndex((i) => (i === null ? i : Math.min(last, Math.max(0, i + step))));
 
@@ -67,7 +75,10 @@ export function GalleryViewer({ photos }: { photos: readonly GalleryPhoto[] }) {
                 />
               </button>
               {p.caption && (
-                <figcaption className="text-sm">{p.caption}</figcaption>
+                // The button's name already says it: reading it twice is noise.
+                <figcaption aria-hidden className="text-sm">
+                  {p.caption}
+                </figcaption>
               )}
             </figure>
           </li>
@@ -116,6 +127,11 @@ export function GalleryViewer({ photos }: { photos: readonly GalleryPhoto[] }) {
                   <img src={photo.src} alt="" className={LOOK.img} />
                 </div>
                 <div className={LOOK.plate}>
+                  {/* Walking with the keys or a swipe changes the photo under a screen reader that did not move */}
+                  <p role="status" className="sr-only">
+                    Foto {index + 1} de {photos.length}
+                    {photo.caption ? `: ${photo.caption}` : ""}
+                  </p>
                   <Dialog.Title className="font-display text-px-2 text-balance">
                     {photo.caption ?? `Foto ${index + 1}`}
                   </Dialog.Title>
