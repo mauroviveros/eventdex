@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   eventDescription,
   eventJsonLd,
+  eventShare,
   type SeoEvent,
   serializeJsonLd,
 } from "./seo";
@@ -68,19 +69,19 @@ describe("eventJsonLd", () => {
     expect(out.map((o) => o["@type"])).toEqual(["FAQPage"]);
   });
 
-  it("emits no FAQPage without questions, and no place or offer it can't fill", () => {
+  it("emits no Event without a venue, which Google requires, but keeps the FAQ", () => {
+    const out = eventJsonLd({ ...input, event: { ...event, venue: null } });
+
+    expect(out.map((o) => o["@type"])).toEqual(["FAQPage"]);
+  });
+
+  it("emits no FAQPage without questions, and no offer it can't fill", () => {
     const [ld, ...rest] = eventJsonLd({
       ...input,
-      event: {
-        ...event,
-        faqs: [],
-        venue: null,
-        links: { tickets: null },
-      },
+      event: { ...event, faqs: [], links: { tickets: null } },
     });
 
     expect(rest).toEqual([]);
-    expect(ld?.location).toBeUndefined();
     expect(ld?.offers).toBeUndefined();
   });
 
@@ -94,6 +95,51 @@ describe("eventJsonLd", () => {
         acceptedAnswer: { "@type": "Answer", text: "Sí, gratis." },
       },
     ]);
+  });
+});
+
+describe("eventShare", () => {
+  const share = (over: Partial<Parameters<typeof eventShare>[0]> = {}) =>
+    eventShare({
+      event: { ...event, visibility: "public" },
+      orgName: "Expo",
+      url: input.url,
+      image: input.image,
+      fallback: [],
+      ...over,
+    });
+
+  it("shares the image large in Open Graph and Twitter, with the title as alt", () => {
+    const out = share();
+
+    expect(out.alternates.canonical).toBe(input.url);
+    expect(out.openGraph.images).toEqual([
+      { url: input.image, alt: "Expo Primavera" },
+    ]);
+    expect(out.twitter.card).toBe("summary_large_image");
+  });
+
+  it("falls back to a small card without an image", () => {
+    const out = share({ image: undefined });
+
+    expect(out.twitter.card).toBe("summary");
+    expect(out.openGraph.images).toBeUndefined();
+  });
+
+  it("keeps an unlisted event out of the index, and a public one in", () => {
+    expect(
+      share({ event: { ...event, visibility: "unlisted" } }).robots,
+    ).toEqual({ index: false });
+    expect(share().robots).toBeUndefined();
+  });
+
+  it("describes with when and where when the event has no line of its own", () => {
+    expect(
+      share({
+        event: { ...event, summary: null, visibility: "public" },
+        fallback: ["sáb 14 nov", "La Rural"],
+      }).description,
+    ).toBe("sáb 14 nov · La Rural");
   });
 });
 

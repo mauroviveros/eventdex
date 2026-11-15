@@ -32,8 +32,53 @@ export function eventDescription(
 }
 
 /**
- * schema.org `Event` plus `FAQPage`. An event without dates emits no `Event`:
- * Google rejects one without `startDate`.
+ * Description, canonical URL, Open Graph and Twitter of an event's page. The
+ * image is already resolved (banner, else the org's logo). An unlisted event is
+ * not indexed.
+ */
+export function eventShare({
+  event,
+  orgName,
+  url,
+  image,
+  fallback,
+}: {
+  event: Pick<SeoEvent, "title" | "summary"> & {
+    visibility: "public" | "unlisted";
+  };
+  orgName: string;
+  url: string;
+  image?: string;
+  fallback: readonly (string | null | undefined)[];
+}) {
+  const description = eventDescription(event, fallback);
+  const images = image ? [{ url: image, alt: event.title }] : undefined;
+  return {
+    description,
+    alternates: { canonical: url },
+    robots: event.visibility === "unlisted" ? { index: false } : undefined,
+    openGraph: {
+      type: "website" as const,
+      siteName: orgName,
+      locale: "es_AR",
+      url,
+      title: event.title,
+      description,
+      images,
+    },
+    twitter: {
+      card: images ? ("summary_large_image" as const) : ("summary" as const),
+      title: event.title,
+      description,
+      images,
+    },
+  };
+}
+
+/**
+ * schema.org `Event` plus `FAQPage`. Google rejects an `Event` without
+ * `startDate` or `location`, so an event without dates or without a venue
+ * emits none.
  */
 export function eventJsonLd({
   event,
@@ -50,8 +95,8 @@ export function eventJsonLd({
   const starts = event.schedules.map((s) => Date.parse(s.starts_at));
   const ends = event.schedules.map((s) => Date.parse(s.ends_at));
 
-  if (event.schedules.length > 0) {
-    const { venue, links } = event;
+  const { venue, links } = event;
+  if (event.schedules.length > 0 && venue) {
     out.push({
       "@context": "https://schema.org",
       "@type": "Event",
@@ -65,18 +110,16 @@ export function eventJsonLd({
       url,
       image: image ? [image] : undefined,
       organizer: { "@type": "Organization", name: orgName },
-      location: venue
-        ? {
-            "@type": "Place",
-            name: venue.name,
-            address: {
-              "@type": "PostalAddress",
-              streetAddress: venue.address_line ?? undefined,
-              addressLocality: venue.city ?? undefined,
-              addressRegion: venue.state ?? undefined,
-            },
-          }
-        : undefined,
+      location: {
+        "@type": "Place",
+        name: venue.name,
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: venue.address_line ?? undefined,
+          addressLocality: venue.city ?? undefined,
+          addressRegion: venue.state ?? undefined,
+        },
+      },
       offers: links.tickets
         ? { "@type": "Offer", url: links.tickets }
         : undefined,

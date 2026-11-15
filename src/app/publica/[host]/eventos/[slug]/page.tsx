@@ -22,7 +22,7 @@ export async function generateMetadata({
   const { org, event } = await load(host, slug);
   return {
     title: event.title,
-    ...eventMetadata(decodeURIComponent(host), org, event),
+    ...(await eventMetadata(decodeURIComponent(host), org, event)),
   };
 }
 

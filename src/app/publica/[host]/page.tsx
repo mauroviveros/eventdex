@@ -22,7 +22,7 @@ export async function generateMetadata({
   return {
     // The layout's template only reaches child segments, not this page.
     title: { absolute: `${event.title} · ${org.name}` },
-    ...eventMetadata(decodeURIComponent(host), org, event),
+    ...(await eventMetadata(decodeURIComponent(host), org, event)),
   };
 }
 
