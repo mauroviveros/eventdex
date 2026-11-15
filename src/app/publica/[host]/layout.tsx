@@ -6,7 +6,7 @@ import { Monogram } from "@/components/ui/Monogram";
 import { MadeWith } from "@/components/visitante/MadeWith";
 import { MARQUESINA } from "@/components/visitante/marquesina";
 import { SignInLink, VisitorMenu } from "@/components/visitante/VisitorMenu";
-import { EVENTDEX_HUE, ramp, rampFromHex, toHex } from "@/domain/palette";
+import { orgRamp, toHex } from "@/domain/palette";
 import { logoUrl } from "@/lib/data/organizations";
 import { getRaffleHref } from "@/lib/data/standing";
 import { getVisitorAccount, getVisitorRole } from "@/lib/data/viewer";
@@ -21,15 +21,12 @@ export async function generateMetadata({
   return { title: { default: org.name, template: `%s · ${org.name}` } };
 }
 
-const orgTones = (color: string | null) =>
-  color ? rampFromHex(color) : ramp(EVENTDEX_HUE);
-
 /** The browser bar and the overscroll take the org's ground, light and dark. */
 export async function generateViewport({
   params,
 }: LayoutProps<"/publica/[host]">): Promise<Viewport> {
   const { org } = await requireHostOrganization((await params).host);
-  const tones = orgTones(org.brand_color);
+  const tones = orgRamp(org.brand_color);
   return {
     themeColor: [
       {
@@ -55,7 +52,7 @@ export default async function PublicaLayout({
   params,
 }: LayoutProps<"/publica/[host]">) {
   const { org } = await requireHostOrganization((await params).host);
-  const tones = orgTones(org.brand_color);
+  const tones = orgRamp(org.brand_color);
   const style = Object.fromEntries(
     tones.map((tone, i) => [`--ramp-${i}`, tone]),
   ) as CSSProperties;

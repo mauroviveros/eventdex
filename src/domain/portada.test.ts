@@ -3,6 +3,7 @@ import {
   PORTADA_SECTIONS,
   type PortadaSection,
   portadaGroups,
+  previewNow,
 } from "./portada";
 
 const labels = (
@@ -44,5 +45,36 @@ describe("portadaGroups", () => {
   it("gives every group an id that is no section's own", () => {
     const ids = portadaGroups("en-curso", PORTADA_SECTIONS).map((g) => g.id);
     for (const id of ids) expect(PORTADA_SECTIONS).not.toContain(id);
+  });
+});
+
+describe("previewNow", () => {
+  const schedules = [
+    { starts_at: "2026-11-14T15:00:00Z", ends_at: "2026-11-14T23:00:00Z" },
+    { starts_at: "2026-11-15T15:00:00Z", ends_at: "2026-11-15T23:00:00Z" },
+  ];
+  const at = (phase: Parameters<typeof previewNow>[1]) =>
+    previewNow(schedules, phase) as Date;
+
+  it("is three days before the first schedule when upcoming", () => {
+    expect(at("proximo").toISOString()).toBe("2026-11-11T15:00:00.000Z");
+  });
+
+  it("is halfway through the first schedule when in course", () => {
+    expect(at("en-curso").toISOString()).toBe("2026-11-14T19:00:00.000Z");
+  });
+
+  it("is a day after the last schedule when finished", () => {
+    expect(at("finalizado").toISOString()).toBe("2026-11-16T23:00:00.000Z");
+  });
+
+  it("does not depend on the order of the schedules", () => {
+    expect(previewNow([...schedules].reverse(), "proximo")).toEqual(
+      at("proximo"),
+    );
+  });
+
+  it("has no moment without schedules", () => {
+    expect(previewNow([], "en-curso")).toBeNull();
   });
 });

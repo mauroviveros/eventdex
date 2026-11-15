@@ -176,3 +176,7 @@ function toLinear(v: number): number {
 const inUnit = (v: number) => v >= -1e-4 && v <= 1 + 1e-4;
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 const round = (v: number) => Math.round(v * 1000) / 1000;
+
+/** The org's ramp from its brand color; Eventdex's own while it has none. */
+export const orgRamp = (color: string | null): Ramp =>
+  color ? rampFromHex(color) : ramp(EVENTDEX_HUE);

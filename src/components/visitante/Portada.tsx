@@ -19,7 +19,8 @@ type Props = {
 export const COLUMN = "mx-auto w-full max-w-5xl px-4 sm:px-6";
 
 // shortcut: the bar sticks under a header of 4 rem + its rule (min-h-16 in the public layout), so a taller header covers it; measure it in a variable if the header grows
-const BELOW_HEADER = "top-[calc(4rem+2px)]";
+// The team's preview has no public header but its own bar, and says so in --portada-top.
+const BELOW_HEADER = "top-[var(--portada-top,calc(4rem+2px))]";
 
 function Titled({ id, piece }: { id: string; piece: Piece }) {
   if (!piece.title) return piece.body;

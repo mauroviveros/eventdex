@@ -59,13 +59,15 @@ export async function getPublicEvent(
   supabase: Supabase,
   organizationId: string,
   slug: string,
+  // The team's preview reads drafts too: RLS lets only its members see them.
+  { drafts = false }: { drafts?: boolean } = {},
 ) {
   const { data, error } = await supabase
     .from("events")
     .select(EVENT_COLUMNS)
     .eq("organization_id", organizationId)
     .eq("slug", slug)
-    .eq("status", "published")
+    .in("status", drafts ? ["draft", "published"] : ["published"])
     .is("deleted_at", null)
     .order("starts_at", { referencedTable: "event_schedules" })
     .order("sort_order", { referencedTable: "event_spots" })

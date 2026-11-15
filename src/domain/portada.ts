@@ -94,3 +94,28 @@ export function portadaGroups(
       : [];
   }).sort((a, b) => a.at - b.at);
 }
+
+/**
+ * A moment inside the given phase of an event, to preview its page as the
+ * public would read it then: three days before the first schedule, halfway
+ * through the first one, or a day after the last. Null without schedules.
+ */
+export function previewNow(
+  schedules: readonly { starts_at: string; ends_at: string }[],
+  phase: PortadaPhase,
+): Date | null {
+  if (schedules.length === 0) return null;
+  const starts = schedules.map((s) => Date.parse(s.starts_at));
+  const first = schedules.reduce((a, b) =>
+    Date.parse(a.starts_at) <= Date.parse(b.starts_at) ? a : b,
+  );
+  const DAY = 86_400_000;
+  if (phase === "proximo") return new Date(Math.min(...starts) - 3 * DAY);
+  if (phase === "en-curso")
+    return new Date(
+      (Date.parse(first.starts_at) + Date.parse(first.ends_at)) / 2,
+    );
+  return new Date(
+    Math.max(...schedules.map((s) => Date.parse(s.ends_at))) + DAY,
+  );
+}
