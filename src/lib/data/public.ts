@@ -176,19 +176,18 @@ export async function getPastEditions(
   }));
 }
 
-/** Published public events for the sitemap, newest change first. */
-export async function listPublicEvents(
+/**
+ * The id of the event the org's home shows, or null if it has none. Pages that
+ * point the visitor back to the event ask it first: a past event's QR has no
+ * page to go back to.
+ */
+export async function getActiveEventId(
   supabase: Supabase,
   organizationId: string,
 ) {
-  const { data, error } = await supabase
-    .from("events")
-    .select("slug, updated_at, published_at")
-    .eq("organization_id", organizationId)
-    .eq("status", "published")
-    .eq("visibility", "public")
-    .is("deleted_at", null)
-    .order("published_at", { ascending: false });
+  const { data, error } = await supabase.rpc("resolve_active_event", {
+    p_organization_id: organizationId,
+  });
   if (error) throw error;
   return data;
 }
