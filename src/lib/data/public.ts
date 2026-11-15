@@ -59,16 +59,17 @@ export async function getPublicEvent(
   supabase: Supabase,
   organizationId: string,
   slug: string,
-  // The team's preview reads drafts too: RLS lets only its members see them.
+  // The team's preview reads any status: RLS lets only its members see the rest.
   { drafts = false }: { drafts?: boolean } = {},
 ) {
-  const { data, error } = await supabase
+  let query = supabase
     .from("events")
     .select(EVENT_COLUMNS)
     .eq("organization_id", organizationId)
     .eq("slug", slug)
-    .in("status", drafts ? ["draft", "published"] : ["published"])
-    .is("deleted_at", null)
+    .is("deleted_at", null);
+  if (!drafts) query = query.eq("status", "published");
+  const { data, error } = await query
     .order("starts_at", { referencedTable: "event_schedules" })
     .order("sort_order", { referencedTable: "event_spots" })
     .order("code", { referencedTable: "event_spots" })
@@ -79,7 +80,30 @@ export async function getPublicEvent(
     .order("created_at", { referencedTable: "event_photos" })
     .maybeSingle();
   if (error) throw error;
-  return data && toPublicEvent(data);
+  if (!data) return null;
+  return toPublicEvent(drafts ? await freezeFromCatalog(supabase, data) : data);
+}
+
+/**
+ * A draft's spots have no snapshot yet (publishing takes it): read them from
+ * the catalog, as they would be frozen, so the preview shows its medals.
+ */
+async function freezeFromCatalog(supabase: Supabase, event: EventRow) {
+  const { data, error } = await supabase
+    .from("event_spots")
+    .select("id, spot:spots (name, description, logo_path, type)")
+    .eq("event_id", event.id);
+  if (error) throw error;
+  const catalog = new Map(data.map((s) => [s.id, s.spot]));
+  return {
+    ...event,
+    spots: event.spots.map((s) => ({
+      ...s,
+      snapshot: resolvePublishedSpot(s)
+        ? s.snapshot
+        : (catalog.get(s.id) ?? null),
+    })),
+  };
 }
 
 /**

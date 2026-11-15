@@ -267,7 +267,10 @@ export async function seedLiveEvent() {
     },
     /** A draft with one upcoming schedule: ready to publish. */
     /** A draft with a schedule, ready to publish. */
-    async addDraft(title = "Feria Borrador") {
+    async addDraft(
+      title = "Feria Borrador",
+      { withSpot = false }: { withSpot?: boolean } = {},
+    ) {
       const draft = must(
         await admin
           .from("events")
@@ -291,6 +294,17 @@ export async function seedLiveEvent() {
           ends_at: new Date(Date.now() + 56 * hour).toISOString(),
         }),
       );
+      // A draft's spots are loaded from the catalog: nothing is frozen until it is published.
+      const first = spots[0];
+      if (withSpot && first)
+        must(
+          await admin.from("event_spots").insert({
+            event_id: draft.id,
+            organization_id: org.id,
+            spot_id: first.id,
+            code: "A01",
+          }),
+        );
       return draft;
     },
     /**

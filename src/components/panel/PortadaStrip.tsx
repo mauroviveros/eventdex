@@ -75,7 +75,7 @@ export function PortadaStrip({
                   aria-current={p.value === shown ? "true" : undefined}
                   className="no-underline"
                 >
-                  {p.value === shown ? "✓ " : ""}
+                  {p.value === shown && <span aria-hidden>✓ </span>}
                   {p.label}
                   {p.value === real && " (real)"}
                 </Link>

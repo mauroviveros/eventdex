@@ -76,13 +76,17 @@ async function Claim({
   orgId: string;
 }) {
   const supabase = await createClient();
-  const claim = await claimSpot(supabase, spot.id);
+  // The page the medal can link back to is asked in the same trip as the claim.
+  const [claim, activeId] = await Promise.all([
+    claimSpot(supabase, spot.id),
+    getActiveEventId(supabase, orgId),
+  ]);
   if (!claim.ok) throw new Error(claim.error);
   if (!claim.data) notFound();
   const outcome = claim.data;
   // The org has one page, the active event's: a spot of another event has
   // no page to link to, so the links to it are left out.
-  const onPage = (await getActiveEventId(supabase, orgId)) === event.id;
+  const onPage = activeId === event.id;
 
   let progress = null;
   if (outcome.kind === "nueva" || outcome.kind === "repetida") {

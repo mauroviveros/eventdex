@@ -9,6 +9,7 @@ let developer: Awaited<ReturnType<typeof seedDeveloper>>;
 test.beforeAll(async () => {
   seed = await seedLiveEvent();
   await seed.addDraft();
+  await seed.addDraft("Feria Con Spot", { withSpot: true });
   parallel = await seed.addSecondLiveEvent();
   developer = await seedDeveloper();
   for (const spot of [seed.spots[0], parallel.spot])
@@ -51,6 +52,24 @@ test("the team sees a draft's page from the panel, and a stranger does not", asy
       "content",
       /noindex/,
     );
+  });
+
+  await test.step("a draft's medals show too, though nothing is frozen yet", async () => {
+    await page.goto(
+      `http://localhost:3000/panel/${seed.org.slug}/eventos/feria-con-spot/portada`,
+    );
+    await expect(
+      page.getByRole("heading", { name: "Medallas: 1 para juntar" }),
+    ).toBeVisible();
+    await page
+      .getByRole("navigation", { name: "Vista del equipo" })
+      .getByRole("button", { name: /Faltan/ })
+      .click();
+    await expect(
+      page.getByRole("menuitem", { name: "Cargar spots" }),
+    ).toHaveCount(0);
+    await page.keyboard.press("Escape");
+    await page.goto(preview);
   });
 
   await test.step("the phase menu reads it as upcoming, in course or finished", async () => {

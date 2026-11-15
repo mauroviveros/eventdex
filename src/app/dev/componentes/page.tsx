@@ -72,6 +72,7 @@ import { LockedMedal } from "@/components/visitante/LockedMedal";
 import { MadeWith } from "@/components/visitante/MadeWith";
 import { Medal } from "@/components/visitante/Medal";
 import { MARQUESINA } from "@/components/visitante/marquesina";
+import { OrgBrand } from "@/components/visitante/OrgBrand";
 import {
   PerkBlock,
   PerkInSheet,
@@ -817,6 +818,21 @@ export default function ComponentesPage() {
             note="La firma al pie de la app pública: discreta, en texto apagado, con el corazón en rojo de acento. Lleva a la web del autor (src/lib/author.ts)."
           >
             <MadeWith />
+          </Section>
+
+          <Section
+            title="Marca de la organización"
+            note="La cabecera de la app pública: el logo de la org (si no lo cargó, su monograma) y el nombre, que vuelve al inicio. Con un nombre largo se corta con puntos suspensivos. Se ve en la portada pública y en la vista previa del equipo."
+          >
+            <div className="grid max-w-xs gap-4">
+              <OrgBrand org={{ name: "Expo Primavera", logo_path: null }} />
+              <OrgBrand
+                org={{
+                  name: "Cámara de Comercio e Industria de la Región Centro",
+                  logo_path: null,
+                }}
+              />
+            </div>
           </Section>
 
           <Section
