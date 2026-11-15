@@ -21,7 +21,6 @@ export type EventRow = {
   draft: boolean;
   /** Has a schedule: a draft can be published. */
   ready: boolean;
-  publicUrl: string | null;
 };
 
 const helper = createColumnHelper<typeof features, EventRow>();
@@ -99,7 +98,6 @@ export function EventsTable({
               event={{ id: e.id, slug: e.slug, title: e.title, draft: e.draft }}
               hasSpots={e.stats.stands > 0}
               ready={e.ready}
-              publicUrl={e.publicUrl}
               support={support}
             />
           ),

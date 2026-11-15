@@ -19,8 +19,6 @@ type Props = {
   hasSpots: boolean;
   /** A draft with at least one schedule can be published. */
   ready: boolean;
-  /** Its public page on the org's domain, once published. */
-  publicUrl: string | null;
   /** Support mode: only what changes nothing. */
   support: boolean;
 };
@@ -30,14 +28,7 @@ type Props = {
  * its own header. Each one shows only when it makes sense for this event;
  * publishing asks first, since a published event can't go back to draft.
  */
-export function EventActions({
-  org,
-  event,
-  hasSpots,
-  ready,
-  publicUrl,
-  support,
-}: Props) {
+export function EventActions({ org, event, hasSpots, ready, support }: Props) {
   const [asking, setAsking] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
   const base = `/panel/${org}/eventos/${event.slug}`;
@@ -62,14 +53,9 @@ export function EventActions({
           <DropdownMenuItem asChild>
             <Link href={`${base}?tab=sorteo`}>Sorteo</Link>
           </DropdownMenuItem>
-          {publicUrl && (
-            <DropdownMenuItem asChild>
-              <a href={publicUrl} target="_blank" rel="noopener">
-                Ver en el sitio
-                <span className="sr-only"> (se abre en otra pestaña)</span>
-              </a>
-            </DropdownMenuItem>
-          )}
+          <DropdownMenuItem asChild>
+            <Link href={`${base}/portada`}>Ver portada</Link>
+          </DropdownMenuItem>
           {!support && event.draft && ready && (
             <DropdownMenuItem onSelect={() => setAsking(true)}>
               Publicar

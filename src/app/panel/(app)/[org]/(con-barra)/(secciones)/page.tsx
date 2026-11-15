@@ -14,9 +14,7 @@ import {
   formatEventDates,
   sortForPanel,
 } from "@/domain/events";
-import { publicOrigin } from "@/domain/spots";
 import { listEvents } from "@/lib/data/events";
-import { getPrimaryHostname } from "@/lib/data/organizations";
 import { requireOrg } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
 import { type EventRow, EventsTable } from "./EventsTable";
@@ -57,10 +55,7 @@ export default async function OrgEventsPage({
   const query = typeof q === "string" ? q.trim() : "";
 
   const supabase = await createClient();
-  const [events, hostname] = await Promise.all([
-    listEvents(supabase, org.id),
-    getPrimaryHostname(supabase, org.id),
-  ]);
+  const [events] = await Promise.all([listEvents(supabase, org.id)]);
 
   const now = new Date();
   const rows = sortForPanel(
@@ -76,10 +71,6 @@ export default async function OrgEventsPage({
       stats: e.stats,
       draft: e.status === "draft",
       ready: e.schedules.length > 0,
-      publicUrl:
-        e.status === "published" && hostname
-          ? `${publicOrigin(hostname)}/eventos/${e.slug}`
-          : null,
     })) satisfies (EventRow & { schedules: unknown })[],
   );
   const active = activeEvent(rows);
@@ -128,13 +119,7 @@ export default async function OrgEventsPage({
           </section>
         ) : (
           <>
-            {active && (
-              <ActiveEvent
-                org={org.slug}
-                event={active}
-                publicUrl={active.publicUrl}
-              />
-            )}
+            {active && <ActiveEvent org={org.slug} event={active} />}
 
             {drafts.length > 0 && (
               <DraftChecklist

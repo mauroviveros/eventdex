@@ -14,11 +14,10 @@ import {
   formatEventDates,
   formatScheduleTimes,
 } from "@/domain/events";
-import { publicOrigin } from "@/domain/spots";
 import { deleteScheduleAction } from "@/lib/actions/events";
 import { listEventVisitors } from "@/lib/data/claims";
 import { listVenues } from "@/lib/data/events";
-import { coverUrl, getPrimaryHostname } from "@/lib/data/organizations";
+import { coverUrl } from "@/lib/data/organizations";
 import { listEventRaffles } from "@/lib/data/raffles";
 import { listEventSpots, listSpots } from "@/lib/data/spots";
 import { createClient } from "@/lib/supabase/server";
@@ -64,16 +63,14 @@ export default async function EventoPage({
   const supabase = await createClient();
   // Spots and visitors feed the tab counts and the figures in General; the
   // catalog only the Spots tab, the venues only the Editar sheet.
-  const [inEvent, visitors, catalog, venues, hostname, raffles] =
-    await Promise.all([
-      listEventSpots(supabase, event.id),
-      listEventVisitors(supabase, event.id),
-      editable && tab === "spots" ? listSpots(supabase, org.id) : [],
-      editable ? listVenues(supabase, org.id) : [],
-      getPrimaryHostname(supabase, org.id),
-      // Each raffle counts its eligible visitors: only on its own tab.
-      tab === "sorteo" ? listEventRaffles(supabase, event.id) : [],
-    ]);
+  const [inEvent, visitors, catalog, venues, raffles] = await Promise.all([
+    listEventSpots(supabase, event.id),
+    listEventVisitors(supabase, event.id),
+    editable && tab === "spots" ? listSpots(supabase, org.id) : [],
+    editable ? listVenues(supabase, org.id) : [],
+    // Each raffle counts its eligible visitors: only on its own tab.
+    tab === "sorteo" ? listEventRaffles(supabase, event.id) : [],
+  ]);
   const cover = coverUrl(event.cover_path);
 
   return (
@@ -150,11 +147,6 @@ export default async function EventoPage({
               }}
               hasSpots={inEvent.length > 0}
               ready={event.schedules.length > 0}
-              publicUrl={
-                event.status === "published" && hostname
-                  ? `${publicOrigin(hostname)}/eventos/${event.slug}`
-                  : null
-              }
               support={support}
             />
           </>

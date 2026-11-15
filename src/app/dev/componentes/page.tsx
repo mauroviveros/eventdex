@@ -1140,7 +1140,6 @@ export default function ComponentesPage() {
                       }}
                       hasSpots
                       ready
-                      publicUrl="/dev/componentes"
                       support={false}
                     />
                   </>
@@ -1388,7 +1387,7 @@ export default function ComponentesPage() {
 
         <Section
           title="Panel: evento activo"
-          note="Arriba del dashboard: el evento en curso o, si no hay, el próximo, con sus cifras y los atajos del día. Hoja de QR aparece con stands; Sorteo, solo en curso; Ver en el sitio, publicado."
+          note="Arriba del dashboard: el evento en curso o, si no hay, el próximo, con sus cifras y los atajos del día. Hoja de QR aparece con stands; Sorteo, solo en curso; Ver portada, siempre."
         >
           <div className="grid gap-6">
             <ActiveEvent
@@ -1402,7 +1401,6 @@ export default function ComponentesPage() {
                 venue: "Pabellón A",
                 stats: { stands: 12, visitors: 340, medals: 980 },
               }}
-              publicUrl="/dev/componentes"
             />
             <ActiveEvent
               org="dev"
@@ -1415,7 +1413,6 @@ export default function ComponentesPage() {
                 venue: null,
                 stats: { stands: 0, visitors: 0, medals: 0 },
               }}
-              publicUrl={null}
             />
           </div>
         </Section>

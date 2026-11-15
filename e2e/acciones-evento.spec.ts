@@ -74,7 +74,7 @@ test("a ready draft is published from its row's menu, after confirming", async (
     await expect(card.getByText("Borrador", { exact: true })).toBeVisible();
   });
 
-  await test.step("confirming publishes it, and the menu offers the public page", async () => {
+  await test.step("confirming publishes it, and the menu offers the portada preview", async () => {
     await menu.click();
     await page.getByRole("menuitem", { name: "Publicar" }).click();
     await page.getByRole("button", { name: "Sí, publicar" }).click();
@@ -85,8 +85,11 @@ test("a ready draft is published from its row's menu, after confirming", async (
 
     await menu.click();
     await expect(
-      page.getByRole("menuitem", { name: /Ver en el sitio/ }),
-    ).toHaveAttribute("href", `${seed.origin}/eventos/feria-borrador`);
+      page.getByRole("menuitem", { name: "Ver portada" }),
+    ).toHaveAttribute(
+      "href",
+      `/panel/${seed.org.slug}/eventos/feria-borrador/portada`,
+    );
     await expect(page.getByRole("menuitem", { name: "Publicar" })).toHaveCount(
       0,
     );

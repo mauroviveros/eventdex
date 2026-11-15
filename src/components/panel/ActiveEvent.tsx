@@ -18,14 +18,13 @@ type Props = {
     stats: { stands: number; visitors: number; medals: number };
   };
   /** Its page on the org's domain, once published. */
-  publicUrl: string | null;
 };
 
 /**
  * The event that matters today, first in the dashboard: the one in course or
  * the next one, with how it's going and the moves of the day one tap away.
  */
-export function ActiveEvent({ org, event, publicUrl }: Props) {
+export function ActiveEvent({ org, event }: Props) {
   const base = `/panel/${org}/eventos/${event.slug}`;
   const { stands } = event.stats;
 
@@ -66,17 +65,12 @@ export function ActiveEvent({ org, event, publicUrl }: Props) {
             Sorteo
           </Link>
         )}
-        {publicUrl && (
-          <a
-            href={publicUrl}
-            target="_blank"
-            rel="noreferrer"
-            className={buttonClass("secondary", "no-underline")}
-          >
-            Ver en el sitio
-            <span className="sr-only"> (se abre en otra pestaña)</span>
-          </a>
-        )}
+        <Link
+          href={`${base}/portada`}
+          className={buttonClass("secondary", "no-underline")}
+        >
+          Ver portada
+        </Link>
       </div>
     </section>
   );
