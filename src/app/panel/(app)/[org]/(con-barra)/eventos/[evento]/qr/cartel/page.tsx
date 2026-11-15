@@ -4,7 +4,7 @@ import { EntrancePoster } from "@/components/panel/EntrancePoster";
 import { PageBody, TopBar } from "@/components/panel/TopBar";
 import { formatEventDates } from "@/domain/events";
 import { prizeLadder } from "@/domain/prizes";
-import { eventUrl } from "@/domain/spots";
+import { publicOrigin } from "@/domain/spots";
 import { getPrimaryHostname } from "@/lib/data/organizations";
 import { listEventPrizes } from "@/lib/data/raffles";
 import { listEventSpots } from "@/lib/data/spots";
@@ -21,8 +21,8 @@ export async function generateMetadata({
 }
 
 /**
- * The entrance poster: one A4 that says why to scan, with the QR of the event's
- * page on the org's domain. It shows the prizes a visitor can win, the same the
+ * The entrance poster: one A4 that says why to scan, with the QR of the org's
+ * page on its domain (the one page, which shows the event on now). It shows the prizes a visitor can win, the same the
  * event's page does.
  */
 export default async function PosterPage({
@@ -57,9 +57,11 @@ export default async function PosterPage({
           </h1>
           <p className="max-w-prose">
             Un A4 para la puerta del predio: cuenta qué se gana y lleva el QR de
-            la página del evento.
+            la portada de la organización, que muestra el evento del momento.
             {event.status !== "published" &&
-              " El evento todavía no está publicado: el QR no abre nada hasta que lo publiques, así que imprimilo después."}
+              " El evento todavía no está publicado: la portada no lo muestra hasta que lo publiques, así que imprimilo después."}
+            {event.visibility === "unlisted" &&
+              " Este evento no tiene portada (solo QR): el QR del cartel abre la portada de la organización, no este evento."}
           </p>
         </div>
         {hostname ? (
@@ -73,7 +75,7 @@ export default async function PosterPage({
               imageUrl: prizes.find((x) => x.id === p.id)?.imageUrl,
             }))}
             hostname={hostname}
-            url={eventUrl(hostname, event.slug)}
+            url={`${publicOrigin(hostname)}/`}
           />
         ) : (
           <section className="grid max-w-prose gap-3 border-2 border-dashed border-lcd-2 px-6 py-8">

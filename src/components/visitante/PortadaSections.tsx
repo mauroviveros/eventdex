@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Chevron } from "@/components/pixel/Chevron";
 import { buttonClass } from "@/components/ui/Button";
 import { photoUrl } from "@/lib/data/organizations";
@@ -145,23 +144,20 @@ const people = (n: number) =>
 const medals = (n: number) =>
   `${n.toLocaleString("es-AR")} ${n === 1 ? "medalla" : "medallas"}`;
 
-/** Past editions as a ledger: each one a row that opens its page. */
+/** Past editions as a ledger of figures: the org has one page, so they link nowhere. */
 export function PastEditions({ editions }: { editions: Editions }) {
   return (
     <ol className="grid gap-3">
       {editions.map((e) => (
         <li key={e.slug}>
-          <Link
-            href={`/eventos/${e.slug}`}
-            className="grid min-h-11 gap-1 border-2 border-lcd-3 px-4 py-3 no-underline sm:grid-cols-[1fr_auto] sm:items-center sm:gap-6"
-          >
+          <div className="grid min-h-11 gap-1 border-2 border-lcd-3 px-4 py-3 sm:grid-cols-[1fr_auto] sm:items-center sm:gap-6">
             <span className="font-display text-px-1">
               {[e.title, e.editionLabel].filter(Boolean).join(" · ")}
             </span>
             <span className="text-sm tabular-nums">
               {people(e.visitors)} · {medals(e.medals)}
             </span>
-          </Link>
+          </div>
         </li>
       ))}
     </ol>

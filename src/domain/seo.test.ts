@@ -28,7 +28,7 @@ const event: SeoEvent = {
 const input = {
   event,
   orgName: "Expo",
-  url: "https://expo.example/eventos/expo-primavera",
+  url: "https://expo.example/",
   image: "https://cdn.example/banner.png",
 };
 

@@ -7,7 +7,7 @@ import {
   type SeoEvent,
   serializeJsonLd,
 } from "@/domain/seo";
-import { eventUrl } from "@/domain/spots";
+import { publicOrigin } from "@/domain/spots";
 import {
   coverUrl,
   getPrimaryHostname,
@@ -28,14 +28,12 @@ const primaryHost = cache((orgId: string) =>
 );
 
 /**
- * The event's page on the org's primary domain, whichever domain was asked
- * for, so a second domain doesn't compete with it as duplicate content.
+ * The org's home on its primary domain, whichever domain was asked for, so a
+ * second domain doesn't compete with it as duplicate content. The org has one
+ * page: the event it shows is the active one.
  */
-async function canonical(host: string, org: Org, event: SeoSource) {
-  return eventUrl(
-    (await primaryHost(org.id)) ?? host,
-    encodeURIComponent(event.slug),
-  );
+async function canonical(host: string, org: Org) {
+  return `${publicOrigin((await primaryHost(org.id)) ?? host)}/`;
 }
 
 /** The banner, else the organization's logo, else nothing. */
@@ -47,15 +45,14 @@ function shareImage(event: SeoSource, org: Org) {
 }
 
 /**
- * Description, canonical URL, Open Graph and Twitter of an event's page. The
- * home shows the active event, so it points its canonical to the event's own
- * page.
+ * Description, canonical URL, Open Graph and Twitter of the org's page, which
+ * shows its active event.
  */
 export async function eventMetadata(host: string, org: Org, event: SeoSource) {
   return eventShare({
     event,
     orgName: org.name,
-    url: await canonical(host, org, event),
+    url: await canonical(host, org),
     image: shareImage(event, org),
     fallback: [
       formatEventDates(event.schedules, event.timezone),
@@ -77,7 +74,7 @@ export async function EventJsonLd({
   const data = eventJsonLd({
     event,
     orgName: org.name,
-    url: await canonical(host, org, event),
+    url: await canonical(host, org),
     image: shareImage(event, org),
   });
   if (data.length === 0) return null;
