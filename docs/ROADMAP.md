@@ -1195,11 +1195,33 @@ Además del sorteo (azar), premios por lo que hizo el visitante: el primero en c
 todas, los primeros 5 en llegar a la mitad, todos los que junten N. Las preguntas
 (reglas, entrega, si un sorteo puede pedir un premio) se responden al empezar.
 
-- `event_awards` (regla por cantidad o porcentaje, umbral y cupo) y `award_winners`
-  (con posición), con los ganadores calculados en la base al escanear, bloqueando la
-  fila del premio: «los primeros N» tiene que ser exacto con escaneos simultáneos.
-- Se anuncia **al reclamar un spot** («con esta vas por la mitad», «ganaste…») y **en el
-  inicio**, con los cupos que quedan: es parte de lo que atrae del evento.
+**Reglas decididas (2026-11-15)**
+
+- Un premio se gana al llegar a una cantidad de medallas o a un porcentaje de las del
+  evento (la mitad, todas), con un cupo opcional: «los primeros 5 en completar todas».
+  Sin cupo lo ganan todos los que lleguen.
+- Se asigna **al escanear**: la medalla que cruza el umbral da el premio, con su posición.
+  Al visitante se le avisa; no hay entrega en la app: se acerca a la organización a
+  reclamarlo. Queda anotado en su perfil y en la tarjeta de compartir.
+- El sorteo sigue como está: pide un mínimo de medallas por sorteo.
+- **Puntos:** todos los stands valen lo mismo por ahora. Se sacan del formulario y no se
+  muestran en ningún lado; la columna `points` queda en la base para más adelante.
+
+**Bloques**
+
+1. **DB.** `event_awards` (regla por cantidad o porcentaje, umbral y cupo) y
+   `award_winners` (con posición), con los ganadores calculados en la base dentro de
+   `claim_spot`, bloqueando la fila del premio: «los primeros N» tiene que ser exacto con
+   escaneos simultáneos. Un premio con ganadores no se borra ni cambia su regla.
+2. **Backend.** Acciones del equipo (alta, edición, baja), lecturas del visitante y de la
+   portada, y sacar los puntos del formulario.
+3. **Diseño.** Cómo se anuncia al reclamar («con esta vas por la mitad», «ganaste…»), el
+   inicio con los cupos que quedan, el perfil y la tarjeta.
+4. **Vista.** El panel (pestaña de premios) y las pantallas del visitante.
+5. **Auditoría.** `/code-review` y `/accessibility`.
+
+Límite conocido: un premio creado con el evento en curso solo cuenta desde la próxima
+medalla de cada visitante; no es retroactivo.
 
 ## R32 · Overview y actividad
 
