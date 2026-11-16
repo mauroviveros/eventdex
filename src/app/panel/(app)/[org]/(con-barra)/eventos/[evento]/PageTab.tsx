@@ -5,6 +5,7 @@ import { MAX_PHOTOS } from "@/lib/event-page";
 import { FaqList } from "./FaqList";
 import type { load } from "./load";
 import { AddFaqForm, AddPhotoForm, PageDataForm, PhotoRow } from "./PageForms";
+import { Publication, Schedules } from "./SchedulesBlock";
 
 type Loaded = Awaited<ReturnType<typeof load>>;
 
@@ -17,18 +18,22 @@ function Empty({ children }: { children: string }) {
 }
 
 /**
- * The event's Página tab: what the staff loads for the public page (long
- * description, links, questions and photos), with the way to see the whole
- * page. Read-only in support mode.
+ * The event's Página tab: a draft's way to publishing on top, the schedules,
+ * then what the staff loads for the public page (long description, links,
+ * questions and photos), with the way to see the whole page. The home of a
+ * draft. Read-only in support mode.
  */
 export function PageTab({
   org,
   event,
   support,
+  hasSpots,
 }: {
   org: Loaded["org"];
   event: Loaded["event"];
   support: boolean;
+  /** For a draft's steps to publishing. */
+  hasSpots: boolean;
 }) {
   const links = {
     website: event.website_url,
@@ -40,6 +45,12 @@ export function PageTab({
 
   return (
     <>
+      {event.status === "draft" && !support && (
+        <Publication org={org.slug} event={event} hasSpots={hasSpots} />
+      )}
+
+      <Schedules org={org.slug} event={event} editable={!support} />
+
       <p className="max-w-prose">
         Lo que se lee en la portada del evento, además de las fechas, los stands
         y los premios. Todo es opcional: lo que no cargues no se muestra.

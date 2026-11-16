@@ -52,13 +52,27 @@ test("the overview: a published event opens on Resumen and fills in with each me
     ).toContainText("Registrados");
   });
 
-  await test.step("the org's dashboard shows its audience and the activity, with the event", async () => {
+  await test.step("the org's Resumen leads with the event and links to the whole activity", async () => {
     await staff.goto(`http://localhost:3000/panel/${seed.org.slug}`);
+    await expect(
+      staff.getByRole("region", { name: "Feria E2E" }),
+    ).toContainText("Visitantes1");
     await expect(staff.getByRole("region", { name: "Público" })).toContainText(
       "Visitantes únicos1",
     );
     await expect(
       staff.getByRole("region", { name: "Actividad" }),
     ).toContainText("Feria E2E");
+    await staff.getByRole("link", { name: "Ver toda la actividad" }).click();
+    await expect(
+      staff.getByRole("heading", { level: 1, name: "Actividad" }),
+    ).toBeVisible();
+    await expect(staff.getByText(/llegó: primera medalla en/)).toBeVisible();
+  });
+
+  await test.step("the activity filters by kind, and says when nothing matches", async () => {
+    await staff.getByRole("link", { name: "Sorteos" }).click();
+    await expect(staff).toHaveURL(/tipo=sorteo/);
+    await expect(staff.getByText("Nada con estos filtros")).toBeVisible();
   });
 });

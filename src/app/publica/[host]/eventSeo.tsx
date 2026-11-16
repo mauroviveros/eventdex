@@ -8,17 +8,12 @@ import {
   serializeJsonLd,
 } from "@/domain/seo";
 import { publicOrigin } from "@/domain/spots";
-import {
-  coverUrl,
-  getPrimaryHostname,
-  logoUrl,
-} from "@/lib/data/organizations";
+import { getPrimaryHostname, logoUrl } from "@/lib/data/organizations";
 import { createPublicClient } from "@/lib/supabase/public";
 
 type Org = { id: string; name: string; logo_path: string | null };
 type SeoSource = SeoEvent & {
   slug: string;
-  cover_path: string | null;
   visibility: "public" | "unlisted";
 };
 
@@ -36,12 +31,9 @@ async function canonical(host: string, org: Org) {
   return `${publicOrigin((await primaryHost(org.id)) ?? host)}/`;
 }
 
-/** The banner, else the organization's logo, else nothing. */
-function shareImage(event: SeoSource, org: Org) {
-  return (
-    coverUrl(event.cover_path) ??
-    (org.logo_path ? logoUrl(org.logo_path) : undefined)
-  );
+/** The organization's logo, else nothing (stored banners stay hidden). */
+function shareImage(org: Org) {
+  return org.logo_path ? logoUrl(org.logo_path) : undefined;
 }
 
 /**
@@ -53,7 +45,7 @@ export async function eventMetadata(host: string, org: Org, event: SeoSource) {
     event,
     orgName: org.name,
     url: await canonical(host, org),
-    image: shareImage(event, org),
+    image: shareImage(org),
     fallback: [
       formatEventDates(event.schedules, event.timezone),
       event.venue?.name,
@@ -75,7 +67,7 @@ export async function EventJsonLd({
     event,
     orgName: org.name,
     url: await canonical(host, org),
-    image: shareImage(event, org),
+    image: shareImage(org),
   });
   if (data.length === 0) return null;
   return (

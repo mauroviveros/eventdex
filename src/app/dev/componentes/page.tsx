@@ -17,8 +17,10 @@ import {
   FewDataNote,
   FunnelBars,
   HoursBySchedule,
+  HoursLegend,
   overviewCells,
   SpotRanking,
+  Tile,
 } from "@/components/panel/Overview";
 import { PanelShell } from "@/components/panel/PanelShell";
 import { PortadaStrip } from "@/components/panel/PortadaStrip";
@@ -67,7 +69,6 @@ import { AwardNext, AwardPlates } from "@/components/visitante/Awards";
 import { Celebration } from "@/components/visitante/Celebration";
 import { Countdown } from "@/components/visitante/Countdown";
 import {
-  EventCover,
   Levels,
   Marquee,
   MedalsLoading,
@@ -257,7 +258,6 @@ const sampleEvent = (
   edition_label: null,
   summary: "Tres jornadas de stands, atracciones y talleres.",
   description: null,
-  cover_path: null,
   timezone: "America/Argentina/Buenos_Aires",
   status: "published",
   visibility: "public",
@@ -1038,13 +1038,6 @@ export default function ComponentesPage() {
           </Section>
 
           <Section
-            title="Portada: banner"
-            note="La imagen que sube el staff, tal cual, arriba de la placa del título. Sin banner no se muestra nada."
-          >
-            <EventCover src={ceramica.src} alt="Cartel de ejemplo" />
-          </Section>
-
-          <Section
             title="Portada: medallas cargando"
             note="Mientras llegan las medallas del visitante: la forma de la colección, vacía."
           >
@@ -1388,32 +1381,54 @@ export default function ComponentesPage() {
 
         <Section
           title="Panel: resumen"
-          note="Las piezas de la pestaña Resumen del evento y del tablero de la org: las cifras (StatStrip con overviewCells), HoursBySchedule (barras por hora de cada jornada, primeras medallas en secundario y el resto en tinta, la hora actual marcada «Ahora» en vivo y una tabla para lectores de pantalla), FunnelBars (registrados → la mitad → todas), SpotRanking (los 8 primeros y el resto en «Ver los otros»; sin medallas, barra punteada; apagado, etiqueta punteada) y ActivityFeed (con el nombre del evento en el tablero de la org). Estados: vacío y pocos datos."
+          note="Los cuadros (Tile) del Resumen de la org y de la pestaña Resumen del evento: borde de 2 px, título y, al lado, un link o la leyenda (HoursLegend). Adentro: las cifras (StatStrip con overviewCells), HoursBySchedule (barras por hora de cada jornada, primeras medallas en secundario y el resto en tinta, la hora actual marcada «Ahora» en vivo y una tabla para lectores de pantalla), SpotRanking (los 8 primeros y el resto en «Ver los otros», o solo los primeros con top; sin medallas, barra punteada; apagado, etiqueta punteada), FunnelBars (registrados → la mitad → todas) y ActivityFeed (con el nombre del evento si mezcla eventos). Vacío de un cuadro: TileEmpty. Estados del evento: vacío y pocos datos."
         >
-          <div className="grid gap-10">
+          <div className="grid gap-4">
             <StatStrip cells={overviewCells(OVERVIEW)} />
-            <HoursBySchedule
-              days={[OVERVIEW_DAY]}
-              timeZone={SAMPLE_TIMEZONE}
-              now={OVERVIEW_DAY.hours[4]?.hour}
-            />
-            <div className="grid gap-10 md:grid-cols-2">
-              <FunnelBars overview={OVERVIEW} />
-              <SpotRanking spots={OVERVIEW_SPOTS} />
-            </div>
-            <div className="grid gap-10 md:grid-cols-2">
-              <ActivityFeed
-                items={OVERVIEW_ACTIVITY}
-                timeZone={SAMPLE_TIMEZONE}
-                events={
-                  new Map([
-                    ["e1", "Feria de Primavera"],
-                    ["e2", "Expo Otoño"],
-                  ])
+            <div className="grid gap-4 lg:grid-cols-3">
+              <Tile
+                id="demo-afluencia"
+                title="Afluencia"
+                aside={<HoursLegend />}
+                className="lg:col-span-2"
+              >
+                <HoursBySchedule
+                  days={[OVERVIEW_DAY]}
+                  timeZone={SAMPLE_TIMEZONE}
+                  now={OVERVIEW_DAY.hours[4]?.hour}
+                />
+              </Tile>
+              <Tile
+                id="demo-stands"
+                title="Stands"
+                aside={
+                  <span className="font-display text-px-1">Ver todos</span>
                 }
-              />
-              <ActivityFeed items={[]} timeZone={SAMPLE_TIMEZONE} />
+              >
+                <SpotRanking spots={OVERVIEW_SPOTS} top={5} />
+              </Tile>
             </div>
+            <div className="grid gap-4 lg:grid-cols-3">
+              <Tile id="demo-embudo" title="Hasta dónde llegan">
+                <FunnelBars overview={OVERVIEW} />
+              </Tile>
+              <Tile id="demo-actividad" title="Actividad">
+                <ActivityFeed
+                  items={OVERVIEW_ACTIVITY}
+                  timeZone={SAMPLE_TIMEZONE}
+                  events={
+                    new Map([
+                      ["e1", "Feria de Primavera"],
+                      ["e2", "Expo Otoño"],
+                    ])
+                  }
+                />
+              </Tile>
+              <Tile id="demo-vacio" title="Actividad">
+                <ActivityFeed items={[]} timeZone={SAMPLE_TIMEZONE} />
+              </Tile>
+            </div>
+            <SpotRanking spots={OVERVIEW_SPOTS} />
             <FewDataNote />
             <EmptyOverview />
           </div>

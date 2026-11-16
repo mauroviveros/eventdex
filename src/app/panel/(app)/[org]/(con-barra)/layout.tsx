@@ -17,14 +17,14 @@ export default async function OrgLayout({
   ]);
 
   const sections: Section[] = [
-    { href: `/panel/${slug}/resumen`, label: "Resumen", icon: "resumen" },
     {
       href: `/panel/${slug}`,
-      label: "Eventos",
-      icon: "eventos",
+      label: "Resumen",
+      icon: "resumen",
       exact: true,
-      also: `/panel/${slug}/eventos`,
+      also: `/panel/${slug}/actividad`,
     },
+    { href: `/panel/${slug}/eventos`, label: "Eventos", icon: "eventos" },
     { href: `/panel/${slug}/spots`, label: "Spots", icon: "spots" },
     { href: `/panel/${slug}/sedes`, label: "Sedes", icon: "sedes" },
   ];

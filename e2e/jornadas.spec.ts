@@ -28,10 +28,10 @@ test("a schedule is added with the calendar, and a wrong one keeps what was type
   page,
 }) => {
   await page.goto(
-    `http://localhost:3000/panel/${seed.org.slug}/eventos/${seed.event.slug}?tab=general`,
+    `http://localhost:3000/panel/${seed.org.slug}/eventos/${seed.event.slug}?tab=pagina`,
   );
   await signInByMail(page, seed.ownerEmail);
-  // The schedules are edited in their own sheet, from the General tab.
+  // The schedules are edited in their own sheet, from the Página tab.
   await page.getByRole("button", { name: "Editar jornadas" }).click();
   const add = page.getByRole("region", { name: "Nueva jornada" });
 

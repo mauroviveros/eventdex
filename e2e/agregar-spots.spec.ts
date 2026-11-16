@@ -66,7 +66,7 @@ test("while a tab loads, its panel keeps the name of what it still shows", async
   await page.getByRole("tab", { name: /^Visitantes/ }).click();
   const panel = page.getByRole("tabpanel");
   await expect(panel).toHaveAttribute("aria-busy", "true");
-  await expect(panel).toHaveAccessibleName("General");
+  await expect(panel).toHaveAccessibleName("Página");
 
   release();
   await expect(panel).not.toHaveAttribute("aria-busy");

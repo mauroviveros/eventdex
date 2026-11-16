@@ -71,6 +71,9 @@ export const isActivityKind = (kind: string): kind is ActivityKind =>
 export type ActivityCursor = { at: string; id: string };
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+// The instant as the database writes it: Date.parse alone also takes "2026", which Postgres refuses.
+const INSTANT =
+  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,6})?(Z|[+-]\d{2}:\d{2})$/;
 
 /**
  * The cursor of a row, for ?antes=. The instant goes as Postgres wrote it, to
@@ -86,6 +89,7 @@ export function parseActivityCursor(value: unknown): ActivityCursor | null {
   // A "+00:00" typed in a URL arrives as a space.
   const at = value.slice(0, cut).replace(/ (\d{2}:\d{2})$/, "+$1");
   const id = value.slice(cut + 1);
-  if (cut < 1 || !UUID.test(id) || Number.isNaN(Date.parse(at))) return null;
+  if (cut < 1 || !UUID.test(id) || !INSTANT.test(at)) return null;
+  if (Number.isNaN(Date.parse(at))) return null;
   return { at, id };
 }

@@ -41,15 +41,15 @@ test.describe("on a desktop", () => {
     await page.goto(admin());
     await signInByMail(page, seed.ownerEmail);
     const sections = page.getByRole("navigation", { name: "Secciones" });
-    const eventos = sections.getByRole("link", { name: "Eventos" });
-    await expect(eventos).toHaveAttribute("aria-current", "page");
+    const resumen = sections.getByRole("link", { name: "Resumen" });
+    await expect(resumen).toHaveAttribute("aria-current", "page");
 
     await test.step("collapsed survives a reload, and the link keeps its name", async () => {
       const sidebar = page.locator("[data-slot=sidebar]");
       await page.getByRole("button", { name: TOGGLE }).click();
       await page.reload();
       await expect(sidebar).toHaveAttribute("data-state", "collapsed");
-      await expect(eventos).toBeVisible();
+      await expect(resumen).toBeVisible();
       await page.getByRole("button", { name: TOGGLE }).click();
       await expect(sidebar).toHaveAttribute("data-state", "expanded");
     });

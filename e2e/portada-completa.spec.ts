@@ -53,8 +53,10 @@ test("what the staff loads in Página shows on the event's public page", async (
     await expect(
       page.getByText("Datos de la portada guardados."),
     ).toBeVisible();
-    // The page re-renders with what was saved, and the form resets with it.
+    // The page re-renders with what was saved, and the form resets with it
+    // when the save ends: wait for that, or the reset wipes the next field typed.
     await expect(data.getByLabel("Sobre el evento")).toHaveValue(ABOUT);
+    await expect(data.getByRole("button", { name: "Guardar" })).toBeEnabled();
   });
 
   await test.step("a link that is not https is refused", async () => {

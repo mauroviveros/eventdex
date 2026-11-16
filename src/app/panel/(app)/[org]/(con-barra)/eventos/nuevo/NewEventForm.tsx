@@ -90,7 +90,10 @@ export function NewEventForm({ org, venues, defaultTitle, source }: Props) {
         <Button type="submit" pending={pending} pendingLabel="Creando…">
           {source ? "Duplicar evento" : "Crear evento"}
         </Button>
-        <Link href={`/panel/${org.slug}`} className="font-display text-px-1">
+        <Link
+          href={`/panel/${org.slug}/eventos`}
+          className="font-display text-px-1"
+        >
           Cancelar
         </Link>
       </div>

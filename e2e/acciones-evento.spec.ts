@@ -14,7 +14,7 @@ test.afterAll(async () => {
   await seed?.cleanup();
 });
 
-test("the event's General asks before publishing, and publishes", async ({
+test("the event's Página asks before publishing, and publishes", async ({
   page,
 }) => {
   await page.goto(
@@ -52,7 +52,7 @@ test("the event's General asks before publishing, and publishes", async ({
 test("a ready draft is published from its row's menu, after confirming", async ({
   page,
 }) => {
-  await page.goto(`http://localhost:3000/panel/${seed.org.slug}`);
+  await page.goto(`http://localhost:3000/panel/${seed.org.slug}/eventos`);
   await signInByMail(page, seed.ownerEmail);
   const card = page
     .getByRole("table", { name: "Eventos" })

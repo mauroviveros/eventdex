@@ -45,7 +45,7 @@ export default async function PosterPage({
       <TopBar
         title="Cartel de entrada"
         crumbs={[
-          { label: "Eventos", href: `/panel/${org.slug}` },
+          { label: "Eventos", href: `/panel/${org.slug}/eventos` },
           { label: "Hoja de QR", href: `${base}/qr` },
         ]}
         actions={hostname && <PrintButton />}

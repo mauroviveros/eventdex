@@ -123,6 +123,9 @@ describe("activity cursor", () => {
       `${row.at}_no-es-un-id`,
       `ayer_${row.id}`,
       `_${row.id}`,
+      // Dates Date.parse takes but Postgres refuses: they would break the page.
+      `2026_${row.id}`,
+      `Nov 1 2026_${row.id}`,
     ]) {
       expect(parseActivityCursor(bad)).toBeNull();
     }

@@ -9,8 +9,8 @@ import {
 import type { Activity, EventOverview, RankedSpot } from "@/lib/data/overview";
 
 /**
- * The pieces of the overview, shared by the event's Resumen tab and the
- * organization's dashboard: figures, hours, funnel, stands and activity.
+ * The pieces of the overview, shared by the organization's Resumen and the
+ * event's Resumen tab: tiles, figures, hours, funnel, stands and activity.
  */
 
 const n = (v: number) => v.toLocaleString("es-AR");
@@ -35,23 +35,58 @@ export function overviewCells(o: EventOverview): [string, string, string?][] {
   ];
 }
 
-/** A titled block of the overview, ruled under its heading. */
-export function OverviewSection({
+/** A square of the bento: a framed, titled section with an optional link or legend beside the title. */
+export function Tile({
   id,
   title,
+  aside,
   children,
+  className = "",
 }: {
   id: string;
   title: string;
+  aside?: ReactNode;
   children: ReactNode;
+  className?: string;
 }) {
   return (
-    <section aria-labelledby={id} className="grid content-start gap-4">
-      <h2 id={id} className="border-b-2 border-lcd-3 pb-2 text-px-2">
-        {title}
-      </h2>
+    <section
+      aria-labelledby={id}
+      className={`grid min-w-0 content-start gap-4 border-2 border-lcd-3 p-4 sm:p-6 ${className}`}
+    >
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
+        <h2 id={id} className="text-px-2">
+          {title}
+        </h2>
+        {aside}
+      </div>
       {children}
     </section>
+  );
+}
+
+/** What a tile says while it has nothing to show. */
+export function TileEmpty({ children }: { children: ReactNode }) {
+  return (
+    <p className="border-2 border-dashed border-lcd-2 px-4 py-6 text-muted-foreground">
+      {children}
+    </p>
+  );
+}
+
+/** The two tones of the hourly bars. */
+export function HoursLegend() {
+  return (
+    <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+      <li className="flex items-center gap-2">
+        <span aria-hidden className="size-3 bg-lcd-2" />
+        Primeras medallas
+      </li>
+      <li className="flex items-center gap-2">
+        <span aria-hidden className="size-3 bg-lcd-3" />
+        De quienes ya tenían
+      </li>
+    </ul>
   );
 }
 
@@ -88,7 +123,7 @@ function dayLabel(day: Day, i: number, total: number, timeZone: string) {
   return `Jornada ${i + 1} · ${date}`;
 }
 
-/** One chart per schedule, with the legend of its two tones. */
+/** One chart per schedule (the legend goes in the tile's heading). */
 export function HoursBySchedule({
   days,
   timeZone,
@@ -116,16 +151,6 @@ export function HoursBySchedule({
           />
         </div>
       ))}
-      <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
-        <li className="flex items-center gap-2">
-          <span aria-hidden className="size-4 bg-lcd-2" />
-          Primeras medallas (visitantes que llegan)
-        </li>
-        <li className="flex items-center gap-2">
-          <span aria-hidden className="size-4 bg-lcd-3" />
-          De quienes ya tenían
-        </li>
-      </ul>
     </div>
   );
 }
@@ -165,10 +190,19 @@ export function FunnelBars({ overview }: { overview: EventOverview }) {
 
 const TOP = 8;
 
-/** The stands by medals: the first eight, the rest behind "Ver los otros". */
-export function SpotRanking({ spots }: { spots: RankedSpot[] }) {
+/**
+ * The stands by medals: the first eight and the rest behind "Ver los otros",
+ * or only the first `top` when the full list lives elsewhere.
+ */
+export function SpotRanking({
+  spots,
+  top,
+}: {
+  spots: RankedSpot[];
+  top?: number;
+}) {
   if (spots.length === 0)
-    return <p className="text-muted-foreground">El evento no tiene stands.</p>;
+    return <TileEmpty>El evento no tiene stands.</TileEmpty>;
   const max = Math.max(1, ...spots.map((s) => s.medals));
   const row = (s: RankedSpot) => (
     <li key={s.id} className="grid gap-1">
@@ -201,8 +235,8 @@ export function SpotRanking({ spots }: { spots: RankedSpot[] }) {
   );
   return (
     <div className="grid gap-3">
-      <ol className="grid gap-3">{spots.slice(0, TOP).map(row)}</ol>
-      {spots.length > TOP && (
+      <ol className="grid gap-3">{spots.slice(0, top ?? TOP).map(row)}</ol>
+      {top === undefined && spots.length > TOP && (
         <details>
           <summary className="cursor-pointer font-display text-px-1">
             Ver los otros {spots.length - TOP}
@@ -241,8 +275,7 @@ export function ActivityFeed({
   timeZone: string;
   events?: ReadonlyMap<string, string>;
 }) {
-  if (items.length === 0)
-    return <p className="text-muted-foreground">Todavía no pasó nada.</p>;
+  if (items.length === 0) return <TileEmpty>Todavía no pasó nada.</TileEmpty>;
   const time = new Intl.DateTimeFormat("es-AR", {
     hour: "2-digit",
     minute: "2-digit",

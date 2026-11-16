@@ -6,7 +6,6 @@ import type { SortDir } from "@/domain/table";
 
 export const EVENT_TABS = [
   "resumen",
-  "general",
   "pagina",
   "spots",
   "visitantes",
