@@ -1180,9 +1180,8 @@ se ve):
 **Lo que sale de la matriz**
 
 - **Los puntos están cargados sin uso.** El equipo los completa (de 1 a 1000) y hoy no
-  cambian nada de lo que ve el visitante. Antes de seguir hay que decidir: se muestran
-  (en la medalla, la ficha y la tarjeta), se usan (R31, premios por mérito) o se sacan
-  del formulario.
+  cambian nada de lo que ve el visitante. Decidido: se dejan como están y R31 (premios
+  por mérito) resuelve si se usan, se muestran o se sacan del formulario.
 - **Nada del visitante falta de cargar:** todo lo que se muestra tiene dónde cargarse o
   se calcula.
 - **Mirar con más detalle** (se vio por arriba y puede haber huecos): el alt del banner
