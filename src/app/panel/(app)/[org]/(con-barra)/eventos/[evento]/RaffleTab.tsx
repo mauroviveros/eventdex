@@ -7,8 +7,10 @@ import {
   drawRaffleAction,
   publishRaffleWinnersAction,
 } from "@/lib/actions/raffles";
+import type { AwardWinner, EventAward } from "@/lib/data/awards";
 import { prizeImageUrl } from "@/lib/data/organizations";
 import type { EventRaffle } from "@/lib/data/raffles";
+import { AwardsBlock } from "./AwardsBlock";
 import { PrizeForm } from "./PrizeForm";
 import { NewRaffleForm, VoidDrawForm } from "./RaffleForms";
 
@@ -25,6 +27,8 @@ export function RaffleTab({
   eventSlug,
   timezone,
   raffles,
+  awards,
+  winners,
   totalSpots,
   support,
 }: {
@@ -33,6 +37,8 @@ export function RaffleTab({
   eventSlug: string;
   timezone: string;
   raffles: EventRaffle[];
+  awards: EventAward[];
+  winners: AwardWinner[];
   /** Active stands: a prize asking for more medals than this can never be won. */
   totalSpots: number;
   support: boolean;
@@ -92,6 +98,16 @@ export function RaffleTab({
           <NewRaffleForm org={org} eventId={eventId} />
         </section>
       )}
+
+      <AwardsBlock
+        org={org}
+        eventId={eventId}
+        timezone={timezone}
+        awards={awards}
+        winners={winners}
+        totalSpots={totalSpots}
+        support={support}
+      />
     </>
   );
 }

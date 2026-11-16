@@ -15,6 +15,7 @@ import {
   formatScheduleTimes,
 } from "@/domain/events";
 import { deleteScheduleAction } from "@/lib/actions/events";
+import { listAwardWinners, listEventAwards } from "@/lib/data/awards";
 import { listEventVisitors } from "@/lib/data/claims";
 import { listVenues } from "@/lib/data/events";
 import { coverUrl } from "@/lib/data/organizations";
@@ -63,14 +64,17 @@ export default async function EventoPage({
   const supabase = await createClient();
   // Spots and visitors feed the tab counts and the figures in General; the
   // catalog only the Spots tab, the venues only the Editar sheet.
-  const [inEvent, visitors, catalog, venues, raffles] = await Promise.all([
-    listEventSpots(supabase, event.id),
-    listEventVisitors(supabase, event.id),
-    editable && tab === "spots" ? listSpots(supabase, org.id) : [],
-    editable ? listVenues(supabase, org.id) : [],
-    // Each raffle counts its eligible visitors: only on its own tab.
-    tab === "sorteo" ? listEventRaffles(supabase, event.id) : [],
-  ]);
+  const [inEvent, visitors, catalog, venues, raffles, awards, winners] =
+    await Promise.all([
+      listEventSpots(supabase, event.id),
+      listEventVisitors(supabase, event.id),
+      editable && tab === "spots" ? listSpots(supabase, org.id) : [],
+      editable ? listVenues(supabase, org.id) : [],
+      // Each raffle counts its eligible visitors: only on its own tab.
+      tab === "sorteo" ? listEventRaffles(supabase, event.id) : [],
+      tab === "sorteo" ? listEventAwards(supabase, event.id) : [],
+      tab === "sorteo" ? listAwardWinners(supabase, event.id) : [],
+    ]);
   const cover = coverUrl(event.cover_path);
 
   return (
@@ -197,6 +201,8 @@ export default async function EventoPage({
               eventSlug={event.slug}
               timezone={event.timezone}
               raffles={raffles}
+              awards={awards}
+              winners={winners}
               totalSpots={inEvent.filter((s) => s.is_active).length}
               support={support}
             />
