@@ -53,7 +53,8 @@ export function AwardCelebration({
       <h1 className="font-wide text-title">¡Ganaste!</h1>
       {lead.slots !== null && (
         <p className="award-place font-wide text-numeral leading-none">
-          #{lead.position}
+          <span aria-hidden>#{lead.position}</span>
+          <span className="sr-only">Lugar {lead.position}</span>
           <span className="font-display text-px-2"> de {lead.slots}</span>
         </p>
       )}

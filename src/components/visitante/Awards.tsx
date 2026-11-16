@@ -1,5 +1,5 @@
 import { PixelIcon } from "@/components/pixel/icons";
-import { type AwardInput, awardView, reachableAwards } from "@/domain/awards";
+import { awardView, reachableAwards } from "@/domain/awards";
 import type { EventAward } from "@/lib/data/awards";
 
 type Plates = {
@@ -47,12 +47,7 @@ export function AwardPlates({ awards, claimed, total, places }: Plates) {
   return (
     <ul className="grid gap-4 sm:grid-cols-2">
       {shown.map((a) => {
-        const v = awardView(
-          a as AwardInput,
-          claimed,
-          total,
-          places.get(a.id) ?? null,
-        );
+        const v = awardView(a, claimed, total, places.get(a.id) ?? null);
         return (
           <li
             key={a.id}
@@ -88,7 +83,7 @@ export function AwardPlates({ awards, claimed, total, places }: Plates) {
 export function AwardNext({ awards, claimed, total, places }: Plates) {
   const open = reachableAwards(awards, total)
     .filter((a) => !places.has(a.id))
-    .map((a) => ({ a, v: awardView(a as AwardInput, claimed, total, null) }))
+    .map((a) => ({ a, v: awardView(a, claimed, total, null) }))
     .filter(({ v }) => v.state === "abierto")
     .sort((x, y) => x.v.missing - y.v.missing);
   const next = open[0];
