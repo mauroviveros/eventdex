@@ -17,7 +17,6 @@ export const SPOT_SORTS = {
   codigo: "asc",
   nombre: "asc",
   puesto: "asc",
-  puntos: "desc",
 } as const satisfies Record<string, SortDir>;
 
 export const VISITOR_SORTS = {

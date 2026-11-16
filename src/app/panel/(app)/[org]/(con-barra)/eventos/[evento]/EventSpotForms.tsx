@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/shadcn/label";
 import { announce, useFormFeedback } from "@/components/ui/useFormFeedback";
 import { addEventSpotAction, updateEventSpotAction } from "@/lib/actions/spots";
 
-/** Puts a catalog spot in the event with its booth and points; the code is generated. */
+/** Puts a catalog spot in the event with its booth; the code is generated. */
 export function AddEventSpotForm({
   org,
   eventId,
@@ -43,17 +43,7 @@ export function AddEventSpotForm({
         defaultValue={values.spotId}
         error={fields.spotId}
       />
-      <div className="grid gap-6 sm:grid-cols-[8rem_1fr]">
-        <Field
-          label="Puntos"
-          name="points"
-          type="number"
-          inputMode="numeric"
-          min={1}
-          max={1000}
-          defaultValue={values.points ?? "1"}
-          error={fields.points}
-        />
+      <div className="grid gap-6">
         <Field
           label="Puesto"
           name="booth"
@@ -81,13 +71,12 @@ type EventSpot = {
   booth: string | null;
   perk: string | null;
   perk_hidden: boolean;
-  points: number;
   is_active: boolean;
   name_override: string | null;
   description_override: string | null;
 };
 
-/** Edits what this spot is in this edition: code, booth, points, active, and overrides. */
+/** Edits what this spot is in this edition: code, booth, active, and overrides. */
 export function EditEventSpotForm({
   org,
   spot,
@@ -113,7 +102,7 @@ export function EditEventSpotForm({
       {failed && !failed.fieldErrors && (
         <FormMessage tone="error">{failed.error}</FormMessage>
       )}
-      <div className="grid gap-5 sm:grid-cols-3">
+      <div className="grid gap-5 sm:grid-cols-2">
         <Field
           label="Código"
           name="code"
@@ -122,16 +111,6 @@ export function EditEventSpotForm({
           autoCapitalize="characters"
           hint="Se imprime con el QR."
           error={fields.code}
-        />
-        <Field
-          label="Puntos"
-          name="points"
-          type="number"
-          inputMode="numeric"
-          min={1}
-          max={1000}
-          defaultValue={v("points", String(spot.points))}
-          error={fields.points}
         />
         <Field
           label="Puesto"

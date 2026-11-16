@@ -20,8 +20,8 @@ export async function generateMetadata({
 function spotsCopied(n: number) {
   if (n === 0) return "Ese evento no tiene spots para copiar.";
   return n === 1
-    ? "Se copia 1 spot, con su código, puntos y puesto."
-    : `Se copian ${n.toLocaleString("es-AR")} spots, con sus códigos, puntos y puestos.`;
+    ? "Se copia 1 spot, con su código y puesto."
+    : `Se copian ${n.toLocaleString("es-AR")} spots, con sus códigos y puestos.`;
 }
 
 /** A blank event, or with ?desde=<slug>, a copy of another one of the org. */

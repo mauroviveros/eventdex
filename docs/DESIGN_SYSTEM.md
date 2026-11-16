@@ -122,7 +122,7 @@ En `src/components/<dominio>/`. Cada uno documenta sus estados en `/dev/componen
 | **Acciones de una fila** | `RowActions`: el ⋮ de una fila (un miembro, una invitación). Cada opción corre su acción y avisa con un toast; lo que no se deshace confirma en un diálogo que nombra la acción y su objeto, y conserva el error | cerrado · menú abierto · confirmando · error en el diálogo · error en toast |
 | **Confirmación** | `ConfirmDialog`: la única forma del panel de preguntar antes de actuar (lo usan `ActionButton`, Publicar y `RowActions`). La acción y su objeto, la consecuencia, un botón explícito y Cancelar con el foco; corre la acción, muestra el error adentro y avisa el éxito. Al cerrar, el foco vuelve a quien la abrió o, si ya no está (la fila que quitó), a un respaldo: un título de la sección o el h1 | abierta · enviando · con error · cerrada con foco de respaldo |
 | **Hoja de edición** | `EditSheet`: un botón que abre una Sheet lateral con formularios, para editar sin salir de la página (Editar evento, Jornadas, Agregar spots del catálogo). Cada formulario guarda por su cuenta y avisa con un toast; la hoja sigue abierta | con formularios · campo fijo con su porqué |
-| **Tarjeta de spot** | Nombre, código, tipo, puntos | activa · inactiva · archivada · override de esta edición |
+| **Tarjeta de spot** | Nombre, código, tipo | activa · inactiva · archivada · override de esta edición |
 | **QR** | Código + nombre + código corto, listo para imprimir | normal · vista de impresión A4 |
 | **Extracción** | Ganador de una tirada del sorteo | sorteando · ganador · anulada |
 | **Selector de organización** | La org activa en el admin | una org · varias |

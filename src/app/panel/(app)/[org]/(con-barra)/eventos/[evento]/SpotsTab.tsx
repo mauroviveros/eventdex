@@ -7,7 +7,7 @@ import { AddEventSpotForm } from "./EventSpotForms";
 import { SPOT_SORTS } from "./query";
 import { type Spot, SpotsTable } from "./SpotsTable";
 
-/** The event's spots: which catalog spots are in it, with their code, booth and points. */
+/** The event's spots: which catalog spots are in it, with their code and booth. */
 export function SpotsTab({
   org,
   eventId,
@@ -33,7 +33,6 @@ export function SpotsTab({
         codigo: s.code,
         nombre: s.shown.name,
         puesto: s.booth ?? "",
-        puntos: s.points,
       })[query.orden],
     query,
   );

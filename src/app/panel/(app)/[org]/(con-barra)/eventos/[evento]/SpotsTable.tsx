@@ -61,15 +61,6 @@ export function SpotsTable({
           header: "Puesto",
           cell: (c) => c.getValue() || "—",
         }),
-        helper.accessor("points", {
-          id: "puntos",
-          header: "Puntos",
-          cell: (c) => (
-            <span className="tabular-nums">
-              {c.getValue().toLocaleString("es-AR")}
-            </span>
-          ),
-        }),
         helper.display({
           id: "estado",
           header: "Estado",

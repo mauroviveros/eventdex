@@ -53,7 +53,7 @@ export async function listEventSpots(supabase: Supabase, eventId: string) {
   const { data, error } = await supabase
     .from("event_spots")
     .select(
-      `id, code, booth, perk, perk_hidden, points, is_active, sort_order,
+      `id, code, booth, perk, perk_hidden, is_active, sort_order,
        name_override, description_override, snapshot,
        spot:spots (id, name, description, logo_path, type)`,
     )

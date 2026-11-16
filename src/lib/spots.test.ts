@@ -125,13 +125,13 @@ describe("spot logos", () => {
 const CODE_TAKEN = `duplicate key value violates unique constraint "event_spots_event_id_code_key"`;
 
 describe("addEventSpot", () => {
-  const valid = { eventId: EVENT, spotId: SPOT, points: "" };
+  const valid = { eventId: EVENT, spotId: SPOT };
   const event = (...codes: string[]) => ({
     data: { organization_id: ORG, spots: codes.map((code) => ({ code })) },
     error: null,
   });
 
-  it("generates the next code, defaults to 1 point and takes the event's org", async () => {
+  it("generates the next code and takes the event's org", async () => {
     const { client, calls } = fakeClient(event("A01", "VIP"), {
       data: { id: "es1" },
       error: null,
@@ -146,7 +146,6 @@ describe("addEventSpot", () => {
       spot_id: SPOT,
       code: "A02",
       booth: null,
-      points: 1,
     });
   });
 
@@ -203,28 +202,16 @@ describe("addEventSpot", () => {
 describe("updateEventSpot", () => {
   it("uppercases the code and rejects spaces or symbols", async () => {
     const { client, calls } = fakeClient({ data: [{ id: SPOT }], error: null });
-    await updateEventSpot(client, { id: SPOT, code: " vip ", points: "1" });
+    await updateEventSpot(client, { id: SPOT, code: " vip " });
     expect(calls.find((c) => c.method === "update")?.args[0]).toMatchObject({
       code: "VIP",
     });
     const result = await updateEventSpot(fakeClient().client, {
       id: SPOT,
       code: "A 12!",
-      points: "1",
     });
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.fieldErrors?.code).toBeDefined();
-  });
-
-  it("reads the active checkbox and rejects zero points", async () => {
-    const { client } = fakeClient();
-    const result = await updateEventSpot(client, {
-      id: SPOT,
-      code: "A12",
-      points: "0",
-    });
-    expect(result.ok).toBe(false);
-    if (!result.ok) expect(result.fieldErrors?.points).toBe("Mínimo 1 punto.");
   });
 
   it("saves the perk trimmed, and an empty one clears it", async () => {
@@ -233,7 +220,6 @@ describe("updateEventSpot", () => {
     await updateEventSpot(client, {
       id: SPOT,
       code: "A12",
-      points: "1",
       perk: "  10 % de descuento ",
     });
     expect(update()).toMatchObject({ perk: "10 % de descuento" });
@@ -242,7 +228,6 @@ describe("updateEventSpot", () => {
     await updateEventSpot(cleared.client, {
       id: SPOT,
       code: "A12",
-      points: "1",
       perk: "",
     });
     expect(
@@ -255,7 +240,6 @@ describe("updateEventSpot", () => {
     await updateEventSpot(hidden.client, {
       id: SPOT,
       code: "A12",
-      points: "1",
       perk: "Una muestra",
       perkHidden: "on",
     });
@@ -267,7 +251,6 @@ describe("updateEventSpot", () => {
     await updateEventSpot(shown.client, {
       id: SPOT,
       code: "A12",
-      points: "1",
       perk: "Una muestra",
     });
     expect(
@@ -280,7 +263,6 @@ describe("updateEventSpot", () => {
     const result = await updateEventSpot(client, {
       id: SPOT,
       code: "A12",
-      points: "1",
       perk: "x".repeat(121),
     });
     expect(result.ok).toBe(false);
@@ -290,9 +272,8 @@ describe("updateEventSpot", () => {
 
   it("turns an unchecked box into inactive", async () => {
     const { client, calls } = fakeClient({ data: [{ id: SPOT }], error: null });
-    await updateEventSpot(client, { id: SPOT, code: "A12", points: "3" });
+    await updateEventSpot(client, { id: SPOT, code: "A12" });
     expect(calls.find((c) => c.method === "update")?.args[0]).toMatchObject({
-      points: 3,
       is_active: false,
     });
   });

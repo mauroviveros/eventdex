@@ -66,21 +66,10 @@ const code = z
   .toUpperCase()
   .regex(CODE, "Hasta 10 letras, números o guiones. Ej.: A12.");
 
-// Form numbers arrive as text; left empty, a spot is worth 1 point.
-const points = z.preprocess(
-  (v) => (v === "" || v === undefined ? 1 : v),
-  z.coerce
-    .number("Poné un número.")
-    .int("Tiene que ser un número entero.")
-    .min(1, "Mínimo 1 punto.")
-    .max(1000, "Máximo 1000 puntos."),
-);
-
 const eventSpotSchema = z.object({
   eventId: z.guid(),
   spotId: z.guid("Elegí un spot del catálogo."),
   booth: optionalText(60),
-  points,
 });
 
 const eventSpotUpdateSchema = z.object({
@@ -91,7 +80,6 @@ const eventSpotUpdateSchema = z.object({
   booth: optionalText(60),
   perk: optionalText(120),
   perkHidden: checkbox,
-  points,
   isActive: checkbox,
 });
 
@@ -200,6 +188,7 @@ export async function setSpotArchived(
   return { ok: true, data: null };
 }
 
+// shortcut: event_spots.points stays at its default of 1 and no screen sets or shows it, until a rule needs different weights (R31 leaves it)
 export async function addEventSpot(
   supabase: Client,
   input: unknown,
@@ -227,7 +216,6 @@ export async function addEventSpot(
         spot_id: s.spotId,
         code: nextSpotCode(event.spots.map((e) => e.code)),
         booth: s.booth,
-        points: s.points,
       })
       .select("id")
       .single();
@@ -262,7 +250,6 @@ export async function updateEventSpot(
       booth: s.booth,
       perk: s.perk,
       perk_hidden: s.perkHidden,
-      points: s.points,
       is_active: s.isActive,
     })
     .eq("id", s.id)
