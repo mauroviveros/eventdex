@@ -45,7 +45,9 @@ as $$
             coalesce(es.name_override, es.snapshot ->> 'name', s.name),
             not exists (
               select 1 from public.spot_claims f
-              where f.registration_id = c.registration_id and f.claimed_at < c.claimed_at
+              -- (momento, id): de dos medallas del mismo instante, solo una es la llegada.
+              where f.registration_id = c.registration_id
+                and (f.claimed_at, f.id) < (c.claimed_at, c.id)
             )
      from public.spot_claims c
      join public.events e on e.id = c.event_id and e.deleted_at is null
@@ -101,3 +103,27 @@ create index spot_claims_org_recent_idx on public.spot_claims (organization_id, 
 create index spot_claims_event_recent_idx on public.spot_claims (event_id, claimed_at desc, id desc);
 create index award_winners_org_recent_idx on public.award_winners (organization_id, won_at desc, id desc);
 create index raffle_draws_org_recent_idx on public.raffle_draws (organization_id, drawn_at desc, id desc);
+
+-- event_hourly con el mismo desempate: un visitante es nuevo una sola vez, aunque
+-- dos de sus medallas caigan en el mismo instante.
+create or replace function public.event_hourly(p_event_id uuid)
+returns table (hour timestamptz, medals integer, newcomers integer)
+language sql
+stable
+security invoker
+set search_path = ''
+as $$
+  select
+    date_trunc('hour', c.claimed_at, e.timezone),
+    count(*)::int,
+    (count(*) filter (where not exists (
+      select 1 from public.spot_claims p
+      where p.registration_id = c.registration_id
+        and (p.claimed_at, p.id) < (c.claimed_at, c.id)
+    )))::int
+  from public.spot_claims c
+  join public.events e on e.id = c.event_id
+  where c.event_id = p_event_id
+  group by 1
+  order by 1
+$$;
