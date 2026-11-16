@@ -32,13 +32,13 @@ test("the visitor sees what is won and how far they are, from the event to Mis m
       `http://localhost:3000/panel/${seed.org.slug}/eventos/${seed.event.slug}?tab=sorteo`,
     );
     await signInByMail(staff, seed.ownerEmail);
-    await staff.getByLabel("Premio").fill("Tablet");
+    await staff.getByLabel("Premio", { exact: true }).fill("Tablet");
     await staff.getByLabel("Medallas para participar").fill("2");
     await staff.getByRole("button", { name: "Crear sorteo" }).click();
     const raffle = staff.getByRole("region", { name: "Tablet" });
     await expect(raffle).toContainText("Hacen falta 2 medallas");
 
-    await staff.getByLabel("Premio").fill("Viaje");
+    await staff.getByLabel("Premio", { exact: true }).fill("Viaje");
     await staff.getByLabel("Medallas para participar").fill("9");
     await staff.getByRole("button", { name: "Crear sorteo" }).click();
     // A prize nobody can reach is flagged to staff (and hidden from visitors, below).

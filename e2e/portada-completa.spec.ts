@@ -60,7 +60,8 @@ test("what the staff loads in Página shows on the event's public page", async (
   await test.step("a link that is not https is refused", async () => {
     const data = page.getByRole("region", { name: "Sobre el evento y links" });
     await data.getByLabel("Sitio web").fill("javascript:alert(1)");
-    await data.getByRole("button", { name: "Guardar" }).click();
+    // Enter, not the button: the last toast still sits over it on a phone.
+    await data.getByLabel("Sitio web").press("Enter");
     await expect(
       data.getByText("Pegá un link que empiece con https://"),
     ).toBeVisible();

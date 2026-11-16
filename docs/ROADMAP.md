@@ -1240,7 +1240,14 @@ todas, los primeros 5 en llegar a la mitad, todos los que junten N. Las pregunta
      ganadores con su puesto, nombre y mail para entregar.
    - Pendiente de decidir en la Vista: cómo se ve un premio que el evento no puede
      alcanzar (el panel avisa, como en los sorteos).
-4. **Vista.** El panel (pestaña de premios) y las pantallas del visitante.
+4. **Vista ✅.** Hecho: al ganar, `AwardCelebration` (fondo invertido, copa, puesto,
+   confeti corto con `lcdConfetti`); las placas `AwardPlates` en la portada y en Mis
+   medallas, y `AwardNext` bajo el progreso de una medalla sin premio; el puesto en la
+   tarjeta; y en la pestaña Sorteo el bloque «Premios por mérito» (alta, lista con
+   ganadores en orden, Editar nombre y descripción, Quitar si nadie lo ganó). Los
+   componentes están en `/dev/componentes` y el recorrido en `e2e/premios-merito.spec.ts`.
+   *Sin probar:* el panel y la tarjeta (la imagen) a ojo, un celular real y lector de
+   pantalla.
 5. **Auditoría.** `/code-review` y `/accessibility`.
 
 Límite conocido: un premio creado con el evento en curso solo cuenta desde la próxima

@@ -13,7 +13,7 @@ test.afterAll(async () => {
 });
 
 async function createRaffle(staff: Page, title: string) {
-  await staff.getByLabel("Premio").fill(title);
+  await staff.getByLabel("Premio", { exact: true }).fill(title);
   await staff.getByRole("button", { name: "Crear sorteo" }).click();
   await expect(staff.getByRole("heading", { name: title })).toBeVisible();
   return staff.getByRole("region", { name: title });
