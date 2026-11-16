@@ -48,7 +48,7 @@ export default async function QrSheetPage({
       <TopBar
         title="Hoja de QR"
         crumbs={[
-          { label: "Eventos", href: `/panel/${org.slug}` },
+          { label: "Eventos", href: `/panel/${org.slug}/eventos` },
           { label: event.title, href: `${base}?tab=spots` },
         ]}
         actions={

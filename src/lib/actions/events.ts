@@ -8,14 +8,12 @@ import {
   deleteSchedule,
   duplicateEvent,
   publishEvent,
-  removeCover,
   setEventVenue,
   updateEvent,
   updateSchedule,
   updateVenue,
-  uploadCover,
 } from "@/lib/events";
-import { type FormState, runFormWrite, takeLogo } from "./form";
+import { type FormState, runFormWrite } from "./form";
 
 /** Lands on the new draft, where its schedules and spots are adjusted. */
 export async function duplicateEventAction(
@@ -26,25 +24,6 @@ export async function duplicateEventAction(
   if (!r.ok) return r.state;
   const { slug } = r.data as { slug: string };
   redirect(`/panel/${r.org}/eventos/${slug}`);
-}
-
-export async function uploadCoverAction(
-  _prev: FormState,
-  formData: FormData,
-): Promise<FormState> {
-  const cover = takeLogo(formData);
-  const r = await runFormWrite(formData, (supabase, v) =>
-    uploadCover(supabase, { ...v, cover }),
-  );
-  return r.ok ? { ok: true } : r.state;
-}
-
-export async function removeCoverAction(
-  _prev: FormState,
-  formData: FormData,
-): Promise<FormState> {
-  const r = await runFormWrite(formData, removeCover);
-  return r.ok ? { ok: true } : r.state;
 }
 
 export async function createVenueAction(

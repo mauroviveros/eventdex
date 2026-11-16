@@ -4,6 +4,7 @@ import Link from "next/link";
 import { PageBody, TopBar } from "@/components/panel/TopBar";
 import { Button, buttonClass } from "@/components/ui/Button";
 import { SelectField } from "@/components/ui/Field";
+import { DEFAULT_TIME_ZONE } from "@/domain/events";
 import { listAllOrganizations } from "@/lib/data/organizations";
 import { listAuditLogs } from "@/lib/data/platform";
 import { platformMetadata, requireDeveloper } from "@/lib/data/viewer";
@@ -18,7 +19,7 @@ export function generateMetadata(): Promise<Metadata> {
 const WHEN = new Intl.DateTimeFormat("es-AR", {
   dateStyle: "short",
   timeStyle: "medium",
-  timeZone: "America/Argentina/Buenos_Aires",
+  timeZone: DEFAULT_TIME_ZONE,
 });
 
 export default async function AuditoriaPage({

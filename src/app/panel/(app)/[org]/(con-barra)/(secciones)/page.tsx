@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { PageBody, TopBar } from "@/components/panel/TopBar";
-import { eventPhase, formatEventDates } from "@/domain/events";
+import {
+  DEFAULT_TIME_ZONE,
+  eventPhase,
+  formatEventDates,
+} from "@/domain/events";
 import { hoursBySchedule } from "@/domain/overview";
 import { listEvents } from "@/lib/data/events";
 import {
@@ -12,11 +16,11 @@ import {
 } from "@/lib/data/overview";
 import { requireOrg } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
-import { ALTS, ResumenBento } from "./ResumenBento";
+import { ResumenBento } from "./ResumenBento";
 
 export async function generateMetadata({
   params,
-}: PageProps<"/panel/[org]/resumen">): Promise<Metadata> {
+}: PageProps<"/panel/[org]">): Promise<Metadata> {
   const { org } = await requireOrg((await params).org);
   return { title: `Resumen · ${org.name}` };
 }
@@ -25,16 +29,14 @@ const lastEnd = (s: readonly { ends_at: string }[]) =>
   Math.max(0, ...s.map((x) => Date.parse(x.ends_at)));
 
 /**
- * The organization at a glance: its audience, the event of the moment (the
- * one in course or, if none, the last one that ended) with its hours and
- * stands, the latest activity and what comes next.
+ * The organization's home: the event of the moment (the one in course or, if
+ * none, the last one that ended) with its hours and stands, the latest
+ * activity, the audience and what comes next.
  */
 export default async function ResumenPage({
   params,
-  searchParams,
-}: PageProps<"/panel/[org]/resumen">) {
-  const { org } = await requireOrg((await params).org);
-  const { alt } = await searchParams;
+}: PageProps<"/panel/[org]">) {
+  const { org, support } = await requireOrg((await params).org);
   const supabase = await createClient();
   const now = new Date();
 
@@ -65,8 +67,11 @@ export default async function ResumenPage({
   // The day to chart: today's while it runs, else the last one with medals.
   const hourNow = Math.floor(now.getTime() / 3_600_000) * 3_600_000;
   const days = featured ? hoursBySchedule(hours, featured.schedules) : [];
+  const today = days.find((d) =>
+    d.hours.some((h) => Date.parse(h.hour) === hourNow),
+  );
   const day =
-    days.find((d) => d.hours.some((h) => Date.parse(h.hour) === hourNow)) ??
+    today ??
     days.findLast((d) => d.hours.some((h) => h.medals > 0)) ??
     days.at(-1) ??
     null;
@@ -87,9 +92,8 @@ export default async function ResumenPage({
       <PageBody>
         <ResumenBento
           org={org.slug}
-          alt={ALTS.find((a) => a === alt) ?? "a"}
+          support={support}
           audience={audience}
-          live={withPhase.filter((e) => e.phase === "en-curso").length}
           featured={
             featured && overview
               ? {
@@ -105,13 +109,14 @@ export default async function ResumenPage({
                   timeZone: featured.timezone,
                   overview,
                   day,
+                  today: today !== undefined,
                   ranking,
                 }
               : null
           }
           activity={activity}
           titles={new Map(events.map((e) => [e.id, e.title]))}
-          timeZone={events[0]?.timezone ?? "America/Argentina/Buenos_Aires"}
+          timeZone={events[0]?.timezone ?? DEFAULT_TIME_ZONE}
           next={next}
           now={
             featured?.phase === "en-curso"

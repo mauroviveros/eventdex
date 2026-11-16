@@ -12,7 +12,6 @@ import type { EventTab } from "./query";
 
 const LABEL: Record<EventTab, string> = {
   resumen: "Resumen",
-  general: "General",
   pagina: "Página",
   spots: "Spots",
   visitantes: "Visitantes",
@@ -62,16 +61,19 @@ export function EventTabs({
     >
       <TabsList
         aria-label="Secciones del evento"
-        // On a phone the six take two rows of three, the count under the name: no scrolling to find one.
-        className="max-sm:grid max-sm:h-auto max-sm:w-full max-sm:grid-cols-3"
+        // On a phone they share one row, the count under the name: no scrolling to find one. Visitantes, the longest, gets a wider cell.
+        className={
+          tabs.length === 5
+            ? "max-sm:grid max-sm:w-full max-sm:grid-cols-[1fr_1fr_1fr_1.3fr_1fr]"
+            : "max-sm:grid max-sm:w-full max-sm:grid-cols-[1fr_1fr_1.3fr_1fr]"
+        }
       >
         {tabs.map((tab) => (
           <TabsTrigger
             key={tab}
             id={`pestana-${tab}`}
             value={tab}
-            // In the phone's grid, the row's last cell leaves the right rule to the frame and the second row gets a rule on top.
-            className="max-sm:flex-col max-sm:justify-center max-sm:gap-0 max-sm:px-1 max-sm:py-1 max-sm:nth-[3n]:border-r-0 max-sm:nth-[n+4]:border-t-2"
+            className="max-sm:flex-col max-sm:justify-center max-sm:gap-0 max-sm:px-1 max-sm:py-1"
           >
             {LABEL[tab]}
             {/* Read as "Spots 4", not "Spots4"; the flex gap does the visual spacing. */}

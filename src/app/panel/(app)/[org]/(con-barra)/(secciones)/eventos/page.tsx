@@ -6,8 +6,6 @@ import {
   EventFilters,
   type PhaseFilter,
 } from "@/components/panel/EventFilters";
-import { ActivityFeed, OverviewSection } from "@/components/panel/Overview";
-import { StatStrip } from "@/components/panel/StatStrip";
 import { PageBody, TopBar } from "@/components/panel/TopBar";
 import { buttonClass } from "@/components/ui/Button";
 import {
@@ -17,7 +15,6 @@ import {
   sortForPanel,
 } from "@/domain/events";
 import { listEvents } from "@/lib/data/events";
-import { getOrgOverview, listActivity } from "@/lib/data/overview";
 import { requireOrg } from "@/lib/data/viewer";
 import { createClient } from "@/lib/supabase/server";
 import { type EventRow, EventsTable } from "./EventsTable";
@@ -39,34 +36,26 @@ const fold = (text: string) =>
 
 export async function generateMetadata({
   params,
-}: PageProps<"/panel/[org]">): Promise<Metadata> {
+}: PageProps<"/panel/[org]/eventos">): Promise<Metadata> {
   const { org } = await requireOrg((await params).org);
   return { title: `Eventos · ${org.name}` };
 }
 
 /**
- * The organization's dashboard: the event that matters today, its audience and
- * the latest activity of every event, the drafts with what they lack, and every
- * event in a table, filterable by phase and search.
+ * The organization's events: the one that matters today, the drafts with what
+ * they lack, and every event in a table, filterable by phase and search.
  */
 export default async function OrgEventsPage({
   params,
   searchParams,
-}: PageProps<"/panel/[org]">) {
+}: PageProps<"/panel/[org]/eventos">) {
   const { org, support } = await requireOrg((await params).org);
   const { fase, q } = await searchParams;
   const current = FILTERS.find((f) => f === fase) ?? "todos";
   const query = typeof q === "string" ? q.trim() : "";
 
   const supabase = await createClient();
-  const [events, audience, activity] = await Promise.all([
-    listEvents(supabase, org.id),
-    getOrgOverview(supabase, org.id),
-    listActivity(supabase, org.id, { limit: 12 }),
-  ]);
-  const titles = new Map(events.map((e) => [e.id, e.title]));
-  // shortcut: one zone for the whole feed (the latest event's), split it per line if an org runs events in different zones
-  const timeZone = events[0]?.timezone ?? "America/Argentina/Buenos_Aires";
+  const events = await listEvents(supabase, org.id);
 
   const now = new Date();
   const rows = sortForPanel(
@@ -132,34 +121,6 @@ export default async function OrgEventsPage({
           <>
             {active && <ActiveEvent org={org.slug} event={active} />}
 
-            {audience.visitors > 0 && (
-              <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-                <OverviewSection id="publico" title="Público">
-                  <StatStrip
-                    cells={[
-                      [
-                        "Visitantes únicos",
-                        audience.visitors.toLocaleString("es-AR"),
-                        "en todos los eventos",
-                      ],
-                      [
-                        "Volvieron",
-                        audience.returned.toLocaleString("es-AR"),
-                        "fueron a 2 o más eventos",
-                      ],
-                    ]}
-                  />
-                </OverviewSection>
-                <OverviewSection id="actividad" title="Actividad">
-                  <ActivityFeed
-                    items={activity}
-                    timeZone={timeZone}
-                    events={titles}
-                  />
-                </OverviewSection>
-              </div>
-            )}
-
             {drafts.length > 0 && (
               <DraftChecklist
                 org={org.slug}
@@ -179,7 +140,7 @@ export default async function OrgEventsPage({
                 Todos los eventos
               </h2>
               <EventFilters
-                basePath={`/panel/${org.slug}`}
+                basePath={`/panel/${org.slug}/eventos`}
                 current={current}
                 counts={counts}
                 query={query}
@@ -191,7 +152,7 @@ export default async function OrgEventsPage({
                   </p>
                   <p>
                     Probá con otra búsqueda o{" "}
-                    <Link href={`/panel/${org.slug}`}>
+                    <Link href={`/panel/${org.slug}/eventos`}>
                       mirá todos los eventos
                     </Link>
                     .

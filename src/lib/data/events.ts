@@ -126,7 +126,7 @@ export async function getEventBySlug(
   const { data, error } = await supabase
     .from("events")
     .select(
-      `id, slug, title, edition_label, summary, description, cover_path, status,
+      `id, slug, title, edition_label, summary, description, status,
        visibility, timezone, published_at, venue_id,
        website_url, instagram_url, tickets_url, map_url,
        venue:venues (id, name, address_line, city, state),

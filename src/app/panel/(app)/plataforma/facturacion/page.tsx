@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { EditSheet } from "@/components/panel/EditSheet";
 import { PageBody, TopBar } from "@/components/panel/TopBar";
+import { DEFAULT_TIME_ZONE } from "@/domain/events";
 import { formatMoney } from "@/domain/money";
 import { listAllOrganizations } from "@/lib/data/organizations";
 import { listInvoices } from "@/lib/data/platform";
@@ -21,7 +22,7 @@ const ISSUED = new Intl.DateTimeFormat("es-AR", {
 
 // en-CA formats as YYYY-MM-DD, what a date input expects.
 const TODAY = new Intl.DateTimeFormat("en-CA", {
-  timeZone: "America/Argentina/Buenos_Aires",
+  timeZone: DEFAULT_TIME_ZONE,
 });
 
 /** Manual invoices: the list, and Nueva factura in a side sheet from the bar. */

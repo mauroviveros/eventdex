@@ -17,6 +17,9 @@ type Schedule = { starts_at: string; ends_at: string };
 /** The banner's limit, the same as the event-covers bucket: 1.5 MiB. */
 export const COVER_MAX_BYTES = 1_572_864;
 
+/** The zone for times with no event to take it from. */
+export const DEFAULT_TIME_ZONE = "America/Argentina/Buenos_Aires";
+
 /** First start and last end, or null without schedules. */
 function scheduleRange(schedules: readonly Schedule[]) {
   if (schedules.length === 0) return null;
