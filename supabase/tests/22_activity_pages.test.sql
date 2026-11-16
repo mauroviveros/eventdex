@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(8);
+select plan(10);
 
 insert into auth.users (id, email, raw_user_meta_data) values
   ('00000000-0000-0000-0000-00000000e0a1', 'ana@pages.local', '{"full_name":"Ana García"}'),
@@ -94,6 +94,19 @@ select results_eq(
 select is(
   (select count(*)::int from public.org_activity('00000000-0000-0000-0000-00000000e001', '00000000-0000-0000-0000-00000000e011', 30, 'medalla')), 5,
   'the kind and the event filters together'
+);
+
+-- Tres medallas de Ana en el mismo instante: una sola es su llegada (desempata el id).
+select results_eq(
+  $$ select right(id::text, 3) from public.org_activity('00000000-0000-0000-0000-00000000e001', null, 30, 'medalla')
+     where is_first order by id $$,
+  $$ values ('101'), ('104') $$,
+  'each visitor arrives once, even with medals of the same instant'
+);
+
+select is(
+  (select sum(newcomers)::int from public.event_hourly('00000000-0000-0000-0000-00000000e011')), 2,
+  'the hourly newcomers count each visitor once'
 );
 
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000e0b2","role":"authenticated"}', true);
