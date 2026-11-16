@@ -1291,6 +1291,35 @@ export type Database = {
           taken: number;
         }[];
       };
+      event_hourly: {
+        Args: { p_event_id: string };
+        Returns: {
+          hour: string;
+          medals: number;
+          newcomers: number;
+        }[];
+      };
+      event_overview: {
+        Args: { p_event_id: string };
+        Returns: {
+          complete: number;
+          half: number;
+          idle_stands: number;
+          medals: number;
+          stands: number;
+          visitors: number;
+        }[];
+      };
+      event_spot_ranking: {
+        Args: { p_event_id: string };
+        Returns: {
+          code: string;
+          event_spot_id: string;
+          is_active: boolean;
+          medals: number;
+          name: string;
+        }[];
+      };
       invite_member: {
         Args: {
           p_email: string;
@@ -1306,6 +1335,29 @@ export type Database = {
       move_event_faq: {
         Args: { p_direction: number; p_faq_id: string };
         Returns: undefined;
+      };
+      org_activity: {
+        Args: {
+          p_event_id?: string;
+          p_limit?: number;
+          p_organization_id: string;
+        };
+        Returns: {
+          detail: string;
+          event_id: string;
+          happened_at: string;
+          is_first: boolean;
+          kind: string;
+          user_id: string;
+          visitor: string;
+        }[];
+      };
+      org_overview: {
+        Args: { p_organization_id: string };
+        Returns: {
+          returned: number;
+          visitors: number;
+        }[];
       };
       past_editions: {
         Args: { p_event_id: string; p_organization_id: string };
