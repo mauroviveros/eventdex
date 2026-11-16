@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { awardNeeded, awardRequirement, awardStanding } from "./awards";
+import {
+  awardNeeded,
+  awardRequirement,
+  awardStanding,
+  awardView,
+  reachableAwards,
+} from "./awards";
 
 describe("awardNeeded", () => {
   it("takes a count as it is", () => {
@@ -74,5 +80,69 @@ describe("awardRequirement", () => {
     expect(awardRequirement({ kind: "percent", threshold: 50 }, 6)).toBe(
       "3 medallas",
     );
+  });
+});
+
+describe("awardView", () => {
+  const first5 = {
+    kind: "percent",
+    threshold: 100,
+    slots: 5,
+    taken: 2,
+  } as const;
+
+  it("says how many places are left and what to do", () => {
+    const v = awardView(first5, 0, 4, null);
+    expect(v).toMatchObject({
+      state: "abierto",
+      tag: "Por mérito · Quedan 3 de 5",
+      phrase: "Juntá todas las medallas antes que nadie.",
+    });
+  });
+
+  it("adds what is missing once they have medals", () => {
+    expect(awardView(first5, 3, 4, null).phrase).toBe(
+      "Juntá todas las medallas antes que nadie. Te falta 1.",
+    );
+    expect(awardView(first5, 1, 4, null).phrase).toContain("Te faltan 3.");
+  });
+
+  it("names the place of whoever won, even when it has since filled", () => {
+    const v = awardView({ ...first5, taken: 5 }, 4, 4, 2);
+    expect(v).toMatchObject({ state: "ganado", tag: "Ganado · lugar 2" });
+    expect(v.phrase).toBe("Retiralo en la organización.");
+  });
+
+  it("is gone for everyone else once it fills", () => {
+    expect(awardView({ ...first5, taken: 5 }, 1, 4, null)).toMatchObject({
+      state: "agotado",
+      tag: "Se agotó",
+      phrase: "Ya lo ganaron las 5 primeras personas.",
+    });
+    expect(
+      awardView({ ...first5, slots: 1, taken: 1 }, 0, 4, null).phrase,
+    ).toBe("Ya lo ganó la primera persona en llegar.");
+  });
+
+  it("has no cap to count when there is none", () => {
+    const v = awardView(
+      { kind: "count", threshold: 2, slots: null, taken: 9 },
+      0,
+      4,
+      null,
+    );
+    expect(v.tag).toBe("Por mérito · Sin cupo");
+    expect(v.phrase).toBe("Juntá 2 medallas.");
+  });
+});
+
+describe("reachableAwards", () => {
+  it("leaves out what the event has too few stands for", () => {
+    const awards = [
+      { kind: "count", threshold: 3 },
+      { kind: "count", threshold: 9 },
+      { kind: "percent", threshold: 100 },
+    ] as const;
+    expect(reachableAwards(awards, 4)).toHaveLength(2);
   });
 });

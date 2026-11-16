@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { toHex } from "./palette";
-import { cardCount, cardName } from "./visitorCard";
+import { cardAward, cardCount, cardName } from "./visitorCard";
 
 describe("cardName", () => {
   it("shows the visitor's name", () => {
@@ -31,5 +31,23 @@ describe("toHex", () => {
   it("converts oklch for generated images", () => {
     expect(toHex("oklch(1 0 0)")).toBe("#ffffff");
     expect(toHex("oklch(0 0 0)")).toBe("#000000");
+  });
+});
+
+describe("cardAward", () => {
+  it("names the place in an award with a cap, ahead of the others", () => {
+    expect(
+      cardAward([
+        { title: "Mitad", position: 9, slots: null },
+        { title: "Completa", position: 2, slots: 5 },
+      ]),
+    ).toBe("Lugar 2 de los primeros 5");
+  });
+
+  it("falls back to the name, and is null with nothing won", () => {
+    expect(cardAward([{ title: "Mitad", position: 9, slots: null }])).toBe(
+      "Ganó Mitad",
+    );
+    expect(cardAward([])).toBeNull();
   });
 });

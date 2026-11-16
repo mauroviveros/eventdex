@@ -62,3 +62,63 @@ export function awardRequirement(rule: AwardRule, totalSpots: number) {
     ? "1 medalla"
     : `${needed.toLocaleString("es-AR")} medallas`;
 }
+
+export type AwardView = AwardStanding & {
+  /** Won by this visitor, still open to them, or full for everyone else. */
+  state: "ganado" | "abierto" | "agotado";
+  /** The line over the title. */
+  tag: string;
+  /** What to do next, in a sentence. */
+  phrase: string;
+};
+
+/**
+ * What a visitor reads on an award's plate. `place` is their position when they
+ * already won it, and `claimed` the medals they have.
+ */
+export function awardView(
+  award: AwardInput,
+  claimed: number,
+  totalSpots: number,
+  place: number | null,
+): AwardView {
+  const standing = awardStanding(award, claimed, totalSpots);
+  if (place !== null) {
+    return {
+      ...standing,
+      state: "ganado",
+      tag: `Ganado · lugar ${place}`,
+      phrase: "Retiralo en la organización.",
+    };
+  }
+  if (standing.closed) {
+    return {
+      ...standing,
+      state: "agotado",
+      tag: "Se agotó",
+      phrase:
+        award.slots === 1
+          ? "Ya lo ganó la primera persona en llegar."
+          : `Ya lo ganaron las ${award.slots} primeras personas.`,
+    };
+  }
+  const ask = `Juntá ${awardRequirement(award, totalSpots)}${award.slots === null ? "" : " antes que nadie"}.`;
+  return {
+    ...standing,
+    state: "abierto",
+    tag:
+      award.slots === null
+        ? "Por mérito · Sin cupo"
+        : `Por mérito · Quedan ${standing.slotsLeft} de ${award.slots}`,
+    phrase:
+      claimed > 0 && standing.missing > 0
+        ? `${ask} Te ${standing.missing === 1 ? "falta 1" : `faltan ${standing.missing}`}.`
+        : ask,
+  };
+}
+
+/** The awards a visitor can see: one nobody can reach is left out, like a raffle. */
+export const reachableAwards = <T extends AwardRule>(
+  awards: readonly T[],
+  totalSpots: number,
+) => awards.filter((a) => awardNeeded(a, totalSpots) <= totalSpots);

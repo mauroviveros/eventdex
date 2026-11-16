@@ -28,3 +28,17 @@ export function cardCount(count: number, total: number) {
   if (count === total && count > 1) return `¡Las ${count} medallas!`;
   return `${count} ${count === 1 ? "medalla" : "medallas"}`;
 }
+
+/**
+ * The line a merit award adds to the card: the place in the award with a cap
+ * ("Lugar 2 de los primeros 5"), else the award's name. Null without wins.
+ */
+export function cardAward(
+  wins: readonly { title: string; position: number; slots: number | null }[],
+) {
+  const lead = wins.find((w) => w.slots !== null) ?? wins[0];
+  if (!lead) return null;
+  return lead.slots === null
+    ? `Ganó ${lead.title}`
+    : `Lugar ${lead.position} de los primeros ${lead.slots}`;
+}

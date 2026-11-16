@@ -33,7 +33,7 @@ export async function listMyAwards(
 ) {
   const { data, error } = await supabase
     .from("award_winners")
-    .select("award_id, position, won_at, award:event_awards (title)")
+    .select("award_id, position, won_at, award:event_awards (title, slots)")
     .eq("event_id", eventId)
     .eq("user_id", userId)
     .order("won_at")
@@ -42,6 +42,7 @@ export async function listMyAwards(
   return data.map((w) => ({
     awardId: w.award_id,
     title: w.award?.title ?? "",
+    slots: w.award?.slots ?? null,
     position: w.position,
     wonAt: w.won_at,
   }));
@@ -71,3 +72,7 @@ export async function listAwardWinners(supabase: Supabase, eventId: string) {
 }
 
 export type AwardWinner = Awaited<ReturnType<typeof listAwardWinners>>[number];
+
+/** The place the visitor took in each award they won, by award. */
+export const placesOf = (mine: readonly MyAward[]) =>
+  new Map(mine.map((a) => [a.awardId, a.position]));

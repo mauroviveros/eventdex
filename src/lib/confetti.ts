@@ -11,13 +11,19 @@ function toHex(css: string) {
   return `#${[r, g, b].map((c) => c.toString(16).padStart(2, "0")).join("")}`;
 }
 
-const BURSTS = [
+export const BURSTS = [
   { at: 300, x: 0.2 },
   { at: 550, x: 0.8 },
   { at: 800, x: 0.5 },
   { at: 1100, x: 0.1 },
   { at: 1250, x: 0.9 },
 ];
+
+/** The award's own: three bursts, no waiting for a name to type in. */
+export const AWARD_BURSTS = BURSTS.slice(0, 3).map((b, i) => ({
+  ...b,
+  at: 150 + i * 250,
+}));
 
 // A burst lasts about two seconds from the last tanda; then the canvas goes.
 const CANVAS_LIFETIME_MS = 4000;
@@ -27,7 +33,11 @@ const CANVAS_LIFETIME_MS = 4000;
  * carries the --ramp-* tones and hosts the canvas: inside the page's landmark
  * and hidden from readers, since it is decoration.
  */
-export async function lcdConfetti(scope: HTMLElement) {
+export async function lcdConfetti(
+  scope: HTMLElement,
+  // A merit award is shorter than the raffle's finale.
+  bursts: readonly { at: number; x: number }[] = BURSTS,
+) {
   const { default: confetti } = await import("canvas-confetti");
   const style = getComputedStyle(scope);
   const colors = [1, 2, 3].map((i) =>
@@ -39,7 +49,7 @@ export async function lcdConfetti(scope: HTMLElement) {
     "position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:100";
   scope.append(canvas);
   const fire = confetti.create(canvas, { resize: true, useWorker: false });
-  for (const { at, x } of BURSTS) {
+  for (const { at, x } of bursts) {
     setTimeout(() => {
       void fire({
         particleCount: 55,
