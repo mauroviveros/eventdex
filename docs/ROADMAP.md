@@ -1253,7 +1253,7 @@ todas, los primeros 5 en llegar a la mitad, todos los que junten N. Las pregunta
 Límite conocido: un premio creado con el evento en curso solo cuenta desde la próxima
 medalla de cada visitante; no es retroactivo.
 
-## R32 · Overview y actividad
+## R32 · Overview y actividad ▶
 
 Un resumen con sentido, de la org y de cada evento, con el estilo del sistema de diseño
 (no una plantilla de cifras con porcentajes sin base).
@@ -1266,8 +1266,33 @@ Un resumen con sentido, de la org y de cada evento, con el estilo del sistema de
 - **Actividad:** quién se registró, quién sacó qué medalla, quién ganó un premio o un
   sorteo, con hora. Solo el equipo. Se ve al refrescar; el tiempo real es un plus
   (ver Estacionado).
-- Gráficos pixel (barras y escalones), con estados vacío y «pocos datos»; una librería
-  solo con OK.
+- Gráficos pixel (barras y escalones), con estados vacío y «pocos datos».
+
+Decidido al empezar:
+
+- **Gráficos con el Chart de shadcn** (Recharts), adaptado a los tokens: barras sin
+  radio, líneas en escalón, sin animación, ejes en la fuente display y colores en
+  `--chart-1…5` sobre los tonos LCD. Va solo en el panel. Se instala en la Vista, con OK.
+- **Recurrente:** un visitante con registro en dos o más eventos de la org.
+- **Embudo:** registrados → la mitad (redondeo hacia arriba) → todas, contando solo
+  los stands activos. Sin «una medalla»: el registro nace con la primera, así que
+  daría siempre lo mismo que registrados.
+- **Registro = primera medalla:** el registro nace en `claim_spot()`, así que la
+  actividad no lo repite: marca la primera medalla de cada visitante.
+- **Actividad con nombre, sin mail** (el mail está en la pestaña Visitantes). Los
+  sorteos anulados no aparecen.
+
+1. **DB ✅.** Lecturas `security invoker` (autoriza RLS): `event_overview` (cifras y
+   embudo), `event_hourly` (medallas y visitantes nuevos por hora, en la zona del
+   evento), `event_spot_ranking`, `org_overview` (visitantes únicos y recurrentes) y
+   `org_activity` (de la org o de un evento). Tests pgTAP
+   (`21_overview`): cada cifra con datos conocidos, que otra org no vea nada y que
+   un visitante cuente solo lo suyo.
+2. **Backend.** Lectores en `src/lib/data/overview.ts` y la lógica pura (huecos de
+   horas, «pocos datos») en `src/domain/`.
+3. **Diseño.** `/impeccable shape` y alternativas sobre el panel real.
+4. **Vista.** Overview de la org y del evento, con el Chart de shadcn.
+5. **Auditoría.** `/code-review` y `/accessibility`.
 
 ## R33 · Analítica e informe
 
