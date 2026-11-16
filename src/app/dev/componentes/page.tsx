@@ -11,6 +11,15 @@ import { EditSheet } from "@/components/panel/EditSheet";
 import { EventActions } from "@/components/panel/EventActions";
 import { EventFilters } from "@/components/panel/EventFilters";
 import { OrgSwitcher } from "@/components/panel/OrgSwitcher";
+import {
+  ActivityFeed,
+  EmptyOverview,
+  FewDataNote,
+  FunnelBars,
+  HoursBySchedule,
+  overviewCells,
+  SpotRanking,
+} from "@/components/panel/Overview";
 import { PanelShell } from "@/components/panel/PanelShell";
 import { PortadaStrip } from "@/components/panel/PortadaStrip";
 import { PublishButton } from "@/components/panel/PublishEvent";
@@ -142,6 +151,79 @@ const CELEBRATION = {
 
 const SAMPLE_NOW = new Date("2026-11-14T15:00:00Z");
 const SAMPLE_TIMEZONE = "America/Argentina/Buenos_Aires";
+// Sample data for the overview pieces: one schedule from 16 to 22 h (UTC-3).
+const OVERVIEW = {
+  visitors: 290,
+  half: 120,
+  complete: 31,
+  medals: 812,
+  stands: 12,
+  idleStands: 2,
+};
+const OVERVIEW_DAY = {
+  startsAt: "2026-11-14T19:00:00Z",
+  hours: [12, 40, 66, 58, 81, 44].map((medals, i) => ({
+    hour: new Date(
+      Date.parse("2026-11-14T19:00:00Z") + i * 3_600_000,
+    ).toISOString(),
+    medals,
+    newcomers: Math.round(medals * (0.6 - i * 0.08)),
+  })),
+};
+const OVERVIEW_SPOTS = [
+  ["A01", "Café del centro", 118],
+  ["A02", "Rueda gigante", 102],
+  ["A03", "Cerámica", 95],
+  ["A04", "Banco Municipal", 80],
+  ["B01", "Escenario", 77],
+  ["B02", "Huerta", 64],
+  ["B03", "Biblioteca", 51],
+  ["B04", "Juegos", 40],
+  ["C01", "Fotos", 22],
+  ["C02", "Reciclado", 0],
+].map(([code, name, medals], i) => ({
+  id: String(code),
+  code: String(code),
+  name: String(name),
+  active: i !== 8,
+  medals: Number(medals),
+}));
+const OVERVIEW_ACTIVITY = [
+  {
+    kind: "sorteo",
+    visitor: "Ana García",
+    detail: "Remera",
+    first: false,
+    at: "2026-11-15T00:41:00Z",
+  },
+  {
+    kind: "premio",
+    visitor: "Beto Paz",
+    detail: "Primeros 5 en completar",
+    first: false,
+    at: "2026-11-15T00:38:00Z",
+  },
+  {
+    kind: "medalla",
+    visitor: "Carla Ruiz",
+    detail: "Cerámica",
+    first: false,
+    at: "2026-11-15T00:35:00Z",
+  },
+  {
+    kind: "medalla",
+    visitor: "Dante López",
+    detail: "Café del centro",
+    first: true,
+    at: "2026-11-15T00:33:00Z",
+  },
+].map((a, i) => ({
+  ...a,
+  id: `actividad-${i}`,
+  kind: a.kind as "medalla" | "premio" | "sorteo",
+  eventId: i % 2 ? "e1" : "e2",
+  userId: `u${i}`,
+}));
 const SAMPLE_DRAW = {
   id: "ganadora",
   draw_number: 2,
@@ -1301,6 +1383,39 @@ export default function ComponentesPage() {
                 <p className="px-4 py-8 sm:px-6">Contenido de la página.</p>
               </PanelShell>
             </div>
+          </div>
+        </Section>
+
+        <Section
+          title="Panel: resumen"
+          note="Las piezas de la pestaña Resumen del evento y del tablero de la org: las cifras (StatStrip con overviewCells), HoursBySchedule (barras por hora de cada jornada, primeras medallas en secundario y el resto en tinta, la hora actual marcada «Ahora» en vivo y una tabla para lectores de pantalla), FunnelBars (registrados → la mitad → todas), SpotRanking (los 8 primeros y el resto en «Ver los otros»; sin medallas, barra punteada; apagado, etiqueta punteada) y ActivityFeed (con el nombre del evento en el tablero de la org). Estados: vacío y pocos datos."
+        >
+          <div className="grid gap-10">
+            <StatStrip cells={overviewCells(OVERVIEW)} />
+            <HoursBySchedule
+              days={[OVERVIEW_DAY]}
+              timeZone={SAMPLE_TIMEZONE}
+              now={OVERVIEW_DAY.hours[4]?.hour}
+            />
+            <div className="grid gap-10 md:grid-cols-2">
+              <FunnelBars overview={OVERVIEW} />
+              <SpotRanking spots={OVERVIEW_SPOTS} />
+            </div>
+            <div className="grid gap-10 md:grid-cols-2">
+              <ActivityFeed
+                items={OVERVIEW_ACTIVITY}
+                timeZone={SAMPLE_TIMEZONE}
+                events={
+                  new Map([
+                    ["e1", "Feria de Primavera"],
+                    ["e2", "Expo Otoño"],
+                  ])
+                }
+              />
+              <ActivityFeed items={[]} timeZone={SAMPLE_TIMEZONE} />
+            </div>
+            <FewDataNote />
+            <EmptyOverview />
           </div>
         </Section>
 
