@@ -17,6 +17,7 @@ export default async function OrgLayout({
   ]);
 
   const sections: Section[] = [
+    { href: `/panel/${slug}/resumen`, label: "Resumen", icon: "resumen" },
     {
       href: `/panel/${slug}`,
       label: "Eventos",
