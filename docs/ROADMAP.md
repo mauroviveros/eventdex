@@ -1115,7 +1115,7 @@ Branch `fix/retoques-portada`.
    Mac quedan afuera, en el verde de Eventdex. Se define la paleta en `:root` en el
    layout público, más `theme-color`. Se prueba con otra paleta en Mac y en un celular.
 
-## R29 · Una sola portada por organización ▶
+## R29 · Una sola portada por organización ✅
 
 El público ve solo el evento actual, en `/`: nadie cae en un evento que no es el de
 hoy y los buscadores indexan una sola página. Los carteles nunca se imprimieron, así
@@ -1146,7 +1146,7 @@ que no hay URLs viejas que cuidar. Branch `feat/una-portada`.
 A repensar: en `/s/[id]` de un evento que no es el actual, si conviene un único «Ir al
 evento actual» y qué alternativas hay para que no confunda.
 
-## R30 · Lo que se muestra, ¿se carga?
+## R30 · Lo que se muestra, ¿se carga? ✅
 
 Una matriz de cada dato que se ve en la portada, Mis medallas, la tarjeta y la ficha del
 stand, contra dónde se carga en el panel: ya está, falta el campo o es derivado. Lo que
@@ -1189,7 +1189,7 @@ se ve):
   en esta pasada; los textos fijos (por ejemplo «Escaneá el QR…») no se pueden cambiar
   por org.
 
-## R31 · Premios por mérito
+## R31 · Premios por mérito ✅
 
 Además del sorteo (azar), premios por lo que hizo el visitante: el primero en completar
 todas, los primeros 5 en llegar a la mitad, todos los que junten N. Las preguntas
@@ -1248,7 +1248,7 @@ todas, los primeros 5 en llegar a la mitad, todos los que junten N. Las pregunta
    componentes están en `/dev/componentes` y el recorrido en `e2e/premios-merito.spec.ts`.
    *Sin probar:* el panel y la tarjeta (la imagen) a ojo, un celular real y lector de
    pantalla.
-5. **Auditoría.** `/code-review` y `/accessibility`.
+5. **Auditoría ✅.** `/code-review` y `/accessibility`; los arreglos están en la PR 3.
 
 Límite conocido: un premio creado con el evento en curso solo cuenta desde la próxima
 medalla de cada visitante; no es retroactivo.
