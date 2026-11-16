@@ -58,6 +58,121 @@ export type Database = {
           },
         ];
       };
+      award_winners: {
+        Row: {
+          award_id: string;
+          event_id: string;
+          id: string;
+          organization_id: string;
+          position: number;
+          user_id: string;
+          won_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          award_id: string;
+          event_id: string;
+          id?: string;
+          organization_id: string;
+          position: number;
+          user_id: string;
+          won_at?: string;
+        };
+        Update: {
+          award_id?: string;
+          event_id?: string;
+          id?: string;
+          organization_id?: string;
+          position?: number;
+          user_id?: string;
+          won_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "award_winners_award_id_event_id_fkey";
+            columns: ["award_id", "event_id"];
+            isOneToOne: false;
+            referencedRelation: "event_awards";
+            referencedColumns: ["id", "event_id"];
+          },
+          {
+            foreignKeyName: "award_winners_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "award_winners_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      event_awards: {
+        Row: {
+          created_at: string;
+          description: string | null;
+          event_id: string;
+          id: string;
+          kind: Database["public"]["Enums"]["award_kind"];
+          organization_id: string;
+          slots: number | null;
+          threshold: number;
+          title: string;
+          updated_at: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          description?: string | null;
+          event_id: string;
+          id?: string;
+          kind: Database["public"]["Enums"]["award_kind"];
+          organization_id: string;
+          slots?: number | null;
+          threshold: number;
+          title: string;
+          updated_at?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          description?: string | null;
+          event_id?: string;
+          id?: string;
+          kind?: Database["public"]["Enums"]["award_kind"];
+          organization_id?: string;
+          slots?: number | null;
+          threshold?: number;
+          title?: string;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "event_awards_event_id_organization_id_fkey";
+            columns: ["event_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "event_phases";
+            referencedColumns: ["event_id", "organization_id"];
+          },
+          {
+            foreignKeyName: "event_awards_event_id_organization_id_fkey";
+            columns: ["event_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "event_awards_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       event_faqs: {
         Row: {
           answer: string;
@@ -1169,6 +1284,13 @@ export type Database = {
         };
         Returns: string;
       };
+      event_award_counts: {
+        Args: { p_event_id: string };
+        Returns: {
+          award_id: string;
+          taken: number;
+        }[];
+      };
       invite_member: {
         Args: {
           p_email: string;
@@ -1256,6 +1378,7 @@ export type Database = {
       };
     };
     Enums: {
+      award_kind: "count" | "percent";
       claim_outcome: "new" | "repeat" | "inactive" | "out_of_phase" | "blocked";
       event_phase: "upcoming" | "live" | "finished";
       event_status: "draft" | "published" | "archived" | "cancelled";
@@ -1395,6 +1518,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      award_kind: ["count", "percent"],
       claim_outcome: ["new", "repeat", "inactive", "out_of_phase", "blocked"],
       event_phase: ["upcoming", "live", "finished"],
       event_status: ["draft", "published", "archived", "cancelled"],
