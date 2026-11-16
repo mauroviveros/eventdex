@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
+  activityCursor,
   dataState,
   FEW_VISITORS,
   funnel,
   hoursBySchedule,
   isActivityKind,
   medalsPerVisitor,
+  parseActivityCursor,
 } from "./overview";
 
 describe("hoursBySchedule", () => {
@@ -91,5 +93,38 @@ describe("isActivityKind", () => {
   it("accepts the kinds the activity knows and nothing else", () => {
     expect(["medalla", "premio", "sorteo"].every(isActivityKind)).toBe(true);
     expect(isActivityKind("registro")).toBe(false);
+  });
+});
+
+describe("activity cursor", () => {
+  const row = {
+    at: "2026-11-14T20:54:13.956196+00:00",
+    id: "00000000-0000-0000-0000-00000000e105",
+  };
+
+  it("goes to the URL and back keeping the microseconds", () => {
+    expect(parseActivityCursor(activityCursor(row))).toEqual(row);
+  });
+
+  it("takes back a + the URL turned into a space", () => {
+    expect(
+      parseActivityCursor(
+        "2026-11-14T20:54:13.956196 00:00_00000000-0000-0000-0000-00000000e105",
+      ),
+    ).toEqual(row);
+  });
+
+  it("gives null for anything that is not a cursor, so the list starts over", () => {
+    for (const bad of [
+      undefined,
+      ["x"],
+      "",
+      "basura",
+      `${row.at}_no-es-un-id`,
+      `ayer_${row.id}`,
+      `_${row.id}`,
+    ]) {
+      expect(parseActivityCursor(bad)).toBeNull();
+    }
   });
 });

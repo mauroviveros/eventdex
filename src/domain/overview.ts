@@ -66,3 +66,26 @@ export type ActivityKind = (typeof ACTIVITY_KINDS)[number];
 
 export const isActivityKind = (kind: string): kind is ActivityKind =>
   (ACTIVITY_KINDS as readonly string[]).includes(kind);
+
+/** Where a page of the activity starts: the last row of the previous one. */
+export type ActivityCursor = { at: string; id: string };
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * The cursor of a row, for ?antes=. The instant goes as Postgres wrote it, to
+ * the microsecond: through a Date it would round to the millisecond and the
+ * next page could skip rows.
+ */
+export const activityCursor = ({ at, id }: ActivityCursor) => `${at}_${id}`;
+
+/** The cursor in the URL, or null when it is missing or malformed (first page). */
+export function parseActivityCursor(value: unknown): ActivityCursor | null {
+  if (typeof value !== "string") return null;
+  const cut = value.lastIndexOf("_");
+  // A "+00:00" typed in a URL arrives as a space.
+  const at = value.slice(0, cut).replace(/ (\d{2}:\d{2})$/, "+$1");
+  const id = value.slice(cut + 1);
+  if (cut < 1 || !UUID.test(id) || Number.isNaN(Date.parse(at))) return null;
+  return { at, id };
+}
