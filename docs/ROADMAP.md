@@ -1293,7 +1293,33 @@ Decidido al empezar:
    pura en `src/domain/overview.ts`: las horas de cada jornada con ceros en los huecos
    (sin la noche entre jornadas), el embudo con su proporción, medallas por visitante
    y el estado vacío / «pocos datos» (menos de 5 visitantes) / listo.
-3. **Diseño.** `/impeccable shape` y alternativas sobre el panel real.
+3. **Diseño ✅.** Mauro eligió **A · Pulso** entre tres alternativas sobre el panel
+   real (A Pulso, B Consola, C Preguntas):
+   - **Dónde:** pestaña nueva **Resumen**, la primera del evento (General sigue con
+     jornadas, banner y publicación). En el celular las seis pestañas van en dos filas
+     de tres.
+   - **Momento:** se mira durante el evento, desde el celular. Orden: cifras (tira de
+     Visitantes, Medallas, Por visitante y Stands sin medallas «de N activos») →
+     **Afluencia** → **Hasta dónde llegan** → **Stands**; en escritorio, la
+     **Actividad** en una columna a la derecha (en el celular, al final).
+   - **Afluencia:** barras por hora de cada jornada (Recharts, sin radio ni animación),
+     apiladas: primeras medallas en secundario y el resto en tinta, con leyenda; una
+     tabla `sr-only` con las mismas cifras. Horas en 24 h y en la zona del evento.
+   - **Embudo y stands:** barras lisas en tinta sobre relleno, con la cifra en Jersey 10
+     y el porcentaje; un stand sin medallas, barra punteada; uno apagado, etiqueta
+     punteada «Apagado». Los 8 primeros y «Ver los otros N».
+   - **Actividad:** hora en Jersey 10 y una oración en Atkinson («Ana llegó: primera
+     medalla en Café», «Beto ganó «La mitad»», «… salió en el sorteo «Remera»»).
+   - **Estados:** vacío (borde punteado, «Todavía no hay medallas») y «pocos datos»
+     (aviso punteado con menos de 5 visitantes).
+   - **Org:** las mismas piezas en `/panel/[org]`, entre el evento activo y los
+     borradores: tira con Visitantes únicos y Volvieron, y la actividad de todos los
+     eventos con el nombre del evento en cada línea.
+   - Ya instalado el Chart de shadcn (Recharts 3.8) y adaptado a los tokens; sin
+     `card`, `lucide-react` ni el paquete `cn` que trajo la instalación.
+   - A resolver en la Vista: sacar B, C y el selector `?alt=`; el filete del medio en
+     las pestañas de dos filas del celular; marcar la hora actual en vivo; que la
+     pestaña por defecto sea Resumen en un evento publicado.
 4. **Vista.** Overview de la org y del evento, con el Chart de shadcn.
 5. **Auditoría.** `/code-review` y `/accessibility`.
 
