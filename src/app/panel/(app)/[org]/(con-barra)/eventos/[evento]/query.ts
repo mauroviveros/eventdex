@@ -5,6 +5,7 @@ import type { SortDir } from "@/domain/table";
 // server, which reads them, and the client components, which draw the links.
 
 export const EVENT_TABS = [
+  "resumen",
   "general",
   "pagina",
   "spots",

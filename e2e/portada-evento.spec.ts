@@ -22,7 +22,9 @@ test("an event's banner goes from the panel to the public home", async ({
   page,
   browser,
 }) => {
-  await page.goto(`http://localhost:3000/panel/${seed.org.slug}/eventos/feria`);
+  await page.goto(
+    `http://localhost:3000/panel/${seed.org.slug}/eventos/feria?tab=general`,
+  );
   await signInByMail(page, seed.ownerEmail);
   const visitor = await browser.newPage();
   const cover = visitor.getByRole("img", { name: /^Cartel de / });

@@ -8,9 +8,10 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/shadcn/tabs";
-import { EVENT_TABS, type EventTab } from "./query";
+import type { EventTab } from "./query";
 
 const LABEL: Record<EventTab, string> = {
+  resumen: "Resumen",
   general: "General",
   pagina: "Página",
   spots: "Spots",
@@ -25,10 +26,16 @@ const LABEL: Record<EventTab, string> = {
  * the new one arrives.
  */
 export function EventTabs({
+  tabs,
+  home,
   value,
   counts,
   children,
 }: {
+  /** The tabs this event has: a draft has no Resumen. */
+  tabs: readonly EventTab[];
+  /** The tab the bare URL opens, so it needs no ?tab=. */
+  home: EventTab;
   value: EventTab;
   counts: Partial<Record<EventTab, number>>;
   children: ReactNode;
@@ -47,26 +54,24 @@ export function EventTabs({
         startTransition(() => {
           setShown(next as EventTab);
           // A new tab starts on its first page, in its default order.
-          router.push(
-            next === "general" ? pathname : `${pathname}?tab=${next}`,
-            {
-              scroll: false,
-            },
-          );
+          router.push(next === home ? pathname : `${pathname}?tab=${next}`, {
+            scroll: false,
+          });
         })
       }
     >
       <TabsList
         aria-label="Secciones del evento"
-        // On a phone the five share the width, the count under the name: no scrolling to find one.
-        className="max-sm:grid max-sm:w-full max-sm:grid-cols-[1fr_1fr_1fr_1.3fr_1fr]"
+        // On a phone the six take two rows of three, the count under the name: no scrolling to find one.
+        className="max-sm:grid max-sm:h-auto max-sm:w-full max-sm:grid-cols-3"
       >
-        {EVENT_TABS.map((tab) => (
+        {tabs.map((tab) => (
           <TabsTrigger
             key={tab}
             id={`pestana-${tab}`}
             value={tab}
-            className="max-sm:flex-col max-sm:justify-center max-sm:gap-0 max-sm:px-1 max-sm:py-1"
+            // In the phone's grid, the row's last cell leaves the right rule to the frame and the second row gets a rule on top.
+            className="max-sm:flex-col max-sm:justify-center max-sm:gap-0 max-sm:px-1 max-sm:py-1 max-sm:nth-[3n]:border-r-0 max-sm:nth-[n+4]:border-t-2"
           >
             {LABEL[tab]}
             {/* Read as "Spots 4", not "Spots4"; the flex gap does the visual spacing. */}

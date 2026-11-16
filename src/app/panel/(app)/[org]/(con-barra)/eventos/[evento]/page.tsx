@@ -14,11 +14,18 @@ import {
   formatEventDates,
   formatScheduleTimes,
 } from "@/domain/events";
+import { hoursBySchedule } from "@/domain/overview";
 import { deleteScheduleAction } from "@/lib/actions/events";
 import { listAwardWinners, listEventAwards } from "@/lib/data/awards";
 import { listEventVisitors } from "@/lib/data/claims";
 import { listVenues } from "@/lib/data/events";
 import { coverUrl } from "@/lib/data/organizations";
+import {
+  getEventOverview,
+  listActivity,
+  listEventHours,
+  listSpotRanking,
+} from "@/lib/data/overview";
 import { listEventRaffles } from "@/lib/data/raffles";
 import { listEventSpots, listSpots } from "@/lib/data/spots";
 import { createClient } from "@/lib/supabase/server";
@@ -28,6 +35,7 @@ import { load } from "./load";
 import { PageTab } from "./PageTab";
 import { EVENT_TABS } from "./query";
 import { RaffleTab } from "./RaffleTab";
+import { ResumenTab } from "./ResumenTab";
 import {
   AddScheduleForm,
   EditScheduleForm,
@@ -46,9 +54,10 @@ export async function generateMetadata({
 }
 
 /**
- * One event, in tabs (?tab=): General (figures, publishing, schedules and
- * banner), Página (what its public page shows), Spots, Visitantes and Sorteo. The print sheet keeps its own page:
- * it goes to paper.
+ * One event, in tabs (?tab=): Resumen (how it goes; the home of a published
+ * event), General (figures, publishing, schedules and banner; the home of a
+ * draft), Página (what its public page shows), Spots, Visitantes and Sorteo.
+ * The print sheet keeps its own page: it goes to paper.
  */
 export default async function EventoPage({
   params,
@@ -56,26 +65,50 @@ export default async function EventoPage({
 }: PageProps<"/panel/[org]/eventos/[evento]">) {
   const { org: slug, evento } = await params;
   const query = await searchParams;
-  const tab = EVENT_TABS.find((t) => t === query.tab) ?? "general";
   const { org, support, event } = await load(slug, evento);
   const phase = eventPhase(event.status, event.schedules);
   const draft = event.status === "draft";
+  // A draft has no medals yet: no Resumen, and it opens on General.
+  const tabs = draft ? EVENT_TABS.filter((t) => t !== "resumen") : EVENT_TABS;
+  const home = draft ? "general" : "resumen";
+  const tab = tabs.find((t) => t === query.tab) ?? home;
   const editable = !support;
   const supabase = await createClient();
   // Spots and visitors feed the tab counts and the figures in General; the
   // catalog only the Spots tab, the venues only the Editar sheet.
-  const [inEvent, visitors, catalog, venues, raffles, awards, winners] =
-    await Promise.all([
-      listEventSpots(supabase, event.id),
-      listEventVisitors(supabase, event.id),
-      editable && tab === "spots" ? listSpots(supabase, org.id) : [],
-      editable ? listVenues(supabase, org.id) : [],
-      // Each raffle counts its eligible visitors: only on its own tab.
-      tab === "sorteo" ? listEventRaffles(supabase, event.id) : [],
-      tab === "sorteo" ? listEventAwards(supabase, event.id) : [],
-      tab === "sorteo" ? listAwardWinners(supabase, event.id) : [],
-    ]);
+  const [
+    inEvent,
+    visitors,
+    catalog,
+    venues,
+    raffles,
+    awards,
+    winners,
+    resumen,
+  ] = await Promise.all([
+    listEventSpots(supabase, event.id),
+    listEventVisitors(supabase, event.id),
+    editable && tab === "spots" ? listSpots(supabase, org.id) : [],
+    editable ? listVenues(supabase, org.id) : [],
+    // Each raffle counts its eligible visitors: only on its own tab.
+    tab === "sorteo" ? listEventRaffles(supabase, event.id) : [],
+    tab === "sorteo" ? listEventAwards(supabase, event.id) : [],
+    tab === "sorteo" ? listAwardWinners(supabase, event.id) : [],
+    tab === "resumen"
+      ? Promise.all([
+          getEventOverview(supabase, event.id),
+          listEventHours(supabase, event.id),
+          listSpotRanking(supabase, event.id),
+          listActivity(supabase, org.id, { eventId: event.id, limit: 20 }),
+        ])
+      : null,
+  ]);
   const cover = coverUrl(event.cover_path);
+  // shortcut: floors to the UTC hour like hoursBySchedule, right for zones on whole hours
+  const now =
+    phase === "en-curso"
+      ? new Date(Math.floor(Date.now() / 3_600_000) * 3_600_000).toISOString()
+      : undefined;
 
   return (
     <>
@@ -180,10 +213,21 @@ export default async function EventoPage({
         </header>
 
         <EventTabs
+          tabs={tabs}
+          home={home}
           value={tab}
           counts={{ spots: inEvent.length, visitantes: visitors.length }}
         >
-          {tab === "pagina" ? (
+          {resumen ? (
+            <ResumenTab
+              timeZone={event.timezone}
+              overview={resumen[0]}
+              days={hoursBySchedule(resumen[1], event.schedules)}
+              ranking={resumen[2]}
+              activity={resumen[3]}
+              now={now}
+            />
+          ) : tab === "pagina" ? (
             <PageTab org={org} event={event} support={support} />
           ) : tab === "spots" ? (
             <SpotsTab

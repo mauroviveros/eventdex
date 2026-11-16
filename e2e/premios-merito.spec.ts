@@ -42,14 +42,15 @@ test("merit awards: staff creates them, the scan wins them, everyone sees them",
     await add.getByLabel("Nombre", { exact: true }).fill(FIRST);
     await add.getByLabel("Porcentaje o cantidad").fill("100");
     await add.getByLabel("Cupo (opcional)").fill("1");
-    await add.getByRole("button", { name: "Crear premio" }).click();
+    // Enter, not the button: on a phone the button can land under a toast or the dev tools badge.
+    await add.getByLabel("Cupo (opcional)").press("Enter");
     await expect(staff.getByText("Premio creado.")).toBeVisible();
     // The form clears itself once it saved: type the next one after that.
     await expect(add.getByLabel("Nombre", { exact: true })).toHaveValue("");
 
     await add.getByLabel("Nombre", { exact: true }).fill(HALF);
     await add.getByLabel("Porcentaje o cantidad").fill("50");
-    await add.getByRole("button", { name: "Crear premio" }).click();
+    await add.getByLabel("Porcentaje o cantidad").press("Enter");
     await expect(
       section.getByRole("heading", { name: HALF, level: 3 }),
     ).toBeVisible();
@@ -95,7 +96,8 @@ test("merit awards: staff creates them, the scan wins them, everyone sees them",
     await expect(
       page.getByRole("heading", { name: "¡Ganaste!" }),
     ).toBeVisible();
-    await expect(page.getByText("#1 de 1")).toBeVisible();
+    // What a screen reader hears: the "#1" on screen is hidden from it.
+    await expect(page.getByText(/Lugar 1 de 1/)).toBeVisible();
     await expect(page.getByText(FIRST)).toBeVisible();
   });
 
