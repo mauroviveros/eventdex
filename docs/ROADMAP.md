@@ -1320,8 +1320,71 @@ Decidido al empezar:
    - A resolver en la Vista: sacar B, C y el selector `?alt=`; el filete del medio en
      las pestañas de dos filas del celular; marcar la hora actual en vivo; que la
      pestaña por defecto sea Resumen en un evento publicado.
-4. **Vista.** Overview de la org y del evento, con el Chart de shadcn.
+4. **Vista ✅ (se rehace, ver Rediseño).** Pestaña **Resumen** (`ResumenTab`), primera y por defecto en un
+   evento publicado (un borrador no la tiene y abre en General); las piezas en
+   `src/components/panel/Overview.tsx` y el gráfico en `HourlyChart` (línea «Ahora»
+   mientras el evento está en curso). En `/panel/[org]`, **Público** y **Actividad**
+   entre el evento activo y los borradores. En `/dev/componentes` («Panel: resumen») y
+   recorrido en `e2e/resumen.spec.ts`; `jornadas` y `portada-evento` ahora abren
+   `?tab=general`. *Sin probar:* un celular real y lector de pantalla; la línea
+   «Ahora» solo con datos de muestra (los eventos locales no están en curso).
 5. **Auditoría.** `/code-review` y `/accessibility`.
+
+**Rediseño (pedido por Mauro después de la Vista).** En el tablero de Eventos, Público y
+Actividad empujan la lista hacia abajo y la actividad crece sin tope. Decidido:
+
+- **Resumen, sección propia en la barra**, arriba de Eventos, en cuadros (bento, sobre
+  la referencia que pasó Mauro): las cifras en cuadros, **Afluencia** (el gráfico por
+  hora) y **Stands** (el ranking) lado a lado, y la **actividad recortada** a las
+  últimas líneas con «Ver toda la actividad». Eventos vuelve a ser evento activo,
+  borradores y tabla.
+- **Vista de Actividad** (`/panel/[org]/actividad`): la lista entera con filtros por
+  evento y por tipo en la URL, **paginada por cursor** («Ver anteriores» con
+  `?antes=…` y «Volver a lo último»): la actividad crece mientras se mira, y con
+  páginas por número se repetirían o saltearían filas. Sin total exacto.
+- **Resumen del evento, también en bento**, con su actividad recortada; el link abre
+  Actividad filtrada por ese evento.
+- **General desaparece:** las **jornadas** pasan a **Página** (primera sección) y el
+  bloque **Publicación** de un borrador, arriba de Página, que es su pestaña de inicio.
+- **Banner afuera:** se saca de Editar, de General y del hero público. **Se oculta sin
+  borrar:** quedan `cover_path` y los archivos del bucket, como los puntos.
+
+6. **Diseño (rediseño) ✅.** Mauro eligió **B · Evento al frente** entre tres
+   alternativas en `/panel/[org]/resumen` (A Referencia, B Evento al frente, C Escalones):
+   - **Resumen es el inicio de la org** (`/panel/[org]`); la lista de eventos pasa a
+     `/panel/[org]/eventos`. En la barra, Resumen arriba de Eventos.
+   - **Arriba, el evento del momento** (el que está en curso o, si no, el último que
+     terminó) en el panel con doble filete: fase, nombre y edición, fechas, «Ver el
+     evento» y sus cuatro cifras en `StatStrip`. Sin eventos, un cuadro punteado.
+   - **Después, Afluencia (2/3) y Stands (1/3)**, en cuadros de borde de 2 px:
+     Afluencia en barras apiladas (la jornada de hoy o la última con medallas) con la
+     leyenda en el encabezado; Stands con los 5 primeros y «Ver todos».
+   - **Abajo, tres cuadros:** **Actividad** (las últimas 6, con el evento en cada línea,
+     y «Ver toda la actividad»), **Público** (visitantes únicos y volvieron) y **Lo que
+     viene** (próximos y borradores, hasta 3, y «Nuevo evento»).
+   - **El Resumen del evento** usa los mismos cuadros: sus cifras arriba, Afluencia y
+     Stands, y debajo el embudo y la actividad recortada con «Ver toda la actividad»
+     filtrada por ese evento.
+   - A resolver en la Vista: el gráfico arranca angosto (320 px) hasta medir su cuadro;
+     sacar A, C y el selector `?alt=`; los enlaces nuevos (`/eventos`, `/actividad`).
+7. **DB ✅.** `20261116130000_activity_pages.sql`: `org_activity` devuelve el `id` de
+   cada fila y suma, al final de sus parámetros, `p_kind` ('medalla', 'premio' o
+   'sorteo') y el cursor `p_before_at`/`p_before_id`, «estrictamente antes de
+   (momento, id)»; sin id, todo lo anterior a ese momento. Orden por momento e id,
+   tope de 101 filas (una página de 100 y la que dice si sigue). Índices por org y
+   fecha en medallas, premios y sorteos, y por evento y fecha en medallas. Tests
+   pgTAP (`22_activity_pages`): páginas que no se pisan con empates de hora, cursor sin
+   id, filtros, otra org y anon.
+8. **Backend ✅.** `listActivityPage` en `src/lib/data/overview.ts`: pide una fila de
+   más (páginas de 30) y devuelve `{ items, next }`, con `next` en null en la última
+   página; `listActivity` sigue para los cuadros recortados y cada fila suma su `id`.
+   En `src/domain/overview.ts`, `activityCursor` y `parseActivityCursor` para
+   `?antes=`: el momento viaja tal como lo escribe Postgres, con microsegundos (por un
+   `Date` se redondearía al milisegundo y la página siguiente podría saltear filas), y
+   un cursor mal formado vuelve a la primera página.
+9. **Vista.** Resumen en la barra, Actividad, Resumen del evento en bento, General
+   afuera, banner oculto.
+10. **Auditoría.** `/code-review` y `/accessibility`.
 
 ## R33 · Analítica e informe
 
