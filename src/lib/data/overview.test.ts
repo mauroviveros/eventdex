@@ -4,6 +4,7 @@ import {
   getEventOverview,
   getOrgOverview,
   listActivity,
+  listActivityPage,
   listSpotRanking,
 } from "./overview";
 
@@ -93,6 +94,7 @@ describe("listActivity", () => {
     visitor: "Ana García",
     detail: "Remera",
     is_first: false,
+    id: "00000000-0000-0000-0000-00000000e301",
   };
 
   it("passes the event and the limit, and names the fields", async () => {
@@ -103,6 +105,7 @@ describe("listActivity", () => {
     ).toEqual([
       {
         kind: "sorteo",
+        id: row.id,
         at: row.happened_at,
         eventId: "ev-1",
         userId: "u-1",
@@ -121,5 +124,60 @@ describe("listActivity", () => {
   it("leaves out a kind it does not know", async () => {
     const { client } = fakeClient(ok([{ ...row, kind: "registro" }]));
     expect(await listActivity(client, "org-1")).toEqual([]);
+  });
+});
+
+describe("listActivityPage", () => {
+  const row = (n: number) => ({
+    id: `00000000-0000-0000-0000-00000000e10${n}`,
+    happened_at: `2026-11-14T20:0${n}:00.123456+00:00`,
+    kind: "medalla",
+    event_id: "ev-1",
+    user_id: "u-1",
+    visitor: "Ana García",
+    detail: "Café",
+    is_first: false,
+  });
+
+  it("asks for one row more and points the next page at the last one shown", async () => {
+    const { client, rpc } = fakeClient(ok([row(3), row(2), row(1)]));
+
+    const page = await listActivityPage(client, "org-1", { size: 2 });
+
+    expect(page.items.map((a) => a.id)).toEqual([row(3).id, row(2).id]);
+    expect(page.next).toBe(`${row(2).happened_at}_${row(2).id}`);
+    expect(rpc).toHaveBeenCalledWith(
+      "org_activity",
+      expect.objectContaining({ p_organization_id: "org-1", p_limit: 3 }),
+    );
+  });
+
+  it("has no next page when the extra row does not come", async () => {
+    const page = await listActivityPage(
+      fakeClient(ok([row(2), row(1)])).client,
+      "org-1",
+      { size: 2 },
+    );
+    expect(page.items).toHaveLength(2);
+    expect(page.next).toBeNull();
+  });
+
+  it("passes the event, the kind and the cursor", async () => {
+    const { client, rpc } = fakeClient(ok([]));
+
+    await listActivityPage(client, "org-1", {
+      eventId: "ev-1",
+      kind: "premio",
+      before: { at: row(1).happened_at, id: row(1).id },
+    });
+
+    expect(rpc).toHaveBeenCalledWith("org_activity", {
+      p_organization_id: "org-1",
+      p_event_id: "ev-1",
+      p_limit: 31,
+      p_kind: "premio",
+      p_before_at: row(1).happened_at,
+      p_before_id: row(1).id,
+    });
   });
 });

@@ -1,4 +1,9 @@
-import { isActivityKind } from "@/domain/overview";
+import {
+  type ActivityCursor,
+  type ActivityKind,
+  activityCursor,
+  isActivityKind,
+} from "@/domain/overview";
 import type { Supabase } from "@/lib/supabase/server";
 
 /**
@@ -60,26 +65,37 @@ export async function getOrgOverview(supabase: Supabase, orgId: string) {
   return { visitors: data[0]?.visitors ?? 0, returned: data[0]?.returned ?? 0 };
 }
 
-/**
- * The latest of the org, or of one event: medals (the first one of each visitor
- * marks their arrival), awards won and draws that stand. Newest first.
- */
-export async function listActivity(
+type ActivityRows = Awaited<ReturnType<typeof readActivity>>;
+
+async function readActivity(
   supabase: Supabase,
-  orgId: string,
-  { eventId, limit }: { eventId?: string; limit?: number } = {},
+  args: {
+    orgId: string;
+    eventId?: string;
+    kind?: ActivityKind;
+    before?: ActivityCursor | null;
+    limit: number;
+  },
 ) {
   const { data, error } = await supabase.rpc("org_activity", {
-    p_organization_id: orgId,
-    p_event_id: eventId,
-    p_limit: limit,
+    p_organization_id: args.orgId,
+    p_event_id: args.eventId,
+    p_limit: args.limit,
+    p_kind: args.kind,
+    p_before_at: args.before?.at,
+    p_before_id: args.before?.id,
   });
   if (error) throw error;
-  return data.flatMap(({ kind, ...r }) =>
+  return data;
+}
+
+const toActivity = (rows: ActivityRows) =>
+  rows.flatMap(({ kind, ...r }) =>
     isActivityKind(kind)
       ? [
           {
             kind,
+            id: r.id,
             at: r.happened_at,
             eventId: r.event_id,
             userId: r.user_id,
@@ -90,6 +106,56 @@ export async function listActivity(
         ]
       : [],
   );
+
+/**
+ * The latest of the org, or of one event: medals (the first one of each visitor
+ * marks their arrival), awards won and draws that stand. Newest first.
+ */
+export async function listActivity(
+  supabase: Supabase,
+  orgId: string,
+  { eventId, limit }: { eventId?: string; limit?: number } = {},
+) {
+  return toActivity(
+    await readActivity(supabase, { orgId, eventId, limit: limit ?? 30 }),
+  );
 }
 
-export type Activity = Awaited<ReturnType<typeof listActivity>>[number];
+export type Activity = ReturnType<typeof toActivity>[number];
+
+export const ACTIVITY_PAGE = 30;
+
+/**
+ * One page of the activity, newest first, from `before` on (the first page
+ * without it), and the cursor of the next one: null on the last page. It asks
+ * for one row more than it shows, so knowing there is more costs no count.
+ */
+export async function listActivityPage(
+  supabase: Supabase,
+  orgId: string,
+  {
+    eventId,
+    kind,
+    before,
+    size = ACTIVITY_PAGE,
+  }: {
+    eventId?: string;
+    kind?: ActivityKind;
+    before?: ActivityCursor | null;
+    size?: number;
+  } = {},
+) {
+  const rows = await readActivity(supabase, {
+    orgId,
+    eventId,
+    kind,
+    before,
+    limit: size + 1,
+  });
+  const items = toActivity(rows.slice(0, size));
+  const last = rows.length > size ? rows[size - 1] : undefined;
+  return {
+    items,
+    next: last ? activityCursor({ at: last.happened_at, id: last.id }) : null,
+  };
+}
