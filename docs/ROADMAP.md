@@ -1217,8 +1217,29 @@ todas, los primeros 5 en llegar a la mitad, todos los que junten N. Las pregunta
    lecturas (`listEventAwards` con cupos, `listMyAwards`, `listAwardWinners` para el
    equipo), `domain/awards` (lo que falta y los cupos) y los puntos fuera del formulario,
    la tabla y las acciones de spots.
-3. **Diseño.** Cómo se anuncia al reclamar («con esta vas por la mitad», «ganaste…»), el
-   inicio con los cupos que quedan, el perfil y la tarjeta.
+3. **Diseño ✅.** Elegido por Mauro (2026-11-15), de tres caminos probados sobre las
+   pantallas reales:
+   - **Al ganar** (la medalla cruza un premio): la celebración pasa a un fondo invertido
+     (`bg-lcd-3`) con la copa en amarillo, «¡Ganaste!», el puesto enorme («#2 de 5»), el
+     nombre del premio y «Pasá por la organización a retirarlo. Queda en tu perfil.»,
+     con la medalla nueva abajo, chica. Si gana varios a la vez, uno principal (el de
+     cupo) y los otros nombrados debajo. Más llamativo que el resto: reusa `lcdConfetti`
+     (el del sorteo) con la copa que entra a saltos (`steps()`) y el puesto que parpadea
+     una vez; nada corre con movimiento reducido y la pantalla se lee igual.
+   - **Portada** (sección Premios): una placa por premio de mérito, con la etiqueta
+     «Por mérito», cuántos lugares quedan («Quedan 3 de 5») en celdas (como las
+     medallas) y lo que pide («Juntá las 4 medallas antes que nadie»). Sin cupo dice
+     «Sin cupo». Agotado: placa punteada, «Se agotó». Comparte sección con los sorteos.
+   - **Mis medallas:** los premios ganados con su puesto y «Retiralo en la organización»;
+     los que faltan, como la escalera actual.
+   - **Tarjeta:** el puesto se suma al conteo («¡Las 4 medallas!» + «Lugar 2 de los
+     primeros 5»), sin pasar las tres líneas.
+   - **Panel** (no se probó con alternativas, a confirmar en la Vista): un bloque
+     «Premios por mérito» en la pestaña Sorteo, con el alta (cómo se gana: medallas o
+     porcentaje; cuántas; cupo opcional), la lista con cuántos ganaron y, por premio, los
+     ganadores con su puesto, nombre y mail para entregar.
+   - Pendiente de decidir en la Vista: cómo se ve un premio que el evento no puede
+     alcanzar (el panel avisa, como en los sorteos).
 4. **Vista.** El panel (pestaña de premios) y las pantallas del visitante.
 5. **Auditoría.** `/code-review` y `/accessibility`.
 
