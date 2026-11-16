@@ -1253,7 +1253,7 @@ todas, los primeros 5 en llegar a la mitad, todos los que junten N. Las pregunta
 Límite conocido: un premio creado con el evento en curso solo cuenta desde la próxima
 medalla de cada visitante; no es retroactivo.
 
-## R32 · Overview y actividad ▶
+## R32 · Overview y actividad ✅
 
 Un resumen con sentido, de la org y de cada evento, con el estilo del sistema de diseño
 (no una plantilla de cifras con porcentajes sin base).
