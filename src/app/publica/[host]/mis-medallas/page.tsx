@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { AwardPlates, hasAwards } from "@/components/visitante/Awards";
 import { Countdown } from "@/components/visitante/Countdown";
 import {
   History,
@@ -14,6 +15,7 @@ import { Progress } from "@/components/visitante/Progress";
 import { ShareCardButton } from "@/components/visitante/ShareCardButton";
 import { collectionProgress } from "@/domain/claims";
 import { countdownState, eventPhase } from "@/domain/events";
+import { listEventAwards, listMyAwards, placesOf } from "@/lib/data/awards";
 import { listMyClaims, listMyEvents } from "@/lib/data/claims";
 import { getMyHistory } from "@/lib/data/history";
 import { getActiveEvent, getPublicEvent } from "@/lib/data/public";
@@ -57,7 +59,13 @@ export default async function MisMedallasPage({
       : active;
   const mine = event ? await listMyClaims(supabase, event.id, visitor.id) : [];
   const claimed = new Set(mine.map((c) => c.event_spot_id));
-  const prizes = event ? await listEventPrizes(supabase, event.id) : [];
+  const [prizes, awards, places] = event
+    ? await Promise.all([
+        listEventPrizes(supabase, event.id),
+        listEventAwards(supabase, event.id),
+        listMyAwards(supabase, event.id, visitor.id).then(placesOf),
+      ])
+    : [[], [], new Map<string, number>()];
   const medals = event?.spots.filter((s) => claimed.has(s.id)) ?? [];
   const standing = await standingOrNone(org.id, visitor.id);
   return (
@@ -92,6 +100,8 @@ export default async function MisMedallasPage({
         <>
           <Collection
             prizes={prizes}
+            awards={awards}
+            places={places}
             spots={event.spots}
             claimed={claimed}
             finished={
@@ -125,12 +135,16 @@ type Spot = Parameters<typeof collectionProgress>[0][number] & {
 
 function Collection({
   prizes,
+  awards,
+  places,
   spots,
   claimed,
   finished,
   waiting,
 }: {
   prizes: Parameters<typeof PrizesLadder>[0]["prizes"];
+  awards: Parameters<typeof AwardPlates>[0]["awards"];
+  places: Parameters<typeof AwardPlates>[0]["places"];
   spots: readonly Spot[];
   claimed: ReadonlySet<string>;
   finished: boolean;
@@ -157,7 +171,21 @@ function Collection({
         </div>
       )}
       <Progress claimed={p.medals} total={p.total} finished={finished} />
-      <PrizesLadder prizes={prizes} claimed={p.medals} total={p.total} />
+      <PrizesLadder
+        prizes={prizes}
+        claimed={p.medals}
+        total={p.total}
+        awards={
+          hasAwards(awards, p.total) ? (
+            <AwardPlates
+              awards={awards}
+              claimed={p.medals}
+              total={p.total}
+              places={places}
+            />
+          ) : null
+        }
+      />
       <MedalGrid spots={spots} claimed={claimed} label="Tu colección" />
     </>
   );

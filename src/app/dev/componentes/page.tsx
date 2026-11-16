@@ -53,6 +53,8 @@ import {
   TabsTrigger,
 } from "@/components/ui/shadcn/tabs";
 import { UserAvatar } from "@/components/ui/UserAvatar";
+import { AwardCelebration } from "@/components/visitante/AwardCelebration";
+import { AwardNext, AwardPlates } from "@/components/visitante/Awards";
 import { Celebration } from "@/components/visitante/Celebration";
 import { Countdown } from "@/components/visitante/Countdown";
 import {
@@ -257,6 +259,38 @@ const CARD_ACCOUNT = {
 };
 // Synthetic spots and logos, only for the catalog.
 type Prize = Parameters<typeof PrizesSection>[0]["prizes"][number];
+
+type Award = Parameters<typeof AwardPlates>[0]["awards"][number];
+
+const AWARDS: Award[] = [
+  {
+    id: "a1",
+    title: "Primeros 5 en completar todas",
+    description: "Una remera de la edición.",
+    kind: "percent",
+    threshold: 100,
+    slots: 5,
+    taken: 2,
+  },
+  {
+    id: "a2",
+    title: "Mitad del camino",
+    description: null,
+    kind: "percent",
+    threshold: 50,
+    slots: null,
+    taken: 31,
+  },
+  {
+    id: "a3",
+    title: "Primera en llegar",
+    description: null,
+    kind: "count",
+    threshold: 2,
+    slots: 3,
+    taken: 3,
+  },
+];
 
 const PRIZES: Prize[] = [
   {
@@ -773,6 +807,44 @@ export default function ComponentesPage() {
                 defaultValue="x"
                 error="Escribí la respuesta."
                 aria-invalid
+              />
+            </div>
+          </Section>
+
+          <Section
+            title="Premios por mérito"
+            note="AwardPlates (portada y Mis medallas: una placa por premio con los lugares que quedan en celdas, «Ganado · lugar N» con el puesto del visitante y punteada si se agotó), AwardNext (bajo el progreso de una medalla que no ganó nada: el premio más cercano) y AwardCelebration (/s/[id] cuando la medalla cruza un premio: fondo invertido, copa que entra a saltos, puesto que parpadea y confeti corto; con movimiento reducido no corre nada). Los premios que piden más medallas que stands no se muestran."
+          >
+            <div className="grid items-start gap-10">
+              <AwardPlates
+                awards={AWARDS}
+                claimed={2}
+                total={4}
+                places={new Map([["a2", 7]])}
+              />
+              <div className="w-full max-w-sm">
+                <AwardNext
+                  awards={AWARDS}
+                  claimed={3}
+                  total={4}
+                  places={new Map()}
+                />
+              </div>
+              <AwardCelebration
+                wins={[
+                  { title: "Mitad del camino", position: 7, slots: null },
+                  {
+                    title: "Primeros 5 en completar todas",
+                    position: 2,
+                    slots: 5,
+                  },
+                ]}
+                spot={{
+                  name: "Rueda gigante",
+                  code: "A04",
+                  type: "attraction",
+                }}
+                collectionHref="/mis-medallas"
               />
             </div>
           </Section>

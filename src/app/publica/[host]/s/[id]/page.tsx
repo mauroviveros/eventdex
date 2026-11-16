@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { AwardCelebration } from "@/components/visitante/AwardCelebration";
+import { AwardNext } from "@/components/visitante/Awards";
 import { Celebration } from "@/components/visitante/Celebration";
 import { LockedMedal } from "@/components/visitante/LockedMedal";
 import { MissingSpots } from "@/components/visitante/MissingSpots";
@@ -9,6 +11,7 @@ import { hasPrizes, PrizeNotice } from "@/components/visitante/Prizes";
 import { Progress } from "@/components/visitante/Progress";
 import type { ClaimResult } from "@/domain/claims";
 import { claimSpot } from "@/lib/claims";
+import { listEventAwards, listMyAwards, placesOf } from "@/lib/data/awards";
 import { getClaimTarget, getMyProgress } from "@/lib/data/claims";
 import { spotLogoUrl } from "@/lib/data/organizations";
 import { getActiveEventId } from "@/lib/data/public";
@@ -89,11 +92,20 @@ async function Claim({
   const onPage = activeId === event.id;
 
   let progress = null;
+  let wins: Awaited<ReturnType<typeof listMyAwards>> = [];
   if (outcome.kind === "nueva" || outcome.kind === "repetida") {
-    const [p, prizes] = await Promise.all([
+    const [p, prizes, awards, mine] = await Promise.all([
       getMyProgress(supabase, event.id, visitorId),
       listEventPrizes(supabase, event.id),
+      listEventAwards(supabase, event.id),
+      listMyAwards(supabase, event.id, visitorId),
     ]);
+    // The awards won with this very medal: they share its instant, set by one transaction.
+    wins = mine.filter(
+      (a) =>
+        outcome.kind === "nueva" &&
+        Date.parse(a.wonAt) === Date.parse(outcome.claimedAt),
+    );
     // With prizes, the bar carries their cups; without, the plain progress.
     progress = (
       <div className="grid gap-5">
@@ -102,6 +114,12 @@ async function Claim({
         ) : (
           <Progress claimed={p.medals} total={p.total} />
         )}
+        <AwardNext
+          awards={awards}
+          claimed={p.medals}
+          total={p.total}
+          places={placesOf(mine)}
+        />
         {onPage && (
           <MissingSpots
             shown={p.missing.shown}
@@ -110,6 +128,28 @@ async function Claim({
           />
         )}
       </div>
+    );
+  }
+
+  const perk = perkFor(
+    outcome.kind,
+    spot.perk,
+    onPage ? `/#ficha=${spot.id}` : null,
+  );
+  const shownSpot = {
+    name: spot.name,
+    code: spot.code,
+    type: spot.type,
+    logo: spotLogoUrl(spot.logoPath),
+  };
+  if (wins.length > 0) {
+    return (
+      <AwardCelebration
+        wins={wins}
+        spot={shownSpot}
+        perk={perk}
+        collectionHref={`/mis-medallas?evento=${event.slug}`}
+      />
     );
   }
 
@@ -126,11 +166,7 @@ async function Claim({
       eventHref={onPage ? "/" : undefined}
       collectionHref={`/mis-medallas?evento=${event.slug}`}
       progress={progress}
-      perk={perkFor(
-        outcome.kind,
-        spot.perk,
-        onPage ? `/#ficha=${spot.id}` : null,
-      )}
+      perk={perk}
     />
   );
 }

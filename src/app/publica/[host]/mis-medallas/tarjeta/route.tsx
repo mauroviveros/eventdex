@@ -19,10 +19,12 @@ import {
 import type { SpotType } from "@/domain/spots";
 import {
   CARD_MEDALS_SHOWN,
+  cardAward,
   cardCount,
   cardDetails,
   cardName,
 } from "@/domain/visitorCard";
+import { listMyAwards } from "@/lib/data/awards";
 import { listMyClaims } from "@/lib/data/claims";
 import { logoUrl, spotLogoUrl } from "@/lib/data/organizations";
 import { getPublicEvent } from "@/lib/data/public";
@@ -104,7 +106,10 @@ export async function GET(
   const supabase = await createClient();
   const event = await getPublicEvent(supabase, org.id, slug);
   if (!event) notFound();
-  const mine = await listMyClaims(supabase, event.id, visitor.id);
+  const [mine, wins] = await Promise.all([
+    listMyClaims(supabase, event.id, visitor.id),
+    listMyAwards(supabase, event.id, visitor.id),
+  ]);
   const claimed = new Set(mine.map((c) => c.event_spot_id));
   const medals = event.spots.filter((s) => claimed.has(s.id));
   if (medals.length === 0) notFound();
@@ -145,6 +150,7 @@ export async function GET(
       name={cardName(visitor)}
       medals={medalImages}
       count={cardCount(medals.length, event.spots.length)}
+      award={cardAward(wins)}
       orgName={org.name}
       orgLogo={orgLogo}
     />,

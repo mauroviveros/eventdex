@@ -25,6 +25,8 @@ type Props = {
   name: string;
   medals: readonly string[];
   count: string;
+  /** The merit award line, when they won one. */
+  award: string | null;
   orgName: string;
   orgLogo: string | null;
 };
@@ -76,6 +78,7 @@ export function VisitorCardImage({
   name,
   medals,
   count,
+  award,
   orgName,
   orgLogo,
 }: Props) {
@@ -195,7 +198,21 @@ export function VisitorCardImage({
           ))}
         </div>
 
-        <div style={{ display: "flex", fontSize: 80 }}>{count}</div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 16,
+          }}
+        >
+          <div style={{ display: "flex", fontSize: 80 }}>{count}</div>
+          {award && (
+            <div style={{ display: "flex", fontSize: 50, color: theme.yellow }}>
+              {award}
+            </div>
+          )}
+        </div>
 
         <div
           style={{

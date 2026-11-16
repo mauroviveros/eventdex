@@ -2,6 +2,7 @@ import Link from "next/link";
 import { cache, Suspense } from "react";
 import { ClockIcon } from "@/components/pixel/ClockIcon";
 import { buttonClass } from "@/components/ui/Button";
+import { AwardPlates, hasAwards } from "@/components/visitante/Awards";
 import { Countdown } from "@/components/visitante/Countdown";
 import { COLUMN, type Pieces, Portada } from "@/components/visitante/Portada";
 import {
@@ -23,6 +24,7 @@ import {
 } from "@/domain/events";
 import type { PortadaPhase } from "@/domain/portada";
 import { shownPerk } from "@/domain/spots";
+import { listEventAwards, listMyAwards, placesOf } from "@/lib/data/awards";
 import { listMyClaims } from "@/lib/data/claims";
 import { coverUrl, spotLogoUrl } from "@/lib/data/organizations";
 import { type getActiveEvent, getPastEditions } from "@/lib/data/public";
@@ -316,18 +318,47 @@ const myClaims = cache(async (eventId: string) => {
   }
 });
 
-/** The prizes and how far this visitor is from each. */
+/** The places this visitor took in the merit awards; empty signed out or if the read failed. */
+const myPlaces = cache(async (eventId: string) => {
+  const account = await getVisitorAccount();
+  if (!account) return new Map<string, number>();
+  try {
+    return placesOf(
+      await listMyAwards(await createClient(), eventId, account.id),
+    );
+  } catch (error) {
+    // The prizes still show: only "you won this" is left out.
+    console.error("reading the visitor's awards failed", error);
+    return new Map<string, number>();
+  }
+});
+
+/** The prizes (raffles and merit awards) and how far this visitor is from each. */
 async function Prizes({ event }: { event: PublicEvent }) {
-  const [prizes, claimed] = await Promise.all([
-    listEventPrizes(await createClient(), event.id),
+  const supabase = await createClient();
+  const [prizes, claimed, awards, places] = await Promise.all([
+    listEventPrizes(supabase, event.id),
     myClaims(event.id),
+    listEventAwards(supabase, event.id),
+    myPlaces(event.id),
   ]);
   if (!claimed) return null;
+  const progress = collectionProgress(event.spots, claimed).medals;
   return (
     <PrizesSection
       prizes={prizes}
-      claimed={collectionProgress(event.spots, claimed).medals}
+      claimed={progress}
       total={event.spots.length}
+      awards={
+        hasAwards(awards, event.spots.length) ? (
+          <AwardPlates
+            awards={awards}
+            claimed={progress}
+            total={event.spots.length}
+            places={places}
+          />
+        ) : null
+      }
     />
   );
 }

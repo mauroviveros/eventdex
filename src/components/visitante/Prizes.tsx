@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { PixelIcon } from "@/components/pixel/icons";
 import { type Prize, prizeLadder } from "@/domain/prizes";
 import type { EventPrize } from "@/lib/data/raffles";
@@ -11,6 +12,8 @@ type Props = {
   claimed: number;
   /** Stands of the event that give a medal. */
   total: number;
+  /** The merit awards, already drawn: they share the section with the raffles. */
+  awards?: ReactNode;
 };
 
 function prizeView(
@@ -108,12 +111,13 @@ function Heading({ children }: { children: string }) {
  * The event's page: a plate per prize. With a picture it leads; without one
  * the plate is a compact row, so a prize without a photo is not a big empty tile.
  */
-export function PrizesSection({ prizes, claimed, total }: Props) {
+export function PrizesSection({ prizes, claimed, total, awards }: Props) {
   const { list } = prizeView(prizes, claimed, total);
-  if (list.length === 0) return null;
+  if (list.length === 0 && !awards) return null;
   return (
     <section aria-labelledby="premios" className="grid gap-6">
       <Heading>Premios</Heading>
+      {awards}
       <ul className="grid gap-4 sm:grid-cols-2">
         {list.map((p) => (
           <li
@@ -166,12 +170,13 @@ export function PrizesSection({ prizes, claimed, total }: Props) {
 }
 
 /** Mis medallas: the ladder from lowest to highest, the next prize lit as a filled plate. */
-export function PrizesLadder({ prizes, claimed, total }: Props) {
+export function PrizesLadder({ prizes, claimed, total, awards }: Props) {
   const { list } = prizeView(prizes, claimed, total);
-  if (list.length === 0) return null;
+  if (list.length === 0 && !awards) return null;
   return (
     <section aria-labelledby="premios" className="grid gap-6">
       <Heading>Premios</Heading>
+      {awards}
       <ol className="grid gap-3">
         {list.map((p) => (
           <li
