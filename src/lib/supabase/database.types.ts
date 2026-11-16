@@ -1338,7 +1338,10 @@ export type Database = {
       };
       org_activity: {
         Args: {
+          p_before_at?: string;
+          p_before_id?: string;
           p_event_id?: string;
+          p_kind?: string;
           p_limit?: number;
           p_organization_id: string;
         };
@@ -1346,6 +1349,7 @@ export type Database = {
           detail: string;
           event_id: string;
           happened_at: string;
+          id: string;
           is_first: boolean;
           kind: string;
           user_id: string;
