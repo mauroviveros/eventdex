@@ -1288,8 +1288,11 @@ Decidido al empezar:
    `org_activity` (de la org o de un evento). Tests pgTAP
    (`21_overview`): cada cifra con datos conocidos, que otra org no vea nada y que
    un visitante cuente solo lo suyo.
-2. **Backend.** Lectores en `src/lib/data/overview.ts` y la lógica pura (huecos de
-   horas, «pocos datos») en `src/domain/`.
+2. **Backend ✅.** Lectores en `src/lib/data/overview.ts` (`getEventOverview`,
+   `listEventHours`, `listSpotRanking`, `getOrgOverview`, `listActivity`) y la lógica
+   pura en `src/domain/overview.ts`: las horas de cada jornada con ceros en los huecos
+   (sin la noche entre jornadas), el embudo con su proporción, medallas por visitante
+   y el estado vacío / «pocos datos» (menos de 5 visitantes) / listo.
 3. **Diseño.** `/impeccable shape` y alternativas sobre el panel real.
 4. **Vista.** Overview de la org y del evento, con el Chart de shadcn.
 5. **Auditoría.** `/code-review` y `/accessibility`.
