@@ -1209,12 +1209,14 @@ todas, los primeros 5 en llegar a la mitad, todos los que junten N. Las pregunta
 
 **Bloques**
 
-1. **DB.** `event_awards` (regla por cantidad o porcentaje, umbral y cupo) y
+1. **DB ✅.** `event_awards` (regla por cantidad o porcentaje, umbral y cupo) y
    `award_winners` (con posición), con los ganadores calculados en la base dentro de
    `claim_spot`, bloqueando la fila del premio: «los primeros N» tiene que ser exacto con
    escaneos simultáneos. Un premio con ganadores no se borra ni cambia su regla.
-2. **Backend.** Acciones del equipo (alta, edición, baja), lecturas del visitante y de la
-   portada, y sacar los puntos del formulario.
+2. **Backend ✅.** Acciones del equipo (alta, edición de nombre y descripción, baja),
+   lecturas (`listEventAwards` con cupos, `listMyAwards`, `listAwardWinners` para el
+   equipo), `domain/awards` (lo que falta y los cupos) y los puntos fuera del formulario,
+   la tabla y las acciones de spots.
 3. **Diseño.** Cómo se anuncia al reclamar («con esta vas por la mitad», «ganaste…»), el
    inicio con los cupos que quedan, el perfil y la tarjeta.
 4. **Vista.** El panel (pestaña de premios) y las pantallas del visitante.
