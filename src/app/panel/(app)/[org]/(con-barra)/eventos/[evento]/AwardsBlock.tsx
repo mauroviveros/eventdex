@@ -105,6 +105,8 @@ function Award({
   readOnly: boolean;
 }) {
   const unreachable = awardNeeded(award, totalSpots) > totalSpots;
+  // From the winners, not `award.taken`: that count only exists while the event is published.
+  const taken = winners.length;
   return (
     <article
       aria-labelledby={`premio-${award.id}`}
@@ -118,8 +120,8 @@ function Award({
           Hacen falta {rule(award, totalSpots)}
           {" · "}
           {award.slots === null
-            ? `${award.taken.toLocaleString("es-AR")} ${award.taken === 1 ? "ganó" : "ganaron"}, sin cupo`
-            : `ganaron ${award.taken.toLocaleString("es-AR")} de ${award.slots.toLocaleString("es-AR")}`}
+            ? `${taken.toLocaleString("es-AR")} ${taken === 1 ? "ganó" : "ganaron"}, sin cupo`
+            : `ganaron ${taken.toLocaleString("es-AR")} de ${award.slots.toLocaleString("es-AR")}`}
         </p>
         {unreachable && (
           <p className="font-display text-px-1 text-danger">
@@ -174,7 +176,7 @@ function Award({
               />
             </div>
           </details>
-          {award.taken === 0 && (
+          {taken === 0 && (
             <ActionButton
               action={deleteAwardAction}
               fields={{ org, awardId: award.id }}

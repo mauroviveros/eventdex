@@ -29,6 +29,8 @@ export function cardCount(count: number, total: number) {
   return `${count} ${count === 1 ? "medalla" : "medallas"}`;
 }
 
+const MAX_AWARD_TITLE = 28;
+
 /**
  * The line a merit award adds to the card: the place in the award with a cap
  * ("Lugar 2 de los primeros 5"), else the award's name. Null without wins.
@@ -38,7 +40,12 @@ export function cardAward(
 ) {
   const lead = wins.find((w) => w.slots !== null) ?? wins[0];
   if (!lead) return null;
+  // The card has one line for it: a long name is cut, not wrapped over the org.
+  const title =
+    lead.title.length > MAX_AWARD_TITLE
+      ? `${lead.title.slice(0, MAX_AWARD_TITLE - 1).trimEnd()}…`
+      : lead.title;
   return lead.slots === null
-    ? `Ganó ${lead.title}`
+    ? `Ganó ${title}`
     : `Lugar ${lead.position} de los primeros ${lead.slots}`;
 }

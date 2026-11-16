@@ -44,6 +44,17 @@ describe("cardAward", () => {
     ).toBe("Lugar 2 de los primeros 5");
   });
 
+  it("cuts a long name to fit the card's line", () => {
+    const line = cardAward([
+      {
+        title: "Una remera firmada por todo el equipo del evento",
+        position: 1,
+        slots: null,
+      },
+    ]);
+    expect(line).toBe("Ganó Una remera firmada por todo…");
+  });
+
   it("falls back to the name, and is null with nothing won", () => {
     expect(cardAward([{ title: "Mitad", position: 9, slots: null }])).toBe(
       "Ganó Mitad",
