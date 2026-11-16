@@ -1398,7 +1398,18 @@ Actividad empujan la lista hacia abajo y la actividad crece sin tope. Decidido:
    `acciones-evento`, `duplicar-evento`, `plataforma`). *Sin probar:* «Ver
    anteriores» con más de 30 filas reales (el cursor sí, a mano y en pgTAP), un
    celular real y lector de pantalla.
-10. **Auditoría.** `/code-review` y `/accessibility`.
+10. **Auditoría ✅.** `/code-review` (alto) encontró cinco cosas, todas arregladas:
+    un `?antes=` que `Date.parse` acepta y Postgres no («2026») tiraba la página en
+    vez de volver a la primera (ahora el cursor exige el formato ISO de la base); el
+    cuadro Afluencia decía «Hoy» entre jornadas mostrando la anterior; dos medallas
+    del mismo instante contaban las dos como «llegó» y como visitante nuevo por hora
+    (desempate por `(momento, id)` en `org_activity` y `event_hourly`, con dos tests
+    pgTAP más en `22_activity_pages`); `byDay` sin mutar, y `DEFAULT_TIME_ZONE` en
+    `src/domain/events.ts` en vez de la zona repetida en cuatro páginas.
+    `/accessibility` con Lighthouse en el celular: Actividad 100; Resumen y el evento
+    tenían el gráfico `aria-hidden` con un foco adentro (la capa de teclado de
+    Recharts, apagada: la tabla `sr-only` ya da las cifras) y quedan en 100. *Sin
+    probar:* lector de pantalla y un celular real.
 
 ## R33 · Analítica e informe
 
