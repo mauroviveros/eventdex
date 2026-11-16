@@ -1382,8 +1382,22 @@ Actividad empujan la lista hacia abajo y la actividad crece sin tope. Decidido:
    `?antes=`: el momento viaja tal como lo escribe Postgres, con microsegundos (por un
    `Date` se redondearía al milisegundo y la página siguiente podría saltear filas), y
    un cursor mal formado vuelve a la primera página.
-9. **Vista.** Resumen en la barra, Actividad, Resumen del evento en bento, General
-   afuera, banner oculto.
+9. **Vista ✅.** **Resumen** es el inicio de la org (`/panel/[org]`, B · Evento al
+   frente, en `ResumenBento`) y la lista pasa a `/panel/[org]/eventos`; en la barra,
+   Resumen arriba de Eventos (Actividad la marca como Resumen). **Actividad**
+   (`/panel/[org]/actividad`): agrupada por día, filtro de evento (un `select` con
+   «Ver», anda sin JS) y de tipo (pestañas Todo, Medallas, Premios, Sorteos), páginas
+   de 30 con «Ver anteriores» y «Volver a lo último». El **Resumen del evento** en los
+   mismos cuadros (`Tile` y `TileEmpty` en `Overview.tsx`). **General afuera**:
+   Publicación y Jornadas (`SchedulesBlock.tsx`) arriba de **Página**, que es el
+   inicio de un borrador; las cinco pestañas vuelven a una fila en el celular. **Banner
+   afuera** de Editar, del hero público y de Open Graph (queda el logo de la org); se
+   borraron `CoverForm`, `EventCover`, `uploadCover`/`removeCover` y sus tests, y el
+   e2e `portada-evento`; `cover_path` y el bucket quedan. Sin el alternativo de
+   escalones en `HourlyChart`. e2e al día (`resumen`, `jornadas`, `admin-shell`,
+   `acciones-evento`, `duplicar-evento`, `plataforma`). *Sin probar:* «Ver
+   anteriores» con más de 30 filas reales (el cursor sí, a mano y en pgTAP), un
+   celular real y lector de pantalla.
 10. **Auditoría.** `/code-review` y `/accessibility`.
 
 ## R33 · Analítica e informe
