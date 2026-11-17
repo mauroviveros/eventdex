@@ -12,9 +12,12 @@ export const shareOfAudience = (visits: number, visitors: number) =>
 export const versusAverage = (visits: number, average: number) =>
   average > 0 ? visits / average : null;
 
-/** "3.º de 12", or null for a stand with no place (inactive) or an event without stands. */
+/**
+ * "3 de 12", or null for a stand with no place (inactive) or an event without
+ * stands. No ordinal: the pixel font has no «º», and the cell is labelled «Puesto».
+ */
 export const placeLabel = (rank: number | null, stands: number) =>
-  rank === null || stands <= 0 ? null : `${rank}.º de ${stands}`;
+  rank === null || stands <= 0 ? null : `${rank} de ${stands}`;
 
 type Prize = { slots: number | null; winners: number; reached: number };
 

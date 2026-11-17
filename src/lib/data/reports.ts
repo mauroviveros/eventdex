@@ -42,6 +42,9 @@ export async function listSpotHours(supabase: Supabase, eventSpotId: string) {
   return data.map((h) => ({ hour: h.hour, medals: h.medals, newcomers: 0 }));
 }
 
+const isPrizeKind = (kind: string): kind is "premio" | "sorteo" =>
+  kind === "premio" || kind === "sorteo";
+
 /**
  * How each merit prize and draw of the event fared: what it asked, its cap, who
  * won and who reached it. Not the public list of prizes (`listEventPrizes` in
@@ -53,14 +56,15 @@ export async function listPrizeOutcomes(supabase: Supabase, eventId: string) {
   });
   if (error) throw error;
   return data.flatMap((p) =>
-    p.kind === "premio" || p.kind === "sorteo"
+    isPrizeKind(p.kind)
       ? [
           {
             kind: p.kind,
             id: p.id,
             title: p.title,
             needed: p.needed,
-            slots: p.slots,
+            // The database leaves it null for a prize without a cap and for a draw.
+            slots: (p.slots as number | null) ?? null,
             winners: p.winners,
             reached: p.reached,
           },
