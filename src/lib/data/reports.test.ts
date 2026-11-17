@@ -94,4 +94,23 @@ describe("listPrizeOutcomes", () => {
       { ...row, kind: "premio" },
     ]);
   });
+
+  it("keeps the cap null for a draw or a prize without one", async () => {
+    const { client } = fakeClient(
+      ok([
+        {
+          kind: "sorteo",
+          id: "s-1",
+          title: "Remera",
+          needed: 1,
+          slots: null,
+          winners: 1,
+          reached: 9,
+        },
+      ]),
+    );
+    expect(await listPrizeOutcomes(client, "ev-1")).toMatchObject([
+      { kind: "sorteo", slots: null },
+    ]);
+  });
 });

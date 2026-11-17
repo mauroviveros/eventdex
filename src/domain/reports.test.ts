@@ -30,7 +30,7 @@ describe("versusAverage", () => {
 
 describe("placeLabel", () => {
   it("names the place and how many stands there are", () => {
-    expect(placeLabel(3, 12)).toBe("3.º de 12");
+    expect(placeLabel(3, 12)).toBe("3 de 12");
   });
 
   it("is null for an inactive stand or an event without stands", () => {
