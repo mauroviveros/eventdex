@@ -1450,11 +1450,14 @@ Branch `feat/analitica`.
 
 **Bloques**
 
-1. **DB.** Funciones `security invoker` con `GRANT` a `authenticated`, como las de
-   R32: las cifras de un spot en un evento (visitas, primera parada, por hora y
-   jornada, puesto y promedio) y el resumen de premios y sorteos (ganados, cupos,
-   sin usar). Tests pgTAP: un miembro de otra org no ve nada y los empates desempatan
-   por `id`.
+1. **DB ✅.** Tres funciones `security invoker` con `GRANT` a `authenticated`, como las
+   de R32 (migración `reports`): `spot_report` (visitas, primera parada, puesto con
+   `rank()` —los empates comparten lugar—, stands activos y su promedio),
+   `spot_hourly` (las medallas del stand por hora en la zona del evento) y
+   `event_prizes` (cada premio y sorteo con lo que pedía, su cupo, los ganadores sin
+   anulados y cuántos llegaron, sin bloqueados). Tests pgTAP
+   (`23_reports`): la primera parada desempata por `(momento, id)`, y otra org cuenta
+   cero (los stands y premios de un evento publicado ya son públicos por la portada).
 2. **Backend.** Lecturas en `src/lib/data/` y lo derivado (parte del público, puesto,
    contra el promedio) en `src/domain/`, con Vitest.
 3. **Diseño.** `/impeccable shape` del informe de evento y del de stand en A4, y de los
