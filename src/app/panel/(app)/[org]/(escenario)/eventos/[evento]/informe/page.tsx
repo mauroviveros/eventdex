@@ -3,9 +3,10 @@ import { notFound } from "next/navigation";
 import type { CSSProperties } from "react";
 import { ReportBar } from "@/components/panel/ReportBar";
 import { EventReport } from "@/components/panel/ReportSheet";
-import { eventPhase, formatEventDates } from "@/domain/events";
+import { formatEventDates } from "@/domain/events";
 import { hoursBySchedule } from "@/domain/overview";
 import { orgRamp } from "@/domain/palette";
+import { reportCut } from "@/domain/reports";
 import { getEventBySlug } from "@/lib/data/events";
 import {
   getEventOverview,
@@ -42,18 +43,7 @@ export default async function EventReportPage({
   ]);
 
   const base = `/panel/${org.slug}/eventos/${event.slug}`;
-  const now = new Date();
-  const cut = {
-    at: new Intl.DateTimeFormat("es-AR", {
-      day: "numeric",
-      month: "long",
-      hour: "2-digit",
-      minute: "2-digit",
-      hourCycle: "h23",
-      timeZone: event.timezone,
-    }).format(now),
-    partial: eventPhase(event.status, event.schedules, now) !== "finalizado",
-  };
+  const cut = reportCut(event);
   const style = Object.fromEntries(
     orgRamp(org.brand_color).map((tone, i) => [`--ramp-${i}`, tone]),
   ) as CSSProperties;
@@ -62,7 +52,7 @@ export default async function EventReportPage({
     <>
       <style>{"@page { size: A4; margin: 10mm; }"}</style>
       <ReportBar back={base} />
-      <div
+      <main
         style={style}
         // Paper is light: the screen shows what the print will.
         data-scheme="light"
@@ -95,7 +85,7 @@ export default async function EventReportPage({
             audience={audience}
           />
         )}
-      </div>
+      </main>
     </>
   );
 }
