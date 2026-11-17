@@ -1463,12 +1463,40 @@ Branch `feat/analitica`.
    (`shareOfAudience`, `versusAverage`, `placeLabel`, `unusedSlots`, `leftOut`), con
    Vitest. El puesto y la cuenta de stands son de los activos: un stand apagado no
    tiene puesto (la migración se corrigió antes de aplicarse en producción).
-3. **Diseño.** `/impeccable shape` del informe de evento y del de stand en A4, y de los
-   dos agregados al Resumen; dos o tres alternativas sobre la página real. Mauro elige.
-4. **Vista.** `/[org]/eventos/[evento]/informe` y `/[org]/eventos/[evento]/informe/[spot]`,
-   para el equipo y developers en soporte, `noindex`, con un atajo desde el Resumen y
-   desde cada stand. Los agregados al Resumen. RUTAS al día. *Listo cuando* un miembro
-   imprime los dos informes con datos reales y alguien de afuera recibe 404 (e2e).
+3. **Diseño ✅.** `/impeccable shape` hecho y las alternativas armadas en la página real
+   (`?alt=a|b|c`, con el selector arriba). **Mauro eligió A · Ficha** (2026-11-16): B y C
+   se borran en la Vista.
+   - **Decidido (2026-11-16):** la fidelidad es de la organización y se dice así («En los
+     eventos de <org>: N visitantes únicos, M volvieron a más de uno»); el pie lleva la
+     fecha de corte y «Parcial» si el evento no terminó; sin firma, solo la org; la
+     entrada es un botón en el Resumen del evento y un «Informe» en cada fila de Stands.
+   - **Alternativas** (informe del evento y de un stand, en A4, en la paleta de la org y
+     siempre en los roles claros del papel): **A · Ficha**, una columna, las cifras en
+     tira arriba y los gráficos debajo; **B · Tablero**, dos columnas, las cifras como
+     riel a la izquierda y los gráficos a la derecha; **C · Carta**, las cifras dentro
+     de frases y los gráficos entre párrafos. Las tres entran en un A4 (277 mm) con una
+     jornada; con más, los gráficos son bajos (`compact`) y el resto pasa a una segunda hoja.
+   - **Propuesta única para el Resumen del evento:** el promedio de los stands activos
+     marcado en cada barra del ranking, y un cuadro **Premios y sorteos** (lo que pedía,
+     ganadores sobre cupo, lugares que sobraron y quiénes llegaron y quedaron sin lugar;
+     en un sorteo, cuántos participaban).
+   - **Salió del Diseño:** la fuente pixel no tiene «º», así que el puesto se dice «1 de
+     3» bajo la etiqueta «Puesto»; `placeLabel` ya no lleva ordinal.
+   - **Prototipo, no final:** `ReportSheet`, `ReportBar` y las dos páginas `informe` llevan
+     las tres alternativas. Al elegir, la Vista deja una, borra el selector, suma los
+     componentes a `/dev/componentes` (`PrizeOutcomes`, la hoja y la barra) y actualiza
+     RUTAS.
+4. **Vista ✅.** `/[org]/eventos/[evento]/informe` y `/[org]/eventos/[evento]/informe/[spot]`
+   (el `[spot]` es el código del stand), en la **Ficha (A)** que eligió Mauro: un A4 con
+   la marca de la org, la tira de cifras, las horas de cada jornada (bajas) y una línea
+   de contexto. Solo para el equipo y developers en soporte, `noindex`, sin medallas un
+   vacío que lo explica y un borrador es 404. En el Resumen del evento: el botón
+   «Informe del evento», el «Informe» de cada fila de Stands con el promedio marcado y el
+   cuadro **Premios y sorteos**. `ReportSheet`, `ReportBar` y `PrizeOutcomes` están en
+   `/dev/componentes`; RUTAS al día. Cubierto por `e2e/informes.spec.ts`: el equipo abre
+   los dos informes y un stand no nombra a otro, un código inexistente es 404 y sin
+   sesión pide ingresar. Sin probar: imprimir de verdad («Guardar como PDF»), Safari y
+   un lector de pantalla.
 5. **Auditoría.** `/code-review` y `/accessibility`, y la impresión probada en Chrome y
    Safari.
 
