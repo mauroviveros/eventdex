@@ -1310,6 +1310,18 @@ export type Database = {
           visitors: number;
         }[];
       };
+      event_prizes: {
+        Args: { p_event_id: string };
+        Returns: {
+          id: string;
+          kind: string;
+          needed: number;
+          reached: number;
+          slots: number;
+          title: string;
+          winners: number;
+        }[];
+      };
       event_spot_ranking: {
         Args: { p_event_id: string };
         Returns: {
@@ -1409,6 +1421,24 @@ export type Database = {
         Returns: undefined;
       };
       set_primary_domain: { Args: { p_domain_id: string }; Returns: undefined };
+      spot_hourly: {
+        Args: { p_event_spot_id: string };
+        Returns: {
+          hour: string;
+          medals: number;
+        }[];
+      };
+      spot_report: {
+        Args: { p_event_spot_id: string };
+        Returns: {
+          average: number;
+          event_id: string;
+          first_stops: number;
+          rank: number;
+          stands: number;
+          visits: number;
+        }[];
+      };
       void_raffle_draw: {
         Args: { p_draw_id: string; p_reason: string };
         Returns: {
