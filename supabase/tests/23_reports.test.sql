@@ -94,8 +94,8 @@ select results_eq(
 
 select results_eq(
   $$ select visits, first_stops, rank, stands from public.spot_report('00000000-0000-0000-0000-00000000e134') $$,
-  $$ values (0, 0, 4, 3) $$,
-  'an inactive stand without medals ranks last and is not counted among the active ones'
+  $$ values (0, 0, null::int, 3) $$,
+  'an inactive stand has no place and is not counted among the active ones'
 );
 
 select results_eq(
