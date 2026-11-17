@@ -9,8 +9,9 @@
 -- spot_report: un stand dentro de su evento. Las visitas son sus medallas (una
 -- por visitante). Primera parada: los visitantes cuya primera medalla, por
 -- (momento, id), fue en este stand. Puesto con rank(): dos stands con las mismas
--- medallas comparten el lugar. El promedio y la cuenta de stands son de los
--- activos, como en event_overview; el puesto, entre todos los del evento.
+-- medallas comparten el lugar. El puesto, la cuenta de stands y el promedio son
+-- de los activos, como en event_overview: «3.º de 12» cuenta lo mismo arriba y
+-- abajo. Un stand apagado no tiene puesto (null).
 -- ---------------------------------------------------------------------------
 
 create function public.spot_report(p_event_spot_id uuid)
@@ -38,11 +39,12 @@ as $$
     group by es.id
   ),
   ranked as (
-    select id, medals, rank() over (order by medals desc)::int as rank from per_spot
+    select id, rank() over (order by medals desc)::int as rank
+    from per_spot where is_active
   )
   select
     m.event_id,
-    r.medals,
+    p.medals,
     (select count(*)::int
      from public.spot_claims c
      where c.event_spot_id = p_event_spot_id
@@ -55,7 +57,8 @@ as $$
     (select count(*)::int from per_spot where is_active),
     (select round(avg(medals), 1) from per_spot where is_active)
   from me m
-  join ranked r on r.id = p_event_spot_id
+  join per_spot p on p.id = p_event_spot_id
+  left join ranked r on r.id = p_event_spot_id
 $$;
 
 -- ---------------------------------------------------------------------------
