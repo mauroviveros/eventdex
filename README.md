@@ -36,3 +36,18 @@ y tests. El resto de los comandos está en [AGENTS.md](./AGENTS.md#comandos).
 - [`docs/`](./docs): [PROYECTO](./docs/PROYECTO.md) · [PRODUCT](./docs/PRODUCT.md) ·
   [ARQUITECTURA](./docs/ARQUITECTURA.md) · [RUTAS](./docs/RUTAS.md) ·
   [DESIGN_SYSTEM](./docs/DESIGN_SYSTEM.md) · [ROADMAP](./docs/ROADMAP.md)
+
+## Cómo se construye
+
+Lo desarrolla Mauro Viveros con [Claude Code](https://claude.com/claude-code) como
+herramienta, con un método fijo:
+
+- **Rebanadas verticales.** Cada funcionalidad va de punta a punta con datos reales:
+  base de datos, backend, diseño y vista. El orden está en el
+  [ROADMAP](./docs/ROADMAP.md).
+- **Las decisiones son humanas.** Producto, arquitectura y reglas viven en
+  [`docs/`](./docs). Cada pantalla se elige entre dos o tres alternativas antes de
+  escribirla, y cada rebanada se revisa antes de integrarla.
+- **Todo se verifica.** Tests de permisos en la base (pgTAP), tests unitarios,
+  recorridos e2e y auditoría de código y accesibilidad al cerrar cada rebanada.
+- **Nada entra a `main` sin revisión**: cada rebanada se integra por pull request.

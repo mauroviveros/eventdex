@@ -47,11 +47,13 @@ Al cerrar el bloque se marca en el ROADMAP (✅ / ▶ / ⏸).
 
 - **Una branch por rebanada** (`feat/medallas`, `chore/fundaciones`). Nada directo
   en `main`; se integra por PR.
-- Los mensajes siguen el skill **`commits-a-mi-nombre`**: Conventional Commits con
-  gitmoji en shortcode, en inglés y sin línea de co-autoría.
+- Los mensajes siguen el skill **`mviveros:commit`**: Conventional Commits con
+  gitmoji en shortcode, en inglés.
   Ejemplo: `feat(medallas): :sparkles: add spot claim action`.
-- **El agente no commitea.** Al cerrar cada bloque deja el comando para que lo
-  corra Mauro, con los archivos exactos (**nunca `git add .`** ni `-A` sin ruta):
+- **El agente commitea y pushea la branch de la rebanada y abre el PR**; nunca toca
+  `main` ni usa `--force`. Al cerrar cada bloque commitea con los archivos exactos
+  (**nunca `git add .`** ni `-A` sin ruta). Mauro revisa el código en el PR y hace el
+  merge:
 
   ```bash
   git add src/lib/actions/claim.ts src/lib/actions/claim.test.ts
@@ -183,7 +185,7 @@ desde `.claude/skills/`. Se restauran con `npx skills experimental_install`.
 | `/impeccable` | Dirección visual, vistas nuevas, crítica y pulido de UI. `document` genera `docs/DESIGN.md` |
 | `/ponytail-audit` · `/code-review` | Auditoría al cerrar cada branch |
 | `/find-skills` | Cuando aparece un área nueva (instalar solo con OK) |
-| `commits-a-mi-nombre` | Siempre que se armen mensajes de commit o PR |
+| `mviveros:commit` | Siempre que se armen mensajes de commit o PR |
 
 ### Para su fase (todavía no instaladas)
 
