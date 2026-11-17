@@ -16,12 +16,19 @@ import {
 } from "@/components/ui/shadcn/chart";
 import type { HourCount } from "@/domain/overview";
 
-const config = {
-  newcomers: { label: "Primeras medallas", color: "var(--lcd-2)" },
-  returning: { label: "De quienes ya tenían", color: "var(--lcd-3)" },
-} satisfies ChartConfig;
+/** What the lower (light) and upper (dark) part of each bar mean. */
+export type SeriesLabels = { newcomers: string; returning: string };
+
+const DEFAULT_LABELS: SeriesLabels = {
+  newcomers: "Primeras medallas",
+  returning: "De quienes ya tenían",
+};
 
 type Props = {
+  /** A short chart, for the printed reports where several days share one A4. */
+  compact?: boolean;
+  /** Names of the two stacked parts; the event's by default, a stand's report names its own. */
+  labels?: SeriesLabels;
   hours: readonly HourCount[];
   timeZone: string;
   /** The current hour (ISO): marked «Ahora» when it falls in this schedule. */
@@ -35,7 +42,18 @@ type Props = {
  * the four tones only. Each bar stacks the first medals (visitors arriving) under
  * the rest. A table with the same figures sits under it for screen readers.
  */
-export function HourlyChart({ hours, timeZone, now, label }: Props) {
+export function HourlyChart({
+  hours,
+  timeZone,
+  now,
+  label,
+  labels = DEFAULT_LABELS,
+  compact = false,
+}: Props) {
+  const config = {
+    newcomers: { label: labels.newcomers, color: "var(--lcd-2)" },
+    returning: { label: labels.returning, color: "var(--lcd-3)" },
+  } satisfies ChartConfig;
   const hourOf = new Intl.DateTimeFormat("es-AR", {
     hour: "numeric",
     hourCycle: "h23",
@@ -57,7 +75,7 @@ export function HourlyChart({ hours, timeZone, now, label }: Props) {
     <figure className="grid gap-2">
       <ChartContainer
         config={config}
-        className="aspect-auto h-56 w-full sm:h-64"
+        className={`aspect-auto w-full ${compact ? "h-36" : "h-56 sm:h-64"}`}
         aria-hidden
       >
         {/* No keyboard layer: the drawing is aria-hidden and the table below carries the figures. */}
@@ -109,7 +127,7 @@ export function HourlyChart({ hours, timeZone, now, label }: Props) {
           <tr>
             <th scope="col">Hora</th>
             <th scope="col">Medallas</th>
-            <th scope="col">Primeras medallas</th>
+            <th scope="col">{labels.newcomers}</th>
           </tr>
         </thead>
         <tbody>

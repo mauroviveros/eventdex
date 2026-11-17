@@ -1,12 +1,15 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
-import { HourlyChart } from "@/components/panel/HourlyChart";
+import { HourlyChart, type SeriesLabels } from "@/components/panel/HourlyChart";
 import {
   FEW_VISITORS,
   funnel,
   type HourCount,
   medalsPerVisitor,
 } from "@/domain/overview";
+import { leftOut, unusedSlots } from "@/domain/reports";
 import type { Activity, EventOverview, RankedSpot } from "@/lib/data/overview";
+import type { PrizeOutcome } from "@/lib/data/reports";
 
 /**
  * The pieces of the overview, shared by the organization's Resumen and the
@@ -75,16 +78,16 @@ export function TileEmpty({ children }: { children: ReactNode }) {
 }
 
 /** The two tones of the hourly bars. */
-export function HoursLegend() {
+export function HoursLegend({ labels }: { labels?: SeriesLabels }) {
   return (
     <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
       <li className="flex items-center gap-2">
         <span aria-hidden className="size-3 bg-lcd-2" />
-        Primeras medallas
+        {labels?.newcomers ?? "Primeras medallas"}
       </li>
       <li className="flex items-center gap-2">
         <span aria-hidden className="size-3 bg-lcd-3" />
-        De quienes ya tenían
+        {labels?.returning ?? "De quienes ya tenían"}
       </li>
     </ul>
   );
@@ -128,11 +131,15 @@ export function HoursBySchedule({
   days,
   timeZone,
   now,
+  labels,
+  compact,
 }: {
   days: Day[];
   timeZone: string;
   /** The current hour (ISO), marked while the event runs. */
   now?: string;
+  labels?: SeriesLabels;
+  compact?: boolean;
 }) {
   return (
     <div className="grid gap-6">
@@ -147,6 +154,8 @@ export function HoursBySchedule({
             hours={d.hours}
             timeZone={timeZone}
             now={now}
+            labels={labels}
+            compact={compact}
             label={dayLabel(d, i, days.length, timeZone)}
           />
         </div>
@@ -197,13 +206,24 @@ const TOP = 8;
 export function SpotRanking({
   spots,
   top,
+  average = false,
+  reportHref,
 }: {
   spots: RankedSpot[];
   top?: number;
+  /** Marks the average of the active stands on every bar, with its figure under the list. */
+  average?: boolean;
+  /** Where a stand's own report is: the row gets an «Informe» link. */
+  reportHref?: (code: string) => string;
 }) {
   if (spots.length === 0)
     return <TileEmpty>El evento no tiene stands.</TileEmpty>;
   const max = Math.max(1, ...spots.map((s) => s.medals));
+  const active = spots.filter((s) => s.active);
+  const mean =
+    average && active.length > 0
+      ? active.reduce((sum, s) => sum + s.medals, 0) / active.length
+      : null;
   const row = (s: RankedSpot) => (
     <li key={s.id} className="grid gap-1">
       <div className="flex items-baseline justify-between gap-3">
@@ -216,19 +236,37 @@ export function SpotRanking({
             </span>
           )}
         </span>
-        <span className="shrink-0 font-display text-px-1 tabular-nums">
-          {n(s.medals)}
-          <span className="sr-only"> medallas</span>
+        <span className="flex shrink-0 items-baseline gap-3">
+          {reportHref && s.medals > 0 && (
+            <Link
+              href={reportHref(s.code)}
+              className="font-display text-px-1"
+              aria-label={`Informe del stand ${s.code}`}
+            >
+              Informe
+            </Link>
+          )}
+          <span className="font-display text-px-1 tabular-nums">
+            {n(s.medals)}
+            <span className="sr-only"> medallas</span>
+          </span>
         </span>
       </div>
       {s.medals === 0 ? (
         <div className="h-3 border-2 border-dashed border-lcd-2" />
       ) : (
-        <div className="h-3 bg-lcd-1">
+        <div className="relative h-3 bg-lcd-1">
           <div
             className="h-full bg-lcd-3"
             style={{ width: `${(s.medals / max) * 100}%` }}
           />
+          {mean !== null && (
+            <span
+              aria-hidden
+              className="absolute -inset-y-1 w-0.5 bg-accent-red"
+              style={{ left: `${(mean / max) * 100}%` }}
+            />
+          )}
         </div>
       )}
     </li>
@@ -243,6 +281,12 @@ export function SpotRanking({
           </summary>
           <ol className="mt-3 grid gap-3">{spots.slice(TOP).map(row)}</ol>
         </details>
+      )}
+      {mean !== null && (
+        <p className="flex items-center gap-2 text-sm text-muted-foreground">
+          <span aria-hidden className="h-3 w-0.5 bg-accent-red" />
+          Promedio de los stands activos: {decimal.format(mean)} medallas
+        </p>
       )}
     </div>
   );
@@ -308,5 +352,68 @@ export function ActivityFeed({
         </li>
       ))}
     </ol>
+  );
+}
+
+const KIND_LABEL = { premio: "Por mérito", sorteo: "Sorteo" } as const;
+
+/**
+ * How each prize and draw fared, to judge next time whether they were set right:
+ * what it asked, who won (over its slots, if it has them), the slots nobody took
+ * and who reached it without winning.
+ */
+export function PrizeOutcomes({ prizes }: { prizes: PrizeOutcome[] }) {
+  if (prizes.length === 0)
+    return <TileEmpty>El evento no tiene premios ni sorteos.</TileEmpty>;
+  return (
+    <ul className="grid gap-3">
+      {prizes.map((p) => {
+        const free = unusedSlots(p);
+        const left = leftOut(p);
+        return (
+          <li
+            key={`${p.kind}-${p.id}`}
+            className="grid gap-1 border-2 border-lcd-3 px-4 py-3 sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-x-6"
+          >
+            <span className="flex flex-wrap items-baseline gap-x-3">
+              <span className="font-display text-px-2">{p.title}</span>
+              <span className="border-2 border-lcd-2 px-1 text-sm">
+                {KIND_LABEL[p.kind]}
+              </span>
+              <span className="text-sm text-muted-foreground">
+                Pide {n(p.needed)} {p.needed === 1 ? "medalla" : "medallas"}
+              </span>
+            </span>
+            <span className="font-display text-px-2 tabular-nums">
+              {p.slots === null
+                ? n(p.winners)
+                : `${n(p.winners)} de ${n(p.slots)}`}
+              <span className="font-sans text-sm text-muted-foreground">
+                {" "}
+                {p.winners === 1 ? "ganó" : "ganaron"}
+              </span>
+            </span>
+            {p.kind === "sorteo" ? (
+              <span className="text-sm sm:col-span-2">
+                Participaban {n(p.reached)}.
+              </span>
+            ) : (free !== null && free > 0) || left > 0 ? (
+              <span className="text-sm sm:col-span-2">
+                {free !== null && free > 0 && (
+                  <>
+                    Sobraron {n(free)} {free === 1 ? "lugar" : "lugares"}.{" "}
+                  </>
+                )}
+                {left > 0 && (
+                  <>
+                    Llegaron {n(p.reached)} y {n(left)} quedaron sin lugar.
+                  </>
+                )}
+              </span>
+            ) : null}
+          </li>
+        );
+      })}
+    </ul>
   );
 }

@@ -7,14 +7,20 @@ import {
   HoursBySchedule,
   HoursLegend,
   overviewCells,
+  PrizeOutcomes,
   SpotRanking,
   Tile,
 } from "@/components/panel/Overview";
 import { StatStrip } from "@/components/panel/StatStrip";
+import { buttonClass } from "@/components/ui/Button";
 import { dataState, type HourCount } from "@/domain/overview";
 import type { Activity, EventOverview, RankedSpot } from "@/lib/data/overview";
+import type { PrizeOutcome } from "@/lib/data/reports";
 
 type Props = {
+  /** The event's own path: the reports hang from `/informe`. */
+  base: string;
+  prizes: PrizeOutcome[];
   /** Where "Ver toda la actividad" goes: the Actividad view filtered by this event. */
   activityHref: string;
   timeZone: string;
@@ -32,6 +38,8 @@ type Props = {
  * latest activity.
  */
 export function ResumenTab({
+  base,
+  prizes,
   activityHref,
   timeZone,
   overview,
@@ -44,6 +52,14 @@ export function ResumenTab({
   if (state === "vacio") return <EmptyOverview />;
   return (
     <div className="grid gap-4">
+      <div className="flex justify-end">
+        <Link
+          href={`${base}/informe`}
+          className={buttonClass("secondary", "no-underline")}
+        >
+          Informe del evento
+        </Link>
+      </div>
       <StatStrip cells={overviewCells(overview)} />
       {state === "pocos" && <FewDataNote />}
       <div className="grid gap-4 lg:grid-cols-3">
@@ -56,7 +72,11 @@ export function ResumenTab({
           <HoursBySchedule days={days} timeZone={timeZone} now={now} />
         </Tile>
         <Tile id="stands" title="Stands">
-          <SpotRanking spots={ranking} />
+          <SpotRanking
+            spots={ranking}
+            average
+            reportHref={(code) => `${base}/informe/${encodeURIComponent(code)}`}
+          />
         </Tile>
       </div>
       <div className="grid gap-4 lg:grid-cols-2">
@@ -75,6 +95,9 @@ export function ResumenTab({
           <ActivityFeed items={activity} timeZone={timeZone} />
         </Tile>
       </div>
+      <Tile id="premios" title="Premios y sorteos">
+        <PrizeOutcomes prizes={prizes} />
+      </Tile>
     </div>
   );
 }

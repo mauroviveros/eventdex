@@ -16,6 +16,7 @@ import {
   listSpotRanking,
 } from "@/lib/data/overview";
 import { listEventRaffles } from "@/lib/data/raffles";
+import { listPrizeOutcomes } from "@/lib/data/reports";
 import { listEventSpots, listSpots } from "@/lib/data/spots";
 import { createClient } from "@/lib/supabase/server";
 import { EventTabs } from "./EventTabs";
@@ -83,6 +84,7 @@ export default async function EventoPage({
           listEventHours(supabase, event.id),
           listSpotRanking(supabase, event.id),
           listActivity(supabase, org.id, { eventId: event.id, limit: 6 }),
+          listPrizeOutcomes(supabase, event.id),
         ])
       : null,
   ]);
@@ -193,6 +195,8 @@ export default async function EventoPage({
               overview={resumen[0]}
               days={hoursBySchedule(resumen[1], event.schedules)}
               ranking={resumen[2]}
+              base={`/panel/${org.slug}/eventos/${event.slug}`}
+              prizes={resumen[4]}
               activity={resumen[3]}
               now={now}
             />

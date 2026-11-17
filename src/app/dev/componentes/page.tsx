@@ -19,6 +19,7 @@ import {
   HoursBySchedule,
   HoursLegend,
   overviewCells,
+  PrizeOutcomes,
   SpotRanking,
   Tile,
 } from "@/components/panel/Overview";
@@ -28,6 +29,8 @@ import { PublishButton } from "@/components/panel/PublishEvent";
 import { QrCode } from "@/components/panel/QrCode";
 import { RaffleDraw } from "@/components/panel/RaffleDraw";
 import { RaffleStage } from "@/components/panel/RaffleStage";
+import { ReportBar } from "@/components/panel/ReportBar";
+import { EventReport, SpotReportSheet } from "@/components/panel/ReportSheet";
 import { RowActions } from "@/components/panel/RowActions";
 import { eventCells, StatStrip } from "@/components/panel/StatStrip";
 import { TopBar } from "@/components/panel/TopBar";
@@ -189,6 +192,57 @@ const OVERVIEW_SPOTS = [
   active: i !== 8,
   medals: Number(medals),
 }));
+// Sample data for the reports: the stand's hours are a third of the event's.
+const REPORT_HEAD = {
+  orgName: "Expo Local",
+  logoPath: null,
+  title: "Feria de Primavera",
+  dates: "sáb 14 nov",
+  venue: "Predio Ferial",
+};
+const REPORT_SPOT_HOURS = OVERVIEW_DAY.hours.map((h) => ({
+  hour: h.hour,
+  medals: Math.round(h.medals / 3),
+  newcomers: 0,
+}));
+const OVERVIEW_PRIZES = [
+  {
+    kind: "premio" as const,
+    id: "p1",
+    title: "Primeros 5 en completar",
+    needed: 12,
+    slots: 5,
+    winners: 3,
+    reached: 3,
+  },
+  {
+    kind: "premio" as const,
+    id: "p2",
+    title: "Los primeros 20 en llegar a la mitad",
+    needed: 6,
+    slots: 20,
+    winners: 20,
+    reached: 120,
+  },
+  {
+    kind: "premio" as const,
+    id: "p3",
+    title: "Todos los que junten 3",
+    needed: 3,
+    slots: null,
+    winners: 210,
+    reached: 210,
+  },
+  {
+    kind: "sorteo" as const,
+    id: "s1",
+    title: "Pase doble para la próxima edición",
+    needed: 2,
+    slots: null,
+    winners: 1,
+    reached: 248,
+  },
+];
 const OVERVIEW_ACTIVITY = [
   {
     kind: "sorteo",
@@ -1431,6 +1485,63 @@ export default function ComponentesPage() {
             <SpotRanking spots={OVERVIEW_SPOTS} />
             <FewDataNote />
             <EmptyOverview />
+          </div>
+        </Section>
+
+        <Section
+          title="Panel: informes"
+          note="Lo que se imprime para un sponsor, y lo que el Resumen del evento suma para el equipo. ReportBar: volver al evento e Imprimir, fuera del papel. EventReport (el del evento, para vender) y SpotReportSheet (el de un stand, para su sponsor) son una hoja A4 cada una, siempre en los roles claros del papel y con print-color-adjust exact: la marca de la org, las cifras en StatStrip, las horas de cada jornada en gráficos bajos, una línea de contexto (fidelidad, o el stand contra el promedio) y el pie con «Parcial» o «Final» y la fecha de corte. El informe de un stand nunca nombra a otro. PrizeOutcomes (cuadro «Premios y sorteos» del Resumen): lo que pedía cada premio, ganadores sobre cupo, lugares que sobraron y quiénes llegaron y quedaron sin lugar; un sorteo dice cuántos participaban. SpotRanking con average marca el promedio de los stands activos en cada barra y reportHref suma «Informe» a las filas con medallas."
+        >
+          <div className="grid gap-8">
+            <div className="grid gap-4 lg:grid-cols-2">
+              <Tile id="demo-stands-promedio" title="Stands con promedio">
+                <SpotRanking
+                  spots={OVERVIEW_SPOTS}
+                  top={5}
+                  average
+                  reportHref={(code) => `#informe-${code}`}
+                />
+              </Tile>
+              <div className="grid content-start gap-4">
+                <Tile id="demo-premios" title="Premios y sorteos">
+                  <PrizeOutcomes prizes={OVERVIEW_PRIZES} />
+                </Tile>
+                <Tile id="demo-premios-vacio" title="Premios y sorteos">
+                  <PrizeOutcomes prizes={[]} />
+                </Tile>
+              </div>
+            </div>
+            <ReportBar back="#" />
+            <div className="grid gap-8 xl:grid-cols-2">
+              <EventReport
+                head={{ ...REPORT_HEAD, kind: "Informe del evento" }}
+                cut={{ at: "14 de noviembre, 22:00", partial: true }}
+                timeZone={SAMPLE_TIMEZONE}
+                overview={OVERVIEW}
+                days={[OVERVIEW_DAY]}
+                audience={{ visitors: 1240, returned: 310 }}
+              />
+              <SpotReportSheet
+                head={{
+                  ...REPORT_HEAD,
+                  kind: "Informe de stand",
+                  title: "Café del centro",
+                  subtitle: "Feria de Primavera",
+                }}
+                cut={{ at: "15 de noviembre, 09:30", partial: false }}
+                timeZone={SAMPLE_TIMEZONE}
+                visitors={OVERVIEW.visitors}
+                spot={{
+                  visits: 118,
+                  firstStops: 41,
+                  rank: 1,
+                  stands: 11,
+                  average: 62.4,
+                }}
+                days={[OVERVIEW_DAY]}
+                spotHours={REPORT_SPOT_HOURS}
+              />
+            </div>
           </div>
         </Section>
 
