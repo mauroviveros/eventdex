@@ -3,9 +3,10 @@ import { notFound } from "next/navigation";
 import type { CSSProperties } from "react";
 import { ReportBar } from "@/components/panel/ReportBar";
 import { SpotReportSheet } from "@/components/panel/ReportSheet";
-import { eventPhase, formatEventDates } from "@/domain/events";
+import { formatEventDates } from "@/domain/events";
 import { hoursBySchedule } from "@/domain/overview";
 import { orgRamp } from "@/domain/palette";
+import { reportCut } from "@/domain/reports";
 import { getEventBySlug } from "@/lib/data/events";
 import { getEventOverview, listEventHours } from "@/lib/data/overview";
 import { getSpotReport, listSpotHours } from "@/lib/data/reports";
@@ -17,6 +18,15 @@ export const metadata: Metadata = {
   title: "Informe de un stand",
   robots: { index: false },
 };
+
+/** The code from the URL, or null when it is not valid percent-encoding (a 404, not a 500). */
+function safeDecode(value: string) {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return null;
+  }
+}
 
 /**
  * A stand's report, for its sponsor: how many came, when, how it did against the
@@ -34,9 +44,8 @@ export default async function SpotReportPage({
   if (!event || event.status === "draft") notFound();
 
   const spots = await listEventSpots(supabase, event.id);
-  const stand = spots.find(
-    (s) => s.code.toLowerCase() === decodeURIComponent(code).toLowerCase(),
-  );
+  const wanted = safeDecode(code)?.toLowerCase();
+  const stand = spots.find((s) => s.code.toLowerCase() === wanted);
   if (!stand) notFound();
 
   const [report, spotHours, overview, hours] = await Promise.all([
@@ -48,18 +57,7 @@ export default async function SpotReportPage({
   if (!report) notFound();
 
   const base = `/panel/${org.slug}/eventos/${event.slug}`;
-  const now = new Date();
-  const cut = {
-    at: new Intl.DateTimeFormat("es-AR", {
-      day: "numeric",
-      month: "long",
-      hour: "2-digit",
-      minute: "2-digit",
-      hourCycle: "h23",
-      timeZone: event.timezone,
-    }).format(now),
-    partial: eventPhase(event.status, event.schedules, now) !== "finalizado",
-  };
+  const cut = reportCut(event);
   const style = Object.fromEntries(
     orgRamp(org.brand_color).map((tone, i) => [`--ramp-${i}`, tone]),
   ) as CSSProperties;
@@ -68,7 +66,7 @@ export default async function SpotReportPage({
     <>
       <style>{"@page { size: A4; margin: 10mm; }"}</style>
       <ReportBar back={base} />
-      <div
+      <main
         style={style}
         // Paper is light: the screen shows what the print will.
         data-scheme="light"
@@ -103,7 +101,7 @@ export default async function SpotReportPage({
             spotHours={spotHours}
           />
         )}
-      </div>
+      </main>
     </>
   );
 }

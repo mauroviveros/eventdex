@@ -56,7 +56,7 @@ function Sheet({
   return (
     <article className="mx-auto grid min-h-[277mm] w-full max-w-[190mm] grid-rows-[auto_1fr_auto] gap-[6mm] border-2 border-lcd-3 bg-lcd-0 p-[8mm] text-lcd-3 [-webkit-print-color-adjust:exact] [print-color-adjust:exact] print:border-0">
       <header className="grid gap-3">
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <span className="flex min-w-0 items-center gap-3 font-display text-px-2">
             {head.logoPath ? (
               <Logo
