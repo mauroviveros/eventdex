@@ -1411,12 +1411,60 @@ Actividad empujan la lista hacia abajo y la actividad crece sin tope. Decidido:
     Recharts, apagada: la tabla `sr-only` ya da las cifras) y quedan en 100. *Sin
     probar:* lector de pantalla y un celular real.
 
-## R33 · Analítica e informe
+## R33 · Analítica e informe ▶
 
 Para el organizador durante y después del evento, y como informe para vender el evento
 a sponsors y colaboradores. Antes de diseñar, un cuestionario que define qué se mide,
 qué se exporta y para qué. Regla: cada gráfico responde una decisión; si no cambia
 ninguna, no se hace.
+
+Branch `feat/analitica`.
+
+**Cuestionario (2026-11-16)**
+
+| Lector | Decisión que mueve | Qué recibe |
+|---|---|---|
+| Sponsor actual | Renovar su stand la próxima edición | El informe de su stand |
+| Sponsor nuevo | Entrar al evento | El informe del evento |
+| Organizador, después | Qué cambiar en la próxima edición | Dos agregados al Resumen del evento |
+
+- **Formato: una página del panel para imprimir** («Guardar como PDF» del navegador),
+  como el cartel de entrada: A4, con los colores de la org (`print-color-adjust:
+  exact`). Sin PDF generado, sin CSV y sin link público: se suman si un sponsor lo pide.
+- **Sin leads.** Solo cifras agregadas: el visitante nunca aceptó darle su mail a un
+  sponsor.
+- **Una edición por informe.** «Series de eventos y métricas entre ediciones» sigue
+  estacionado.
+- **Informe del evento** (para vender): visitantes, medallas, medallas por visitante y
+  cuántos completaron todas; la afluencia por jornada; y la fidelidad (cuántos fueron a
+  más de un evento de la org, la cifra «Volvieron»). Sin nombres de stands.
+- **Informe de un stand** (para su sponsor), sin nombrar a los demás: sus visitas y qué
+  parte del público pasó por él; sus horas pico por jornada sobre la afluencia del
+  evento; sus visitas contra el promedio de stands y su puesto («3.º de 12»); y cuántos
+  arrancaron el recorrido en él (primera parada).
+- **Post-evento**, en la pestaña Resumen y no en un informe: el promedio marcado en el
+  ranking de stands (los que quedaron muy por debajo deciden si se cambian o se mueven)
+  y un cuadro de **Premios y sorteos**, con los ganados y los cupos sin usar, que decide
+  si estaban bien calibrados. Las horas muertas ya se leen en Afluencia: no se agrega
+  nada.
+
+**Bloques**
+
+1. **DB.** Funciones `security invoker` con `GRANT` a `authenticated`, como las de
+   R32: las cifras de un spot en un evento (visitas, primera parada, por hora y
+   jornada, puesto y promedio) y el resumen de premios y sorteos (ganados, cupos,
+   sin usar). Tests pgTAP: un miembro de otra org no ve nada y los empates desempatan
+   por `id`.
+2. **Backend.** Lecturas en `src/lib/data/` y lo derivado (parte del público, puesto,
+   contra el promedio) en `src/domain/`, con Vitest.
+3. **Diseño.** `/impeccable shape` del informe de evento y del de stand en A4, y de los
+   dos agregados al Resumen; dos o tres alternativas sobre la página real. Mauro elige.
+4. **Vista.** `/[org]/eventos/[evento]/informe` y `/[org]/eventos/[evento]/informe/[spot]`,
+   para el equipo y developers en soporte, `noindex`, con un atajo desde el Resumen y
+   desde cada stand. Los agregados al Resumen. RUTAS al día. *Listo cuando* un miembro
+   imprime los dos informes con datos reales y alguien de afuera recibe 404 (e2e).
+5. **Auditoría.** `/code-review` y `/accessibility`, y la impresión probada en Chrome y
+   Safari.
 
 ## R34 · Tarjeta para compartir, completa
 
