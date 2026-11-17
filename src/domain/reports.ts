@@ -1,3 +1,5 @@
+import { eventPhase } from "@/domain/events";
+
 /**
  * The reports' figures, from the counts the database gives: a stand against the
  * audience and against the average of the event's stands, and how a prize fared.
@@ -31,3 +33,27 @@ export const unusedSlots = ({ slots, winners }: Prize) =>
  */
 export const leftOut = ({ winners, reached }: Prize) =>
   Math.max(0, reached - winners);
+
+type Dated = {
+  status: string;
+  timezone: string;
+  schedules: Parameters<typeof eventPhase>[1];
+};
+
+/**
+ * The cut of a report: when its data was taken, in the event's zone, and whether
+ * the event had not ended (a partial report says so: the figures keep changing).
+ */
+export function reportCut(event: Dated, now = new Date()) {
+  return {
+    at: new Intl.DateTimeFormat("es-AR", {
+      day: "numeric",
+      month: "long",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+      timeZone: event.timezone,
+    }).format(now),
+    partial: eventPhase(event.status, event.schedules, now) !== "finalizado",
+  };
+}
