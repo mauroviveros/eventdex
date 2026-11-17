@@ -1458,8 +1458,11 @@ Branch `feat/analitica`.
    anulados y cuántos llegaron, sin bloqueados). Tests pgTAP
    (`23_reports`): la primera parada desempata por `(momento, id)`, y otra org cuenta
    cero (los stands y premios de un evento publicado ya son públicos por la portada).
-2. **Backend.** Lecturas en `src/lib/data/` y lo derivado (parte del público, puesto,
-   contra el promedio) en `src/domain/`, con Vitest.
+2. **Backend ✅.** Lecturas en `src/lib/data/reports.ts` (`getSpotReport`,
+   `listSpotHours`, `listPrizeOutcomes`) y lo derivado en `src/domain/reports.ts`
+   (`shareOfAudience`, `versusAverage`, `placeLabel`, `unusedSlots`, `leftOut`), con
+   Vitest. El puesto y la cuenta de stands son de los activos: un stand apagado no
+   tiene puesto (la migración se corrigió antes de aplicarse en producción).
 3. **Diseño.** `/impeccable shape` del informe de evento y del de stand en A4, y de los
    dos agregados al Resumen; dos o tres alternativas sobre la página real. Mauro elige.
 4. **Vista.** `/[org]/eventos/[evento]/informe` y `/[org]/eventos/[evento]/informe/[spot]`,
