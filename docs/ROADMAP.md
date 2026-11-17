@@ -1411,7 +1411,7 @@ Actividad empujan la lista hacia abajo y la actividad crece sin tope. Decidido:
     Recharts, apagada: la tabla `sr-only` ya da las cifras) y quedan en 100. *Sin
     probar:* lector de pantalla y un celular real.
 
-## R33 · Analítica e informe ▶
+## R33 · Analítica e informe ✅
 
 Para el organizador durante y después del evento, y como informe para vender el evento
 a sponsors y colaboradores. Antes de diseñar, un cuestionario que define qué se mide,
@@ -1497,8 +1497,17 @@ Branch `feat/analitica`.
    los dos informes y un stand no nombra a otro, un código inexistente es 404 y sin
    sesión pide ingresar. Sin probar: imprimir de verdad («Guardar como PDF»), Safari y
    un lector de pantalla.
-5. **Auditoría.** `/code-review` y `/accessibility`, y la impresión probada en Chrome y
-   Safari.
+5. **Auditoría ✅.** `/code-review` y `/accessibility`. Salieron tres arreglos: las
+   páginas `informe` ahora tienen `<main>`; la fecha de corte vive en `reportCut`
+   (`src/domain/reports.ts`, con test) y no repetida en las dos páginas; y el código del
+   stand se decodifica sin romper (Next ya contesta 400 antes, queda como defensa). La
+   cabecera de la hoja ahora puede partirse en el celular. Contraste medido en la hoja:
+   4,95:1 en textos y ejes, barras sobre 3:1. **Impresión probada con un PDF real de
+   Chromium** desde una ventana de escritorio: una hoja A4 cada informe, con los colores
+   de fondo. Quedan sin tocar los formatos de número repetidos con `Overview` y que el
+   porcentaje de un premio se calcula con los stands activos de hoy. Pendiente: probar en
+   Safari, con un lector de pantalla y con el dedo en un celular real, y tener presente
+   que el gráfico no se vuelve a medir si se imprime desde una ventana angosta.
 
 ## R34 · Tarjeta para compartir, completa
 
