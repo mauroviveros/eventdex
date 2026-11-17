@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   leftOut,
   placeLabel,
+  reportCut,
   shareOfAudience,
   unusedSlots,
   versusAverage,
@@ -50,5 +51,34 @@ describe("prizes", () => {
     expect(leftOut({ slots: 1, winners: 1, reached: 4 })).toBe(3);
     expect(leftOut({ slots: null, winners: 3, reached: 3 })).toBe(0);
     expect(leftOut({ slots: 5, winners: 3, reached: 2 })).toBe(0);
+  });
+});
+
+describe("reportCut", () => {
+  const schedules = [
+    { starts_at: "2026-11-14T13:00:00Z", ends_at: "2026-11-14T23:00:00Z" },
+  ];
+  const event = {
+    status: "published",
+    timezone: "America/Argentina/Buenos_Aires",
+    schedules,
+  };
+
+  it("says when the data was taken in the event's zone, on 24 hours", () => {
+    const { at } = reportCut(event, new Date("2026-11-15T01:30:00Z"));
+    // The joiner between date and time (", " or " a las ") depends on the ICU version.
+    expect(at).toMatch(/^14 de noviembre.*22:30$/);
+  });
+
+  it("is partial while the event runs or has not started, and final after it", () => {
+    expect(reportCut(event, new Date("2026-11-14T18:00:00Z")).partial).toBe(
+      true,
+    );
+    expect(reportCut(event, new Date("2026-11-13T18:00:00Z")).partial).toBe(
+      true,
+    );
+    expect(reportCut(event, new Date("2026-11-15T01:00:00Z")).partial).toBe(
+      false,
+    );
   });
 });
